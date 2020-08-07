@@ -15,14 +15,14 @@ description
 ```
 
 #### Objects
-1. BLOB(Binary Large OBject)
+1. __BLOB(Binary Large OBject)__
     * 소스 파일, 이미지 파일 등 데이터를 파일 명 같은 메타데이터 없이, 바이너리 데이터 자체만 저장
-2. Tree
+2. __Tree__
     * blob에 저장되지 않은 파일 이름, 속성, 디렉터리 위치 정보를 저장하고 있다.
     * tree object는 blob(실제로 blob 메타데이터)와 tree object로 구성. 특정 시점의 디렉터리포 표현할 수 있다.
-3. Commit
+3. __Commit__
     * tree object명과 Author, Date, Message 저장.
-4. Tag
+4. __Tag__
     * commit object를 가리키며 태그명과 태그를 만든 사람, 주석 저장
 
 * Reference
@@ -48,19 +48,19 @@ description
 * __remote repository__ : 원격 저장소, 여기서는 Github에 생성한 Repository
 
 ## Install Git
-* for windows : [https://gitforwindows.org/](https://gitforwindows.org/)
-* for MacOS : ``` $ brew install git ```
-* for CentOS : ```$ yum install -y git```
+* __for windows__ : [https://gitforwindows.org/](https://gitforwindows.org/)
+* __for MacOS__ : ``` $ brew install git ```
+* __for CentOS__ : ```$ yum install -y git```
 
 
 ## Configuration
 #### 1. 전역 설정 
- * $ git config --global user.name "{github username}" : 전역 사용자 설정
- * $ git config --global user.email "{github email address}" : 전역 이메일 설정
- * $ git config --global core.editor "{editor name}" : 전역 Editor 설정, 기본 편집기
- * $ git config --global core.pager "cat" : Git은 log 또는 diff 같은 명령의 메시지를 출력할 때 페이지로 나누어 보여준다. 기본으로 사용하는 명령은 less 다. more 를 더 좋아하면 more 라고 설정한다. 페이지를 나누고 싶지 않으면 빈 문자열로 설정한다.
- * $ git config --list : 설정 리스트 확인
- * $ git config --global --unset {config name} : --unset 옵션을 이용하여 설정 지우기
+ * __$ git config --global user.name "{github username}"__ : 전역 사용자 설정
+ * __$ git config --global user.email "{github email address}"__ : 전역 이메일 설정
+ * __$ git config --global core.editor "{editor name}"__ : 전역 Editor 설정, 기본 편집기
+ * __$ git config --global core.pager "cat"__ : Git은 log 또는 diff 같은 명령의 메시지를 출력할 때 페이지로 나누어 보여준다. 기본으로 사용하는 명령은 less 다. more 를 더 좋아하면 more 라고 설정한다. 페이지를 나누고 싶지 않으면 빈 문자열로 설정한다.
+ * __$ git config --list__ : 설정 리스트 확인
+ * __$ git config --global --unset {config name}__ : --unset 옵션을 이용하여 설정 지우기
 ```shell script
 Ex>
 $ git config --global user.name "yoon2ix"
@@ -72,8 +72,8 @@ $ git config --global --unset core.pager // core.pager 설정 지우기
  ```
 
 #### 2. 저장소별 설정(해당 Directory)
-* $ git config --global user.name "{github username}" : 해당 저장소 사용자 설정
-* $ git config --global user.email "{github email address}" : 해당 저장소 이메일 설정
+* $ __git config --global user.name "{github username}"__ : 해당 저장소 사용자 설정
+* $ __git config --global user.email "{github email address}"__ : 해당 저장소 이메일 설정
 ```shell script
 Ex>
 $ git config user.name "yoon2ix"
@@ -82,10 +82,10 @@ $ git config user.email "email@github.com"
 
 ## Start Git
 #### 1. git init 이용하는 방법
-* $ git init : Git 저장소를 초기화, Local Repository로 역할을 시작한다.
-* $ git remote add {Name} {URL} : {URL}에 해당하는 Remote Repository를 {Name}으로 추가
-* $ git remote -v : Remote Repository의 이름 목록 표시
-* $ git remote rm {Name} : {Name} Remote Repository 삭제
+* __$ git init__ : Git 저장소를 초기화, Local Repository로 역할을 시작한다.
+* __$ git remote add {Name} {URL}__ : {URL}에 해당하는 Remote Repository를 {Name}으로 추가
+* __$ git remote -v__ : Remote Repository의 이름 목록 표시
+* __$ git remote rm {Name}__ : {Name} Remote Repository 삭제
 ```shell script
 Ex>
 $ git init
@@ -97,30 +97,30 @@ $ git push -u origin master // 처음 연결시킬때 -u 옵션 사용
 $ git remote rm origin
 ```
 #### 2. git clone 이용하는 방법
-* git clone {URL} : Remote Repository를 복사한다.
+* __$ git clone {URL}__ : Remote Repository를 복사한다.
 ```shell script
 Ex>
 git clone https://github.com/yoon2ix/Yoon-TIL.git
 ```
 
 ## Add, Commit, Push
-* $ git add {file} : 생성/수정 File을 index로 staging한다.
+* __$ git add {file}__ : 생성/수정 File을 index로 staging한다.
     > objects에 blob 타입으로 파일 내용이 추가된다.
     
     > 파일이 수정되면 새로운 object(blob)가 생성된다. 
-* $ git status : 현재 git 상태 확인
-* $ git commit -m "{message}" : staging 되어있는 내용을 Local Repository에 저장 
+* __$ git status__ : 현재 git 상태 확인
+* __$ git commit -m "{message}"__ : staging 되어있는 내용을 Local Repository에 저장 
     > objects에 commit 객체와 tree 객체가 추가된다.
     
     > tree 객체는 commit할 때의 index를 Snapshot을 찍어 저장한다.
-* $ git push {remote repository name} {branch name} : 
+* __$ git push {remote repository name} {branch name}__ : branch 내용을 remote repository에 저장.
     > -u 옵션은 upstream으로 remote repository와 branch를 연결하기 위해 사용된다. __보통 처음 연결할때 사용__
 
 #### Commit Message 작성
 * Commit할 때는 동작하는 최소 단위로 ex> 메소드 단위
-* feat: features, 기능 구현시, 기능 설명
-* docs: documentations, README.md 등 문서화 작업
-* fix: bug-fix, 버그 수정시
-* conf: configurations, 환경 설정
-* deploy: deploy, 배포 작업
-* refactor: refactoring, Refactoring하는 경우
+* __feat:__ - features, 기능 구현시, 기능 설명
+* __docs:__ - documentations, README.md 등 문서화 작업
+* __fix:__ - bug-fix, 버그 수정시
+* __conf:__ - configurations, 환경 설정
+* __deploy:__ - deploy, 배포 작업
+* __refactor:__ - refactoring, Refactoring하는 경우
