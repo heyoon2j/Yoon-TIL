@@ -31,7 +31,7 @@ description
 
 
 #### .gitignore
-* git에서 사용하지 않을(무시할) 파일들을 설정한다. 즉, 불필요한 파일에 대해 git 명령어가 사용되지 않도록 방지할 수 있다.
+* git에서 추적하고 싶지 않은 파일을 설정하는 경우. 즉, 불필요한 파일에 대해 git 명령어가 사용되지 않도록 방지할 수 있다.
 * https://www.toptal.com/developers/gitignore 에서 설정할 내용을 검색할 수 있다.
 
 #### License
