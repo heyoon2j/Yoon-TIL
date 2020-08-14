@@ -46,7 +46,7 @@
 	* https://javabypatel.blogspot.com/2017/05/can-static-method-be-called-using-object.html
 
 
-#### 3. static method는 상속되나?
+### 3. static method는 상속되나?
 * static method는 상속된다(can)
     * Class에서는 상속이되고, Interface에서는 상속이 되지 않는다(다중 상속 때문에)
 
@@ -59,7 +59,7 @@
 	* https://stackoverflow.com/questions/10291949/are-static-methods-inherited-in-java
 
 
-#### 4. Interface는 상속의 개념인가? 구현의 개념인가?
+### 4. Interface는 상속의 개념인가? 구현의 개념인가?
 * 표현의 방법 차이인거 같다. 기본적으로 상속이지만 구현이라고 생각한다.
     * abstract function을 사용하는 Abstact Class는 생성자가 존재하지만, Interface는 존재하지 않는다.
     * Function들이 Overriding(상속 기술)되어 Virtual Table 생성, 하지만 Virutal Table은 빈 슬롯(Null Pointer)으로 저장
@@ -70,7 +70,7 @@
 	* https://stackoverflow.com/questions/7636230/c-interview-vtable-for-a-class-with-a-pure-virtual-function
 
 
-##### 5. 왜 Interface를 구현하는 하위 Class에서는 Interface의 static method를 호출하지 못하나?
+### 5. 왜 Interface를 구현하는 하위 Class에서는 Interface의 static method를 호출하지 못하나?
 * 다중 상속 때문이다.
     * 기본 method의 경우, abstract로 Null Point가 전달되기 때문에 다중 상속이 가능하다.
     * 하지만 여러 개의 상위 인터페이스에서 같은 static method name으로 정의되어 있는 경우, 하위 클래스, 인터페이스에서 호출해야될지 모른다. 그렇기 때문에 막아 놓은 것으로 보인다.
