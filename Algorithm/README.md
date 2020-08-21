@@ -13,4 +13,5 @@
 
 ## Divide & Conquer
 * [QuadTree](https://algospot.com/judge/problem/read/QUADTREE)
+* [FanMeeting](https://algospot.com/judge/problem/read/FANMEETING)
 
