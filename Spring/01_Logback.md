@@ -22,7 +22,7 @@
     * slf4j-api
 
 ## Example
-    ```java
+  ```java
     package kr.co.fastcampus;
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@
             logger.info("Hello world!"); 
         }
     }
-    ```
+  ```
    * LoggerFactory.getLogger(Main.class) - Return: Logger Object, Parameter: {Class Name}.class / "{Package Path/ClassName}" 
 
 ## Log Level
