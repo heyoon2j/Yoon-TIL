@@ -120,3 +120,82 @@ public class SubStream{
     }
 }
 ```
+
+## 직렬화(Serialization)
+* 인스턴스의 상태를 그대로 저장하거나 Network로 전송하고 
+이를 다시 복원(Deserialization) 하는 방식
+* 보조 Stream
+* Object Stream 사용
+    * **ObjectInputStream**
+    * **ObjectOutputStream**
+    * **readObject, writeObject**
+* 직렬화를 위해서는 해당 클래스에 **Serializable Interface**를 사용하여 명시해야 된다.
+```java
+class Person implements Serializable{   // 구현 코드가 없는 mark interface
+    String name;
+    transient String job;   // transient 키워드, 해당 코드는 직렬화하지 말라는 의미
+}
+```
+
+* **External** Interface를 이용하여 읽기, 쓰기에 대해 정의할 수 있다. 
+    * **writeExternal, readExternal** 함수 Override
+    
+## Others
+### File Class
+* 파일 개념을 추상화한 클래스
+* Function
+    * **boolean exist()** : 해당 파일이 존재하는지 여부
+    * **boolean createNewFile()** : 새로운 File 생성
+    * **boolean mkdir()** : 새로운 Directory 생성
+    * **boolean mkdirs()** : 경로 상에 없는 모든 Directory 생성
+    * **boolean delete()** : File or Directory 삭제
+     
+### RandomAccessFile Class
+* 입출력 클래스 중 유일하게 파일 입출력을 동시에 할 수 있는 클래스
+* 파일 포인터가 있어서 읽고 쓰는 위치의 이동이 가능함
+* Function
+    * **seek()** : 해당 위치로 이동
+    
+### Decorator Pattern
+![DecoratorPatter](DecoratorPattern.png)
+*Fastcampus_박은종*
+* **Component** : 최상위 클래스
+* **ConcreteComponent** : Component 자식 클래스, 기반 Class(Component)
+* **Decorator** : Component 자식 클래스, 보조 Class(Component)
+* **ConcreteDecoratorA, B** : Decorator 자식 클래스.
+ Operation의 경우, Decorator 클래스의 Operation을 실행하고, 다른 기능을 추가한다.
+```java
+abstract class Component{
+    abstract void operation();
+}
+class ConcreateComponent extends Component{
+    void operation(){
+        // 실행 코드
+    }
+}
+class Decorator extends Component{
+    Component component;
+    public Decorator(Component component){
+        this.component = component;
+    }
+    
+    public void operation(){
+        this.component.operation();
+    }
+}
+
+class ConcreateDecoratorA extends Decorator{
+    public ConcreateDecoratorA(Component component){
+        super(component);
+    }
+    public void operation(){
+        super.operation();
+        // 추가 실행 코드
+    }
+}
+
+```
+
+
+### Reference
+* Fastcampus 강의(박은종)
