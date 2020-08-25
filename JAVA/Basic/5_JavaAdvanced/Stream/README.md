@@ -1,14 +1,14 @@
 # Stream
 
-## IO(InputOutput) Stream
+# IO(InputOutput) Stream
 * Decorator Pattern으로 구현되어 있음
 
-### IO Stream 구분
+## IO Stream 구분
 * IO 대상 기준 : Input Stream, Output Stream
 * 자료의 종류 : Byte 단위 Stream, 문자 단위 Stream
 * Stream 기능 : 기반 Stream, 보조 Stream
 
-### Stream 종류
+## Stream 종류
 1. Byte 단위 Stream
     * **InputStream**
     * **OutputStream**
@@ -17,7 +17,7 @@
     * **Reader**
     * **Writer**
 
-### 표준 입출력
+## 표준 입출력
 * System 클래스의 표준 입출력 멤버
 ```java
 public class System{
@@ -27,11 +27,8 @@ public class System{
 }
 ```
 
-### Byte 단위 Stream
+## Byte 단위 Stream
 * Byte 단위로 자료를 읽고 씀(동영상, 음악파일 등)
-* File Stream
-    * **FileInputStream** : File이 없는 경우 예외 발생
-    * **FileOutputStream** : File이 없는 경우 파일 생성하여 출력
 * Function(Input)
     * **int read()** : 입력 스트림으로부터 1byte 읽고 Byte 리턴, 읽을게 없다면 -1 Return
     * **int read(byte[] b)** : 읽은 Byte들을 배열 b에 저장하고, 실제로 읽은 Byte 수를 리턴
@@ -39,7 +36,10 @@ public class System{
     * **void write(int b)** : b의 끝 1byte를 출력 버퍼에 보낸다.
     * **void wirte(byre[] b)** : 배열 b의 모든 Byte를 보낸다.
     * **void flush()** : 출력 버퍼를 비운다.
-    
+### File Stream
+* **FileInputStream** : File이 없는 경우 예외 발생
+* **FileOutputStream** : File이 없는 경우 파일 생성하여 출력
+   
 ```java
 public class InputOutputStream {
     public static void main(String[] args) {
@@ -58,11 +58,27 @@ public class InputOutputStream {
 } 
 ```    
 
-### 문자 기반 Stream
+## 문자 기반 Stream
 * 2 Byte씩 처리해야 함
 
+### File Stream
+* FileReader
+* FileWriter
+```java
+public class ReaderWriterStream {
+    public static void main(String[] args) throws IOException {
+        FileReader fis = new FileReader("src/reader.txt");
+//        FileInputStream fis = new FileInputStream("src/reader.txt");
+//        InputStreamReader isr = new InputStreamReader(fis);
+        int i;
+        while((i = fis.read())!= -1){
+            System.out.println((char)i);
+        }
+        fis.close();
+    }
+}
+```
 
-### 보조 Stream
+## 보조 Stream
 * InputStreamReader(InputStream is) : Byte를 문자 기반으로 읽어들인다.
-
 
