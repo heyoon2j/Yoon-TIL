@@ -12,7 +12,7 @@
         $ java -cp lib\logback-classic.jar;lib\logback-core.jar;lib\slf4j-api.jar;. kr.co.fascamfus.Main
   
         $ jar -c -m manifest.txt -f fascamfus.jar kr\* logback.xml
-        $ java -jar fascamfus.jar
+        $ java -jar fascamfus.jar // 실행 가능한 jar File
         ```
         * javac - cp {Class File Path} {JAVA File} : JAVA File을 Class File로 변환
         * java -cp {Class File Path} {Class FIle} : Class File 실행
