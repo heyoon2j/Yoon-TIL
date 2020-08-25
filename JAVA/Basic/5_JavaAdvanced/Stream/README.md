@@ -62,8 +62,8 @@ public class InputOutputStream {
 * 2 Byte씩 처리해야 함
 
 ### File Stream
-* FileReader
-* FileWriter
+* **FileReader**
+* **FileWriter**
 ```java
 public class ReaderWriterStream {
     public static void main(String[] args) throws IOException {
@@ -80,5 +80,43 @@ public class ReaderWriterStream {
 ```
 
 ## 보조 Stream
-* InputStreamReader(InputStream is) : Byte를 문자 기반으로 읽어들인다.
+* 실제로 읽고 쓰는 Stream이 아닌 보조적인 기능을 추가하는 Stream
+* FilterInputStream과 FileOutputStream이 보조 Stream의 상위 클래스
+    * **pretected FilterInputStream(InputStream in)**
+    * **public FilterOutputStream(OutputStream out)**
 
+### 종류
+* **InputStreamReader(InputStream is)** : Byte를 문자 기반으로 읽어들인다.
+* **Buffered Stream** : 내부에 8192byte 배열을 가지고 있어, 읽거나 쓸 때 속도가 빠름.
+    * **BufferedInputStream(InputStream is)**
+    * **BufferedOutputStream(OutputStream os)**
+    * **String readLine()** : Line Feed('\n')와 Carriage Return('\r')을 제거해주고 한 줄을 읽어 들인다.
+    
+* Data Stream : 자료가 저장된 상태 그대로 자료형을 유지하며 읽기, 쓰기 기능을 제공하는 Stream
+    * **DataInputStream**
+    * **DataOutputStream**
+
+```java
+public class SubStream{
+    public static void main(String[] args){
+        try(FileOutputStream fos = new FileOutputStream("data.txt");
+                DataOutputStream dos = new DataOutputStream(fos);
+                FileInputStream fis = new FileInputStream("data.txt");
+                DataInputStream dis = new DataInputStream(fis)){
+
+            dos.writeByte(100);
+            dos.write(100);
+            dos.writeChar('A');
+            dos.writeUTF("안녕하세요");
+
+            System.out.println(dis.readByte());
+            System.out.println(dis.read());
+            System.out.println(dis.readChar());
+            System.out.println(dis.readUTF);
+
+        }catch(Exception e){
+            e.printStackTrace();            
+        }
+    }
+}
+```
