@@ -1,7 +1,7 @@
 # Thread
 1. 프로세스(Process)
     * 운영체제(OS)로 부터 시스템 자원을 할당받는 작업의 단위
-    * 실행되고 있는 프로그램(프로그램과 프로세트의 차이)
+    * 실행되고 있는 프로그램(프로그램과 프로세스의 차이)
       * 프로그램은 코드와 정적인 데이터의 묶음
     * Code, Data, Stack, Heap 할당
 
@@ -46,7 +46,7 @@
 * 동시에 여러 개의 Thread가 수행되는 프로그래밍
     * **동시성(Concurrency)**: 멀티 작업을 위해서 하나의 코어에서 Multi Thread가 번갈아가며 실행하는 성질
     * **병렬성(Parallelism)**: 멀티 작업을 위해 멀티 코어에서 개별 Thread를 동시에 실행하는 성질
-* Thread는 각각의 작업공간(Context)를 가짐
+* Thread는 각각의 작업공간(Context)을 가짐
     * Thread가 Switching이 되면, Context Switching이 발생
 * 공유 자원이 있는 경우, Race Condition이 발생
 * Critical Section에 대한 동기화(Synchronization)의 구현이 필요
@@ -106,25 +106,25 @@
 
 
 ## DeadLock
-* 교착 상태란 하나 또는 둘 이상의 프로세스가 자원을 할당 및 해제 할 수 없는 자원을 계속 기다리는 상태. 
-* 교착 상태 발생의 필요 조건은 아래와 같다. 교착 상태가 발생하는 경우, 해당 조건은 항상 만족한다는 의미지, 조건이 만족한다고 해서 항상 발생하는 것이 아니다. 
+* 교착 상태란 하나 또는 둘 이상의 프로세스가 자원을 할당 및 해제할 수 없는 자원을 계속 기다리는 상태. 
+* 교착 상태 발생의 필요조건은 아래와 같다. 교착 상태가 발생하는 경우, 해당 조건은 항상 만족한다는 의미지, 조건이 만족한다고 해서 항상 발생하는 것이 아니다. 
 
-### Deadlock Necessary Condition(교착 상태 발생의 필요 조건)
+### Deadlock Necessary Condition(교착 상태 발생의 필요조건)
 1. **Mutual Exclusion(상호 배제)**
     * At least one resource must be held in a non-sharable way.
     * 하나의 공유 자원을 다른 프로세스들과 공유하지 않고, 자기만 사용하는 경우
     
 2. **Hold and Wait(점유와 대기)**
     * A process must be holding a resource and waiting for another.
-    * 하나의 프로세스가 하나의 공유 자원을 사용하는 도중 다른 공유 자원을 사용하는 경우
+    * 하나의 프로세스가 하나의 공유 자원을 사용하는 도중 다른 공유 자원을 사용을 대기하는 경우
     
 3. **No Preemption(비선점)**
     * Resource cannot be preempted.
-    * Resource를 프로세스로 부터 도중에 해체가 되지 않는 경우.
+    * Resource를 프로세스로부터 도중에 해체가 되지 않는 경우
     
 4. **Circular Wait(환형 대기)**
     * A waits for B, B waits for C, C waits for A
-    * 영어 그래도 생각하면 된다. A가 B를 기다리고, B는 C를, C는 A를 기다리는 경우.
+    * 영어 그래도 생각하면 된다. A가 B를 기다리고, B는 C를, C는 A를 기다리는 경우
 
 * Example
 ![MutualExclusion.png](MutualExclusion.png)
@@ -132,28 +132,37 @@
 ### Deadlock을 피하는 방법
 1. **Prevention**
     * Ensure that the system will never enter a deadlock state
+    * Deadlocks can be prevented by preventing at least one of the four required conditions
     * 교착 상태의 필요조건을 부정함으로써 교착 상태가 발생하지 않도록 미리 예방
-    > ex> synchronization 블록에서 다른 synchronization 블록을 호출하지 않는다.
+    > 우선순위, All or Nothing 등을 이용, 하지만 복잡함 등으로 사용하지 않는다. 
 
-2. **Deadlock Avoidance**
+2. **Avoidance**
     * Ensure that the system will never enter an unsafe state
     * 교착 상태 가능성을 배제하지 않고, 적절히 피해나가는 방법
-    > ex> 조건문 등을 이용하여 synchronization 블록이 호출되지 않도록 한다.
-    
-3. **Detection**
+    > Safe sequence가 있는 경우, Resource를 할당한다. Safe sequence를 찾는 방법은 아래와 같다.
+    * Resource-Allocation Graph(자원 할당 그래프)
+    * Banker's Algorithm(은행가의 알고리즘)
+       1) Safety Algorithm(Banker's Algorithm)
+       2) Resource Request Algorithm(Banker's Algorithm)
+
+3. **Detection and Recovery**
     * Allow the system to enter a deadlock state and then recover
-    * 교착 상태를 허용하고, 교착 상태에 빠지면 회복하는 방법
-    * Deadlock이 발생했는지 검사하려고 하는 검사 알고리즘이 필요하며, 최소 비용으로 중지시키는 방법을 찾아야 한다(희생자 선택의 원칙)
-    > ex> 교착 상태 프로세스들을 모두 중지 or 교착 상태가 해결될 때까지 프로세스를 하나씩 종료하여 회복
+    * 교착 상태를 허용하고, 교착 상태가 감지되면 프로세스를 중단하거나 일부 리소스를 선점하여 회복하는 방법
+    > Deadlock이 발생했는지 검사하려고 하는 검사 알고리즘이 필요하며, 최소 비용으로 중지시키거나 빼앗는 방법을 찾아야 한다(희생자 선택의 원칙)
+    * Deadlock Detection Algorithm(Safety Algorithm과 비슷)
+    * Recovery
+        1) Abort one or more Processes
+        2) Preempt some resources
  
 4. **Do Nothing**
     * Ignore the problem and let the user or system administrator respond to the problem; used by most
     operating systems, including Windows and UNIX
-    * 모든 문제를 허용하고, 교착 상태를 허용하는 방법
+    * 교착 상태가 1년에 한 번 정도만 발생하는 경우, 다른 방법들을 통한 Overhead 및 시스템 성능 저하를 발생시키는 것보다
+    교착 상태가 발생하도록 하고 필요에 따라 재부팅하는 것이 더 나을 수 있다는 방식
 
 
-
-
-### Reference
+### reference
 * https://jhnyang.tistory.com/3
 * https://jhnyang.tistory.com/4?category=815411
+* https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/7_Deadlocks.html
+* http://blog.naver.com/PostView.nhn?blogId=and_lamyland&logNo=221198568729
