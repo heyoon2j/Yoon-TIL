@@ -1,6 +1,6 @@
 # Database & JDBC
 
-## Database
+# Database
 * 통합하여 관리되는 데이터의 집합체를 의미
 * DB의 종류는 SQL DB, NoSQL DB이 있다.
 1. **SQL DB**
@@ -10,7 +10,7 @@
     * **MongoDB**
     * **Cassandra**
 
-### SQL vs NoSQL 특징
+## SQL vs NoSQL 특징
 1. **SQL DB**
     * 데이터를 Row, Column 형태로 저장
     * Schema가 고정되어 있다(데이터 무결성 보장)
@@ -39,7 +39,7 @@
         5) 대규모 Read/Write 속도가 필요한 경우
 
 
-### H2 
+## H2 
 * 여기서는 H2 사용
 * https://www.h2database.com/html/main.html
 * 좋은점
@@ -47,19 +47,19 @@
     * Memory Mode 지원(In-Memory) : 휘발성으로 Test 하기 좋다(JDBC URL: jdbc:h2:mem:{File Path})
     * 호환 Mode 지원 : **H2 Hompage -> Feature -> Compatibility**에서 확인 가능
 
-#### Install
+### Install
 1. Download All Platforms
 2. Execute H2
     * https://stackoverflow.com/questions/58979455/h2-database-created-in-java-not-found-in-h2-console
 
-#### Maven 연동 방벙
+### Maven 연동 방벙
 1. Go to "Maven Central" (https://search.maven.org/)
 2. Search "H2-database"
 3. Copy Maven "com.h2database:h2"
 4. Paste into the Maven
 
 
-## JDBC
+# JDBC
 * JAVA DataBase Connection
 * Vendor 마다 다른 코드들로 구성되어 있기 때문에, JDBC Interface를 통해서 다른 코드들을 숙지할 필요가 없다.
 * API는 Java Docs에서 확인 가능
