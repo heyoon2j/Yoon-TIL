@@ -62,9 +62,49 @@
 # JDBC
 * JAVA DataBase Connection
 * Vendor 마다 다른 코드들로 구성되어 있기 때문에, JDBC Interface를 통해서 다른 코드들을 숙지할 필요가 없다.
-* API는 Java Docs에서 확인 가능
+* API는 Java Docs에서 확인 가능 
 
 
+## DB 기본 연결 순서 
+```java
+public class dbConnection{
+    public static void main(String[] args){
+        // URL 생성
+        Class.forName("org.h2.Driver");
+        String url = "jdbc:h2:mem:test;MODE=MySQL;";
+    
+        // Connection 생성, DriverManager.getConnection 이용
+        // DB에 SQL문을 호출하기 위한 Statement 생성
+        try(Connection connection  = DriverManager.getConnection(url, "sa",""); Statement statement = connection.createStatement()){
+
+		    // Transaction을 위한 Method, connection.commit() / connection.rollback() 사용
+            // commit이 진행되야 DB에 저장이 진행된다. 에러가 발생하며 rollback을 해야되기 때문에 false로 지정
+			connection.setAutoCommit(false);
+
+			statement.execute("create table member(id int auto_increment, username varchar(255) not null, password varchar(255) not null, primary key(id))");
+			try {
+				statement.executeUpdate("insert into member(username, password) values('yoon','1234')");
+			}catch(SQLException e){
+            // Update 시, 에러가 발생하면 Rollback 시킨다.
+				connection.rollback();
+			}
+			ResultSet resultSet = statement.executeQuery("select id, username, password from member");
+			while(resultSet.next()){
+				int id = resultSet.getInt("id");
+				String username = resultSet.getString("username");
+				String password = resultSet.getString("password");
+				Member member = new Member(id, username, password);
+
+				logger.info(member.toString());
+			}
+            // Update가 정상적으로 되었으므로, DB Commit
+			connection.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}            
+    }   
+}
+```
 
 
 
