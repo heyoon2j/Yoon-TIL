@@ -28,6 +28,8 @@
     * Vim : Editor
     * Lombok
     * Rainbow Brackets
+    * PlantUML : For Diagram
+        * Windows Error, 관리자 권한으로 cmd 창 키시고  **"dot -c"** 
 5. Install Font
     * D2 Coding Font (https://github.com/naver/d2codingfont)
     
