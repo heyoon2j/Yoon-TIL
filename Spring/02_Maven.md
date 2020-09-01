@@ -87,7 +87,6 @@ my-app
 * main, test Directory에 "java"와 함께 "resources"를 만들어 두면 용이하다.
 * resources에는 logback.xml과 같은 파일을 저장한다.
 
-## 
 
 
 ### Reference
