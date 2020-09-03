@@ -2,6 +2,17 @@
 * Web Programming에서 Client의 요청을 처리하고 그 결과를 다시 Client에게 전송하는 역할을 하는 자바 프로그램
 * Java Code 안에 HTML이 삽입되어 있다.
 
+## Servlet Container
+* Tomcat 등이 있다.
+* 역활은 아래와 같다.
+1) Web Server와 Servlet이 서로 통신할 수 있게 한다.
+    * 원래는 socket을 생성하고, listen, accept, read등을 해야 되지만 API로 기능을 제공
+2) Multi-Threading 지원
+    * 다중 요청을 처리해준다.
+3) Servlet Lifecycle 관리
+
+4) 선언적인 보안 관리
+    * XML을 통해 보안 관리 가능
 
 ## Maven 연동
 1) Move Maven Central (https://search.maven.org/)
@@ -19,19 +30,6 @@
 * 공용 게이트웨이 인터페이스 
 * CGI는 Web Server와 외부 프로그램 사이에서 정보를 주고받는 방법이나 규약
 * 어떤 식으로 요청을 처리하고 응답할지를 정한다.
-
-## Servlet Container
-* Tomcat 등이 있다.
-* 역활은 아래와 같다.
-1) Web Server와 Servlet이 서로 통신할 수 있게 한다.
-    * 원래는 socket을 생성하고, listen, accept, read등을 해야 되지만 API로 기능을 제공
-2) Multi-Threading 지원
-    * 다중 요청을 처리해준다.
-3) Servlet Lifecycle 관리
-
-4) 선언적인 보안 관리
-    * XML을 통해 보안 관리 가능
-
 
 ## Servlet 동작 방식
 ![ServletOrder](img/ServletOrder.png)
