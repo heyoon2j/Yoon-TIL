@@ -19,7 +19,7 @@
 * ```value```: 생성자 인자에 해당하는 값
 * Example
 ```xml
-    <!--A는 B에 의존성이 있다.-->
+    <!--A는 B에 의존성이 있다. A 객체가 B 객체를 가지고 있다-->
     <bean id="a" class="kr.co.fastcampus.cli.di.A">
         <constructor-arg ref="b" />
     </bean>
