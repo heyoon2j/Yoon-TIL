@@ -3,3 +3,4 @@
 * Pattern
     1) Singleton Pattern
     2) Factory Method Pattern
+    3) Command Pattern
