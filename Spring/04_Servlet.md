@@ -10,7 +10,6 @@
 2) Multi-Threading 지원
     * 다중 요청을 처리해준다.
 3) Servlet Lifecycle 관리
-
 4) 선언적인 보안 관리
     * XML을 통해 보안 관리 가능
 
