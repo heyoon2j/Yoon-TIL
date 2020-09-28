@@ -1,11 +1,6 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.*;
 
 /**
  * Stream API
@@ -18,6 +13,14 @@ import java.util.stream.Stream;
  */
 
 public class StreamAPI {
+    String p = "";
+    public void ccc(){
+        int q = 1;
+        Consumer<String> a =(s) -> {
+
+            System.out.println(q);
+        };
+    }
     public static void main(String[] args) {
         List<String> list = Arrays.asList("fast", "campus", "rocks");
         List<String> newList = new ArrayList<>();
@@ -121,7 +124,6 @@ public class StreamAPI {
         }).distinct().forEach(System.out::println);
 
 
-
         // 최종 처리 메소드 - Stream을 반환하지 않음
 
         // 매칭 (Machiing) - boolean 타입의 값을 리턴
@@ -163,10 +165,60 @@ public class StreamAPI {
         // Stream API는 JCF -> Stream -> 처리 -> 결과(출력, 값, Collection)
 
 
+        // Collectors 클래스의 정적 메소드를 이용하는 방법
+        // toList() 메소드를 쓸 경우, ArrayList로 Collect하는 Collector 반환
+        String[] array = {"Collection", "Framework", "is", "so", "cool"};
+        Stream<String> stream3 = Arrays.stream(array);
+        List<String> collected = stream3.filter(s -> s.length() >= 3)
+//                                        .collect(Collectors.toList());
+                                .collect(Collectors.toCollection(LinkedList::new));
+        System.out.println(collected);
+
+        // toSet() 메소드를 쓸 경우, HashSet으로 collect하는 Collector 반환
+        Stream<String> stream4 = Arrays.stream(array);
+        Set<String> collected2 = stream4.filter(s -> s.length() >= 3)
+                .collect(Collectors.toSet());
+        System.out.println(collected2);
+
+        // toMap() : Map<K, V> -> Map.Entry<K, V> - Key, Value를 정해줘야 된다.
+        Stream<String> stream5 = Arrays.stream(array);
+        Map<String, Integer> collected3 = stream5.filter(s -> s.length() >= 3)
+                .collect(Collectors.toMap(s->s, String::length));
+        System.out.println(collected3);
 
 
-        // Stream이 for문 보다 느리다.
-        // Collection 자체의 변경이 필요한 경우, sort를 해야되고 이러면 Collection을 쓰고
-        // 아니라면 변경이 필요 없는 경우, Stream을 이용하여 쉽게 출력한다.
+        // 그룹화/분리 - groupingBY, partitioningBy
+        // Map<Boolean, List<T>> partitioningBy() : Predicate를 입력받아, Key 값이 True, False가 된다.
+        // Map<R, List<T>> groupingBy(R Function<T>): Function을 입력받아, Key 값이 R Type이 된다.
+
+        String[] arr = {"Python", "is", "aweful", "lame", "not", "good"};
+        Map<Integer, List<String>> map = Arrays.stream(arr)
+                .collect(Collectors.groupingBy(s -> s.length()));
+        System.out.println(map);
+
+        Map<Boolean, List<String>> map2 = Arrays.stream(arr)
+                .collect(Collectors.partitioningBy(s -> s.length() < 4));
+
+        // 그룹화 + Downstream collector
+        // 최종 처리 메소드에서 있던 count(), min()... 등과 유사한
+        // Collector 중에도 counting(), minBy(), maxBy() ... 등이 있다.
+        Map<Integer, Long> map3 = Arrays.stream(arr)
+                .collect(Collectors.groupingBy(String::length,Collectors.counting()));
+        // Value에 리스트 안의 갯수를 파악해 입력된다.
+
+
+
+        // 병렬 스트림
+        Stream<String> parStream = Arrays.stream(arr).parallel();
+        System.out.println(parStream.map(String::length).count());
+
+        List<String> list4 = List.of("atew", "bff", "cqqwq", "dassa");
+        Stream<String> stream6 = list4.parallelStream();    // 병렬이기 때문에 연산 순서가 달라질 수도 있다! 내부적으로 여러 쓰레드가 계산하기 때문에
+        stream6.map(String::length)
+                .peek(s -> System.out.println("A:" + s))
+                .filter(value -> value > 3)
+                .peek(s -> System.out.println("B:" + s))
+                .forEach(System.out::println);
+
     }
 }
