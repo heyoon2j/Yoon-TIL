@@ -170,4 +170,68 @@ stream.map(String::toUpperCase).forEach(System.out::println);
         * void forEach(Comsumer<? super T> action) : Consumer 계열의 람다식을 입력받아, 각 요소를 소비
     
     4) 수집
-        * <R, A> R collect(Collector<? super T, A, R> collector) : 
+        * Collectors 클래스의 정적 메소드를 이용하는 방법
+        * <R, A> R collect(Collector<? super T, A, R> collector) : Collection으로 변환시키는 메소드
+        * Collectors.toList() : ArrayList 반환
+        * Collectors.toSet() : HashSet 반환
+        * Collectors.toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper) : Map<K, U> 반환 
+        * Collectors.toCollection(Supplier<C> collectionFactory) : 입력 값으로 Collector로 변환
+        ```java
+        // Collectors 클래스의 정적 메소드를 이용하는 방법
+        // toList() 메소드를 쓸 경우, ArrayList로 Collect하는 Collector 반환
+        String[] array = {"Collection", "Framework", "is", "so", "cool"};
+        Stream<String> stream3 = Arrays.stream(array);
+        List<String> collected = stream3.filter(s -> s.length() >= 3)
+        //                         .collect(Collectors.toList());
+                                   .collect(Collectors.toCollection(LinkedList::new));
+        System.out.println(collected);
+        
+        // toSet() 메소드를 쓸 경우, HashSet으로 collect하는 Collector 반환
+        Stream<String> stream4 = Arrays.stream(array);
+        Set<String> collected2 = stream4.filter(s -> s.length() >= 3)
+                                    .collect(Collectors.toSet());
+        System.out.println(collected2);
+        
+        // toMap() : Map<K, V> -> Map.Entry<K, V> - Key, Value를 정해줘야 된다.
+        Stream<String> stream5 = Arrays.stream(array);
+        Map<String, Integer> collected3 = stream5.filter(s -> s.length() >= 3)
+                                    .collect(Collectors.toMap(s->s, String::length));
+        System.out.println(collected3);
+        ```
+    
+    5) 그룹화/분리
+        * Map<R, List<T>> groupingBy(Function<? super T, ? extends K> classifier) : Key 값으로 Function을 입력받고, Key를 기준으로 List 타입으로 그룹화한다.
+        * Map<Boolean, List<T>> partitioningBy(Predicate<? super T> predicate) : Key 값으로 Predicate를 입력받고, true, false에 따라 List 타입으로 분리된다.
+        ```java
+        String[] arr = {"Python", "is", "aweful", "lame", "not", "good"};
+        Map<Integer, List<String>> map = Arrays.stream(arr)
+                .collect(Collectors.groupingBy(s -> s.length()));
+        System.out.println(map);
+        
+        Map<Boolean, List<String>> map2 = Arrays.stream(arr)
+                .collect(Collectors.partitioningBy(s -> s.length() < 4));
+        ```
+        
+        * 그룹화 + Downstream collector
+        * Collector 중에도 counting(), summingP(), averagingP(), maxBy(), minBy(), reducing() 이 있다.
+        ```java
+        Map<Integer, Long> map3 = Arrays.stream(arr)
+                        .collect(Collectors.groupingBy(String::length,Collectors.counting()));
+        ```
+
+    6) 병렬 스트림
+        * 생성 방법
+            * stream() 대신 parallelStream() 으로 변경
+            * stream 생성 후 parallel()으로 병렬화
+        ```java
+        Stream<String> parStream = Arrays.stream(arr).parallel();
+        System.out.println(parStream.map(String::length).count());
+        
+        List<String> list4 = List.of("atew", "bff", "cqqwq", "dassa");
+        Stream<String> stream6 = list4.parallelStream();    // 병렬이기 때문에 연산 순서가 달라질 수도 있다! 내부적으로 여러 쓰레드가 계산하기 때문에
+        stream6.map(String::length)
+                .peek(s -> System.out.println("A:" + s))
+                .filter(value -> value > 3)
+                .peek(s -> System.out.println("B:" + s))
+                .forEach(System.out::println);
+        ```
