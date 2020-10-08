@@ -103,5 +103,55 @@ public class Main {
         System.out.println(System.getProperty("line.separator"));   // windows \r\n, linux \n
         System.out.println(System.getProperty("file.separator"));   // windows \ linux
 
+
+        // Math 클래스
+        // 수학 계산에 필요한 메소드를 가진 final 클래스 -> 상속할 수 없다.
+        // 모든 메소드가 static 메소드로 구현되어 있다.
+
+        // abs() : 절대 값, int long float double Overriding
+        System.out.println(Math.abs(-4));       // 4
+
+        // ceil() : 올림, double 입력, double 출력
+        System.out.println(Math.ceil(1.2));     // 2.0
+
+        // floor() : 내림, double 입력, double 출력
+        System.out.println(Math.floor(1524.4)); // 1524.0
+
+        // max(), min() : 2개의 값만을 비교하게 되어 있음
+        System.out.println(Math.max(4, 2));     // 4
+        System.out.println(Math.min(4, 2));     // 2
+
+        // random() : 0.0 이상, 1.0 미만의 값을 임의로 출력
+        System.out.println(Math.random());
+        System.out.println(Math.random() > 0.7);    // 30퍼센트 확율인 경우, 보통 이런 식으로 사용
+
+        // 확률 표현
+        int count = 0;
+        for(int i = 0; i < 1000; i++){
+            if(Math.random() < 0.3) {
+                count += 1;
+            }
+        }
+
+        int minVal = 2;
+        int maxVal = 10;
+        int randInt = (int)(Math.random() * (maxVal - minVal + 1) + minVal);    // 2 이상 ~ 9 미만
+        System.out.println(randInt);
+
+
+        // round() : 반올림, float -> int, double -> long 변환
+        System.out.println(Math.round(1.4f));   // 1
+
+        // addExact() : 덧셈 연산으로, Overflow 발생 시 ArithmaticException 발생.
+        // subtractExact() : 뺄셈 연산으로, Overflow 발생 시 ArithmaticException 발생.
+        // multiplyExact() : 곱셈 연산으로, Overflow 발생 시 ArithmaticException 발생.
+        try {
+            System.out.println(Math.addExact(Integer.MAX_VALUE, 10));
+            System.out.println(Math.subtractExact(Integer.MIN_VALUE, 10));
+            System.out.println(Math.multiplyExact(Integer.MAX_VALUE, 4));
+        } catch(ArithmeticException e) {
+            e.printStackTrace();
+        }
+
     }
 }
