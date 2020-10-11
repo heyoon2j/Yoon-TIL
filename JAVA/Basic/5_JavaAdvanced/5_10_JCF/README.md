@@ -131,7 +131,7 @@
     * HashSet<E>
         * Set의 대표적인 구현체로, 기본적인 기능이 구현되어 있다.
     * TreeSet<E>
-        * NavigableSet<E> 인터페이스를 구현하며, 인지 탐색 트리 자료구조이다.
+        * NavigableSet<E> 인터페이스를 구현하며, 이진 탐색 트리 자료구조이다.
         * 객체를 삽입하는 동시에 정렬되는 특성상 비교가 가능해야 한다.
         ```java
       public TreeSet() // Comparable 구현체의 경우
