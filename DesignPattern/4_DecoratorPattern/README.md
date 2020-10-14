@@ -4,15 +4,15 @@
 * 탈부착이 가능하다.
 * 패턴을 사용한 예는 InputStream, Reader 등이다.
 
-## Pattern Structure
+### Pattern Structure
 ![DecoratorPatter](../img/DecoratorPattern.png)
 
-### Decorator Pattern
 * **Component** : 최상위 클래스
 * **ConcreteComponent** : Component 자식 클래스, 기반 Class(Component)
 * **Decorator** : Component 자식 클래스, 보조 Class(Component)
 * **ConcreteDecoratorA, B** : Decorator 자식 클래스.
  Operation의 경우, Decorator 클래스의 Operation을 실행하고, 다른 기능을 추가한다.
+ 
 ```java
 abstract class Component{
     abstract void operation();
