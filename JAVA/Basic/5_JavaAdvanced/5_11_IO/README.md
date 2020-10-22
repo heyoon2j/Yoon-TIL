@@ -37,14 +37,14 @@ public class System{
     * **int read()** : 입력 스트림으로부터 1byte 읽고 Byte 리턴, 읽을게 없다면 -1 Return
     * **int read(byte[] b)** : 읽은 Byte들을 배열 b에 저장하고, 실제로 읽은 Byte 수를 리턴
     * **void close()** : 스트림을 종료하고 자원을 반납
-    * **int available()** : 읽을 수 있는 데이터의 크기를 반납
+    * **int available()** : 읽을 수 있는 데이터의 크기를 반환
     * **long skip(long n)** : 스트림에서 n 만큼 건너 뛴다.
-    * **void mark(int readLimit)** : rest()으로 돌아갈 위치를 표시한다, readLimit은 돌릴 수 있는 최대 바이트 수
+    * **void mark(int readLimit)** : reset()으로 돌아갈 위치를 표시한다, readLimit은 돌릴 수 있는 최대 바이트 수
     * **void reset()** : mark()가 호출된 지점으로 돌아간다.
     * **boolean markSupported()** : mark, reset 메소드의 지원 여부를 반환
 * Method(Output)
     * **void write(int b)** : b의 끝 1byte를 출력 버퍼에 보낸다.
-    * **void wirte(byre[] b)** : 배열 b의 모든 Byte를 보낸다.
+    * **void wirte(byte[] b)** : 배열 b의 모든 Byte를 보낸다.
     * **void flush()** : 출력 버퍼를 비운다.
     * **void close()** : 스트림 종료. 내부적으로 flush() 호출한다.
 
@@ -145,7 +145,7 @@ public class ReaderWriterStream {
 
 ## 보조 Stream
 * 실제로 읽고 쓰는 Stream이 아닌 보조적인 기능을 추가하는 Stream
-* FilterInputStream과 FileOutputStream이 보조 Stream의 상위 클래스
+* FilterInputStream과 FilterOutputStream이 보조 Stream의 상위 클래스
     * **pretected FilterInputStream(InputStream in)**
     * **public FilterOutputStream(OutputStream out)**
 
@@ -202,13 +202,8 @@ public class ReaderWriterStream {
     System.out.println(string + " " + integer + " " + floatNum);
   }
     ```
-    
-* **Print Stream** : 문자열 표현 Stream
-    * **PrintWriter**
-    * **PrintReader**
 
-```java
-public class SubStream{
+    ```java
     public static void main(String[] args){
         try(FileOutputStream fos = new FileOutputStream("data.txt");
                 DataOutputStream dos = new DataOutputStream(fos);
@@ -229,8 +224,12 @@ public class SubStream{
             e.printStackTrace();            
         }
     }
-}
-```
+    ```
+ 
+* **Print Stream** : 문자열 표현 Stream
+    * **PrintWriter**
+    * **PrintReader**
+
 
 ## 직렬화(Serialization)
 * 인스턴스의 상태를 그대로 저장하거나 Network로 전송하고 
