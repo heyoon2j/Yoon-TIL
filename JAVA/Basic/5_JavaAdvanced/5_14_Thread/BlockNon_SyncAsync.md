@@ -35,7 +35,7 @@
      System에서는 모든 동작이 끝난 뒤 결과를 반환하고 Blocking을 해제한다.
 * 이 경우, Thread가 멈추기 때문에 Client(입출력) 수만큼 Thread가 필요하다.
 
-#### 2. Synchronous Non-Blocking
+### 2. Synchronous Non-Blocking
 ![](img/syncnonblock.png)
 * Polling 방식
 1) System(입출력)에 I/O 호출 후에 대기하지 않고 계속 동작하게 된다.
@@ -45,7 +45,7 @@
     * 그렇기 때문에 Non-Blocking이지만 Data Output 가능 여부를 계속 확인하게 된다.
 * Block이 없기 때문에 추가적인 Thread가 필요없지만, 시스템 호출이 반복적으로 일어나기 때문에 CPU 자원이 낭비된다.
 
-#### 3. Asynchronous Blocking
+### 3. Asynchronous Blocking
 ![](img/asyncblock.png)
 1) I/O를 호출하게 되면, Application은 대기 상태가 된다.
     * Bloking으로 인해 호출한 동작이 끝날 때까지는 대기하게 된다.
@@ -55,7 +55,7 @@
 * 굳이 필요에 의해서는 사용되지 방식은 아닌 거 같다.
 * 찾아보니 데이터 동기화를 편하게 하기위해서 사용된다고 하는데, 대규모 프로젝트에서는 성능 상 쓰지 않는다고 한다.
 
-#### 4. Asynchronous Non-Blocking
+### 4. Asynchronous Non-Blocking
 ![](img/asyncnonblock.png)
 1) System(입출력)에 I/O 호출 후에 대기하지 않고 계속 동작하게 된다.
     * Non-Blocking이기 때문에 대기하지 않고 다른 동작을 할 수 있다. 
