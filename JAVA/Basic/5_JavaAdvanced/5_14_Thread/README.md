@@ -85,7 +85,7 @@
     * Thread Control이 어려움
 
 ## Thread 상태
-![ThreadStatus](ThreadStatus.jpg)
+![ThreadStatus](img/ThreadStatus.jpg)
 * **NEW** : 쓰레드 객체 생성
 * **RUNNABLE** : 실행 대기
 * **RUN** : 실행
@@ -158,7 +158,7 @@
     * 영어 그래도 생각하면 된다. A가 B를 기다리고, B는 C를, C는 A를 기다리는 경우
 
 * Example
-![MutualExclusion.png](MutualExclusion.png)
+![MutualExclusion.png](img/MutualExclusion.png)
     
 ### Deadlock을 피하는 방법
 1. **Prevention**
