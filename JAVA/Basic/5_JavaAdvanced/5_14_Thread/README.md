@@ -5,9 +5,10 @@
       * 프로그램은 코드와 정적인 데이터의 묶음
     * Code, Data, Stack, Heap 할당
 
-2. 쓰레드(Thread)
+2. 스레드(Thread)
     * 프로세스 내에서 실행되는 작업의 최소 단위
     * Code, Data, Heap 영역은 공유 / Stack은 각 각 할당
+
 
 ## Thread 구현 
 1. **extends Thread**
@@ -40,7 +41,31 @@
            thread.start();
        }     
     }   
-    ```     
+    ```
+
+3. 데몬 스레드 구현
+    * 다른 스레드가 종료될 경우, 함께 종료되는 보조 스레드
+    * 보통 대기하면 동작하는 무한 루프로 구현
+    * ```setDeamon()``` 메소드로 데몬 스레드로 설정
+    ```
+    class DaemonThread extends Thread {
+        public DaemonThread() {
+            this.setDaemon(true);
+        }
+    
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Daemon Thread Run");
+            }
+        }
+    }
+    ```
 
 ## Multi-Thread 프로그래밍
 * 동시에 여러 개의 Thread가 수행되는 프로그래밍
@@ -50,6 +75,14 @@
     * Thread가 Switching이 되면, Context Switching이 발생
 * 공유 자원이 있는 경우, Race Condition이 발생
 * Critical Section에 대한 동기화(Synchronization)의 구현이 필요
+
+### Multi-Thread 장단점
+* 장점
+    * 여러 동작을 병렬적으로 처리하여 CPU의 사용률 향상
+    * 시간이 걸리는 동작을 분리하여 프로그램의 응답성 향상
+* 단점
+    * Context Switching Overhead 발생
+    * Thread Control이 어려움
 
 ## Thread 상태
 ![ThreadStatus](ThreadStatus.jpg)
