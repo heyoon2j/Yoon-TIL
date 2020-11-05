@@ -4,19 +4,19 @@
     * https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html
 
 ## Garbage Collector가 하는 일
-### Step 1. Marking
+## Step 1. Marking
 ![Step1-Marking](../img/GC-Step1-Marking.png)
 * Garbage Collector는 처음에 Marking이라는 작업을 하게 된다.
 * Garbage Colector는 Marking을 위해서 메모리를 스캔하여 어떤 Object가 참조되어지고 있는지, 아닌지를 판단한다.
 * 그 뒤에 참조되어지고 있지 않은 Object에 Marking을 한다.
 * 모든 Object를 스캔하고 Marking을 해야할지 결정해야 되기 때문에 많은 시간이 소요될 수 있다.
 
-### Step 2. Normal Deletion
+## Step 2. Normal Deletion
 ![Step2-Deletion](../img/GC-Step2-Deletion.png)
 * Normal Deletion은 참조되어지지 않는 Object를 삭제한다.
 * 삭제 후, Memory Allocator는 Free Space에 포인팅을 한다.
 
-### Step 3. Deletion with Compacting
+## Step 3. Deletion with Compacting
 ![Step3-Compacting](../img/GC-Step3-Compacting.png)
 * Performace를 증가시키기 위해서 참조되어지지 않는 Object를 삭제 한 후, Compacting 과정을 진행한다.
 * 참조되어지는 Object의 메모리를 한 쪽으로 이동시킨다
@@ -24,9 +24,6 @@
 
 
 ## Hotspot Heap Structure
-* Hotspot Heap Structure에 대한 내용이다.
-
-### Hotspot Heap Structure
 ![HotspotHeapStructure](../img/HotspotHeap.png)
 * 크게 Young Generation, Old Generation, Permanent Generation 으로 나뉜다.
 * 자세히 나눈다면 eden, survivor0, survivor1, Tenured, Permanent 로 나뉜다. 
