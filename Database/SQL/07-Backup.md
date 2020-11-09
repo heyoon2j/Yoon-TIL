@@ -112,9 +112,10 @@ $ crontab -e
 ### 1.1. Hot Backup
 * 데이터베이스를 중지하지 않은 상태로 데이터 백업
     * Oracle DBMS의 대표적인 방법은 "Begin Backup", "End Backup"
-    * MySQL의 대푝적인 방법은 "mysqldump", InnoDB 테이블에만 해당한다.
+    * MySQL의 대표적인 방법은 "mysqlbackup"
+    * Open Source 백업 솔루션으로 Percona XtraBackup이 있다.
 * Hot Backup은 백업하는 동안 데이터가 변경되는 경우, 완전한 백업이 안 될 수 있다.
-    * Hot Backup을 하게 되면, DB의 가용성을 지켜야하기 때문에 변경 사항들이 **Redo Log**에 쌓였다가 
+    * Hot Backup 시, DB의 가용성을 지켜야하기 때문에 변경 사항들을 **Redo Log**에 쌓였다가 
 Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 때문에 Archive Log의 사용은 필수다.
     * 주의해야 될 것은 트랜잭션이 많은 경우, 로그가 엄청 쌓여 느려질 수 있기 때문에 그런 시간대는 피해야 된다.
 
@@ -154,6 +155,10 @@ Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 �
 * MySQL: https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/innodb-backup.html
 
 ### 2.1. Hot Logical Backup
+* InnoDB Table만 mysqldump로 Hot Backup 가능!
+    * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/backup-policy.html
+* MyISAM 테이블이 있는 경우, --lock-tables를 이용하여 Table을 잠그고 해야된다.
+    * https://dev.mysql.com/doc/refman/5.6/en/mysqldump.html#option_mysqldump_lock-tables
 1. Backup shell script 작성(backup.sh)
     ```
     # backup 파일을 저장할 스크립트 작성
@@ -166,10 +171,15 @@ Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 �
     FILE=${BD}.sql
 
     cd backup
-    mysqldump -u root -prada test > $FILE
+    # 기존 Logical Backup, mysqldump -u root -prada test > $FILE
+    # Hot으로 하기 위해서는 옵션을 붙여줘야 된다. --single-transaction or --lock-tables
+    mysqldump --master-data --single-transaction --routines --triggers -u root -prada test > backup_sunday_1_PM.sql
     ```
     * DB=``는 따옴표아니다!
     * ``를 넣어주면 쉘에서 실행한 명령어를 저장해준다.
+    * ```--single-transaction```: 트랜잭션 격리모드.
+    * ```--routines```: 모든 저장 프로시저 및 저장 함수를 덤프한다
+    * ```--triggers```: 트리거가 있는 각 테이블에 대한 모든 트리거를 덤프한다.
     
 2. backup.sh 스크립트 실행
     ```
@@ -246,3 +256,12 @@ Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 �
    
     $ sudo systemctl start mysql
     ```
+
+### 2.3. Replication을 이용한 백업
+* https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/replication-solutions-backups.html
+* Replication을 이용하기 위해서는 먼저 Replication의 복사를 중지하거나, 서버를 중지해야 된다.
+* 복제가 있는 경우는 복제를 이용한 백업이 좋은 거 같다.
+1. Hot Logical Backup
+    * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/replication-solutions-backups-mysqldump.html
+2. Cold Physical Backup
+    * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/replication-solutions-backups-rawdata.html
