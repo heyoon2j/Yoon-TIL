@@ -1,5 +1,4 @@
-# SQL 문법
-
+# SQL 기본 문법
 ```
 # Select DB
 USE [db_name]
@@ -9,193 +8,179 @@ SHOW DATABASES;
 SHOW TABLES;
 DESC [table_name];
 
+# Show Key
+SHOW KEYS FROM [table_name];
+
+# Show Index
+SHOW INDEX FROM [table_name];
+
 # Show DB used current
 SELECT DATABASE();
+
 ```
 
-## DML
-### SELECT
-* 데이터를 검색할 때 사용되는 문법
-* 기본 포멧
+## 사용자 권한
+* Reference: https://treasurebear.tistory.com/51
+1. MySQL 접속
+    * mysql -h{host_ip} -u{id} -p{pw}
     ```
-    SELECT select_expr
-        [FROM table_references]
-        [WHERE where_condition]
-        [GROUP BY {col_name:expr:position}]
-        [HAVING where_condition]
-        [ORDER BY {col_name:expr:position}];
+    # ip가 자기 자신인 경우 추가할 필요없다.
+    $ mysql -uroot -p
     ```
 
-* Example
+2. MySQL 사용자 확인
+    * user Table에서 확인할 수 있다.
     ```
-    # 전체 column 데이터 조회
-    SELECT *
-        FROM world.country;
+    mysql> use mysql;
+    mysql> select user, host from user;
+    ```
 
-    # code, name column 데이터 조회
-    SELECT * 
-        FROM world.country;
+3. 사용자 추가하기
+    * '%'는 모든 Host에서 접근이 가능하다는 표시이다.
     ```
-  
-#### ALIAS
-* Column의 이름을 변경할 수 있다.
-* **AS** 키워드 사용
+    mysql> CREATE USER 'id'@'host' IDENTIFIED BY 'pw';
+    mysql> CREATE USER 'id'@'%' IDENTIFIED BY 'pw';
+   
+    mysql> CREATE USER 'test'@'localhost' IDENTIFIED BY 'rada';
+    ```
+
+4. 사용자 제거
+    ```
+    mysql> DROP USER 'id';
+   
+    mysql> DELETE FROM user WHERE user='id';
+    ```
+
+5. 사용자 권한 확인
+    ```
+    mysql> SHOW GRANTS FOR 'id'@'host';
+    
+    mysql> SHOW GRANTS FOR 'test'@'localhost';
+    ```
+6. 사용자 권한 설정
+    * GRANT {권한} ON {db_name}.{table_name} TO '{id}'@'{host}' IDENTIFIED BY '{pw}';
+    * DB와 Table에서 '*'는 All을 의미한다.
+    * IDENTIFIED BY '{pw}'를 쓰게 되면 기존 id에 pw가 있을 시, 변경된다.
+    ```
+    # ALL PRIVILEGES는 모든 권한을 의미
+    mysql> GRANT ALL PRIVILEGES ON test.* TO 'testid'@'%';
+    
+    # SELECT, UPDATE, DELETE, INSERT
+    mysql> GRANT SELECT, UPDATE ON test.money TO 'testid'@'%';
+    ```
+   
+7. 사용자 권한 삭제
+    * REVOKE {권한} ON {db_name}.{table_name} TO '{id}'@'{host}';
+    * 원하는 권한만 삭제도 가능하다.
+    ```
+    # ALL은 모든 권한을 의미
+    mysql> REVOKE ALL ON test.* TO 'testid'@'%';
+   
+    # SELECT, UPDATE, DELETE, INSERT
+    mysql> REVOKE SELECT ON test.* TO 'testid'@'%';
+    ```
+   
+8. 변경된 내용 메모리에 반영
+    ```
+    mysql> FLUSH PRIVILEGES;
+    ```
+
+## EXPLAIN
+* 직접 쿼리문을 던지는 것이 아닌 실행 계획을 확인한다.
+* 여러 가지를 확인할 수 있다.
+    * Cardinality : 첫 Tree Node 개수 (즉, Index를 사용해야 값이 나온다)
 ```
-SELECT code AS country_code
-    FROM coutnry;
-```
-
-#### WHERE
-* 특정 조건을 주어 데이터를 검색하는데 사용되는 문법
-1. 조건 연산자
-    * =, <, >, != 등
-2. 관계 연산자
-    * NOT, AND, OR 등
-3. BETWEEN
-    * A AND B (A와 B가 포함된 사이 값)
-4. IN ()
-    * () 안에 포함되어 있는 값들, OR 연산자
-5. NOT IN ()
-    * () 포함되지 않는 값들
-6. LIKE '김%_'
-    * 문자열 내용 검색    
-```
-# WHERE : 비교 연산, 논리 연산
-SELECT code, name, population
-	FROM country
-    WHERE population >= 200000000;
-
-# 인구가 2억 ~ 3억인 국가를 출력
-SELECT code, name, population
-	FROM country
-    WHERE population >= 200000000 AND population <= 300000000;
-# BETWEEN
-SELECT code, name, population
-	FROM country
-    WHERE population BETWEEN 200000000 AND 300000000;
-
-# 아시아와 아프리카 대륙의 국가 데이터 출력
-SELECT code, name, continent, population
-	FROM country
-    WHERE (continent = "Asia" OR continent = "Africa")
-		AND population >= 100000000;
-        
-SELECT code, name, continent, population
-	FROM country
-    WHERE (continent IN ("Asia", "Africa"))
-		AND population >= 100000000;
-
-
-# LIKE : 특정 문자열이 포함된 데이터를 출력
-SELECT code, name, GovernmentForm
-	FROM country
-	WHERE GovernmentForm LIKE "%Republic%";
+EXPLAIN
+SELECT *
+	FROM salaries
+    WHERE from_date < "1986-01-01";
 ```
 
-### GROUP BY
-* 그룹으로 묶어주는 역할
-* 특정 Column의 동일한 데이터를 합쳐주는 방법
-* 데이터를 합칠 때, 다른 column들에 대한 처리는 그룹 함수를 이용
-* COUNT, MAX, MIN, AVG, VAR_SAMP(근사 값), STDDEV(편차)
+## DB Query 작성
+* JOIN, Sub Query를 작성할 때는 무조건!!! 데이터를 줄여서 합치는 방법을 선택해야 된다.
+* FROM DUAL : Sub Query 등으로 FROM 절에 올 Table이 없는 경우 DUAL을 사용
+
+## Function()
+* CONCAT() : 여러 개의 문자열을 연결
     ```
-    # city 테이블에서 국가별 도시의 갯수를 출력
-    SELECT countryCode, COUNT(countryCode)
+    CONCAT('str1', 'str2', 'str3')
+    ```
+* GROUP_CONCAT() : GROUP BY 할 때, 문자열을 연결시킨다.
+    ```
+    GROUP_CONCAT(col_name)
+    ```
+* SUBSTR() : 문자열 추출, 인덱스는 1부터 시작
+    ```
+    # str : 원본 문자열 / pos : 시작 위치값 / len : 길이
+    SUBSTR(str, pos) # 해당 pos 부터 추출
+    SUBSTR(str, pos, len) # 해당 pos 부터 len 길이만큼 추출
+    ```
+* LENGTH() : 문자의 Byte 길이 반환, 한글 길이는 알기 힘들다.
+    ```
+    LENGTH(str)
+    ```
+* CHAR_LENGTH() : 단순히 몇 개의 문자를 가지고 있는지 반환
+    ```
+    CHAR_LENGTH(str);
+    ```
+* CEIL() : 올림
+    ```
+    SELECT CEIL(12.345); # 13
+    
+    # 셋째 자리에서 올림하는 방법
+    SELECT CEIL(12.345 * 100) / 100; # 12.35
+    ```
+* ROUND() : 반올림
+    ```
+    SELECT ROUND(12.345);
+    
+    # 소수점 둘째 자리까지 표현
+    SELECT CEIL(12.345, 2);
+    ```
+    
+* TRUNCATE() : 버림
+    ```
+    # 소수점 둘째 자리까지 표현
+    SELECT TRUNCATE(12.345, 2);
+    ```
+    
+* DISTINCT() : 중복된 값을 제거.
+
+* DATE_FORMAT : 날짜 데이터에 대한 포멧을 변경
+    * 공식 문서 : https://dev.mysql.com/doc/refman/5.7/en/date-and-time-functions.html
+    ```
+    SELECT SUM(amount) AS income, DATE_FORMAT(payment_date, "%H") AS monthly
+    	FROM payment
+    	GROUP BY monthly
+        ORDER BY income DESC;
+    ```
+
+## 조건문
+* IF(condition, true, false)
+    ```
+    SELECT countrycode, name, population,
+    		IF(population >= 1000000, "big city", "small city")
     	FROM city
-        GROUP BY countryCode;
-    
-    # MAX : 대륙별 인구수와 GNP의 최대값을 출력
-    SELECT Continent, MAX(Population), MAX(GNP)
-    	FROM country
-        GROUP BY Continent;
-    
-    # SUM : 대륙별 전체 인구수와 전체 GNP, 인당 GNP
-    SELECT continent, SUM(population), SUM(GNP), SUM(GNP)/SUM(Population) as GPP 
-    	FROM country
-        GROUP BY continent
-        ORDER BY GPP;
-    
-    # AVG : 대륙별 평균 인구수와 평균 GNP를 출력하고 인구수 순으로 내림차순 정렬
-    SELECT continent, AVG(population) as population, AVG(GNP) as gnp
-    	FROM country
-        WHERE population != 0 AND gnp != 0
-        GROUP BY continent
-        ORDER BY AVG(population) DESC;
-    ```
-
-### HAVING 
-* GROUP BY로 출력되는 결과를 필터링할 때 사용
-```
-# 대륙 별 전체 인구수를 출력하고 대륙 별 5억 이상이 되는 대륙만 출력
-SELECT continent, SUM(population) as population
-	FROM country
-    GROUP BY continent
-    HAVING population >= 500000000;
-
-```
-
-### ODER BY
-* 원하는 순서대로 정렬
-    * ASC, 기본적으로 오름차순 (ASCENDING)
-    * DESC, 내림차순 (DESCENDING)
-    ```
-    # ORDER BY : 데이터 정렬
-    # 국가 데이터를 인구수 순으로 오름 차순으로 정렬
-    SELECT code, name, population
-	    FROM country
-        ORDER BY population ASC;
-
-    # 내림 차순으로 정렬
-    SELECT code, name, population
-    	FROM country
+    	WHERE population >= 800000
         ORDER BY population DESC;
     ```
 
-* 여러 개의 Column 정렬 시 1번 째 조건에 대해 정렬 후, 같으면 2번 째 조건으로 정렬
+* IFNULL(true, false) : 데이터가 있는 경우 true, NULL인 경우 false 출력
     ```
-    # 기준 컬럼을 여러개 설정 : 1 번째 조건으로 소팅 > 같으면 2번째 조건으로 소팅 ...
-    # city 테이블에서 국가 코드 순으로 정렬(오름차순)하고
-    # 국가 코드가 같으면 인구수 순으로 정렬(내림차순)
-    SELECT CountryCode, name, population
-	    FROM city
-        WHERE countrycode IN ("USA", "KOR", "JPN")
-        ORDER BY countrycode ASC, population DESC;
+    SELECT code, name, indepyear,
+    		IFNULL(indepyear, 0)
+    	FROM country;
     ```
 
-* **LIMIT** : 조회하는 데이터의 수를 제한
-    * LIMIT offset, count : offset 부터 count 개수만큼 제한 (offset은 0부터 시작)
+* CASE WHEN THEN END
     ```
-    SELECT countrycode, name, population
-    	FROM city
-        ORDER BY population DESC
-        LIMIT 5;
-    
-    # LIMIT 5, 2 : 앞에 5개의 데이터를 스킵하고 뒤에 2개 데이터를 출력
-    SELECT countrycode, name, population
-    	FROM city
-        ORDER BY population DESC
-        LIMIT 5, 2;
+    SELECT code, name, population
+    	, CASE
+    		WHEN population >= 1000000000 THEN "level3" 
+    		WHEN population >= 100000000 THEN "level2"
+            ELSE "level1"
+    	END AS scale
+    	FROM country
+        WHERE population >= 80000000
+        ORDER BY population DESC;
     ```
-
-
-## INSERT
-* Table에 데이터 추가
-    ```
-    INSERT INTO table_name(col1, col2, ...)
-        VALUES (val1, val2, ...)
-
-    # Example    
-    INSERT INTO user1(user_id, name, email, age, rdate)
-    	VALUES (2, "bndy", "bndy@gmail.com", 23, now()),
-    		(3, "cndy", "cndy@gmail.com", 23, now()),
-    		(4, "dndy", "dndy@gmail.com", 23, now());
-    ```
-
-* SELECT 문 결과를 INSERT
-    ```
-    INSERT INTO city2
-    	SELECT Name, CountryCode, Population
-    	FROM city
-        WHERE Population >= 8000000;
-    ```
-
-

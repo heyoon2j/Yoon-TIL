@@ -8,15 +8,19 @@
 ### RDBMS
 * Relational Database Management System
 * Oracle, Mysql, PostgreSQL, SQLite
-* 데이터를 Table, Row Column 형태로 저장하며, 각 테이블이 서로 관계를 가지고 있는 데이터 베이스를 관리
+* 데이터를 Table, Row, Column 형태로 저장하며, 각 테이블이 서로 관계를 가지고 있는 데이터 베이스를 관리
+* Insert가 느리지만, 검색 속도가 빠르다. 
+    * Login Data
 
 ### Non-RDBMS
 * MongoDB, Hbase, Cassandra
+* 데이터를 Collection, Document, Key-Value 형태로 저장한다.
 * 데이터 사이의 관계가 없으므로 복잡성이 작고 많은 데이터의 저장이 가능
+* Insert가 빠르다지만, 검색 속도가 느리다.
+    * Log Data
 
 ### Schema
 * 데이터베이스의 구조와 제약 조건에 관해 전반적인 명세를 기술한 것.
-
 
 ## SQL vs NoSQL (RDBMS vs Non-RDBMS)
 1. 데이터 저장 형태
@@ -41,27 +45,3 @@
         * 분산처리 시스템으로 데이터를 분산시켜 처리
             * Name Node가 Query를 받아 Data Node에 Query를 던진다.
 
-
-
-
-#### ETC
-* URL vs URI
-
-* redirection
-    * 브라우저의 쿠키 또는 캐쉬를 이용해
-    
-    
-
-table / row / value
-
-collection
-document
-key-value
-
-Fair Programming 하는바법
-C1 ------- S1
-(S1에 Session s1을 만듬)
-s1|s2
-
-C2 ------- S2
-s2|s1
