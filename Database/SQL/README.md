@@ -1,4 +1,4 @@
-#SQL
+# SQL
 ## Database Modeling
 1. 개념적 모델링
     * 업무 분석을 통해 핵심 데이터의 집합을 정의
