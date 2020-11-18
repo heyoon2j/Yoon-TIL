@@ -16,7 +16,7 @@
 * MongoDB, Hbase, Cassandra
 * 데이터를 Collection, Document, Key-Value 형태로 저장한다.
 * 데이터 사이의 관계가 없으므로 복잡성이 작고 많은 데이터의 저장이 가능
-* Insert가 빠르다지만, 검색 속도가 느리다.
+* Insert가 빠르지만, 검색 속도가 느리다.
     * Log Data
 
 ### Schema
