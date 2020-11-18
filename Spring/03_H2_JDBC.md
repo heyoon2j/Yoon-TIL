@@ -52,6 +52,7 @@
 2. Execute H2
     * https://stackoverflow.com/questions/58979455/h2-database-created-in-java-not-found-in-h2-console
 
+
 ### Maven 연동 방벙
 1. Go to "Maven Central" (https://search.maven.org/)
 2. Search "H2-database"
@@ -69,14 +70,18 @@
 ```java
 public class dbConnection{
     public static void main(String[] args){
-        // URL 생성
+        // 1. 드라이버 객체를 메모리에 로딩
         Class.forName("org.h2.Driver");
+        // DriverManager.registerDriver(new org.h2.Driver());       
+
+        // DB 연결 정보 URL 생성
         String url = "jdbc:h2:mem:test;MODE=MySQL;";
     
-        // Connection 생성, DriverManager.getConnection 이용
-        // DB에 SQL문을 호출하기 위한 Statement 생성
+        // 2. Connection 생성, DriverManager.getConnection 이용하여 Connection을 획득
+        // 3. DB에 SQL문을 호출하기 위한 Statement 생성, SQL 전달 객체 Statement 생성
         try(Connection connection  = DriverManager.getConnection(url, "sa",""); Statement statement = connection.createStatement()){
 
+            // 4. SQL 전달
 		    // Transaction을 위한 Method, connection.commit() / connection.rollback() 사용
             // commit이 진행되야 DB에 저장이 진행된다. 에러가 발생하며 rollback을 해야되기 때문에 false로 지정
 			connection.setAutoCommit(false);
@@ -85,9 +90,11 @@ public class dbConnection{
 			try {
 				statement.executeUpdate("insert into member(username, password) values('yoon','1234')");
 			}catch(SQLException e){
-            // Update 시, 에러가 발생하면 Rollback 시킨다.
+                // Update 시, 에러가 발생하면 Rollback 시킨다.
 				connection.rollback();
 			}
+    
+            // 5. SQL에 대한 값을 가지고 온다.
 			ResultSet resultSet = statement.executeQuery("select id, username, password from member");
 			while(resultSet.next()){
 				int id = resultSet.getInt("id");
