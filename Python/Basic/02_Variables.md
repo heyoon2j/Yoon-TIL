@@ -134,6 +134,25 @@ a = b'123'
     cubes[2:4] = []     # [1, 4, 125, 216]
     ```
 
+* 증가폭 사용하기
+   ```
+   a = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+   x = a[2:8:3]     # [20, 50]
+   
+   a[2:5] = ['a', 'b', 'c']     # [0, 10, 'a', 'b', 'c', 50, 60, 70, 80, 90]
+   ```  
+
+* List Merge & Repeat
+    ```
+    # Merge
+    a = [1, 2]
+    b = [3, 4, 5]
+    c = a + b       # c == [1, 2, 3, 4, 5]
+   
+    # Repeat
+    d = a * 3       # d == [1, 2, 1, 2, 1, 2]
+    ```
+
 * 함수
 
     | Function  | Description  | Example |
@@ -150,6 +169,39 @@ a = b'123'
     | reverse() | 리스트의 요소들을 제자리에서 뒤집는다. | list.reverse() |
     | copy() | 리스트의 얕은 사본을 돌려준다. a[:] 와 동등 | a.copy() |
 
+    * Example
+        ```
+        a = ["ABC", 25, True]
+       
+        # Append
+        a.append(30.01)     # ["ABC", 25, True, 30.01]
+        a[1] = 28           # ["ABC", 28, True, 30.01]
+        del a.[2]           # ["ABC", 25, 30.01]
+        
+        # Extend
+        a.extend([200, 300])  # ["ABC", 25, 30.01, 200, 300]
+       
+        # Insert
+        a.insert(2, 0)      # ["ABC", 25, 0, 30.01, 200, 300]
+        
+        # 자주 사용되는 패턴
+        a.insert(0, 3)      # 처음 위치에 삽입
+        a.insert(len(a), 3) # 마지막 위치에 삽입 == a.append(3)
+        
+      
+        # 삭제
+        a = [10, 20, 30]
+        x = a.pop()     # 30
+        print(x)        # [10, 20]
+       
+        a.insert(2, 30)
+        x = a.pop(1)    # 20, index 1번 위치
+       
+        x = a.remove(30)
+       
+        a.clear()    
+        ```
+    
 * del 문
     * 변수와 객체의 연결을 끊는다. 메모리를 지우는 것은 아니고, GC가 메모리에서 제거하도록 도와준다.
         * 메모리를 참조하고 있는 포인터를 지운다고 생각하면 될 거 같다.
@@ -161,6 +213,13 @@ a = b'123'
     del a[2:4]      # [1, 66.25, 1234.5]
     del a[:]        # []
     del a           # a를 참조할 수 없다. 즉 에러가 발생한다.
+    ```
+
+* List Comprehension
+    * ```[expression for element in collection [if condition]]```
+    ```
+    list = [n + 2 for n in range(0,5) if (n % 2) == 0]
+    # [2, 4, 6]
     ```
 
 ## 2.5. Tuple
@@ -213,6 +272,7 @@ a = b'123'
 ## 2.7. Dictionary
 * 딕셔너리는 {} 와 dict() 이용하고, 가변이다(mutable).
 * Key-Value 형태로 저장한다. 
+* Hash를 이용해 값을 저장한다(HashMap, HashTable)
 * Key로 인덱싱이 되며, 중복되지 않는다. 그리고 모든 불변형이 Key가 될 수 있다.
     * 튜플을 Key로 사용될 수 있으나, 튜플에 가변 객체가 포함되어 있으면 키로 사용될 수 없다.
 * 리스트에서 사용되는 함수가 사용되나 정렬의 경우 sorted(d)를 사용하면 된다.
@@ -233,6 +293,7 @@ a = b'123'
     list(tel)               # ['jack', 'guido', 'irv']
     sorted(tel)             # ['guido', 'irv', 'jack']
   
+    # in 연산자로 확인
     'guido' in tel          # True
     'jack' not in tel       # False
     ```
