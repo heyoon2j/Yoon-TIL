@@ -3,7 +3,8 @@ Today I Learned
 
 ## Study List
 * Java
+* Python
 * Computer Science
 * Algorithm
-* Cloud
+* Engineering
 * Git
