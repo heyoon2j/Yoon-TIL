@@ -3,12 +3,39 @@
 Getter/Setter, ToString, Constructor 코드 등 불필요하게 반복적으로 만드는 코드를 Annotation을 통해 줄여주는 라이브러리 프로젝트.
 * Compile Time에 처리해준다.
 
-## Lombok 적용(Maven)
-* 기본적으로는 Lombok 라이브러리를 다운받아 실행해야 된다. 하지만 여기서는 Maven 사용
-1) **https://projectlombok.org/ 접속 -> Install -> Maven**
-2) Intellij에서 사용하기 위해서는 **"ctrl+s" -> "Compiler" -> "Annotation Processor" -> "Enable annotation processor" Check**
+## Lombok 적용(IntelliJ)
+* File -> Settings -> Plugins Click
+* Plugins에서 Lombok을 찾아서 Install을 한다.
+* Intellij에서 사용하기 위해서는 **"ctrl+s" -> "Compiler" -> "Annotation Processor" -> "Enable annotation processor" Check**
 
+1. Maven 이용
+    * **https://projectlombok.org/ 접속 -> Install -> Maven**
+    * **pom.xml**에 붙여넣는다.
+
+2. Gradle 이용
+    * **https://projectlombok.org/ 접속 -> Install -> Gradle**
+    * **build.gradle**에 붙여넣는다.
+        ```
+        repositories {
+        	mavenCentral()
+        }
+        
+        dependencies {
+        	compileOnly 'org.projectlombok:lombok:1.18.16'
+        	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+        	
+        	testCompileOnly 'org.projectlombok:lombok:1.18.16'
+        	testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+        }
+        ```
  
+3. 직접 Download
+    1) 공식 사이트(https://projectlombok.org/)에서 파일 다운로드
+    2) File -> Project Structure -> Modules
+    3) 원하는 Module 선택 -> Dependencies -> **+** Button Click
+    4) Library -> Library Type 선택 후, 원하는 Library를 선택하고 적용을 시키면 완료된다.
+
+
 ## Lombok Annotation 종류
 * @Data
     * @ToString, @EqualsAndHashCode, @Getter, @Setter,@RequiredArgsConstructor 모두 실행
@@ -67,7 +94,7 @@ Getter/Setter, ToString, Constructor 코드 등 불필요하게 반복적으로 
 * @NoArgsConstructor, @RequiredArgsConstructor and @AllArgsConstructor
     * @NoArgsConstructor : 기본 생성자
     * @RequiredArgsConstructor : 원하는 field만 지정 가능
-    * @AllArgsConstructor : 모든 field에 대한 생성장
+    * @AllArgsConstructor : 모든 field에 대한 생성자
     * AccessLevel을 통해 접근 지시자 설정 가능
     ```java
     @RequiredArgsConstructor(staticName = "of")
@@ -83,7 +110,6 @@ Getter/Setter, ToString, Constructor 코드 등 불필요하게 반복적으로 
     }
     ```
     
-     
 * @NonNull
     * null이 아닌지 체크
     * null인 경우, NullPointerException 발생
@@ -100,7 +126,6 @@ Getter/Setter, ToString, Constructor 코드 등 불필요하게 반복적으로 
       }
     }
    ``` 
-
 
 ### Reference
 * https://projectlombok.org/features/all

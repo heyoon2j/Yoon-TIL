@@ -72,7 +72,12 @@
 </configuration>
 ```
 
-## Maven for Logback
+## Using Build Tool for Logback
+1. Maven
+
+
+2. Gradle
+
 
 
 #### Reference

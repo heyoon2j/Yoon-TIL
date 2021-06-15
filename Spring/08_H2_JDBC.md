@@ -62,11 +62,22 @@
 
 # JDBC
 * JAVA DataBase Connection
-* Vendor 마다 다른 코드들로 구성되어 있기 때문에, JDBC Interface를 통해서 다른 코드들을 숙지할 필요가 없다.
+* Java에서 제공하는 DBMS와 연동을 위해 제공되는 자바 표준 API(java.sql)이다.
+
+## JDBC Driver
+* java.sql 패키지의 Interface를 구현한 클래스를 Driver라고 한다.
+* JDBC Interface를 통해서 Driver의 기능들을 사용하기 때문에 Driver의 코드들을 숙지할 필요가 없다.
+* Driver는 DB Vendor 마다 JDBC Interface에 맞춰 코드를 개발하게 된다.
 * API는 Java Docs에서 확인 가능 
 
-
-## DB 기본 연결 순서 
+## DB 기본 연결 순서
+1. Driver Loading
+2. Create Connection
+3. Create Statement
+4. Transfer SQL
+5. ResultSet(SELECT인 경우)
+6. Close Resource
+* Example
 ```java
 public class dbConnection{
     public static void main(String[] args){
@@ -80,6 +91,7 @@ public class dbConnection{
         // 2. Connection 생성, DriverManager.getConnection 이용하여 Connection을 획득
         // 3. DB에 SQL문을 호출하기 위한 Statement 생성, SQL 전달 객체 Statement 생성
         try(Connection connection  = DriverManager.getConnection(url, "sa",""); Statement statement = connection.createStatement()){
+            // getConnection()를 호출하게 되면 주어진 입력 값으로 Connection을 설립한다.
 
             // 4. SQL 전달
 		    // Transaction을 위한 Method, connection.commit() / connection.rollback() 사용
@@ -95,6 +107,9 @@ public class dbConnection{
 			}
     
             // 5. SQL에 대한 값을 가지고 온다.
+            // ResultSet은 Statement 당 하나의 객체만 Open할 수 있다. 그렇기 때문에 추가 ResultSet이 필요한 경우, Statement를 생성해야 한다.
+            // ResultSet은 Statement가 close되면 자동으로 닫힌다.
+            // https://docs.oracle.com/javase/6/docs/api/java/sql/Statement.html#close()
 			ResultSet resultSet = statement.executeQuery("select id, username, password from member");
 			while(resultSet.next()){
 				int id = resultSet.getInt("id");
@@ -108,11 +123,9 @@ public class dbConnection{
 			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}            
-    }   
+		}
+    }
 }
 ```
 
-
-
-
+ 

@@ -21,7 +21,7 @@
         * ```@PostConstruct ``` Annotation 이용
 
 
-2. Destruction Callbackso
+2. Destruction Callback
     * 특정 Bean이 소멸될 때, 특정 함수를 호출하는 방법
     * 함수를 호출하기 위해서는 ```ConfigurableApplicationContext close()```를 호출해야 된다.
     
