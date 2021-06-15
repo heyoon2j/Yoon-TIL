@@ -2,9 +2,22 @@
 Today I Learned
 
 ## Study List
-* Java
-* Python
+* Language
+	* Java
+	* Python
 * Computer Science
 * Algorithm
+* Design Pattern
 * Engineering
-* Git
+	* Database
+	* DOcker, k8s
+* Cloud
+	* AWS
+* Framework
+	* Spring
+	* Django
+* Tools
+	* Git
+	* Terraform
+	* Ansible
+	* Linux Shell
