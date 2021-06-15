@@ -20,6 +20,9 @@
     # Class 선언
     obj = MyClass()    
     ```
+    * Class의 Method들은 기본적으로 인자로 self를 가진다.
+    * ```__init__``` Method는 생성자이다.
+    
 
 * 인자로 List 언패킹을 사용할 때
     ```
@@ -57,6 +60,57 @@
 ## 7.4. 비공개 변수
 
 
+
+## 7.5. Init, Getter, Setter
+* Python은 접근제어자가 없다. 기본적으로 public을 권장하며, 제약이 필요할 시 ```@property``` 등으로 처리한다.
+* ```__```가 앞에 있으면 private, ```_``` protected로 약속한다.
+
+1. __init__ Method
+    * class의 변수를 정의할 수 있는 생성자 함수이다.
+    ```
+        class Student:
+            def __init__(self, name="yn"):
+                self.name = name    
+    ```
+
+2. Getter, Setter Method
+    1) get, set 이용
+        ```
+        class Student:
+            def __init__(self):
+                self.name = "yn"
+
+            def getName(self):
+                return self.name
+                   
+            def setName(self, name):
+                self.name = name
+            
+        if __name__ == "__main__":
+       
+            a = Student()
+            a.set_name("ww")
+            
+            print(a.get_name())
+        ```
+        * Method만 get, set이므로 ```a.name = "ww"```도 가능하다.
+
+    2) ```@property``` 이용
+        ```
+        class Student:
+            def __init__(self):
+                self.__name = "yn"
+            
+            @property
+            def name(self):
+                return self.__name
+
+            @name.setter
+            def name(self, name):
+                self.__name = name  
+        ```
+        * 먼저 ```__init__``` Method에서 변수를 정의할 때, ```__``` 기호를 붙인다.
+        * 그 후에 ```@property```와 ```@변수.setter```를 이용하여 은닉할 수 있다.
 
 
 

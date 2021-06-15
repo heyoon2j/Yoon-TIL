@@ -27,7 +27,7 @@
 
     * import 예제
         * 모듈이름을 사용해서 함수들을 액세스할 수 있다.
-        * modname.itemname
+        * moduleName.itemName
     ```
     import fibo
     fibo.fib(1000)
@@ -37,7 +37,7 @@
     fib(1000)
     ```
 
-* from import를 이용해 모듈에 있는 이름을 직접 임포트할 수 있다.
+* ```from import```를 이용해 모듈에 있는 이름을 직접 임포트할 수 있다.
     ```
     from fibo import fib, fib2
     fib(1000)
@@ -47,6 +47,23 @@
     from fibo import *
     fib(1000)
     ``` 
+
+* 동일 경로에 있는 경우
+    * ```.``` 이용
+    ```python
+    from . import myModule
+    ```
+
+* 하위 경로에 있는 경우
+    * 상대 경로를 이용
+    
+
+* 상위 경로 or 다른 경로 있는 경우
+    * 상대 경로를 사용할기 위해서는 절대경로 path에 상위 경로에 대한 path를 추가해줘야 한다.
+    ```python
+    import sys
+    sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+    ```
 
 
 ## 6.2. Script 실행

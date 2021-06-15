@@ -5,7 +5,7 @@
 | int | 정수형 데이터 | a = 100   # 0xFF(16진수), Oo56(8진수) |
 | float | 소수점을 포함한 실수 | a = 10.25 |
 | complex | 복소수 | a = 3 + 1j |
-| str | 문자열 | a =  |
+| str | 문자열 | a = "abc" |
 | bool | 참, 거짓 | a = True   # False |
 | None | Null | a = None |
 
@@ -33,13 +33,13 @@
 ## 2.2. String
 * 기본적으로 문자열은 불변하다(immutable). 그러므로 대입 연산이 불가능하다.
 * 작은 따음표 또는 큰 따음표를 이용
-    ```
+    ```python
     print('hello')  # hello
     print("hello")  # hello
     ```
   
 * 따음표 같은 문자는 \를 이용하여 이스케이핑할 수 있다.
-    ```
+    ```python
     print('don\'t')  # don't
     ```
      
@@ -86,7 +86,7 @@
     ```
 
 ## 2.3. Byte
-* 앞에 b'' 가 붙는다.
+* 앞에 ```b''``` 가 붙는다.
 * 바이트를 표현하며, Immutable Type이다.
 * bytearray 클래스의 경우, Mutable Type이다.
 ```
@@ -120,12 +120,11 @@ a = b'123'
 ## 2.4. List
 * 리스트는 [] 를 이용하여 감싸고, 가변하다(mutable). 그러므로 내용을 추가, 변경, 삭제할 수 있다.
     ```
-    squares = [1, 4, 9, 16, 25]
-    print(squares)     # [1, 4, 9, 16, 25]
+    cubes = [1, 4, 9, 16, 125]
+    print(cubes)     # [1, 4, 9, 16, 125]
 
     # 변경
-    cubes = [1, 8, 27, 65, 125]
-    cubes[3] = 64
+    cubes[3] = 64       # [1, 4, 9, 64, 125]
 
     # 추가
     cubes.append(216)   # [1, 4, 9, 64, 125, 216]
@@ -165,7 +164,7 @@ a = b'123'
     | clear() | 리스트의 모든 항목을 삭제. del a[:] 와 동등 | list.clear |
     | index(x[,start[,end]]) | 리스트에 있는 항목 중 값이 x와 같은 첫 번째의 인덱스를 반환(start와 end를 이용하여 범위를 지정할 수 있다). 항목이 없는 경우 ValueError 발생 | list.index("abc", 2) |
     | count(x) | 리스트에서 x가 등장하는 횟수를 반환 | list.count(3) |
-    | sort(*, key=None, reverse=False) | 리스트를 key 기준으로 정렬 | list.sort(str.lower) |
+    | sort(*, key=None, reverse=False) | 기존 리스트를 key 기준으로 정렬, Return None | list.sort(str.lower) |
     | reverse() | 리스트의 요소들을 제자리에서 뒤집는다. | list.reverse() |
     | copy() | 리스트의 얕은 사본을 돌려준다. a[:] 와 동등 | a.copy() |
 
@@ -187,7 +186,7 @@ a = b'123'
         # 자주 사용되는 패턴
         a.insert(0, 3)      # 처음 위치에 삽입
         a.insert(len(a), 3) # 마지막 위치에 삽입 == a.append(3)
-        
+     
       
         # 삭제
         a = [10, 20, 30]
@@ -201,7 +200,15 @@ a = b'123'
        
         a.clear()    
         ```
-    
+
+* list.sort() vs sorted(iterable)
+    * list.sort()
+        * 기존에 있는 리스트를 정렬한다. 그렇기 때문에 sorted() 보다 빠르다.
+        * 반환 값은 None
+    * sorted(iterable)
+        * 정렬된 새로운 iterable을 반환한다. 그렇기 때문에 sort() 보다 느리다.
+        * 반환 값은 iterable
+        
 * del 문
     * 변수와 객체의 연결을 끊는다. 메모리를 지우는 것은 아니고, GC가 메모리에서 제거하도록 도와준다.
         * 메모리를 참조하고 있는 포인터를 지운다고 생각하면 될 거 같다.
@@ -273,7 +280,7 @@ a = b'123'
 * 딕셔너리는 {} 와 dict() 이용하고, 가변이다(mutable).
 * Key-Value 형태로 저장한다. 
 * Hash를 이용해 값을 저장한다(HashMap, HashTable)
-* Key로 인덱싱이 되며, 중복되지 않는다. 그리고 모든 불변형이 Key가 될 수 있다.
+* Key로 인덱싱이 되며, 중복되지 않는다. 그리고 모든 불변형(immutable)이 Key가 될 수 있다.
     * 튜플을 Key로 사용될 수 있으나, 튜플에 가변 객체가 포함되어 있으면 키로 사용될 수 없다.
 * 리스트에서 사용되는 함수가 사용되나 정렬의 경우 sorted(d)를 사용하면 된다.
     ```
@@ -298,5 +305,16 @@ a = b'123'
     'jack' not in tel       # False
     ```
 
+* 주요 메서드
 
+    | Method | Description | Example |
+    |--------|-------------|---------|
+    | keys() | 모든 key 값 출력 (list 형태 반환) | dict.keys() |
+    | values() | 모든 value 값 출력 (list 형태 반환) | dict.values() |
+    | items() | 모든 key-value 값 출력 (list, tuple 형태) | dict.items() |
+    | has_key(key) | 해당 키 값의 존재 여부 (True /False) | dict.has_key("a") |
+    | dict[key] | 해당 key 값에 대한 value 값 추가 또는 변경 (에러발생 O) | dict["a"] |
+    | dict.get(key) | 해당 key 값에 대한 value 값 (에러발생 X) | dict.get("a") |
+
+    
 
