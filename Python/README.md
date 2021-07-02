@@ -60,7 +60,15 @@
 * Pip Installs Packages의 약자. Python Package를 설치 및 관리한다.
 * pip.exe의 위치는 ```<python_dir>/script```에 위치
 
-### 명령어
+### Install
+* 명령어: 
+    ```
+    curl -O https://bootstrap.pypa.io/get-pip.py
+    python3 get-pip.py --user
+    ```
+
+
+### Command
 * Package 설치
     ```
     $ pip install <package_name>
