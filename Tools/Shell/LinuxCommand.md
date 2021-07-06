@@ -119,3 +119,8 @@
 * ```expr``` : 
 
 
+* ```tree``` : 특정 위치에 존재하는 Directory 및 File을 Tree 형식으로 출력한다.
+    ```shell script
+    # option -L : Level
+    $ tree -L 2         # Depth 2 까지만 표시
+    ```
