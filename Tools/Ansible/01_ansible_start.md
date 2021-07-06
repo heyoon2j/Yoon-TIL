@@ -67,29 +67,58 @@
         └── main.yml
 
 
-    # task 작성
     $ cd nodejs
+
+    # 전달할 파일을 files dir에 저장
+    $ wget ... -O files/
+
+    # task 작성
     $ vi task/main.yml
 
-    # task 작성 방법: 
+    # task에 작성한 notify에 대한 정의 작성
+    $ vi handler/main.yml
+
+    # Role의 종속석 등 메타데이저 작성
+    $ vi meta/main.yml
     ```
     * defaults: Role의 기본 변수를 포함. 우선순위가 가장 낮다.
-    * task: 해당 Role의 역할 정의. Ansible이 Playbook을 실행할 때 tasks/main.yml에 있는 코드를 실행한다.
     * template: 해당 Role의 
     * vars: 해당 Role의 전역 변수 정의. defaults 디렉토리의 변수보다 우선순위가 높다.
     * files: 원격 호스트에 복사할 파일들이 저장되어 있다.
-    * meta: 저자, 지원 플랫폼, 종속성과 같은 Role의 메타 데이터를 포함
+    * task: 해당 Role의 역할 정의. Ansible이 Playbook을 실행할 때 tasks/main.yml에 있는 코드를 실행한다.
     * handlers: "notify" 지시문에 의해 호출될 수 있고, 서비스와 연관된 Handler를 포함
-    * 
-
-
+    * meta: 저자, 지원 플랫폼, 종속성과 같은 Role의 메타 데이터를 포함
+        * meta/main.yml은 두 가지 영역이 있다.
+        1. galaxy_info: 빌드할 역할에 대한 정보
+        2. dependencies: 종속정 정보 작성
 
 
 
 ## 2. Inventory 파일 생성
 * 어떤 Managed Node를 관리할지 Inventory 파일에 작성한다.
 * 기본적으로 ```/etc/ansible/hosts``` 파일에 정의한다.
-* 
+* Example
+    ```
+
+    ```
+
+
+## 3. Playbook 작성
+* 실행할 명령 등이 포함된 Role과 Host 정보가 들어있는 Inventory를 이용하여 Playbook을 작성한다.
+* Example
+    ```
+    - hosts: "{{ target | default('localhost') }}"
+      become: yes
+      roles:
+        - helloworld
+    ```
+    * Playbook Keyword는 다음과 같다.
+    1. hosts: Target hosts List
+    2. become: (```yes``` or ```no```)
+    3. roles: 실행된 Role List
+    4. port: 연결에 사용될 기본 port
+    5. timeout: task가 실해될 제한 시간
+    6. vars: Dictionary/Map variables
 
 
 
