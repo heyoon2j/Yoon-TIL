@@ -34,11 +34,23 @@
 
 ## Using Ansible
 ## Ansible Config 파일 설정
-* Ansible 환경변수 정의 파일. 
-* ```/etc/ansible/ansible.cfg``` 파일에 정의한다.
+* Ansible 기본 설정 정의 파일.
+* ```/etc/ansible/ansible.cfg``` or ```~/.ansible.cfg``` 파일에 정의한다.
 
 
-## 1. Role 만들기
+## 1. user 생성 및 sudo 권한 부여
+* 기본적으로 root로 권한으로 모든걸 수행하는 것은 바람직하지 않다.
+* Conrol Node의 User name이 Managed Node에도 동일하게 존재해야 한다.
+* 그리고 기본적을 ssh 접속을 하기 때문에, key도 공유해야 한다. 
+* Example
+    ```
+    # Control, Managed node 모두 동일한 유저가 이써야 한다.
+    $ useradd -c AnsibleUser -u 5000 -U -s /bin/bash -p 0000000!! ansible
+    $ echo "ansible ALL(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    ```
+
+
+## 2. Role 만들기
 * 역할 스크립트는 https://galaxy.ansible.com/과 같은 커뮤티니 사이트에서 지원을 받을 수 있다.
 * ```ansible-galaxy``` 명령어를 사용해 커뮤니티에서 지원하는 역할을 임포트할 수 있다.
 * Role 사용 방법 
@@ -75,14 +87,33 @@
     # task 작성
     $ vi task/main.yml
 
+    - name: Copying the application file
+      copy:
+        src: helloworld.js
+        dest: /home/ec2-user/
+        owner: ec2-user
+        group: ec2-user
+        mode: 0644
+      notify: restart helloworld
+
+
     # task에 작성한 notify에 대한 정의 작성
     $ vi handler/main.yml
 
+    - name: restart helloworld
+      service:
+        name: helloworld
+        state: restarted
+
+
     # Role의 종속석 등 메타데이저 작성
     $ vi meta/main.yml
+
+    dependencies:
+      - nodejs
     ```
     * defaults: Role의 기본 변수를 포함. 우선순위가 가장 낮다.
-    * template: 해당 Role의 
+    * template: 해당 Role의 수정을 지원하는 file template을 포함한다.
     * vars: 해당 Role의 전역 변수 정의. defaults 디렉토리의 변수보다 우선순위가 높다.
     * files: 원격 호스트에 복사할 파일들이 저장되어 있다.
     * task: 해당 Role의 역할 정의. Ansible이 Playbook을 실행할 때 tasks/main.yml에 있는 코드를 실행한다.
@@ -94,16 +125,34 @@
 
 
 
-## 2. Inventory 파일 생성
+## 3. Inventory 파일 생성
 * 어떤 Managed Node를 관리할지 Inventory 파일에 작성한다.
 * 기본적으로 ```/etc/ansible/hosts``` 파일에 정의한다.
+* https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
 * Example
     ```
+    # Inventory Structure
+    .
+    ├── group_vars
+    │   └── all
+    ├── hosts
+    └── host_vars
+      └── test
 
+    # hosts file
+    []
+
+    # group_vars/all
+
+
+    # host_vars/test
     ```
+    * 기본적으로 all은 모든 그룹을 의미한다.
+    * host_vars: host variables, 하나의 host에 대한 변수. 해당 Dir의 File들은 host 명으로 naming 한다.
+    * group_vars: group variables, group에 대한 변수. 해당 Dir의 첫 File 또는 Dir는 group 명으로 naming을 한다. 
 
 
-## 3. Playbook 작성
+## 4. Playbook 작성
 * 실행할 명령 등이 포함된 Role과 Host 정보가 들어있는 Inventory를 이용하여 Playbook을 작성한다.
 * Example
     ```
@@ -114,13 +163,16 @@
     ```
     * Playbook Keyword는 다음과 같다.
     1. hosts: Target hosts List
-    2. become: (```yes``` or ```no```)
+    2. become: (sudo와 같이)상승된 권한 사용 여부. 값은 ```yes``` or ```no```
     3. roles: 실행된 Role List
     4. port: 연결에 사용될 기본 port
     5. timeout: task가 실해될 제한 시간
     6. vars: Dictionary/Map variables
 
 
+## 5. Playbook 실행
+* 명령어: ```ansible-playbook <playbook.yml> -i <inventory> --private-key <key>``
+    * --check: 실행 시 어떤 것이 변경되는지 확인할 수 있다. 처음에는 해당 옵션을 통해 확인 후 적용하는 것이 좋다(dry-run mode라고 한다)
 
 
 
