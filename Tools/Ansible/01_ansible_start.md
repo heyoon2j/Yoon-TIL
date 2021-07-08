@@ -26,6 +26,15 @@
 * Ansible Config: Ansible 환경변수 정의 파일.
 
 
+
+## Ansible Task 처리 과정
+![TaskProcess](img/TaskProcess.png)
+* Ansible은 Task 실행 시, 하나의 Module을 처리할 때마다 독립된 Process를 실행시켜 처리한다.
+* 동일한 command를 처리해도 PID가 다른 것을 볼 수 있다.
+* 그렇기 때문에, 하나의 Terminal에서 처리해야 되는 경우 주의해야 한다.
+
+
+
 ## Anisble 그 외 명령외
 * ```ansible-doc <command>```: <command> 모듈에 대한 문서를 확인할 수 있다.
 
@@ -71,6 +80,7 @@
 ## 2. Role 만들기
 * 역할 스크립트는 https://galaxy.ansible.com/과 같은 커뮤티니 사이트에서 지원을 받을 수 있다.
 * ```ansible-galaxy``` 명령어를 사용해 커뮤니티에서 지원하는 역할을 임포트할 수 있다.
+* task는 각 프로세스가 생성되어 실행된다. 그렇기 때문에 ```source``` 명령어가 필요한 경우, 하나의 프로세스에서 실행시켜야 한다.
 * Role 사용 방법 
     ```
     # Role Initialization

@@ -151,6 +151,169 @@
     ```
 
 
+## get_url
+* Downloads files from HTTP, HTTPS or FTP to the remote server.
+* Parameters
+    * url: 요청할 URL
+    * dest: 파일을 저장할 절대 경로.
+    * mode: 허용 권한 설정. /usr/bin/chmode를 사용.
+    * headers: hash/dict 형식으로 요청에 사용자 지정 HTTP 헤더를 추가합니다.
+    * checksum: checksum이 매개 변수에 전달되면, 대상 파일의 digest가 다운로드된 후 계산되어 무결성을 확인하고 전송이 성공적으로 완료되었는지 확인한다.
+    * username: HTTP 인증에 사용되는 username
+    * password: HTTP 인증에 사용되는 password
+* Example
+    ```
+    - name: Download foo.conf
+      get_url:
+        url: http://example.com/path/file.conf
+        dest: /etc/foo.conf
+        mode: '0440'
+
+    - name: Download file with custom HTTP headers
+      get_url:
+        url: http://example.com/path/file.conf
+        dest: /etc/foo.conf
+        headers:
+          key1: one
+          key2: two    
+
+
+    - name: Download file with check (md5)
+      get_url:
+        url: http://example.com/path/file.conf
+        dest: /etc/foo.conf
+        checksum: md5:66dffb5228a211e61d6d7ef4a86f5758
+
+
+    - name: < Fetch file that requires authentication.
+        username/password only available since 2.8, in older versions you need to use url_username/url_password
+      get_url:
+        url: http://example.com/path/file.conf
+        dest: /etc/foo.conf
+        username: bar
+        password: '{{ mysecret }}'
+    ```
+
+
+## shell
+* Execute shell commands on targets
+* Parameters
+    * chdir: command 실행 전에 Directory 변경
+    * cmd: command
+    * creates: 파일이름이 존재하면 실행되지 않는다.
+    * executable: shell을 변경한다. 절대 경로로 입력해야 한다.
+    * removes: 파일이름이 존재하지 않으면 실행되지 않는다.
+* Example
+    ```
+    - name: Execute the command in remote shell; stdout goes to the specified file on the remote.
+      shell: somescript.sh >> somelog.txt
+
+    # You can also use the 'cmd' parameter instead of free form format.
+    - name: This command will change the working directory to somedir/.
+      shell:
+        cmd: ls -l | grep log
+        chdir: somedir/
+
+    - name: Run a command that uses non-posix shell-isms (in this example /bin/sh doesn't handle redirection and wildcards together but bash does)
+      shell: cat < /tmp/*txt
+      args:
+        executable: /bin/bash
+
+
+    # You can use shell to run other executables to perform actions inline
+    - name: Run expect to wait for a successful PXE boot via out-of-band CIMC
+      shell: |
+        set timeout 300
+        spawn ssh admin@{{ cimc_host }}
+
+        expect "password:"
+        send "{{ cimc_password }}\n"
+
+        expect "\n{{ cimc_name }}"
+        send "connect host\n"
+
+        expect "pxeboot.n12"
+        send "\n"
+
+        exit 0
+      args:
+        executable: /usr/bin/expect
+      delegate_to: localhost
+    ```
+
+
+## file 
+* Manage files and file properties
+* Parameters
+    * path: 절대 경로
+    * owner: 소유자 이름
+    * group: 그룹 이름
+    * mode: 권한 설정. file/direcotyr인 경우 설정하는 것이 좋다.
+    * state: 파일 상태
+        * file: 기본 옵션. file이 존재하는 경우 mode가 변경될 수 있다.
+        * directory: 존재하지 않는 경우 recursively하게 directory 생성.
+        * absent: 삭제
+        * hard/soft: hard/soft link 파일 생성 or 변경
+        * touch: 파일이 존재하지 않으면, 빈 파일 생성.
+    * recurse: 
+    * access_time: 파일의 access_time을 설정할 수 있다.
+* Example
+    ```
+    - name: Create a symbolic link
+      file:
+        src: /file/to/link/to
+        dest: /path/to/symlink
+        owner: foo
+        group: foo
+        state: link
+
+    - name: Update modification and access time of given file
+  file:
+      path: /etc/some_file
+        state: file
+        modification_time: now
+        access_time: now
+
+    - name: Recursively change ownership of a directory
+      file:
+        path: /etc/foo
+        state: directory
+        recurse: yes
+        owner: foo
+        group: foo
+    
+    - name: Remove file (delete file)
+      file:
+        path: /etc/foo.txt
+        state: absent
+
+    - name: Recursively remove directory
+      file:
+        path: /etc/foo
+        state: absent    
+    ```
+
+
+
+## script
+* Runs a local script on a remote node after tranferring it
+* Parameters
+    * 
+* Example
+    ```
+
+
+    # 'argv' is a parameter, indented one level from the module
+    - name: Use 'argv' to send a command as a list - leave 'command' empty
+      command:
+        argv:
+          - /usr/bin/make_database.sh
+          - Username with whitespace
+          - dbname with whitespace
+    ```
+
+
+
 ## 
 * 
 * Parameters
@@ -167,6 +330,3 @@
 * Example
     ```
     ```
-
-
-
