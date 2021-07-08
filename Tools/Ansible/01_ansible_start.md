@@ -34,8 +34,26 @@
 
 ## Using Ansible
 ## Ansible Config 파일 설정
-* Ansible 기본 설정 정의 파일.
-* ```/etc/ansible/ansible.cfg``` or ```~/.ansible.cfg``` 파일에 정의한다.
+* https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-roles-path
+* Ansible 기본 설정 정의 파일. 우선순위는 다음과 같다.
+    * ```ANSIBLE_CONFIG``` (environment varable if set)
+    * ```ansible.cfg``` (in the current direcotry)
+    * ```~/.ansible.cfg``` (in the home directory)
+    * ```/etc/ansible/ansible.cfg```
+* Example
+    ```
+    # /etc/ansible/ansible.cfg
+    [defaults]
+    remote_user = ec2-user
+    become = True
+    become_method = sudo
+    become_user = root
+
+    # ./ansible.cfg
+    [defaults]
+    roles_path = ./roles
+
+    ```
 
 
 ## 1. user 생성 및 sudo 권한 부여
@@ -140,12 +158,20 @@
       └── test
 
     # hosts file
-    []
+    [all]
+    test
 
     # group_vars/all
-
+    ---
+    ansible_connection: local
+    absible_become: True
+    ansible_become_method: sudo
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_user: ec2-user
 
     # host_vars/test
+    ---
+    ansible_host: 12.12.12.12
     ```
     * 기본적으로 all은 모든 그룹을 의미한다.
     * host_vars: host variables, 하나의 host에 대한 변수. 해당 Dir의 File들은 host 명으로 naming 한다.
@@ -156,7 +182,8 @@
 * 실행할 명령 등이 포함된 Role과 Host 정보가 들어있는 Inventory를 이용하여 Playbook을 작성한다.
 * Example
     ```
-    - hosts: "{{ target | default('localhost') }}"
+    ---
+    - hosts: all
       become: yes
       roles:
         - helloworld
