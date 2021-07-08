@@ -40,8 +40,7 @@
 
 
 
-
-## Using Ansible
+## Use Ansible
 ## Ansible Config 파일 설정
 * https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-roles-path
 * Ansible 기본 설정 정의 파일. 우선순위는 다음과 같다.
