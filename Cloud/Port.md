@@ -13,7 +13,7 @@
 | 21          | TCP     | FTP, File Transfer Protocol. Control            |
 | 22          | TCP     | SSH, Secure SHell                               |
 | 23          | TCP     | Telnet                                          |
-| 25          | TCP     | SMTP, Simple Main Transfer Protocol             |
+| 25          | TCP     | SMTP, Simple Mail Transfer Protocol             |
 | 53          | TCP/UDP | DNS, Domain Name System                         |
 | 80          | TCP     | HTTP, Hyper Text Transfer Protocol              |
 | 109         | TPC     | POP2, Post Office Protocol version 2            |
