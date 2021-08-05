@@ -113,9 +113,20 @@
 
 
 ## 주요 용어 및 개념
-* Active User: 실제 서버에 연결된 상태로 요청을 처리 중인 사용
-
-
+* Active User: 실제 서버에 연결된 상태로 요청을 처리 중인 사용자
+* InActive User: 서버와의 세션 정보를 가지고 있지만 직접 접속하여 요청을 주고받는 상태가 아닌 사용자
+* Concurrent User: Active User + InActive User, 동시접속 사용자수. 일반적으로 사용자 수의 많고 적음을 표현하는 값으로 성능 테스트에서 가상 사용자 수를 결정하는 기준이 된다. 일반적으로 Active와 InActive User 비율이 1:10 정도이다.
+* Virtual User: 가상 사용자 수, JMeter에서는 Thread 수로 표현하기도 한다.
+* Ramp-Up Period: Virtual User(Thread) 생성에 걸리는 시간을 의미.
+* Throughput: 단위 시간당 대상 서버에서 처리되는 요청의 수. JMeter에서는 시간 단위를 보통 TPS로 표현한다.
+* Response Time/Load Time: 응답 처리시간. 요청을 보낸 후 응답이 완료되어 사용자 화면에 출력될때까지의 시간.
+* Latency: 요청을 보낸 후 데이터를 받기 시작할 때까지 시간.
+* Think Time: 하나의 요청에 응답을 수신하고 다음 요청을 보낼 때까지 시간. 테스트에서 실제 사용자의 사용패턴과 유사한 패턴을 구현하기 위해서는 이 Think Time을 적절히 적용해야 한다.
+* Request Interval Time: 요청을 보낸 후 다음 요청을 보낼 때까지 시간.
+* 시간 관계도
+    ![TimeRelation](img/TimeRelation.png)
+    * 항상 Response Time >= Latency 성립
+    > A와 B 사이트에 동일한 크기(10MB 정도)의 파일을 올려놓고 다운로드 테스트를 행한다고 가정해본다. A 사이트와 B 사이트의 결과를 비교해 보니 B 사이트의 Load Time이 2배 이상 크게 나왔다. 하지만 Latency는 거의 비슷했다. 이렇게 차이가 나는 이유가 무엇일까? Load Time에서 Latency를 빼면 데이터를 전송받는데 걸리는 시간을 나타낸다. 즉, B 사이트가 A 사이트보다 데이터를 내려받는 속도가 다리다고 볼 수 있다. 따라서 B 사이트는 처리량을 늘리기 위해 웹서버를 튜닝하기보다는 네트워크의 대역폭(Bandwidth)을 늘리는 것을 고려해야 한다.
 
 
 
