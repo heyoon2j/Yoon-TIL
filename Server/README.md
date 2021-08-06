@@ -140,9 +140,6 @@ For Server
 * Storage Size는 서버 성능에 의존적이므로 서버 성능당 스토리지 성능 비율 즉, tpmC당 IOPS 비율로 설정한다. WEB/WAS 서버의 경우 OLTP&Batch 서버에 비해 I/O가 작으므로 tpmC 성능치 크기의 0.5%를 IOPS로 산정한다.
 
 
-
-### I/O
-
 ### Kernel Driver
 
 ### Networking
