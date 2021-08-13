@@ -39,30 +39,30 @@
 
 ## 4) 많이 사용되는 함수
 ## 내장 함수
-| Function | Description | Example |
-|----------|-------------|---------|
-| type() | Data type 반환 | type(123)     # int |
-| len() | 문자열 길이 반환 | len('123')    # 3 |
-| range() |  |  |
-| eval(expression [, globals = None [, locals = None]]) | 문자열로 표현된 식(Expression)을 받아, Python 컴파일 코드로 변환 후 실행 | num = eval('num + 1') |
-| exec(object [, globals [, locals ]]) | 문자열로 표현된 명령문(Statement)을 Python 컴파일 코드로 변환 후 실행 | exec('num = num + 1') |
-| compile(str, filename, mode) | 문자열로 표현된 명령문을 Python 컴파일 코드로 변환 | code = compile('num = num + 1', '<string>', 'exec') |
+| Function                                              | Description                                                              | Example                                             |
+| ----------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------- |
+| type()                                                | Data type 반환                                                           | type(123)     # int                                 |
+| len()                                                 | 문자열 길이 반환                                                         | len('123')    # 3                                   |
+| range()                                               |                                                                          |                                                     |
+| eval(expression [, globals = None [, locals = None]]) | 문자열로 표현된 식(Expression)을 받아, Python 컴파일 코드로 변환 후 실행 | num = eval('num + 1')                               |
+| exec(object [, globals [, locals ]])                  | 문자열로 표현된 명령문(Statement)을 Python 컴파일 코드로 변환 후 실행    | exec('num = num + 1')                               |
+| compile(str, filename, mode)                          | 문자열로 표현된 명령문을 Python 컴파일 코드로 변환                       | code = compile('num = num + 1', '<string>', 'exec') |
 
 * exec, compile 참조 : https://jeongchul.tistory.com/521
 
 
 ## 형변환 (Casting)
-| Function | Description | Example |
-|----------|-------------|---------|
-| bin() | 정수형 -> 2진수로 변환하여 문자열 반환 | bin(10) # '0b1010' |
-| oct() | 정수형 -> 8진수로 변환하여 문자열 반환 | oct(10) # '0o12' |
-| hex() | 정수형 -> 16진수로 변환하여 문자열 반환 | hex(10) # '0xa' |
-| int(str, int) | 진수값 문자열 -> 정수형으로 반환 | int('0xc', 16)  # 12 |
-| int(x) | 인자 값 -> 정수 타입으로 변환 | int("10.1")  # 10 |
-| float(x) | 인자 값 -> 실수 타입으로 변환 | float(10) # 10.0 |
-| str(x) | 인자 값 -> 문자열로 변환 | str(True)  # True <class 'str'> |
-| chr(x) | 인자 값 -> 문자(유니코드)로 변환 | chr(65)    # A |
-| bool(x) | 인자 값 -> bool 타입으로 변환. 숫자는 0인지 아닌지, 문자는 비어있는지 아닌지로 결정된다 | bool(0.0)  # False |
+| Function      | Description                                                                             | Example                         |
+| ------------- | --------------------------------------------------------------------------------------- | ------------------------------- |
+| bin()         | 정수형 -> 2진수로 변환하여 문자열 반환                                                  | bin(10) # '0b1010'              |
+| oct()         | 정수형 -> 8진수로 변환하여 문자열 반환                                                  | oct(10) # '0o12'                |
+| hex()         | 정수형 -> 16진수로 변환하여 문자열 반환                                                 | hex(10) # '0xa'                 |
+| int(str, int) | 진수값 문자열 -> 정수형으로 반환                                                        | int('0xc', 16)  # 12            |
+| int(x)        | 인자 값 -> 정수 타입으로 변환                                                           | int("10.1")  # 10               |
+| float(x)      | 인자 값 -> 실수 타입으로 변환                                                           | float(10) # 10.0                |
+| str(x)        | 인자 값 -> 문자열로 변환                                                                | str(True)  # True <class 'str'> |
+| chr(x)        | 인자 값 -> 문자(유니코드)로 변환                                                        | chr(65)    # A                  |
+| bool(x)       | 인자 값 -> bool 타입으로 변환. 숫자는 0인지 아닌지, 문자는 비어있는지 아닌지로 결정된다 | bool(0.0)  # False              |
 
 
 
