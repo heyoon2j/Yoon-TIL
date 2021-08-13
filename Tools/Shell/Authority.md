@@ -37,14 +37,14 @@
 ## sudo 권한 부여
 * sudo를 실행할 수 있는 권한은 sudo 설정파일 ```/etc/sudoers```에서 지정할 수 있다.
 * 형식: ```user  MACHINE=(EXE_USER) [NOPASSWD:] COMMNADS```
-    * user 계정은 해당 MACHINE에서 접근이 가능하면, MACHINE에서 COMMANDS 명령을 사용할 수 있다라는 의미이다.
+    * user 계정은 해당 MACHINE에서 접근이 가능하며, MACHINE에서 COMMANDS 명령을 사용할 수 있다라는 의미이다.
     * ALL=(ALL): 모든 컴퓨터에서 접근 가능하며, 모든 컴퓨터에서 모든 명령을 할 수 있다.
 * MACHINE
-    * sudo를 허용할 컴퓨터 이름을 명시해준다.
+    * sudo 이용을 허용할 컴퓨터 이름을 명시해준다.
     * 옵션: ALL, localhost, <computer_name>
     * 컴퓨터 이름은 ```hostname``` 명령어 이용 or ```/etc/hostname``` 파일 내용을 변경한다.
 * COMMANDS
-    * sudo를 이용하여 허용할 명령어를 절대경로로 명시해 준다.
+    * sudo 이용을 허용할 명령어를 절대경로로 명시해 준다.
     * 옵션: ALL, <command>
 * EXE_USER
     * 명령어를 실행할 때 어떤 계정의 권한을 갖는지 설정(생략 시 root로 실행)
