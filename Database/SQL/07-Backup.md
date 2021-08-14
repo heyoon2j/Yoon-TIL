@@ -156,6 +156,7 @@ Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 �
 
 ### 2.1. Hot Logical Backup
 * InnoDB Table만 mysqldump로 Hot Backup 가능!
+    * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/backup-methods.html
     * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/backup-policy.html
 * MyISAM 테이블이 있는 경우, --lock-tables를 이용하여 Table을 잠그고 해야된다.
     * https://dev.mysql.com/doc/refman/5.6/en/mysqldump.html#option_mysqldump_lock-tables

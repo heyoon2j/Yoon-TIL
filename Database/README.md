@@ -45,3 +45,9 @@
         * 분산처리 시스템으로 데이터를 분산시켜 처리
             * Name Node가 Query를 받아 Data Node에 Query를 던진다.
 
+3. DB 결정
+    1) SQL
+        * 
+        *  
+    2) NoSQL
+        * 
