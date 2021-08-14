@@ -68,6 +68,13 @@ __4. SAML (Security Assertion Markup Language)__
 
 
 
+* Access Level
+    1) 목록(List)
+    2) 읽기(Read)
+    3) 쓰기(Write)
+    4) 권한 관리(Manage Permission)
+
+
 
 
 ## IAM 및 AWS STS 할당량

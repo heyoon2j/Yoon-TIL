@@ -1,4 +1,28 @@
-# AWS
+# Amazon Web Services
+
+## AWS Global Infra
+* 전 세계 여러 
+1. Region (리전)
+   * 두 개 이상의 AZ로 구성
+2. Available Zone (가용 영역)
+   * 하나 이상의 DataCenter로 구성 (최대 6개)
+   * 내결함성을 갖도록 설계
+   * 다른 AZ의 장애로부터 격리되어 있지만(물리적 격리), Private Link를 통해 다른 가용 영역과 상호 연결된다.
+3. DataCenter (데이터 센터)
+   * 전 세계 여러 리전에 Cluster 형태로 구축
+
+
+## Region
+
+
+# On-premise / AWS 비교
+| On-premise           | AWS           | 비고                                                                       |
+| -------------------- | ------------- | -------------------------------------------------------------------------- |
+| VM (Vertual Machine) | EC2           | HCI(hypervisor converged infrastructure), Hypervisor 등을 이용하여 VM 생성 |
+|                      |               |                                                                            |
+| HIWARE, freeNAC      | IAM           | 통합 접근 및 계정권한 관리                                                 |
+| HIWARE               | Organizations | 중앙 집중식 환경 관리 및 규제                                              |
+
 
 # VPC
 ## NAT Gateway
@@ -13,14 +37,11 @@
 * EIP or Public IP를 사용할 수 있고, Public IP의 경우 변경 가능하다.
 * 보안 그룹과 네트워크 ACL(Access Control List)을 사용하여 트래픽 제어
 
-
 ## Internet Gateway
 * 2가지 기능이 있다.
     1) 인터넷 라우팅 기능
     2) Public IPv4 Address가 할당된 인스턴스에 대해 NAT를 수행
 * 네트워크 트래픽에 가용성 위험이나 대역폭 제약이 발생하지 않는다.
-
-
 
 ## Security Group vs Network ACL
 1. Operation
@@ -71,7 +92,7 @@
  Thread는 Software 단에서의 논리적 작업 처리 단위이다.
 
 
-# 종료 방식: stop vs terminate
+## 종료 방식: stop vs terminate
 * stop: 인스턴스를 중지하면 바로 종료된다.
 * terminate: 인스턴스를 중지해도 종료되지 않는다. 중지 후에 종료해야 된다.
 
