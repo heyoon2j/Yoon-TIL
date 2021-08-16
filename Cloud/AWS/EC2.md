@@ -4,6 +4,7 @@
 * 400Gbps Ethernet Networking
 
 
+
 ## Instance Types
 * 인스턴스 유형은 CPU, Memory, Storage, Networking 용량의 다양한 조합으로 구성된다.
 * 애플리케이션에 따라 적합한 리소스 조합을 선택할 수 있는 유연성을 제공한다.
@@ -21,6 +22,7 @@
 * http://itworkroom.blogspot.com/p/blog-page_7.html
 
 
+
 ## AMI
 * Amazon Machine Image
 * AMI에는 다음이 포함된다.
@@ -34,8 +36,7 @@
     4) 커뮤티니 AMI: 비공식 커뮤니티로 AWS가 점검하지 않으며 사용자가 그 사용에 따른 위험을 부담하게 된다.
 
 ### __AMI 저장__
-* AMI는 S3에 저장된다.
-* 
+* AMI는 Amazon S3에 저장된다.
 
 
 
@@ -66,17 +67,24 @@
 
 
 
-## Architecture
-1. __클러스터 배치 그룹__
+## 배치 그룹 (Placement Group)
+1. __클러스터 배치 그룹 (Cluster Placement Group)__
     ![Cluster](../img/ClusterGroup.png)
     * 하나의 데이터 센터 안에 물리적으로 가깝게 인스턴스 생성
     * 짧은 지연 시간과 가장 높은 초당 패킷 네트워크 성능을 제공
-2. __분산형 배치 그룹__
-    ![SepGroup](../img/SepGroup.png)
+2. __파티션 배치 그룹 (Partition Placement Group)__
+    ![PartitionGroup](../img/PartitionGroup.png)
+    * EC2는 각 그룹을 파티션이라고 하는 논리 세그먼트로 나눈다.
+    * 각 파티션은 동일한 랙을 공유하지 않아서, 하드웨어 장애의 영향을 격리시킬 수 있다.
+    * 가용 영역당 파티션을 최대 7개까지 가질 수 있다. 인스턴스 숫자는 계정 제한의 적용을 받는다.
+    * 
+3. __분산형 배치 그룹 (Spread Placement Group)__
+    ![SpreadGroup](../img/SpreadGroup.png)
     * 의도적으로 다른 하드웨어에 배치되는 인스턴스 그룹
-    * 인스턴스가 비노 하드웨어를 공유할 경우 발생할 수 있는 동시 장애의 위험을 줄여준다.
-    * 여러 가용영역을 포괄할 수 있으며, 그룹별로 가용 영역 당 최대 7개의 인스턴스 가능
+    * 인스턴스가 하드웨어를 공유할 경우 발생할 수 있는 동시 장애의 위험을 줄여준다.
+    * 여러 가용 영역을 포괄할 수 있으며, 그룹별로 가용 영역 당 최대 7개의 인스턴스 가능
     * 서로 분리되어야 하는 소수의 크리티컬 인스턴스
+
 
 
 ## 종료 방식: stop vs terminate
@@ -108,13 +116,10 @@
         1) __스탠다드 RI__: EC2 Saving Plans, Region 내의 특정 인스턴스 패밀리에 적용되며 가장 큰 하린 혜택 제공(최대 72%)
         2) __컨버터블 RI__: Computing Saving Plans, RI의 인스턴스 패밀리, OS 등의 속성 변경이 가능 (최대 66%)
         3) __예정된 IR__: 예약한 시간 범위 내에서 인스턴스를 시작.
-    * 사용하는 경우
-        1) ㅂㅈㄷ
 4. __전용 인스턴스__
     ![SingleInstance](../img/SingleInstance.png)
     * Single Tenant 하드웨어에서 실행.
     * 다른 사람들이랑 하드웨어를 같이 쓰지 않는다(물리적으로 격리)
-    * 
 5. __전용 호스트__
     * 고객 전용의 특정 EC2 인스턴스 용량을 갖춘 특정 물리적 서버.
     * 사용하는 Software가 Hardware를 타는 경우
@@ -127,11 +132,41 @@
 
 ### __비용 최적화__
 * __최적화에 사용되는 서비스__
-    * __AWS Saving Plans__ : 
-    * __Amazon EC2 Spot__ : 
-    * __AWS Compute Optimizer__ : 
-    * __Cost Exploerer__ : 
-    * __Auto Scaling__ : 
+    * __AWS Saving Plans__ 
+    * __Amazon EC2 Spot__
+    * __Auto Scaling__    
+    * __EC2 Instance Discovery__ : 워크로드를 시작하기 전에 컴퓨팅 환경의 규모를 조정
+    * __AWS Compute Optimizer__ : AWS 리소스의 구성 및 사용률 지표를 분석하는 서비스.
+    * __AWS Cost Exploerer__ : 비용 탐색기를 이용하여 활용도가 낮은 리소스를 제거한다.
+
+
+## 용어 및 기술 정리
+### __Tenancy__
+* 단인 테넌시(Tenancy) : 전용 하드웨어에서 실행할 수 있다.
+ 하드웨어가 민감하다면 사용하면 좋다.
+
+### __vCPU__
+* 인스턴스 유형을 선택할 때, vCPU 당 ECU(EC2 Computing Unit), 실제 CPU가 어떤 것인지, 성능은 어떤지, 코어당 쓰레드 갯수 등 계산할 필요가 있다.
+* vCPU 단위는 T2를 제외하고 "CPU Core * Thread". 즉, 총 쓰레딩 개수라고 생각하면 될 듯
+* https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/instance-optimize-cpu.html#instance-cpu-options-rules
+* http://www.studyforcloud.com/ecuwa-vcpue-daehae-alabogi/
+
+
+### __Core, vCPU, GiB__
+* GiB: Gibibyte or Giga binary byte, 기비바이트 또는 기가 이진 바이트
+    * 1,073,741,824 byte (=2^30 =1024^3)
+    * GB는 10^9 이다. 혼동하면 안된다.
+* Bare Metal: Software가 아무것도 설치되어 있지 않은 상태의 컴퓨터
+    * 베어메탈 환경에 OS를 설치해야 그때부터 '서버 컴퓨터' 또는 '컴퓨터 노드' 라고 한다.
+* CPU: 명령어들을 처리하고 제어하기 위한 논리회로
+    * 크게 신호를 보내는 제어장치(Control Unit)와 연산을 담당하는(ALU, Arithmetic Logic Unit)으로 구성된다.
+* Core: 실제 물리 코어, CPU가 하는 일을 분담해서 처리한다.
+* vCPU: CPU를 Hyper-Threading 기술이 적용하여 n배로 만든 가상 코어
+    * Hypervisor가 CPU Time Slice를 어떻게 스케줄링하냐에 따라 분리할 수 있는 개수가 정해진다.
+    * http://cloudrain21.com/terms-about-virtualization
+* Thread: 코어는 Hardware 단에서의 구성 단위이며,
+ Thread는 Software 단에서의 논리적 작업 처리 단위이다.
+
 
 
 
