@@ -18,5 +18,35 @@
 2. CentOS
     * ```yum install -y openssh-server```
 
+
+## SSH Config File
+* http://taewan.kim/post/ssh_config/
+* https://llighter.github.io/access-remote-server-with-ssh/
+* Config File 사용순서
+1. ``vi ~/.ssh/config```: Config File 생성
+2. File 작성방법
+    * Using Password
+        ```
+        Host <Host Name>
+            HostName <Host IP>
+            User <User Name>
+        ```
+    * Using Key File
+        ```
+        Host <Host Name>
+            HostName <Host IP>
+            User <User Name>
+            IdentityFile <.pem Key Path>
+        ```
+3. 접속방법
+    * Config File 생성 후에는 Host Name만으로 접속할 수 있다.
+    ```
+    ssh <Host Name>
+    ```
+
+## Pem Key 권한
+* 해당 권한은 Permission ```chmod 0400``` Permission이어야 ssh에 사용이 가능하다.
+
+
 #### Reference
 * https://jootc.com/p/201808031462
