@@ -113,24 +113,25 @@
 3) Terraform Project Initialization
     * 이제 Provider를 기준으로 Project를 초기화시켜준다.
     * **terraform init** 명령어 사용
-    
+
+
 ### Step 2. Write Modules
 * Terraform에서는 Directory 하나가 모듈의 단위가 되기 때문에,
 공용으로 사용되는 Infra 구성은 모듈화하여 관리한다.
 * 모듈화하면, 재사용이 용이해진다.
 * 공식 문서 : https://www.terraform.io/docs/modules/index.html
 
-1) Module의 기본 구조
+1) __Module의 기본 구조__
     * 기본적으로 Module은 "Root Module"과 "Child Module"이 있다.
     * Root Module에서는 다른 Child Module을 호출하여 출력 값을 다른 Child Module의 입력 값으로 전달하여 Module들을 연결시킬 수 있다.
-    * 중첩 Module의 경우는 "modules/"의 하위에 위치해야 한다.
-        1. Input variables
+    * 중첩 Module의 경우는 ```modules/```의 하위에 위치해야 한다.
+        1. __Input variables__
             * 다른 Module로부터 입력받을 입력 값들을 관리
             * variables.tf 파일에 저장
-        2. Output variables
+        2. __Output variables__
             * 다른 Module에게 반환할 출력 값들을 관리
             * output.tf 파일에 저장
-        3. Resources
+        3. __Resources__
             * Infrastructure Object들을 관리
             * main.tf 파일에 저장
         4. ```terraform.tfstate``` 및 ```terraform.tfstate.backup```
