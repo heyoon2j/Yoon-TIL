@@ -105,6 +105,25 @@
  Thread는 Software 단에서의 논리적 작업 처리 단위이다
 
 
+## HTTP/1.1, HTTP/2 , gRPC
+* https://chacha95.github.io/2020-06-15-gRPC1/
+1. __HTTP/1.1__
+    * Connection당 하나의 Request/Response를 처리하기 때문에, 하나의 Req/Res 마다 Connection 하기위한 3-way handshake, 4-way handshake가 발생해 RTT가 증가한다(Overhead가 발생)
+    * 이를 해결하기 위해 하나의 Connection으로 다수의 Req/Res를 받는 Pipelining 기법이 제안되었지만, HOLB(Head Of Line Blocking) 현상이 발생한다 (다음 Res는 현재 Req에 대한 Res가 완료될 때까지 대기해야 된다. 결국 속도가 지연된다)
+2. __HTTP/2__
+    * 하나의 Connection으로 다수의 Req/Res를 받지만, Res의 순서는 상관없이 Stream으로 주고 받는다.
+3. __gRPC__
+    * Google에서 개발한 RPC(Remote Procedure Call) 시스템.
+    * 정보를 주고받는 규칙(Protocol)으로 HTTP/2를사용한다.
+    * 정보를 저장하는 방식(IDL)으로는 Proto 사용.
+    * Speed : Proto > JSON > XML
+    * https://real-dongsoo7.tistory.com/131
+
+### RPC
+* Remote Procedure Call
+* 원격지의 프로세스에 접근하여 프로시저 또는 함수를 호출하여 사용하는 방법
+* 
+
 
 ## 용어 및 정리
 * Immutable Infrastructure
