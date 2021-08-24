@@ -38,7 +38,6 @@
 * AMI는 Amazon S3에 저장된다.
 
 
-
 ## User Data & Meta Data
 ## 1. User Data
 ![UserData](../img/UserData.png)
@@ -131,9 +130,9 @@
 
 ### __비용 최적화__
 * __최적화에 사용되는 서비스__
-    * __AWS Saving Plans__ 
-    * __Amazon EC2 Spot__
-    * __Auto Scaling__    
+    * __AWS Saving Plans__
+    * __Amazon EC2 Spot__ : AutoSCaling, 순간적으로 Resource가 필요한 경우 등에는 Spot Instance 사용
+    * __Auto Scaling__ : Auto Scaling을 이용해 평상시는 필요한만큼만 작동하도록 구성
     * __EC2 Instance Discovery__ : 워크로드를 시작하기 전에 컴퓨팅 환경의 규모를 조정
     * __AWS Compute Optimizer__ : AWS 리소스의 구성 및 사용률 지표를 분석하는 서비스.
     * __AWS Cost Exploerer__ : 비용 탐색기를 이용하여 활용도가 낮은 리소스를 제거한다.
