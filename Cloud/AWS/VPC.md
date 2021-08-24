@@ -1,8 +1,5 @@
 # VPC
 
-
-
-
 ## NAT Gateway
 * 5Gbps의 대역폭, 최대 45Gbps 까지 자동 확장한다 (Gbps = Gigabit per second, 초당 전송속도 )
 * 하나의 EIP만 열결할 수 있고, 연결된 후에는 연결을 끊을 수 없다.

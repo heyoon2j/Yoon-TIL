@@ -4,7 +4,6 @@
 * 400Gbps Ethernet Networking
 
 
-
 ## Instance Types
 * 인스턴스 유형은 CPU, Memory, Storage, Networking 용량의 다양한 조합으로 구성된다.
 * 애플리케이션에 따라 적합한 리소스 조합을 선택할 수 있는 유연성을 제공한다.
@@ -138,10 +137,6 @@
     * __EC2 Instance Discovery__ : 워크로드를 시작하기 전에 컴퓨팅 환경의 규모를 조정
     * __AWS Compute Optimizer__ : AWS 리소스의 구성 및 사용률 지표를 분석하는 서비스.
     * __AWS Cost Exploerer__ : 비용 탐색기를 이용하여 활용도가 낮은 리소스를 제거한다.
-
-
-
-
 
 
 
