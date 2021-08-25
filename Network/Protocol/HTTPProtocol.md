@@ -36,6 +36,31 @@
 </br>
 
 
+## HTTP Structure
+* 크게 HTTP 구조는 Header와 Body로 구분된다.
+* Header에는 HTTP Version, Method 등을 저장된다.
+* 모든 Request에는 Body가 포함되어 있지 않으며, Body에는 요청에 대한 결과 내용이 
+
+
+
+## HTTP Request
+### Request Method
+* 가장 많이 사용되는 Method는 아래와 같다.
+1. __GET__: 데이터 검색에 사용된다.
+2. __POST__: 데이터 변경 및 삭제 시 사용된다. 
+
+### Structure
+![HTTP_Request](../img/HTTP_Request.png)
+
+</br>
+
+
+## HTTP Response
+![HTTP_Response](../img/HTTP_Response.png)
+
+</br>
+
 
 ### Reference
 * https://falsy.me/http%EC%9D%98-%EB%B2%84%EC%A0%84-%EB%B3%84-%EC%B0%A8%EC%9D%B4%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B3%A0-ubuntu-nginx%EC%97%90-http-2%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%B4/
+* https://developer.mozilla.org/ko/docs/Web/HTTP/Messages
