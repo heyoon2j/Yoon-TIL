@@ -51,17 +51,55 @@
 
 ## Listener Rule
 ### 우선 순위
-* 
+* 숫자가 작은 거부터 우선 순위를 가진다(1 ~ 50000)
+* 규칙은 서비스가 정상일 때 우선순위가 앞서야 하고, 오류 발생시 처리는 뒤에 나와야 한다.
 
 ### 규칙 작업
 * 기본적으로 각 규칙에는 ```fixed-response```, ```forward```, ```redirect``` 작업 중 하나는 꼭 포함되어 있어야 하며, 이 작업이 수행할 마지막 작업이어야 한다.
-1. ```authenticate-cognito```: [HTTPS 리스너] Amazon Cognito와 호환되는 자격 증명 공급자를 사용하여 사용자를 인증
-2. ```authenticate-oidc```: [HTTPS 리스너] OpenID Connect(OIDC)와 호환되는 자격 증명 공급자를 사용하여 사용자를 인증
-3. ```fixed-response```: 사용자 지정 HTTP 응답 반환
-4. ```forward```: 요청을 지정된 대상 그룹으로 전달
-5. ```redirect```: URL의 요청을 다른 URL로 리디렉션
+</br>
 
-### 규칙 조건
+1. ```fixed-response```
+    * Client 요청을 삭제하고, 사용자 지정 HTTP 응답 반환
+    * 이 작업을 사용하여 2XX, 4XX, 5XX 응답 코드와 선택적 메시지를 반환할 수 있다.
+    > 운영 중에는 잘 사용되지 않을 거 같다. 긴급하게 작업해야되거나 개발해야되는 상황 정도일거 같다. 에러메시지를 출력하는 정도로 사용될 거 같다. 보통 특정 Packet에 대해서 응답을 하는 건데, 방화벽에서 작업하거나 좋지 않을까 싶다.
+    * Example
+        ```
+        [
+          {
+              "Type": "fixed-response",
+              "FixedResponseConfig": {
+                  "StatusCode": "200",
+                  "ContentType": "text/plain",
+                  "MessageBody": "Hello world"
+              }
+          }
+        ]
+        ```
+2. ```forward```
+    * 요청을 하나 이상의 지정된 대상 그룹에 전달
+    * 여러 대상 그룹을 지정하는 경우 각 대상 그룹에 대해 가중치를 지정 (0 ~ 999)
+    > 이거는 한 쪽 AZ가 망가졌을 때, 
+    * Example
+        ```
+        [
+            {
+                "Type": "forward",
+                "ForwardConfig": {
+                    "TargetGroups": [
+                       {
+                         "TargetGroupArn":  "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067"
+                        }
+                    ]
+                }
+            }
+        ]
+        ```
+3. ```redirect```: URL의 요청을 다른 URL로 리디렉션
+4. ```authenticate-cognito```: [HTTPS 리스너] Amazon Cognito와 호환되는 자격 증명 공급자를 사용하여 사용자를 인증
+5. ```authenticate-oidc```: [HTTPS 리스너] OpenID Connect(OIDC)와 호환되는 자격 증명 공급자를 사용하여 사용자를 인증
+
+
+### 규칙 조건 형식
 
 
 
