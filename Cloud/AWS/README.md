@@ -19,9 +19,7 @@
 | On-premise           | AWS           | 비고                                                                       |
 | -------------------- | ------------- | -------------------------------------------------------------------------- |
 | VM (Vertual Machine) | EC2           | HCI(hypervisor converged infrastructure), Hypervisor 등을 이용하여 VM 생성 |
-| 
-|                      |               |                                                                            |
-| HIWARE, Active Directory freeNAC      | IAM           | 통합 접근 및 계정권한 관리                                                 |
+ HIWARE, Active Directory freeNAC      | IAM           | 통합 접근 및 계정권한 관리                                                 |
 | HIWARE, Active Directory               | Organizations | 중앙 집중식 환경 관리 및 규제                                              |
 | Firewall(Hardware) | ACL | 트래픽 필터링, 하드웨어 방화벽 |
 | Firewall(Software) | SG | 트래픽 필터링, 소프트웨어 방화벽 |
