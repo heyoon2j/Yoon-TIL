@@ -39,7 +39,6 @@
 ## ELB 동작 과정
 * __Load Balncer의 Listener가 Request(REQ)를 수신하고 REQ를 Taget Group에 전달__
 1. __Listener는 REQ를 수신하고 요청을 전달할 Target Group을 Rule들에 의해 결정__
-    * Listener Rule에서는 
 2. __Target Group은 REQ를 Instance, Container 또는 IP 주소, Lambda로 Routing__
     * Target Group은 Traffic 분할 Algorithm을 기준으로 결정
     * 분할하기 위해 Target Group은 Target에 대해 지속적인 Health Check를 하게 된다.
@@ -57,7 +56,7 @@
 
 ### 규칙 작업
 * 기본적으로 각 규칙에는 ```fixed-response```, ```forward```, ```redirect``` 작업 중 하나는 꼭 포함되어 있어야 하며, 이 작업이 수행할 마지막 작업이어야 한다.
-* 고정 세션이 적용되도록 하려면 규칙에 대해 대상 그룹 고정을 활성화해야 한다. URL로 인코딩된 쿠키 값은 지원하지 않고, Target Group에 대한 정보를 인코딩하고 쿠키를 암호화하며 클라이언트에 대한 응답으로 __AWSALBTG__ 라는 쿠키를 생성하는데 이를 포함하여 요청해야 한다.
+* 고정 세션이 적용되도록 하려면 규칙에 대해 Target Group 고정을 활성화해야 한다. URL로 인코딩된 쿠키 값은 지원하지 않고, Target Group에 대한 정보를 인코딩하고 쿠키를 암호화하며 클라이언트에 대한 응답으로 __AWSALBTG__ 라는 쿠키를 생성하는데 이를 포함하여 요청해야 한다.
 </br>
 
 1. ```fixed-response```
@@ -80,7 +79,7 @@
 2. ```forward```
     * 요청을 하나 이상의 지정된 대상 그룹에 전달
     * 여러 대상 그룹을 지정하는 경우 각 대상 그룹에 대해 가중치를 지정 (0 ~ 999)
-    > 가용성 처리 및 고정 쿠키 사용할 때, 한 쪽 AZ가 망가졌을 때 또는 배포할 때 사용
+    > 가용성 처리 및 한 쪽 AZ가 망가졌을 때, 배포할 때 사용. 가장 많이 사용할 거 같다. 고정 쿠키는 Service 규모가 작은면 사용해도 되지만 아닌 경우, Cache를 이용하는 것을 추천한다.
     * Example
         ```
         # TargetGroup이 1개인 경우, "Weight"가 필요 없다.
@@ -170,6 +169,7 @@
 </br>
 
 ## NLB Listener Rule
+* 따로 Rule이 존재하지 않는다.
 * TCP Traffic
     * Protocl, Source IP, Source Port, Destination IP, Destination Port, TCP Seq 사용하여 Routing.
     * 연결은 연결 수명 동안 하나의 대상에 라우팅
@@ -178,12 +178,45 @@
 
 
 ## Target Group
+* Target에게 보내기 위해서 해당 Target이 정상적으로 동작하는지 Check하게 된다.
+</br>
 
+### Routing Alogrithm
+1. __Round Robin__
+    * 기본 알고림즘
+    * 요청을 Target에 번갈아가며 순차적으로 전달하게 된다.
+    * 요청과 대상이 비슷하거나 대상 간에 똑같이 요청을 배포해야 하는 경우 사용
+2. __Least Outstanding Requests__
+    * 미처리 요청이 가장 적은 대상에 요청을 보낸다.
+    * 요청의 복잡성이 다양하거나 대상의 처리 기능이 다양한 경우 사용하는 것이 좋다.
+</br>
 
 ### Health Check
+* 요청을 주기적으로 전송하여 상태를 확인한다.
+* Protocol
+    * ALB: HTTP, HTTPS
+    * NLB: TCP, TLS, UDP, TCP_UDP
+</br>
 
 
-
+### Stickiness
+* LB, APP Cookie는 ALB에서만, Source IP는 NLB에서만 사용 가능하다.
+* __사용하기 위해서는 Listener Rule에서 Stickness를 사용한다고 설정해놔야 한다.__
+* 고정 세션 해결 방법
+    * https://kchanguk.tistory.com/146
+    * https://st-soul.tistory.com/31
+1. __LB Cookie__
+    * ELB 생성 쿠키 AWSALB를 사용하여 Target Group의 동일한 대상으로 요청을 Routing
+    * Session Cookie 정보를 ALB가 생성해 가지고 있다.
+    * 후속 요청에 AWSALB 쿠키를 포함해야 한다.
+2. __App Cookie__
+    * Client 대상 고정에 대한 사용자 고유의 기준을 설정할 수 있는 유연성을 제공
+    * Session Cookie 정보를 Target이 Custom application cookie를  생성해 가지고 있고, ALB에는 Target이 생성한 Custom application cookie를 캡처해 Application Cookie 생성하여 가지고 있게 된다.
+    * Application Cookie는 Custom application cookie의 속성을 복사하지 않는다.
+    * Target은 고정을 활성화하기 위해서 ALB에 구성된 쿠키와 일치하는 사용자 지정 애플리케이션 쿠키를 설정해야 한다.
+3. __Source IP__
+    * Source IP로 지정
+> 고정 세션이므로, 특정 서버만 과부하가 발생해 로드밸런싱이 의도한대로 동작하지 않을 수 있다. 그리고 해당 특정 서버가 Fail이 발생하면 저장되어 있던 모든 세션이 소실될 수 있다.
 </br>
 
 
