@@ -3,9 +3,12 @@ For Server
 
 ## Server 구축 시, 고민할 필요 요소.
 1. CPU
+    * Multi-Processor
+    * Multi-Thread
 2. Memory
 3. Disk
 4. Storage & I/O
+    * 일관성(Consistency)
 5. Kernel & Driver
 6. Network
 7. Security
