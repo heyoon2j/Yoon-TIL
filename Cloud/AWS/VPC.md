@@ -121,14 +121,53 @@
 * 내부 및 리전 간도 지원하며, 서로 다른 AWS 계정 간에 설정도 가능
 * VPC 당 최대 125개 가능
 * VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연경을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
-> 무료가 되었지만, 특정 상황에서만 쓰일거 같다. 1:1로만 Routing이 되기 때문이다. 예러 DMZ VPC <-> Service VPC 끼리 연결
+> 무료가 되었지만, VPC가 적은 경우에 쓰일거 같다. 1:1로만 Routing이 되기 때문이다. 예로 DMZ VPC <-> Service VPC 끼리 연결
 </br>
 
 ### VPC Transit Gateway
 * 많은 VPC 간의 통신을 위해 VPC 피어링을 하게되면 복잡해진다.
-
 * TGW 당 VPC 연결 5000개
+* VGW 대신 사용할 수 있다.
 > 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
+<br>
+
+## VPC Endpoint
+* AWS를 벗어나지 않고 EC2 인스턴스를 VPC 외부 서비스오 Private하게 연결한다.
+* PrivateLink
+* IGW, VPN, NAT or Proxy를 사용할 필요가 없다.
+* 대신 동일한 리전에 있어야 한다.
+    1) Interface Endpoint: EC2에 네트워크 카드를 추가해서 사설의 네트워크 사용.
+    2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 전용의 게이트웨이를 둔다.
+
+
+## Cost
+* __VPC Reachability Analyzer__
+    * 분석당 요금: 0.10 USD
+* __AWS PrivateLink__
+    * 요금: 
+* __NAT Gateway__
+    * NAT Gateway 당 요금: 0.059 USD per hour
+    * 처리된 데이터 요금: 0.059 USD per hour
+* ____
+    * 요금: 
+
+### NAT Gateway vs NAT Instance
 
 
 
+### Private Virutual Gateway vs Transit Gateway
+| Service | Site-to-Site VPN 연결당                      | VPC 연결당          |
+| ------- | -------------------------------------------- | ------------------- |
+| VGW     | 0.05 USD (per hour) + EC2 데이터 송수신 비용 | 무료                |
+| TGW     | 0.05 USD (per hour) + EC2 데이터 송수신 비용 | 0.07 + 0.02 (GB 당) |
+* 기본적으로 연결만 보면 VGW가 싸다.
+* 하지만 VGW에서 연결된 VPC에서 다른 VPC와의 Routing이 필요한 경우, Routing을 처리해줄 Server가 필요하기 때문에 Architecture에 따라 TGW가 비용이 더 저렴할 수 있다.
+
+
+### VPC Peering vs Transit Gateway
+|  | VPC 연결 비용 | VPC 연결 | 비고 |
+|  |  |  |  |
+
+
+
+* ELB Connecting Drainning 확인
