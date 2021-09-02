@@ -1,4 +1,27 @@
 # VPC
+* Cloud Network
+* 서비스 제한: 리전 당 5개 생성 가능
+</br>
+
+## Subnet
+* 한 번 설정된 Subnet은 변경할 수 없다. 
+* 첫 IP 4개와 마지막 IP 주소는 AWS에 의해 예약되어 있다.
+    * 0~255 = 256개
+    * 10.0.0.0 : 네트워크 ID
+    * 10.0.0.1 : 라우터, 게이트웨이 주소
+    * 10.0.0.2 : DNS 주소
+    * 10.0.0.3 : 차후 사용을 위해 AWS에서 예약
+    * 10.0.0.255 : Broadcast
+
+### Private Subnet
+* 기본적으로 Inbound가 제한되어 있다.
+* 외부와 연결하기 위해서는 NAT Gateway 또는 NAT Instance를 통해서 작업해야 한다.
+</br>
+
+### Public Subnet
+* Internet Gateway에 대한 Routing Table 항목이 포함되어 있어야 한다.
+</br> 
+
 
 ## NAT Gateway
 * 5Gbps의 대역폭, 최대 45Gbps 까지 자동 확장한다 (Gbps = Gigabit per second, 초당 전송속도 )
@@ -6,11 +29,14 @@
 * 네트워크 ACL(Access Control List) 만을 사용하여 트래픽 제어
 * 포트는 1024 - 65535
 * 서브넷의 IP 주소 범위에 속하는 Private IP 주소가 자동으로 할당된 네트워크 인터페이스를 받는다.
+</br>
+
 
 ## NAT Instance
 * Instance 유형에 따라 대역폭이 달라지며, 인스턴스기 때문에 확장 및 장애 조치가 필요
 * EIP or Public IP를 사용할 수 있고, Public IP의 경우 변경 가능하다.
 * 보안 그룹과 네트워크 ACL(Access Control List)을 사용하여 트래픽 제어
+</br>
 
 
 ## Internet Gateway
@@ -18,7 +44,24 @@
     1) 인터넷 라우팅 기능
     2) Public IPv4 Address가 할당된 인스턴스에 대해 NAT를 수행
 * 네트워크 트래픽에 가용성 위험이나 대역폭 제약이 발생하지 않는다.
+</br>
 
+
+## Elastic IP (EIP)
+* EIP는 동적 클라우드 컴퓨팅을 위해 설계된 고정 퍼블리 IPv4 이다.
+* EIP는 VPC의 IGW를 통해서만 액세스할 수 있다.
+* AWS Region 당 5개가 허용되며, 절약을 위해서 NAT Gateway를 사용할 수 있다.
+* 1개는 무료이고, 2개부터 Attach가 되면 요금이 발생.
+</br>
+
+
+## Elastic Network Interface (ENI)
+* 가상 네트워크 인터페이스이다.
+* ENI의 Private IP Address, Public IP Address, MAC Address를 유지한다.
+* 사용하는 경우
+    1) 기본 네트워크 인터페이스(eth0)가 퍼블릭 트래픽을 처리하고, 보조 네트워크 인터페이스(eth1)는 백엔드 관리 트래픽을 처리. 이때 Server에 라우팅 설정이 필요하다.
+    2) 
+</br>
 
 
 ## Security Group vs Network ACL
@@ -43,3 +86,49 @@
 5. When to use?
     * ACL: 모든 트래픽에 대해 동일한 규칙을 정할 때 사용
     * SG: 해당 인스턴스에만 해당하는 규칙 및 보안 강화를 위해 사용
+</br>    
+
+
+## VPC Traffic Flow
+![VPCTrafficFlow](../img/VPCTrafficFlow.png)
+
+
+
+## Virtual Gateway (VGW)
+* 가상 프라이빗 게이트웨이
+* VPC와 다른 네트워크 사이에 Private 연결 설정을 위한 방법
+* VGW는 VPN 연결의 Amazon 측 집선장치이다.
+* VGW를 생성할 때 Private ASN(자율 시스템 번호)을 지정할 수 있다. 지정하지 않은 경우, VGW는 기본 ASN(64512)으로 생성된다. 생성한 후에는 ASN은 변경할 수 없다.
+> VPN + 다중 VPC를 사용할 경우에는 TGW를 사용하는 것이 더 효율적이며, VPN + 단일 VPC인 경우는 VGW를 사용하는 것이 좋다.
+</br>
+
+## AWS Direct Connect(DX)
+* 1 또는 10 Gbps의 전용 Private Network 연결을 제공
+* VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
+* 서비스 이점
+    1) 네트워크 전송 시 인터넷 대역폭을 두고 경쟁할 필요가 없다.
+    2) 애플리케이션이 사용하는 인터넷 대역폭을 제한함으로써 네트워크 전송 비용 절감
+    3) 대역폭을 두고 경쟁할 필요가 없으므로 오디오 또는 동영상 스트림과 같은 실시간 데이터 피드에서 운영되는 애플리케이션의 성능 향상에 도움
+    4) 해당 Private Network 회로로만 액세스 함으로써 일반적인 보안 및 규정을 준수
+    5) 하이브리드 클라우드 아키텍처 가능
+</br>
+
+
+## VPC Connection
+### VPC Peering
+* VPC 간의 연결할 때 사용.
+* 하지만 VPC 피어링은 두 VPC 간의 일대일 관계이기 때문에, 전이적 관계를 지원하지 않는다.
+* 내부 및 리전 간도 지원하며, 서로 다른 AWS 계정 간에 설정도 가능
+* VPC 당 최대 125개 가능
+* VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연경을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
+> 무료가 되었지만, 특정 상황에서만 쓰일거 같다. 1:1로만 Routing이 되기 때문이다. 예러 DMZ VPC <-> Service VPC 끼리 연결
+</br>
+
+### VPC Transit Gateway
+* 많은 VPC 간의 통신을 위해 VPC 피어링을 하게되면 복잡해진다.
+
+* TGW 당 VPC 연결 5000개
+> 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
+
+
+
