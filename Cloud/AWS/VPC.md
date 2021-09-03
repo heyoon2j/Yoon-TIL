@@ -98,12 +98,13 @@
 * 가상 프라이빗 게이트웨이
 * VPC와 다른 네트워크 사이에 Private 연결 설정을 위한 방법
 * VGW는 VPN 연결의 Amazon 측 집선장치이다.
+* VPN 터널당 최대 대역폭은 1.25Gbps
 * VGW를 생성할 때 Private ASN(자율 시스템 번호)을 지정할 수 있다. 지정하지 않은 경우, VGW는 기본 ASN(64512)으로 생성된다. 생성한 후에는 ASN은 변경할 수 없다.
 > VPN + 다중 VPC를 사용할 경우에는 TGW를 사용하는 것이 더 효율적이며, VPN + 단일 VPC인 경우는 VGW를 사용하는 것이 좋다.
 </br>
 
 ## AWS Direct Connect(DX)
-* 1 또는 10 Gbps의 전용 Private Network 연결을 제공
+* 1 또는 10 Gbps의 전용 Private Network 연결을 제공. 최대 50Gbps
 * VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
 * 서비스 이점
     1) 네트워크 전송 시 인터넷 대역폭을 두고 경쟁할 필요가 없다.
@@ -120,6 +121,7 @@
 * 하지만 VPC 피어링은 두 VPC 간의 일대일 관계이기 때문에, 전이적 관계를 지원하지 않는다.
 * 내부 및 리전 간도 지원하며, 서로 다른 AWS 계정 간에 설정도 가능
 * VPC 당 최대 125개 가능
+* 대역폭의 제한은 없다.
 * VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연경을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
 > 무료가 되었지만, VPC가 적은 경우에 쓰일거 같다. 1:1로만 Routing이 되기 때문이다. 예로 DMZ VPC <-> Service VPC 끼리 연결
 </br>
@@ -127,47 +129,62 @@
 ### VPC Transit Gateway
 * 많은 VPC 간의 통신을 위해 VPC 피어링을 하게되면 복잡해진다.
 * TGW 당 VPC 연결 5000개
-* VGW 대신 사용할 수 있다.
+* VPC 당 최대 대역폭은 50 Gpbs
+* VGW 대신 사용할 수 있으며, TGW 끼리도 Peering이 가능하다.
 > 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
 <br>
 
 ## VPC Endpoint
+![VPCEndpoint](../img/VPCEndpoint.png)
 * AWS를 벗어나지 않고 EC2 인스턴스를 VPC 외부 서비스오 Private하게 연결한다.
-* PrivateLink
+* AWS PrivateLink 사용
 * IGW, VPN, NAT or Proxy를 사용할 필요가 없다.
 * 대신 동일한 리전에 있어야 한다.
+* VPC Endpoint 유형
     1) Interface Endpoint: EC2에 네트워크 카드를 추가해서 사설의 네트워크 사용.
     2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 전용의 게이트웨이를 둔다.
+        ![GatewayEndpoint](../img/GatewayEndpoint.png)
+    3) Gateway Load Balancer Endpoint
+</br>
+
+
+## VPC Traffic Mirroring
+* 네트워크 트래픽 캡처 및 검사 기능
+* ENI를 통해서 캡처를 하는 것이기 때문에, ENI 사용이 필요하며
 
 
 ## Cost
 * __VPC Reachability Analyzer__
     * 분석당 요금: 0.10 USD
 * __AWS PrivateLink__
-    * 요금: 
+    * AZ별 VPC Endpoint 요금: 0.013 USD per hour
+    * Region에서 월별로 처리된 데이터 : >= 0.01 USD
 * __NAT Gateway__
     * NAT Gateway 당 요금: 0.059 USD per hour
     * 처리된 데이터 요금: 0.059 USD per hour
-* ____
-    * 요금: 
-
-### NAT Gateway vs NAT Instance
-
-
+* __EIP__
+    * 실행 중인 인스턴스와 연결된 각 추가 IP 주소: 0.05 USD per hour
+    * 사용하지 않는 IP: 0.05 USD per hour
+    * 안 쓰면 그냥 지우자!
+* __ENI__
+    * EC2 데이터 송수신 비용
+* __VPC Mirroring__
+    * ENI 별 요금: 0.015 per hour
 
 ### Private Virutual Gateway vs Transit Gateway
 | Service | Site-to-Site VPN 연결당                      | VPC 연결당          |
 | ------- | -------------------------------------------- | ------------------- |
 | VGW     | 0.05 USD (per hour) + EC2 데이터 송수신 비용 | 무료                |
-| TGW     | 0.05 USD (per hour) + EC2 데이터 송수신 비용 | 0.07 + 0.02 (GB 당) |
+| TGW     | 0.05 USD (per hour) + EC2 데이터 송수신 비용 | 0.07 (per hour) + 0.02 (per GB) |
 * 기본적으로 연결만 보면 VGW가 싸다.
 * 하지만 VGW에서 연결된 VPC에서 다른 VPC와의 Routing이 필요한 경우, Routing을 처리해줄 Server가 필요하기 때문에 Architecture에 따라 TGW가 비용이 더 저렴할 수 있다.
 
 
 ### VPC Peering vs Transit Gateway
-|  | VPC 연결 비용 | VPC 연결 | 비고 |
-|  |  |  |  |
+| Service | VPC 연결당 | 데이터 송수신 비용 | 비고 |
+|---------|------------|-------------------|------|
+| Peering | 무료 | 무료 |  |
+| TGW | 0.07 USD | 0.02 USD (GB 당) |  |
+* 무조건 VPC Peering이 저렴하다.
+* Reference: https://dev.classmethod.jp/articles/different-from-vpc-peering-and-transit-gateway/
 
-
-
-* ELB Connecting Drainning 확인
