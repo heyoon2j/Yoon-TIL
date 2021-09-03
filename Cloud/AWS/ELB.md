@@ -220,6 +220,12 @@
 </br>
 
 
+### Connection Draining
+* 등록 취소 또는 Unhealthy 인스턴스에 대해서 ELB는 연결을 중지시키지만(요청을 더이상 보내지 않는다), 해당 옵션을 활성화하게 되면 요청 전송은 보내지 않지만 설정한 시간까지 연결을 유지시킨다.
+* 이를통해 인스턴스가 등록 취소되기 전에 받은 요청을 완료할 수 있다.
+* 옵션: Deregistration delay
+
+
 ## Cost
 1. __Application Load Balancer__
     * ALB가 실행된 시간 또는 부분 시간 & 시간당 사용된 ALB 용량 단위(LCU)에 대해 요금 부과
