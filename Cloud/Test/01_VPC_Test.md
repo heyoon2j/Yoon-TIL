@@ -19,7 +19,8 @@
    1) 외부 IP(Internet)로 DMZ의 EC2에 SSH 접속
    2) DMZ의 EC2에서 Prod의 EC2에 접속
 4. ENI 사용해보기
-   1) 2개의 ENI 붙여서 하나는 웹 하나는 백으로 통신할 수 있게 설정
+   1) 2개의 ENI 붙여서 하나는 웹 하나는 관리으로 통신할 수 있게 설정
+   2) VPC Traffic Mirroring 통해서 로그 검색해보기!
 5. VGW 사용해보기
     1) 개인 PC와 연동
     2) 
