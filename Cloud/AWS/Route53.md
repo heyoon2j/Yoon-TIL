@@ -39,8 +39,15 @@
             * 해당 TLD는 국가나 도시같은 지리적 영역과 연관된다.
 </br>
 
+### Domain 등록 과정
+1. 도메인 
+
+</br>
+
 
 ## Record 작업
+
+
 
 
 ## Global Accelerator
