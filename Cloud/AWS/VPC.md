@@ -136,7 +136,7 @@
 
 ## VPC Endpoint
 ![VPCEndpoint](../img/VPCEndpoint.png)
-* AWS를 벗어나지 않고 EC2 인스턴스를 VPC 외부 서비스오 Private하게 연결한다.
+* AWS를 벗어나지 않고 EC2 인스턴스를 VPC 외부 서비스와 Private하게 연결한다.
 * AWS PrivateLink 사용
 * IGW, VPN, NAT or Proxy를 사용할 필요가 없다.
 * 대신 동일한 리전에 있어야 한다.

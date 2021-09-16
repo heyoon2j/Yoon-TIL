@@ -15,7 +15,15 @@
 * ```-output [json | text | table]``` : 출력 결과 옵션
 
 
+## 인증 정보
+```
+$ aws configure
+AWS Access Key ID [None]: 1234
+AWS Secret Access Key [None]: 1234key
+Default region name [None]: ap-northeast-2
+Default output format [None]: json
+```
 
 
-
+* Reference: https://www.daleseo.com/aws-cli-configure/
  
