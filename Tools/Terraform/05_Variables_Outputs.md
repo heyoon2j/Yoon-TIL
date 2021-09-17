@@ -8,6 +8,13 @@
 * Arguments
     * ```default```: 변수의 기본값을 설정
     * ```type```: 변수의 허용되는 유형 지정
+        * ```string```: "cloud"
+        * ```number```: 3.14523
+        * ```bool```: true or false
+        * ```list(<TYPE>)```: ["us-west-1a", "us-west-1c"]
+        * ```map(<TYPE>)```: {"name" = "abc", "age" = "32"}
+        * ```object({<ATTR NAME> = <TYPE>, ... })```: list(object({ internal = number, external = number, protocol = string }))
+        * ```tuple([<TYPE>, ...])```
     * ```description```: 변수에 대한 설명
     * ```validation```: 유효성 검사 규칙을 정의
         * ```condition```: 유효성 검사의 충족 조건
@@ -33,7 +40,7 @@
 * 해당 Module에 대한 Output Parameter를 지정하여, 다른 구성간에 공유할 수 있다.
 * 함수의 반환 값과 같다.
 * Child Module의 Output Variables에 접근하는 방법
-    * ```module.<MODULE NAME><OUTPUT NAME>```
+    * ```module.<MODULE NAME>.<OUTPUT NAME>```
 * Arguments
     * ```value```: 출력 변수의 값 선언
     * ```description```: 출력 변수에 대한 설명

@@ -24,6 +24,6 @@
 | Firewall(Hardware) | ACL | 트래픽 필터링, 하드웨어 방화벽 |
 | Firewall(Software) | SG | 트래픽 필터링, 소프트웨어 방화벽 |
 |  | CloudWatch | 모니터링 |
-| crontab | CloudWatch Rule | 작업 예약 스케줄러 |
+| crontab | CloudWatch Rule / Auto Scaling 반복 예약 | 작업 예약 스케줄러 |
 | TEE module | VPC Packet Mirroring | 네트워크 트래픽 캡처 및 검사 기능 |
 
