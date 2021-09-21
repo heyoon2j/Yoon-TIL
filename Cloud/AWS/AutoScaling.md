@@ -143,10 +143,11 @@
     1) 먼저 새 AMI 또는 User Data Script를 지정하는 새 Launch Template를 생성한다.
     2) 최소 정상 상태 비율, 인스턴스 워밍업 및 체크포인트를 구성하여 Instance Refresh 진행
     3) Auto Scaling은 Rolling 교체를 시작. 서비스를 중단한 인스턴스 집합을 가져와 종료하고 원하는 새 구성으로 인스턴스를 시작한다.
-    4) 그런 다음 인스턴스 Health Check 및 워밍업이 완료되면 다른 인스턴스를 교체한다.
+    4) 그런 다음 워밍업 및 인스턴스 Health Check가 완료되면 다른 인스턴스로 교체한다.
     5) Group의 특정 비율이 교체된 후 체크포인트에 도달하고, 체크포인트가 있을 때마다 Auto Scaling은 인스턴스 교체를 일시적으로 중지하고 알림을 보내고 지정된 시간 동안 기다린다.
 </br>
 </br>
+
 
 ## Scheduled Scaling
 * Scaling을 예약할 수 있으며, 하루만 확장되거나 반복되는 일정에 따라 확장되는 작업을 예약할 수 있다.

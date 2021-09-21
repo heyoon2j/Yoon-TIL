@@ -2,7 +2,7 @@
 * Elastic Computing Cloud
 * AWS에서 제공하는 크기 조정이 가능한 컴퓨팅 서비스
 * 400Gbps Ethernet Networking
-
+</br>
 
 ## Instance Types
 * 인스턴스 유형은 CPU, Memory, Storage, Networking 용량의 다양한 조합으로 구성된다.
@@ -19,7 +19,8 @@
 * tpmC -> ECU로 변환
 * Cloud는 종량 과금제이기 때문에, 기존 On-premise 만큼의 tpmC 값이 필요하지 않다.
 * http://itworkroom.blogspot.com/p/blog-page_7.html
-
+</br>
+</br>
 
 
 ## AMI
@@ -36,6 +37,8 @@
 
 ### __AMI 저장__
 * AMI는 Amazon S3에 저장된다.
+</br>
+</br>
 
 
 ## User Data & Meta Data
@@ -44,7 +47,7 @@
 * __Instance User Data__
 * 인스턴스를 Running할 때, 한 번 실행하는 Shell script.
 * 네트워크 액세스가 가능하기 전에 Root 또는 관리자 권한으로 실행된다.
-
+</br>
 
 ## 2. Meta Data
 ![MetaData](../img/MetaData.png)
@@ -56,13 +59,14 @@
     * How to search Meta Data: https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
 * __Tag 형태로 Metat Data를 지정할 수 있다. 지정을 해야 관리하기 편하기 때문에 사용하는 것이 권장사항이다.__
     * Instance 생성할 때, 태그 추가
-
+</br>
 
 ## 3. Cloud-init
 * https://cloudinit.readthedocs.io/en/latest/index.html
 * 클라우드 인스턴스 초기화를 위한 업계 표준 다중 배포 방법
 * Cloud-init은 부팅하는 동안 실행중인 클라우드를 식별하고, 클라우드에서 제공된 Meta data를 읽고 그에 따라 시스템을 초기화한다. 
-
+</br>
+</br>
 
 
 ## 배치 그룹 (Placement Group)
@@ -82,13 +86,53 @@
     * 인스턴스가 하드웨어를 공유할 경우 발생할 수 있는 동시 장애의 위험을 줄여준다.
     * 여러 가용 영역을 포괄할 수 있으며, 그룹별로 가용 영역 당 최대 7개의 인스턴스 가능
     * 서로 분리되어야 하는 소수의 크리티컬 인스턴스
+</br>
+</br>
 
+
+## EC2 Fleet
+![EC2Fleet](../img/EC2Fleet.png)
+* EC2 Fleet에는 Instance Fleet을 시작하기 위한 구성 정보가 있다.
+* EC2 Fleet은 On-demand 및 Spot Insatnce로 구성된 Group이다.
+* 작업 과정
+    1) On-demand 및 Spot의 용량 목표 및 시간당 지불하려는 최대 금액 정의
+    2) 기본으로 설정한 인스턴스 유형으로 
+    3) 플릿은 요청에 포함된 구성을 기반으로 스팟 용량 풀을 선택하여 스팟 인스턴스를 가지고온다.
+    4) 
+</br>
+
+
+## Spot Instance
+* Spot Instance에 대한 개념
+    * 스팟 용량 풀: 인스턴스 유형(예: m5.large)과 가용 영역이 동일한 미사용 EC2 인스턴스의 집합.
+    * 스팟 가격: 스팟 인스턴스의 시간당 현재 가격
+    * 스팟 인스턴스 요청: 요청 시 지불하고자하는 시간당 최고 가격(입찰가)를 제공한다. 입찰가를 지불하지 않는 경우, 기본 입찰가는 온디맨드 가격이다. 요청에 대한 시간당 입찰가가 스팟 가격을 초과할 경우, 요청이 이행된다.
+    * 인스턴스 리밸런싱 권고: 스팟 인스턴스의 중단 위험이 높아지고 있음을 알리고, 새로운 스팟 인스턴스로 사전에 리밸런싱할 수 있게 해준다.
+    * 스팟 인스턴스 중단: 용량이 더 이상 제공되지 않거나, 스팟 가격이 요청의 최고가를 초과하는 경우 종료.
+    * 스팟 플릿: 스팟 인스턴스 모음
+    * 스팟 플릿 유형:
+        1) Load balancing workloads: 모든 AZ에서 동일한 사이즈의 인스턴스 사용. 웹 서비스
+        2) Flexible workloads: 모든 AZ에서 모든 사이즈의 인스턴스 사용. 배치 및 CI/CD 작업
+        3) Big data workloads: 단일 AZ에서 모든 사이즈의 인스턴스 사용. MapReduce 작업
+
+### 할당 전략
+1. __lowest-price__
+    * Spot Instance는 최저 가격의 Spot capacity pool에서 제공
+    * 짧은 시간 동안 실행될 경우의 워크로드
+2. __capacity-optimized__
+    * 시작하는 인스턴스의 수에 대한 용량이 최적화된 Spot capacity pool에서 제공. 즉, 실시간 용량 데이터를 기준으로 가장 가용성이 높은 pool에서 제공
+    * 중단 비용이 높은 워크로드를 실행하는 경우 사용. 즉, 중단이 최대한 없어야 할 워크로드
+
+
+</br>
+</br>
 
 
 ## 종료 방식: stop vs terminate
 * stop: 인스턴스를 중지하면 바로 종료된다.
 * terminate: 인스턴스를 중지해도 종료되지 않는다. 중지 후에 종료해야 된다.
-
+</br>
+</br>
 
 
 ## Pricing
