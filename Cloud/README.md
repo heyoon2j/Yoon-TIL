@@ -53,9 +53,47 @@ bㅠㅠb# Cloud에 필요한 지식
 * Block
     * Volumn 단위로 저장, 실제 물리적 디스크로 생각하면 편하다.
 * Object
-    * Object(File) 단위로 저장, 내용을 수정하기 위해서는 파일 자체를 변경해야 한다.
+    * Object 단위로 저장, 내용을 수정하기 위해서는 파일 자체를 변경해야 한다.
 * File
-    * q
+    * File 단위로 저장.
+    * 다양한 크기의 파일을 높은 처리량으로 변경하려면 파일 시스템이 객체 시스템보다 우수하다.
+
+
+## HDD vs SSD
+* 디스크의 성능은 데이터를 읽고 쓰는데 걸리는 시간은 디스크 헤더를 움직여서 읽고, 쓸 위치로 옮기는 단계에서 결정된다.
+* 그리고 디스크의 성능은 디스크 헤더의 위치이동 없이 얼마나 많은 데이터를 한 번에 기록하느냐에 따라 결정
+1. Solid State Drive (SSD)
+    * 플래시 메모리에 저장
+    * 메모리를 통한 입출력은 전기적 신호이기 때문에 빠르다
+2. Hard Disk Drive (HDD)
+    * 디스크에 저장
+    * 디스크의 액세스 암을 움직이면서 헤드를 통해 데이터를 읽고 쓰기 때문에 느림
+
+
+## Random I/O vs Sequential I/O
+* Speed: Sequential > Random
+    * DB 튜닝시 Sequential의 선택 비중을 높이고, Random 을 줄인다.
+
+
+
+
+## IOPS vs Throughput
+* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 입출력 작업을 수행하는데 걸리는 시간. 작업 수 또는 트랜잭션이라고도 한다.
+* __Throughput(MB/s)__: 초당 읽거나 쓰는 비트 수 또는 전송 속도. IOPS 보다는 Throughput이 더 정확한 성능 측정 기준.
+* Throughput 계산 방법
+    ```
+    Throughput in MiB/s = ((Volume size in GiB) × (IOPS per GiB) × (I/O size in KiB))
+    ```
+    * (Volume size in GiB) : V = 볼륨 크기
+    * (IOPS per GiB) : R = I/O 속도
+    * (I/O size in KiB) : I = I/O 크기, Block 크기
+* Scan Time 계산 방법
+    ```
+     Volume size
+    ------------ = Scan time
+     Throughput
+    ```
+* Reference: https://www.router-switch.com/faq/storage-iops-vs-throughput.html
 
 
 ## IasS, PaaS, SaaS, DaaS

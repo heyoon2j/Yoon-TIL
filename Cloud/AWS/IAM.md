@@ -110,3 +110,13 @@ __4. SAML (Security Assertion Markup Language)__
 
 ## Cost (비용)
 * 추가 비용 없이 사용할 수 있다.
+
+
+## IAM
+
+### KMS에 대한 권한
+* __kms:CreateGrant__
+* __kms:Decrypt__
+* __kms:DescribeKey__
+* __kms:GenerateDataKeyWithoutPlainText__
+* __kms:ReEncrypt__
