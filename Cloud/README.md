@@ -75,8 +75,6 @@ bㅠㅠb# Cloud에 필요한 지식
     * DB 튜닝시 Sequential의 선택 비중을 높이고, Random 을 줄인다.
 
 
-
-
 ## IOPS vs Throughput
 * __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 입출력 작업을 수행하는데 걸리는 시간. 작업 수 또는 트랜잭션이라고도 한다.
 * __Throughput(MB/s)__: 초당 읽거나 쓰는 비트 수 또는 전송 속도. IOPS 보다는 Throughput이 더 정확한 성능 측정 기준.
@@ -94,6 +92,43 @@ bㅠㅠb# Cloud에 필요한 지식
      Throughput
     ```
 * Reference: https://www.router-switch.com/faq/storage-iops-vs-throughput.html
+
+
+
+## RAID
+* Redundant Array Inexpensive Disk or Redundant Array Independent Disk
+* 처음 개념은 여러개 의 저렴한 디스크를 하나로 모아 고성능 디스크처럼 사용하자는 생각에서 출발함.
+* 현재는 저렴한 디스크라기 보다 여분의 독립적인 디스크들을 하나로 모아 고성능 혹은 고가용성을 위해 사용.
+* 데이터가 디스크에 저장되는 방식: 데이터는 M개의 조각으로 나뉘어 있고, 디스크에 1번 조각이 쓰여지는 동안 나머지 조각들은 대기하게 된다. 1번 조각이 다 쓰여지면 이후에 2번, 3번 순으로 쓰기가 이루어진다.
+
+
+### RAID 0
+* __Striping__ 
+* 다음 데이터 조각들이 기다리지 않고, N개의 디스크에 순차적으로 저장됨으로써 성능 향상
+* 하나의 디스크가 Fault가 되면 장애 복구가 어렵다.
+* 패리티 체크를 하지 않는다.
+> I/O 성능이 내결함성보다 중요한 경우
+
+### RAID 1
+* __Mirroring__
+* 양쪽 디스크에 동시에 쓰여짐으로써 가용성을 제공한다.
+* 패리티 체크를 하지 않는다.
+> 내결함성이 I/O 성능보다 더 중요한 경우
+
+### RAID 2
+
+### RAID 3
+
+### RAID 4
+
+### RAID 5
+
+### RAID 6
+
+* Reference : https://m.blog.naver.com/leekh8412/100175594400
+
+
+
 
 
 ## IasS, PaaS, SaaS, DaaS

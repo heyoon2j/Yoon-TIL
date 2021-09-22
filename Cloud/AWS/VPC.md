@@ -141,8 +141,8 @@
 * IGW, VPN, NAT or Proxy를 사용할 필요가 없다.
 * 대신 동일한 리전에 있어야 한다.
 * VPC Endpoint 유형
-    1) Interface Endpoint: EC2에 네트워크 카드를 추가해서 사설의 네트워크 사용.
-    2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 전용의 게이트웨이를 둔다.
+    1) Interface Endpoint: EC2에 네트워크 카드를 추가해서 사설의 네트워크 사용. ENI가 추가가 된다.
+    2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 전용의 게이트웨이를 둔다. ENI가 추가되지 않는다.
         ![GatewayEndpoint](../img/GatewayEndpoint.png)
     3) Gateway Load Balancer Endpoint
 </br>

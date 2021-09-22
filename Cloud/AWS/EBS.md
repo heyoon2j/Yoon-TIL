@@ -59,23 +59,73 @@
 * 공유 네트워크 파일 스토리지 (NAS: Network Attach Storage)
 * Linux 워크로드, NFSv4.0 및 NFSv4.1 파일 시스템
 * 해당 파일 시스템 프로토콜을 제공하는 EC2 AMI를 선택해야 되거나, 일부 AMI의 경우 NFS Client를 설치해야 한다.
+</br>
 
 ## EFS Class
 1. 표준 스토리지 클래스
     * 다중 AZ 복원력과 최고 수준의 내구성 및 가용성을 제공하는 EFS Standard 및 EFS Standard–Infrequent Access(Standard–IA).
+    * AWS 리전 기준
 2. One ZOne 스토리지 클래스
     * EFS One Zone 및 EFS One Zone–Infrequent Access(EFS One Zone–IA)는 고객이 단일 AZ에 데이터를 저장하도록 선택하여 추가 비용 절감을 선택할 수 있도록 한다.
+    * Availability Zone 기준
+</br>
+</br>
+
+
+## EFS Performance
+1. Performance Mode
+    * 변경 불가능
+    * 범용 모드(General Purpose): 범용 웹 서비스 환경, 콘텐츠 관리 시스템, 홈 디렉토리 및 일반 파일 서비스와 같이 지연 시간에 민감한 사용 사례
+    * 최대 I/O 성능 모드(Max I/O): 높은 수준의 집계 처리량 및 초당 작업에 사용. 빅 데이터 분석, 미디어 처리 및 게놈 분석과 같은 고도의 병렬화된 애플리케이션 및 워크로드
+2. Throughput Mode
+    * 24시간 뒤에 변경 가능
+    * 버스트(Bursting): 파일 시스템 크기가 커짐에 따라 확장
+    * 프로비저닝된(Provisioned): 즉시 프로비저닝된 처리량을 제공받는다(비용이 비쌈!!!!)
+* 계산: https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes
+</br>
+</br>
+
+
+
+## EFS Work
+![EFSWork](../img/EFSWork.png)
+1. Amazon EFS를 사용하여 파일 시스템 생성
+2. 마운트를 위한 VPC Endpoint 생성
+3. Amazon EC2 인스턴스에 파일 시스템을 탑재한 다음 파일 시스템에서 데이터를 읽고 쓸 수 있다.
+    * NFSv4.0, NFSv4.1 프로토콜을 통해 통신
+    * 통신 시 ```amazon-efs-utils``` 도구 사용
+4. NFS를 지원하지 않는 AMI의 경우, NFS Client를 설치해야 한다.
+</br>
+</br>
+
+
+## EFS Security
+* Amazon EFS는 전송 데이터 암호화와 저장 데이터 암호화라는 두 가지 형식의 파일 시스템 암호화를 지원한다.
+* EFS 파일 시스템을 생성할 때 저장 데이터 암호화를 활성화할 수 있다.
+* 파일 시스템을 마운트할 때 전송 중인 데이터의 암호화를 활서화할 수 있다.
+* 암호화 과정
+    1) 파일 데이터는 파일 시스템을 생성할 때 지정한 CMK를 사용하여 저장 시 암호화된다.
+    2) 파일 이름, 디렉터리 이름 및 디렉터리 콘텐츠인 메타데이터는 EFS에서 관리하는 키로 암호화된다.
+</br>
+</br>
+
+
+## Network Access Control
+* Interface Endpoint를 이용하여 EFS와 Instance의 Private Connection을 설정
+* Reference: https://docs.aws.amazon.com/efs/latest/ug/efs-vpc-endpoints.html
+</br>
+</br>
+
 
 
 ## Amazon FSx
 * Winodws 워크로드, NTFS 파일 시스템
-
+</br>
+</br>
 
 
 ## Cost
 * 
-
-
 </br>
 </br>
 
