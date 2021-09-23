@@ -117,6 +117,12 @@
 </br>
 
 
+## Backup
+* AWS Backup은 EFS 파일 시스템의 증분식 백업을 수행한다.
+* https://docs.aws.amazon.com/ko_kr/efs/latest/ug/awsbackup.html
+</br>
+</br>
+
 
 ## Amazon FSx
 * Winodws 워크로드, NTFS 파일 시스템
