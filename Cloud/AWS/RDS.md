@@ -38,33 +38,62 @@
 
 
 ## High Availability 
-### 다중 AZ 배포
+![DBHA](../img/DBHA.png)
+</br>
+
+### 다중 AZ 배포 (Multi-AZ)
+![DBMultiAZ](../img/DBMultiAZ.png)
 * 다중 AZ 배포에서 Amazon RDS는 다른 가용 영역에 __동기식 대기 복제본을__ 자동으로 프로비저닝하고 유지 관리한다.
+* __Standby replica__ 라고도 한다.
+* 해당 기능은 읽기 전용 시나리오를 위한 확장 솔루션이 아니다. 그렇기 때문에 읽기 트래픽을 처리하기 위해 대기 복제본을 사용할 수 없다.
+* 동기식이기 때문에 백업 시, 해당 DB를 백업 중 지연 시간 급증을 최소화한다.
+* 재해 복구 시, 자동으로 Standby replica로 전환한다.
+</br>
 
-### 읽기 전용 복제본
+### 읽기 전용 복제본 (Read Replicas)
+![ReadReplica](../img/ReadReplica.png)
 * DB 엔진의 기본 제공 복제 기능을 사용하여 원본 DB 인스턴스에서 읽기 전용 복제본이라는 특수한 유형의 DB 인스턴스를 생성.
-* DB 인스턴스에 대한 업데이트는 읽기 전용 복제본에 비동기식으로 복사된다.
+* 원본 DB와 읽기 전용 복제본 간에 __미리 쓰기 로그(WAL)__ 데이터를 전송하는 특수 연결이 생성되며, DB 인스턴스에 대한 업데이트는 읽기 전용 복제본에 비동기식으로 복사된다.
+    * PostgreSQL은 복제 처리를 위해 단일 프로세스를 사용
+* 재해 복구 솔루션으로 읽기 전용 복제본을 독립 실행형 인스턴스로 승격할 수 있다.
+</br>
+</br>
 
 
-## DB Backing up & Restoring
-### Multi-AZ
-* 고가용성을 위한 다중 AZ
-* 다중 AZ를 통해 DB 인스턴스에 대한 고가용성 및 장애 조치 지원을 제공
+## Backup
+* DB 인스턴스 백업 기간 동안 DB 인스턴스의 자동 백업을 생성하고 저장한다.
+* RDS는 DB 인스턴스의 스토리지 볼륨 스냅샷을 생성한다.
+* __장기간 백업하려면 스냅샷을 Amazon S3으로 내보내는 것이 좋다!__
+    * 해당 작업을 수행하기 위해서는 아래와 같은 정책 허용이 필요
+    ```
+    s3:PutObject*
+    s3:GetObject*
+    s3:ListBucket
+    s3:DeleteObject*
+    s3:GetBucketLocation
+    ```
 * 
-
-</br>
-
-
-### Read Replicas
-* 읽기 전용 복제
-
-
 </br>
 </br>
 
 
+## Parameter Group
+* DB 인스턴스와 파라미터 그룹을 연결하여 DB 엔진 구성을 관리한다.
+* 각 엔진마다 파라미터가 다르기 때문에 맞춰서 설정해 줘야 한다.
+* https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group
+</br>
+</br>
 
 
-# Amazon DynamoDB
-* 비관계형 데이터베이스 서비스
-* 
+## Log
+* 기본적으로 DB의 Log 파일은 콘솔에서 확인이 가능하다.
+* CloudWatch에서 로그를 확인하려면 __"로그 내보내기"__ 에서 게시할 로그 유형을 선택하고, 파라미터 그룹을 설정해야 한다.
+> 파라미터 그룹을 설정하지 않으면, 내보내기를 하더라도 로그는 보이지 않는다.
+</br>
+</br>
+
+
+
+## Aurora DB Cluster
+![DBCluster](../img/DBCluster.png)
+* Amazon Aurora DB Cluster는 하나 이상의 DB Instance와 해당 DB Instance의 데이터를 관리하는 Cluster Volumn으로 구성된다.
