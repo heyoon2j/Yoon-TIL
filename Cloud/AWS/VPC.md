@@ -131,6 +131,9 @@
 * TGW 당 VPC 연결 5000개
 * VPC 당 최대 대역폭은 50 Gpbs
 * VGW 대신 사용할 수 있으며, TGW 끼리도 Peering이 가능하다.
+* __Association__ 은 Routing Table과 Attachement를 연결하기 위해 사용 (Attachment는 하나의 Routing Table에만 연결 가능)
+* __Propagation__ 은 Routing 정보를 전파하기 위해 사용 (Attachment는 다수의 Tating Table 연결 가능)
+
 > 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
 <br>
 
