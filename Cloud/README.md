@@ -239,6 +239,10 @@ bㅠㅠb# Cloud에 필요한 지식
     * 소프트웨어에서는 이를 위해 인터페이스로 제공해주고, 사용자는 제공받은 인터페이스를 구현하게 된다. 이렇게되면 인터페이스를 구현한 클래스를 바꾸더라도 정상적으로 작동하게 된다(하드웨어처럼 인터페이스도, 클래스도 각각 정상적으로 구현했을 때)
 
 
-
+## MTBF / MTTR / MTTF
+* __MTBF__ : Mean Time Between Failure, 평균 고장 시간 간격
+* __MTTR__ : Mean Time To Repair, 평균 수리 시간. 고장나 있는 시간을 의미한다.
+* __MTTF__ : Mean Time to Failure, 평균 고장 시간. 수리된 이후 다시 고장나기 전까지의 시간을 의미
+* https://m.blog.naver.com/pxckr/220838433353
 
 

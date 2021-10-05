@@ -47,7 +47,7 @@
 * 작동 방식
     1) KMS 키를 지정하여 AWS KMS에 GenerateDataKeyWithoutPlaintext 요청을 보낸다
     2) AWS KMS는 새 데이터 키를 생성하고 볼륨 암호화를 위해 선택한 KMS 키로 암호화하고 암호화된 데이터 키를 Amazon EBS로 전송하여 볼륨 메타데이터와 함께 저장한다
-    3) 암호화된 볼륨을 인스턴스에 연결하면 Amazon EC2가 데이터 키를 해독할 수 있도록 AWS KMS에 CreateGrant 요청을 보낸다.
+    3) 암호화된 볼륨을 인스턴스에 연결하면 Amazon EC2가 데이터 키를 해독할 수 있도록 AWS KMS에 CreateGrant 요청을 보낸다
     4) 그리고나서 EC2가 Decrypt 요청을 보내면, AWS KMS는 암호화된 데이터 키를 해독하고 Amazon EC2로 보낸다
     5) Amazon EC2는 하이퍼바이저 메모리의 일반 텍스트 데이터 키를 사용하여 볼륨에 대한 디스크 I/O를 암호화한다. 일반 텍스트 데이터 키는 볼륨이 인스턴스에 연결되어 있는 한 메모리에 유지된다
 </br>
