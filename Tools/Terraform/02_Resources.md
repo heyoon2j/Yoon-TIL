@@ -105,7 +105,7 @@
 
 ## for_each
 * Resource Block을 같은 구성으로 여러 개 만들고 싶을 때, 각 각 별도의 Block을 작성하지 않고 관리하고 싶을 때 사용.
-* ```for_each```와 ```each```를 같이 사용
+* 여러 개의 리소스의 경우, ```for_each```와 ```each```를 같이 사용.
   1) Map
     ```
     resource "azurerm_resource_group" "rg" {
@@ -164,6 +164,19 @@
   }
   ```
   * assets, media Module의 Resource는 동일하므로 위의 예제처럼 ```for_each``` 구문을 이용
+* 1개 리소스만 사용하는 경우, ```<TYPE>.<NAME>[<key>]``` 사용
+  ```
+  # Variable
+  netVpc = {
+      name = "vpc-y2net-an2"
+      cidr = "10.20.0.0/24"
+  } 
+
+  # Resource
+  tags = {
+      Name : var.netVpc["name"]
+  }  
+  ```
 </br>
 
 
