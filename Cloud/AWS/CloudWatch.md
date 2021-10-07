@@ -3,6 +3,7 @@
 * 로그, 지표 및 이벤트 양식으로 모니터링 및 운영 데이터를 수집하고, 자동화된 대시보드를 사용하여 시각화한다.
 </br>
 
+
 ## Monitoring List
 ### 지표 (Metric)
 * 시스템 성능에 대한 데이터, 많은 AWS 서비스에 대해 무료 지표를 기본적으로 제공한다.
@@ -55,12 +56,21 @@
 
 
 ## CloudWatch 모니터링 방법
-1. Metric 생성
+1. Custom Metric 생성
     * https://blog.leedoing.com/70
+    * https://aws.amazon.com/ko/blogs/korea/amazon-cloudwatch-custom-metrics/
+    * 기본적으로 Consol 에서는 생성이 불가
+    1) EC2 등 리소스에 자격 증명 부여
+    2) AWS CLI를 이용하여 생성
+       * ```$ aws cloudwatch put-metric-data --metric-name PageViewCount --namespace "MyService" --value 2 --timestamp 2016-01-15T12:00:00.000Z``` 
+    3) 
+    4) 
+    5) 
+    6) 
+    7) 
+2. Dashboard 생성
     * 
-1. Dashboard 생성
-    * 
-2. 
+3. 
 
 
 
