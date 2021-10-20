@@ -226,6 +226,15 @@
 * 옵션: Deregistration delay
 
 
+## ELB Logging
+* ELB Log Data는 S3에 저장된다.
+* Bucket Policy 추가
+* Setting 방법
+    1) ELB -> Description -> Attributes -> Access logs
+    2) Check Enable -> S3 location : ```${s3 name}/${prefix}```
+
+
+
 ## Cost
 1. __Application Load Balancer__
     * ALB가 실행된 시간 또는 부분 시간 & 시간당 사용된 ALB 용량 단위(LCU)에 대해 요금 부과

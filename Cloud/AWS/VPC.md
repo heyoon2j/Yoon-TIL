@@ -93,6 +93,16 @@
 ![VPCTrafficFlow](../img/VPCTrafficFlow.png)
 
 
+## VPC Flow Log
+* VPC Flow Log는 VPC, Subnet, Network Interface 등을 통해 VPC 내 Flow를 Log로 남긴다.
+1. CloudWatch Logs에 게시
+    * 
+
+2. S3에 게시
+    * 
+
+> 결론적으로 비용은 S3가 더 싸며, insight는 CloudWatch가 더 효율적이다.
+
 
 ## Virtual Gateway (VGW)
 * 가상 프라이빗 게이트웨이

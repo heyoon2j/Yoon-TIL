@@ -97,16 +97,19 @@
 </br>
 
 ### __Statistics__
-
-
+* Statistics(통계)는 지정된 기간 동안의 Metric 데이터의 집계이다.
+* 집계는 지정한 기간 내에 Namespace, Metic Name, Dimesion 및 Data Point 측정 단위를 사용하여 수행된다.
+* 각 Statistics(통계)에는 ```Bytes, Seconds, Count, Percent``` 측정 단위가 있다. 
 </br>
 
 ### __Percentiles__
-
+* 백분위 수는 데이터 집합 값의 상대적 위치를 나타낸다.
+* https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Percentiles
 </br>
 
 ### __Alarms__
-
+* 알람을 사용하여 자동으로 사용자를 대신하여 작업을 시작할 수 있다.
+* Trigger 이다.
 </br>
 </br>
 
@@ -119,7 +122,7 @@
 
 ### Metric
 1. AWS Service Metric
-    * AWS Serice 확인
+    * AWS Service 확인
     * https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html
     * 
 2. Custom Metric 생성
@@ -131,26 +134,67 @@
        * ```$ aws cloudwatch put-metric-data --metric-name PageViewCount --namespace "MyService" --value 2 --timestamp 2016-01-15T12:00:00.000Z```
 </br>
 
-### Log
-1. AWS Service Log
-    * 
-2. 사용자 지정 Log 생성
-    * 
-</br>
-
 ### Dashborad
 * 원하는 지표(Metric)나 로그(Log)들을 정리하여 볼 수 있다. 즉, 나만의 대시보드를 만들 수 있다.
     * 
 </br>
 
 ### Alarm
-3. Alarm 생성
+1. Alarm 생성
     * 
-4. Event 생성
+2. Event 생성
     * 
 
 </br>
 </br>
+
+
+
+## CloudWatch Logs
+* EC2 instance, Route 53 등에서 로그 파일을 모니터링, 저장 및 액세스 할 수 있는 서비스.
+</br>
+
+### __Log events__
+* 로그 이벤트는 모니터링 중인 애플리케이션 또는 리소스에 의해 기록된 일부 활동에 대한 레코드(Log Data라고 생각하면 된다).
+</br>
+
+### __Log streams__
+* 로그 스트림은 모니터링 중인 애플리케이션 인스턴스나 리소스에서 나온 이벤트의 시퀀스를 표시하는 데 주로 사용.
+> 순서를 표시해야 되기 때문에 사용되야 한다. 순차적으로 저장되면 상관없을 지도.. 공부해봐야 알 거 같다.
+</br>
+
+### __Log groups__
+* 동이란 보존 기간, 모니터링 및 액세스 제어 설정을 공유하는 로그 스트림 그룹을 정의한다.
+* 각 로그 스트림은 하나의 로그 그룹에 속해야 하며, 하나의 로그 그룹에서 포함할 수 있는 로그 스트림의 수에는 제한이 없다.
+* 예를 들면, 여러 대 호스트의 각 Apache 액세스 로그에 대한 로그 스트림들은 ```MyWebsite.com/Apache/access_log```라는 하나의 로그 그룹으로 묶일 수 있다.
+</br>
+
+### __Metric filters__
+* 지표 필터를 사용하여 수집된 이벤트에서 지표 관찰값을 추출하고 이를 CloudWatch 지표의 데이터 요소로 변환할 수 있다.
+* 지표 필터는 로그 그룹에 할당이 되고, 로그 그룹에 할당된 모든 필터들은 로그 스트림에 적용된다.
+</br>
+
+### __Retention settings__
+* 보존 기간 설정은 CloudWatch Logs에서 로그 이벤트를 보관하는 기간을 설정하는데 사용된다.
+* 기간이 만료된 로그 이벤트는 자동으로 삭제된다.
+* 지표 필터와 마찬가지로 보존 기간 설정 역시 로그 그룹에 할당이 되며, 로그 그룹에 할당된 보존 기간은 로그 스트림에 적용된다.
+
+</br>
+</br>
+
+## CloudWatch Logs 방법
+* CloudWatch Agent 이용
+```
+
+```
+
+1. 
+2. 
+3. q
+4. q
+5. q
+6. q
+
 
 
 
