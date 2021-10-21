@@ -8,7 +8,7 @@
   
     echo abcd | tr -d 1,3,4,a,c     # bd
     ```
-  
+
 
 
 

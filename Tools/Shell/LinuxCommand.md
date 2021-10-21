@@ -58,15 +58,15 @@
     $ sort -r -k 5 /etc/passwd
     ```
 
- * ```sed``` : 필터링과 텍스트를 변환하는 스트림 편집기
-     * 원본 변화없이 출력 결과를 변화시킨다.
-     * ```>>``` 등 리다이렉션을 통해 따로 저장할 수 있다.
-     * ```sed 's/찾을 텍스트/바꿀 텍스트/' filen_name```
-     * https://jhnyang.tistory.com/287, https://m.blog.naver.com/PostView.nhn?blogId=coldlion1&logNo=100156549623&proxyReferer=https:%2F%2Fwww.google.com%2F
-     * Option
-         * -n : 보통 p와 함께 쓰이며, pattern space의 출력을 제한한다.
-         * -e : 다중 편집 실행
-         * -i[SUFFIX] : 변환 후, 확장자 변경하여 저장
+ ## ```sed``` : 필터링과 텍스트를 변환하는 스트림 편집기
+* 원본 변화없이 출력 결과를 변화시킨다.
+* ```>>``` 등 리다이렉션을 통해 따로 저장할 수 있다.
+* ```sed 's/찾을 텍스트/바꿀 텍스트/' filen_name```
+* https://jhnyang.tistory.com/287, https://m.blog.naver.com/PostView.nhn?blogId=coldlion1&logNo=100156549623&proxyReferer=https:%2F%2Fwww.google.com%2F
+* Option
+    * -n : 보통 p와 함께 쓰이며, pattern space의 출력을 제한한다.
+    * -e : 다중 편집 실행
+    * -i[SUFFIX] : 변환 후, 확장자 변경하여 저장
      ```shell script
      # 특정 범위 출력  
      $ sed -n '1,3p' test    # 1~3번줄까지 출력
@@ -87,6 +87,9 @@
      $ sed 's/abc/efg/g' test > new_test   # abc를 efg로 전체 행 치환
      $ sed -i 's/abc/efg/gi' test   # abc 대소문자 상관없이 찾아서 efg로 치환
      ```
+</br>
+</br>
+
 
 * ```expr```
     * https://storycompiler.tistory.com/111
@@ -104,17 +107,22 @@
     $ nohub ls -al &
     ```
 
-* ```date``` : 날짜 및 시간 정보
-    * 
-    * https://m.blog.naver.com/PostView.nhn?blogId=coldlion1&logNo=100156549623&proxyReferer=https:%2F%2Fwww.google.com%2F
-    ```shell script
-    #!/bin/sh
-    cur_date=$(date +%Y/%m/%d)
-    yesterday_date_eng="`date +%Y/%m/``expr \`date +%e\` \- 1`"
-    yesterday_date_nor="`date +%Y/%m/``expr \`date +%e\` \- 1`"
-    yesterday_date_ago="`date --date=\"1 days ago\"`"
-    echo ${cur_date}
-    ```
+## ```date``` : 날짜 및 시간 정보
+* https://m.blog.naver.com/PostView.nhn?blogId=coldlion1&logNo=100156549623&proxyReferer=https:%2F%2Fwww.google.com%2F
+* Option
+* 
+```shell script
+#!/bin/sh
+cur_date=$(date +%Y/%m/%d)
+yesterday_date_eng="`date +%Y/%m/``expr \`date +%e\` \- 1`"
+yesterday_date_nor="`date +%Y/%m/``expr \`date +%e\` \- 1`"
+yesterday_date_ago="`date --date=\"1 days ago\"`"
+echo ${cur_date}
+```
+
+</br>
+</br>
+
 
 * ```expr``` : 
 
@@ -124,3 +132,16 @@
     # option -L : Level
     $ tree -L 2         # Depth 2 까지만 표시
     ```
+</br>
+</br>
+
+
+## awk
+
+
+</br>
+</br>
+
+
+
+
