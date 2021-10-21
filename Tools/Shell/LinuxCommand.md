@@ -108,18 +108,57 @@
     ```
 
 ## ```date``` : 날짜 및 시간 정보
+* 날짜 및 시간 정보를 출력한다.
 * https://m.blog.naver.com/PostView.nhn?blogId=coldlion1&logNo=100156549623&proxyReferer=https:%2F%2Fwww.google.com%2F
 * Option
-* 
-```shell script
-#!/bin/sh
-cur_date=$(date +%Y/%m/%d)
-yesterday_date_eng="`date +%Y/%m/``expr \`date +%e\` \- 1`"
-yesterday_date_nor="`date +%Y/%m/``expr \`date +%e\` \- 1`"
-yesterday_date_ago="`date --date=\"1 days ago\"`"
-echo ${cur_date}
-```
+    | 옵션 | 설명 |
+    |------|------|
+    | -s [string] '2017-01-01 00:00:00' | 시간을 설정할 때 사용 |
+    | -u | UTC로 출력 |
+    | -d [string] | string 인자 값에 해당하는 날짜를 출력 |
+    | -r [file] | File 또는 Directory를 참조하여 수정 일시 출력 |
 
+    * Example
+        ```shell script
+        $ date -s '2017-01-01 00:00:00'     # Sun Jan  1 00:00:00 KST 2017
+
+        $ date -u       # Sun Jan  1 00:00:00 UTC 2017
+
+        $ date -d '-1 second'       # 1초 전
+        $ date -d '+1 minute'       # 1분 후
+        $ date -d 'tomorrow'        # 내일
+        ```
+
+* Format
+    | 포맷 | 설명 |
+    |------|------|
+    | %% | % 기호 출력 |
+    | %a / %A | 요일 출력, Sun / Sunday |
+    | %b / %B | 월 출력, Jan / January |
+    | %y / %Y | 연도 출력21 / 2021 |
+    | %m | 월 출력, 12 |
+    | %d | 날짜 출력, 01 |   
+    | %H | 시간 출력, 23 |     
+    | %M | 분 출력, 59 |
+    | %s / %S | 초 출력, 첫 UTC 시간으로부터 경과된 초 / 02 |
+    | %D | '%m/%d/%y' 형태 출력, 12/01/21 |
+    | %R | '%H:%M' 형태 출력, 23:59 |    
+    | %T | '%H:%M:%S' 형태 출력, 23:59:02 |
+    | %z | 타임존 값 출력 |
+    
+    * Example
+        ```
+        $ date -u '+%Y-%m-%d %T'
+        $ date -u '+%Y-%m-%dT%R:%s'
+
+        # Script
+        #!/bin/sh
+        cur_date=$(date +%Y/%m/%d)
+        yesterday_date_eng="`date +%Y/%m/``expr \`date +%e\` \- 1`"
+        yesterday_date_nor="`date +%Y/%m/``expr \`date +%e\` \- 1`"
+        yesterday_date_ago="`date --date=\"1 days ago\"`"
+        echo ${cur_date}
+        ```
 </br>
 </br>
 
@@ -137,7 +176,9 @@ echo ${cur_date}
 
 
 ## awk
-
+* 파일로 부터 레코드를 선택하고, 선택된 레코드에 포함된 값을 조작하거나 데이터화하는 것을 목적으로 사용하는 프로그램.
+* 파싱하는 프로그램으로 생각하면 될거 같다.
+* https://recipes4dev.tistory.com/171
 
 </br>
 </br>
