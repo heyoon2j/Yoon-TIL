@@ -64,9 +64,9 @@
   ``` 
 
 
-
-
-
+## cidrsubnet(prefix, newbits, netnum)
+* https://www.terraform.io/docs/language/functions/cidrsubnet.html
+* 
 
 
 
