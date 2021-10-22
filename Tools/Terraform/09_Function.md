@@ -64,9 +64,37 @@
   ``` 
 
 
+# Network
 ## cidrsubnet(prefix, newbits, netnum)
 * https://www.terraform.io/docs/language/functions/cidrsubnet.html
-* 
+* 주어진 IP 네트워크 주소 접두사 내에서 서브넷 주소를 계산
+  ```
+  > cidrsubnet("172.16.0.0/12", 4, 2)
+  172.18.0.0/16
+  > cidrsubnet("10.1.2.0/24", 4, 15)
+  10.1.2.240/28
+  > cidrsubnet("fd00:fd12:3456:7890::/56", 16, 162)
+  fd00:fd12:3456:7800:a200::/72
+  ```
 
+## cidrsubnets(prefix, newbits...)
+* https://www.terraform.io/docs/language/functions/cidrsubnets.html
+* 특정 CIDR 접두사 내에서 연속적인 IP 주소 범위 시퀀스를 계산
+  ```
+  > cidrsubnets("10.1.0.0/16", 4, 4, 8, 4)
+  [
+    "10.1.0.0/20",
+    "10.1.16.0/20",
+    "10.1.32.0/24",
+    "10.1.48.0/20",
+  ]
 
+  > cidrsubnets("fd00:fd12:3456:7890::/56", 16, 16, 16, 32)
+  [
+    "fd00:fd12:3456:7800::/72",
+    "fd00:fd12:3456:7800:100::/72",
+    "fd00:fd12:3456:7800:200::/72",
+    "fd00:fd12:3456:7800:300::/88",
+  ]
+  ```
 
