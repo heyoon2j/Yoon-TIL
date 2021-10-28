@@ -1,0 +1,19 @@
+# Partition 하는 방법
+* 크게 명령어는 ```fdisk```와 ```parted```가 있다.
+
+## fdisk
+
+
+
+## parted
+
+
+
+
+
+
+> 2048s로 하는 기본적인 이유는 Winodws와 호환을 위해서이다. 사실 Linux는 상관없는 것으로 안다(아마도)!!! 과거 Windows에서 Partition의 시작은 63 Sector에서 시작한다. 기존 512 Byte를 1 Sector로 계산했을 때는 괜찮았지만, 4096 Byte(또는 8 KB)로 커진 디스크에서 계산을 하면 첫 번째 파티션닝 주소 계산이 맞지 않는 경우가 발생하여 이를 위해 안정적으로 1MB를 경계로 정렬하는 것을 권장하고 있다.
+>  결론적인거는 호환 이런거 생각안하면 생각할 필요가 없긴하지만, 기본적으로 MBR(0 Sec)과  생각해야 된다.
+* Reference
+    * https://joungkyun.gitbook.io/annyung-3-user-guide/annyung3-white-paper/wp-partition-alignment
+    * https://www.thomas-krenn.com/en/wiki/Partition_Alignment_detailed_explanation
