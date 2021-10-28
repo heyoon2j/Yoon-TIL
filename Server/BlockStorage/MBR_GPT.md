@@ -20,6 +20,7 @@
     * Starting LBA Address : 4 Byte (=32 Bit). LBA의 시작주소로 실제 파티션의 시작 위치.
 3. __Signature__ : 해당 Sector의 오류 유무를 확인하기 위한 값(기본 값: 0xAA55)
 * 파티션의 주소는 32 Bit를 사용하므로, MBR이 인식할 수 있는 __각 파티션의 크기는 최대 2TB로 제한된다(2^32-1)__
+* O Sector는 MBR이므로 __1 Sector 부터 파티션 시작점으로 잡아야 한다.__
 </br>
 
 
@@ -48,6 +49,7 @@
 3. __GPT Partition Entry__ : 각 Entry는 128 Byte로 되어 있으며, Partition 위치 정보 등 각 Partition 정보 저장. 2~33 Sector에 저장 (16,384 Byte). 16,384 Byte = 128 Byte * 128 이므로 최대 128개의 파티션을 구성할 수 있다.
 4. __Backup__ : 디스크의 마지막 Sector에 GPT Header와 GPT Partition Entry가 자동으로 백업된다.
 * 파티션의 주소는 64 Bit를 사용하므로, GPT가 인식할 수 있는 __각 파티션의 크기는 최대 18EB로 제한된다(2^64-1, 이론상으로는 최대 8 ZB까지 지원)__
+* O ~ 33 Sector는 GPT이므로 __34 Sector 부터 파티션 시작점으로 잡아야 하며__, Backup을 위한 33 Sector가 필요하므로 __마지막 33 Sector는 남겨서 파티션을 잡아야 한다.__
 </br>
 
 
