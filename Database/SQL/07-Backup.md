@@ -1,7 +1,6 @@
 # DB Backup
 * crontab을 이용하여 Backup을 주기적으로 진행하게 한다.
 
-
 ## Crontab
 ## 1. Setting
 ### time zone 변경
@@ -105,56 +104,68 @@ $ crontab -e
 ## 5. ETC
 * Crontab에서는 .bash_profile이 실행되지 않기 때문에 pyenv 환경이 적용되지 않는다.
     * 그렇기 때문에 사용하기 위해서는 시스템 변수로 적용하거나, crontab 파일에 Path를 써줘야 된다.
-
+</br>
+</br>
         
-## Backup
+# Backup
 ## 1. Backup 종류
-### 1.1. Hot Backup
+## 1.1. Hot Backup
 * 데이터베이스를 중지하지 않은 상태로 데이터 백업
     * Oracle DBMS의 대표적인 방법은 "Begin Backup", "End Backup"
     * MySQL의 대표적인 방법은 "mysqlbackup"
     * Open Source 백업 솔루션으로 Percona XtraBackup이 있다.
 * Hot Backup은 백업하는 동안 데이터가 변경되는 경우, 완전한 백업이 안 될 수 있다.
-    * Hot Backup 시, DB의 가용성을 지켜야하기 때문에 변경 사항들을 **Redo Log**에 쌓였다가 
-Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 때문에 Archive Log의 사용은 필수다.
+    * Hot Backup 시, DB의 가용성을 지켜야하기 때문에 변경 사항들을 **Redo Log**에 쌓았다가 Backup이 끝나면 Data File에 내려쓰는 구조로 동작한다. 그렇기 때문에 Archive Log의 사용은 필수다.
     * 주의해야 될 것은 트랜잭션이 많은 경우, 로그가 엄청 쌓여 느려질 수 있기 때문에 그런 시간대는 피해야 된다.
+* __TABLESPACE__ 단위로 백업 진행
+</br>
+</br>
 
-### 1.2. Cold Backup
+## 1.2. Cold Backup
 * 데이터베이스를 중지한 상태로 데이터 백업
 * 안정적으로 백업이 가능하다.
+* 모든 데이터 백업 가능
+</br>
+</br>
 
-### 1.3. Logical Backup
+## 1.3. Logical Backup
 * Logical Backup은 SQL문으로 백업한다(.sql 파일로 저장) 
 * **장점**
     * SQL 문으로 저장하기 때문에 디스크 용량은 적게 사용
-        * 바이너리가 쿼리를 바이너리로 바꾼 것이 아닌 테이블에 대한 바이너리이기 때문에 데이터가 더 크다.
-    * SQL 문으로 저장하기 때문에 서버 OS 호환이 잘됨
-* **단점**    
-    * SQL문은 DB에서 실질적으로 바이너리로 돌아가기 때문에, 변환 작업이 필요해서 속도가 느리다.
-    * 작업시 시스템 자원을 많이 사용
+    * SQL 문으로 저장하기 때문에 서버 OS 호환이 잘 됨
+    * 복원 작업이 수월하며, Physical Backup에 비해 복원시 데이터 손상을 막아주고 문제 발생 시 원인 파악 및 해결이 수월해 진다.
+* **단점**
+    * SQL문은 DB에서 실질적으로 바이너리로 돌아가기 때문에, 바이너리에서 SQL문으로의 변환 작업이 필요해서 속도가 느리다.
+    * 작업시 시스템 자원을 많이 사용.
+    * 부동 소수점 데이터의 백업의 경우 정확성을 잃을 수 있다.
+</br>
+</br>
 
-#### Logical Backup 방법
+### Logical Backup 방법
 * MySQL: "mysqldump" 이용
     ```
     # mysqldump -u root -p{password} {db_name} > {file_name}
     $ mysqldump -u root -prada test > test_backup.sql
     ```
 
-### 1.4. Physical Backup
+## 1.4. Physical Backup
 * 파일 자체를 백업(바이너리 형태)
+* Data File, Control File, Archive redo log File
 * **장점**
-    * 바이터리 형태로 저장하기 때문에 변환할 필요가 없어, 속도가 빠르다.
+    * 바이너리 형태로 저장하기 때문에 변환할 필요가 없어, 속도가 빠르다.
     * 작업시 시스템 자원을 적게 사용
 * **단점**
-    * 바이너리로 저장하기 때문에 디스크 용량을 많이 사용.
-    * 
+    * 바이너리로 저장하기 때문에 디스크 용량을 많이 사용(그냥 파일 자체를 저장).
     * 파일 시스템에 영향을 받기 때문에 서버 OS 호환이 잘 안 될 수 있다.
-* 그렇기 때문에 백업해야되는 양이 너무 크면 어쩔 수 없이 physical, 그렇지 않으면 안정적인 Logical이 좋다.
+    * 그렇기 때문에 백업해야되는 양이 너무 크면 어쩔 수 없이 physical, 그렇지 않으면 안정적인 Logical이 좋다.
+</br>
+</br>
 
 ## 2. Backup 하는 방법
 * MySQL: https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/innodb-backup.html
+</br>
 
-### 2.1. Hot Logical Backup
+## 2.1. Hot Logical Backup
 * InnoDB Table만 mysqldump로 Hot Backup 가능!
     * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/backup-methods.html
     * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/backup-policy.html
@@ -208,8 +219,10 @@ Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 �
     # mysql -u root -p (데이터베이스 이름) < (백업 파일)
     $ mysql -u root -p backupdb < 20200412_0203.sql
     ```
+</br>
+</br>
 
-### 2.2. Cold Physical Backup
+## 2.2. Cold Physical Backup
 1. 백업할 파일 위치 확인
     ```
     # 데이터가 저장되는 디렉토리 확인
@@ -257,8 +270,10 @@ Backup이 끝나면 DataFile에 내려쓰는 구조로 동작한다. 그렇기 �
    
     $ sudo systemctl start mysql
     ```
+</br>
+</br>
 
-### 2.3. Replication을 이용한 백업
+## 2.3. Replication을 이용한 백업
 * https://dev.mysql.com/doc/mysql-backup-excerpt/5.6/en/replication-solutions-backups.html
 * Replication을 이용하기 위해서는 먼저 Replication의 복사를 중지하거나, 서버를 중지해야 된다.
 * 복제가 있는 경우는 복제를 이용한 백업이 좋은 거 같다.
