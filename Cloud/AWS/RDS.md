@@ -98,3 +98,25 @@
 ## Aurora DB Cluster
 ![DBCluster](../img/DBCluster.png)
 * Amazon Aurora DB Cluster는 하나 이상의 DB Instance와 해당 DB Instance의 데이터를 관리하는 Cluster Volumn으로 구성된다.
+
+
+## RDS DB vs Aurora DB
+* Cluster 구성시 서로 다른 방식으로 구성하게 된다.
+
+### RDS DB
+![RDSCluster](../img/RDSCluster.jpg)
+* RDS DB들은 EBS에 Data Write/Read를 한다. 그렇기 때문에 Read DB(Replication)는 Binlog에 대한 Write 동작을 추가적으로 해야되기 때문에 Only Read 이지만 실질적으로 Write 동작을 하게된다.
+* Data 이중화를 위해 EBS는 Mirroring Storage(EBS)에 Data르 복제하게 된다.
+</br>
+
+### Aurora DB
+![AuroraCluster](../img/AuroraCluster.jpg)
+* Aurora DB들은 Shared Storage를 통해 Data Write/Read를 한다. 그렇기 때문에 Read DB(Replication)가 Write 동작을 추가적으로 하지 않아도 된다.
+* 또한 Shared Storage를 통해 3개의 가용 영역에 6개의 복제본을 만들어 가용성이 좋지만 그만큼 비용이 더 지불해야 한다.
+* Shared Storage 구성은 다음과 같다.
+    * __Shared Storage__ : Storage Node 관리
+    * __Storage Node__ : Node는 Distributed Volume 이중화를 위한 Cluster => Distributed Volume이 2대
+    * __Distributed Volume__ : 분산 저장을 위한 Storage(Server)에 대한 관리 Cluster => File 1은 exp1에 File 2는 exp2에 저장
+
+</br>
+</br>
