@@ -10,9 +10,29 @@
 
 ## Chrony
 ## Install
-
+* ntpd가 설치되어 있는 경우 제거하고 설치진행
+    ```
+    $ systemctl status ntpd
+    $ systemctl stop ntpd
+    $ systemctl disable ntpd
+    $ yum remove ntpd
+    ```
+1. CentOS
+    * 설치 명령어
+    ```
+    $ yum install -y chrony
+    ```
+2. MacOS
 
 </br>
 
 ## How to using
-
+1. 환경설정 변경
+    * ```/etc/chrony.conf``` : Chrony 설정파일
+    * 
+2. a
+3. b
+4. c
+5. d
+6. e
+7. f
