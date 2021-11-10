@@ -141,6 +141,7 @@ __4. SAML (Security Assertion Markup Language)__
 
 * ```Resource``` : __IAM 권한 정책을 생성하는 경우 작업을 적용할 리소스 목록을 지정.__ 리소스 기반 정책을 생성하는 경우에는 선택사항이다.
 * ```Condition``` : 정책이 권한을 부여하는 조건을 지정
+* 요약: 대상(Principal)에게 해당 요소(Resource)에 대해 특정 행동(Action)을 조건(Condition)에 따라 허가/불허(Effect)한다
 </br>
 
 ### Policy Type
