@@ -21,30 +21,66 @@
 ## parted
 * fdisk는 2TB 이상을 넘겨서 사용할 수 없다.
 * 이를 해결하기 위해 새로운 명령어인 parted가 나왔다.
-0. parted 
+0.  사용법   
+	* ```$ parted \[OPTION\] DEVICE```
+        
+	```
+	$ lsblk
+	NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+	xvda    202:0    0    8G  0 disk
+	└─xvda1 202:1    0    8G  0 part /
+	xvdf    202:80   0  100G  0 disk
+        
+	$ parted /dev/xvdf
+	```
+        
+1.  기본 명령어
+	```
+	# print : Partition table 정보 출력
+	$ print
+	
 
-1. 파티션 생성
-    ```
-    ```
-2. a
-    ```
-    ```
-3. b
-    ```
-    ```
-4. c
-    ```
-    ```
-5. d
-    ```
-    ```
-6. e
-    ```
-    ```
-7. f
-    ```
-    ```
+	# unit UNIT : 용량 단위 변경
+	## UNIT => s, B, MB, GB, TB, MiB, GiB 등
+	$ unit s
 
+
+	# mklabel LABEL-TYPE : Disk Label 설정
+	## LABEL-TYPE => msdos, gpt, bsd, mac, sun 등 지원
+	$ mklabel gpt
+
+
+	# mkpart PART-TYPE [FS-TYPE] START END : Partition 나누기
+	## PART-TYPE => primary, logical, extended
+	$ mkpart primary 2048s 50%
+
+
+	# align-chek TYPE NUMBER : 파티션 정렬 확인 
+	## TYPE => min (minimal) / opt (optimal)
+	(parted) align-check opt 1
+	1 aligned				# 정상적인 경우 aligned
+	(parted) align-check opt 2
+	2 not aligned				# 비정상적인 경우 not aligned
+
+
+	# rm NUMBER : 파티션 삭제
+	$ rm 1
+
+	```
+    
+2.  File System Format
+	* ```mkfs.FS-TYPE DEVICE``` : 파일 시스템 포맷
+	* FS-TYPE => ext3, ext4, fat32, hfs, linusx-swap(v1/v0), ntfs, xfx, apfs2 등
+	```
+	$ mkfs.ext4 /dev/xvdf1
+	```
+    
+3.  Mount
+	* ```mount DEVICE MOUNT-DIR``` : Directory에 Device를 마운트
+	```
+	$ mount /dev/xvdf1 /test
+	```
+* https://doyaji-bw.tistory.com/33
 </br>
 </br>
 
