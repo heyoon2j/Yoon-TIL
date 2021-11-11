@@ -2,6 +2,23 @@
 ![MBR_GPT](../img/MBR_GPT.png)
 </br>
 
+## 알아둘 내용
+### __Partition 종류__
+1. Primary Partition
+    * 주 파티션
+    * 운영체제 설치가 가능하며, MBR이 기록된 주 파티션을 활성 주파티션(Activate Primary)이라고 한다.
+2. Extended Partition
+    * 확장 파티션
+    * 데이터 저장이 불가능하며, 부족한 파티션을 확장시키는 용도로 사용된다.
+    * 논리 파티션을 담는 역할을 한다.
+3. Logical Partition
+    * 논리 파티션
+    * Extended Partition 범위 안에서 생성되는 파티션으로 데이터 저장이 가능하나 운영체제 설치는 불가능하다.
+    * 생성 제한이 없다.
+</br>
+</br>
+
+
 ## MBR (Master Boot Record)
 * MBR은 저장 장치의 부팅 정보, 파티션 정보 등을 저장한다.
 * 저장 장치의 첫 번째 Sector(0 Sector)는 MBR이다.
@@ -61,3 +78,5 @@
     * USB와 같은 외장 매체에서 인식이 불가.
 </br>
 </br>
+
+
