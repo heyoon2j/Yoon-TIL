@@ -114,7 +114,7 @@
 </br>
 
 
-## CloudWatch 모니터링 방법
+## CloudWatch
 ![CloudWatchAction](../img/CloudWatchAction.png)
 * Cloud Watch는 기본적으로 지표 리포지토리(Metric Repository)이다.
 * AWS Service 및 사용자 지정 지표를 리포지토리에 저장하고 사용자는 해당 지표를 기반으로 통계를 검색한다.
@@ -136,15 +136,10 @@
 
 ### Dashborad
 * 원하는 지표(Metric)나 로그(Log)들을 정리하여 볼 수 있다. 즉, 나만의 대시보드를 만들 수 있다.
-    * 
 </br>
 
 ### Alarm
-1. Alarm 생성
-    * 
-2. Event 생성
-    * 
-
+* 설정한 임계값을 벗어날 때, 알람을 보내준다.
 </br>
 </br>
 
@@ -178,30 +173,67 @@
 * 보존 기간 설정은 CloudWatch Logs에서 로그 이벤트를 보관하는 기간을 설정하는데 사용된다.
 * 기간이 만료된 로그 이벤트는 자동으로 삭제된다.
 * 지표 필터와 마찬가지로 보존 기간 설정 역시 로그 그룹에 할당이 되며, 로그 그룹에 할당된 보존 기간은 로그 스트림에 적용된다.
-
 </br>
 </br>
 
-## CloudWatch Logs 방법
-* CloudWatch Agent 이용
-```
-
-```
-
-1. 
-2. 
-3. q
-4. q
-5. q
-6. q
 
 
+## CloudWatch 사용방법
+* 규칙은 다음과 같이 사용하면 될거 같다.
+* 평상 시 운영 => 지표 확인 : Metric + Dashboard 활용
+* 지표 확인 중 Critical/Warning 상태가 되는 경우 => Slack에 알람 전송 : Metric + SNS + Lambda
+* 특정 상황에 대한 알람 => Slack으로 알람 전송 : EventBridge + Lambda
+* 대처 상황 => 알람에 대해 원인 파악 후 대처 진행 : 보고, Lambda 등등
+* 알람에 대한 기계학습 시키기 (CloudWatch Anomaly detection)
+* 참조: https://techblog.woowahan.com/2669/
+</br>
+
+## Custom Metric 사용
+1. 필요한 Resource에 대한 Custom Metric 생성
+    * CLI, SDK 등 이용
+    * Metric Name, Namespace, Dimension, Value, Timestamp 등 정의
+    * Example : https://aws.amazon.com/ko/blogs/korea/amazon-cloudwatch-custom-metrics/
+2. Dashboard 생성
+    1) Widget : 원하는 지표/로그 형태 선택
+    2) 원하는 지표 선택
+</br>
+
+## Alarm 사용
+1. 원하는 지표 선택
+2. 해당 지표에 대한 Alarm 조건 설정
+3. Alarm 발생 시, 원하는 Action 설정
+4. 알람을 받을 SNS 선택
+</br>
+
+## 사용자 지정 EventBride 사용
+1. EventBus 생성
+    * 각 Event 특성에 따라 Event들을 분리시킨다.
+2. Lambda 생성
+    * Rule에 적용될 코드 작성
+3. Rule 생성
+    * 특정 Event에 대해 특정 Lambda 적용
+</br>
+
+
+Log Groups의 "동이란 -> 동일한" 으로 바꿔야됨!!
+
+## CloudWatch Logs 사용
+1. Log Group 생성
+    * Group 별 분리를 위함
+2. 필요한 Resource에서 Log 생성 및 전송
+    * CloudWatch Logs Agent 설치
+    * Config 파일 수정 (/etc/awslogs.conf)
+    * https://docs.aws.amazon.com/ko_kr/AmazonCloudWatch/latest/logs/AgentReference.html
+3. CloudWatch Logs Agent 실행
+    ```
+    $ sudo systemctl enable awslogsd.service
+    $ sudo service awslogsd start
+    ```
+</br>
+</br>
 
 
 ## Cost (비용)
-
-
-
 
 </br>
 </br>
