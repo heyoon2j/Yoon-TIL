@@ -34,3 +34,21 @@
 * Permission : IAM
 
 
+## Service Catalog 사용방법
+1. Portfolio 생성
+    * q
+    * w
+    * e
+    * r
+    * 
+2. Product 생성
+    * q
+    * a
+    * s
+    * d
+    * f
+3. Provisioning 생성
+    * z
+    * x
+    * c
+    * v
