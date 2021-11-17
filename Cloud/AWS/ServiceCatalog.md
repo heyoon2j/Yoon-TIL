@@ -26,7 +26,7 @@
 ## Portal
 * 사용자가 접속할 입구
 * 사용자는 Portalf를 통해 Portfolio들과 사용할 수 있는 Product를 볼 수 있다.
-
+</br>
 
 
 ### Landing Zone 기준 사용되는 서비스
@@ -35,20 +35,17 @@
 
 
 ## Service Catalog 사용방법
-1. Portfolio 생성
-    * q
-    * w
-    * e
-    * r
-    * 
-2. Product 생성
-    * q
-    * a
-    * s
-    * d
-    * f
-3. Provisioning 생성
-    * z
-    * x
-    * c
-    * v
+1. Portfolio 생성 (Admin)
+    * 포트폴리오 이름 입력
+    * 포트폴리오 설명 입력 (선택 사항)
+    * 소유자 입력
+2. Product 생성 및 Portfolio에 추가 (Admin)
+    * 제품 세부 정보 : 제품 이름 / 소유자 / 설명
+    * 버전 세부 정보 : 버전 소스 / 버전 이름(v1.1 등) / 버전 설명
+    * 지원 세부 정보 : 이메일 / 링크 / 설명
+    * 생성 완료 후, Portfolio에 제품 추가
+3. 권한 설정
+    * Product를 Provisioning 할 수 있는 __"그룹, 역할 및 사용자"__ 설정
+    * Provisioning 시 Template에 대한 SNS 알람, IAM 등 설정
+4. Provisioning Product 생성 (User)
+    * 제품 선택 -> 제품 시작 -> 버전 선택 -> 입력 값 설정 -> 이벤트 알림 활성화 -> 제품 시작
