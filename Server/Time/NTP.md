@@ -93,9 +93,16 @@
     ```
     # allow []
     ```
+    * ```allow all```은 이전 지시문에 대한 효과를 재정의한다.
+        ```
+        allow 1.2.3.4
+        deny 1.2.3.0/24
+        allow all 1.2.0.0/16
+        ```
+        * 1.2.0.0/16에 대해 
 </br>
 
-3. ETC Setting
+1. ETC Setting
     ```
 
     ```
