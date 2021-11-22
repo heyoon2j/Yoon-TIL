@@ -10,6 +10,10 @@
 * 보통 부하 등의 문제로 Stratum 2, 3으로 구성되어 있는 pool의 서버에서 시간 동기화를 한다.
 * https://joungkyun.gitbook.io/annyung-3-user-guide/chapter6/chapter6-chrony
 
+### 용어
+* __Time zone__ : 지도상에 위치해 있는 장소
+* __Time offset__ : 특정 시간대가 표준시(UTC) 보다 앞서 있거나 뒤에 있는 시간 또는 분 수(+0.005, -0.003). A에서 B 시간으로 전환했다는 의미는 오프셋이 다른 오프셋으로 변경되었다는 의미.
+
 
 ## Chrony
 * 전에는 ntpd(NTP Daemon)를 이용하여 시간 동기화를 하였지만, 요즘에는 Chrony Server/Client를 이용하여 동기화를 한다.
@@ -99,16 +103,34 @@
         deny 1.2.3.0/24
         allow all 1.2.0.0/16
         ```
-        * 1.2.0.0/16에 대해 
+        * 1.2.0.0/16에 대해 모든
 </br>
 
 1. ETC Setting
     ```
+    # makestep threshold limit
 
+
+    # rtcsync 
+
+
+    # keyfile
+
+
+    # log
+
+
+    # dumponexit
+
+
+    # commandkey
     ```
-    * a
-    * b
-    * c
+    * __makestep__ : 일반적으로 Chronyd는 필요에 따라 Clock 속도를 늦추거나 빠르게 함으로써 점차적으로 time offset을 맞춘다. 특정 상황에서 시스템 시계가 
+    * __rtcsync__ : 
+    * __keyfile__ : 
+    * __log__ : 
+    * __dumponexit__ : 
+    * __commandkey__ : 
 
 
 
