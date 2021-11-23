@@ -1,6 +1,7 @@
 # NTP
 * Network Time Protocol
-* 컴퓨터 시스템 간시간 동기화를 위한 네트워크 프로토콜이다.
+* 컴퓨터 시스템 간 시간 동기화를 위한 네트워크 프로토콜이다.
+* System Clock 동기화.
 </br>
 </br>
 
@@ -9,6 +10,19 @@
 * Stratum 0는 피라미드 꼭대기로 "primary reference clock" 이라고 부른다. 해당 장비로는 GPS, 세슘 원자 시계 등이 있다고 한다. 보통 Stratum 1의 서버들은 primary reference clock에서 시간을 동기화하여 서비스를 하며, NTP에서 최상위층이라고 생각하면 된다.
 * 보통 부하 등의 문제로 Stratum 2, 3으로 구성되어 있는 pool의 서버에서 시간 동기화를 한다.
 * https://joungkyun.gitbook.io/annyung-3-user-guide/chapter6/chapter6-chrony
+<br>
+
+
+### 용어
+* __Time zone__ : 지도상에 위치해 있는 장소
+* __Time offset__ : 특정 시간대가 표준시(UTC) 보다 앞서 있거나 뒤에 있는 시간 또는 분 수(+0.005, -0.003). A에서 B 시간으로 전환했다는 의미는 오프셋이 다른 오프셋으로 변경되었다는 의미.
+* __RTC__ : Real-Time Clock. Hardware Clock이라고 하며, OS Setting과 따로 가며 Computer가 shutdown된 상태에서도 동작한다.
+* __System Clock__ : Software Clock이라고 하며, Kenel에 의해 관리되며 최초 값은 Real-Time Clock 값이다. OS가 부팅되면 System Clock이 Intialize되고 Real-Time Clock과는 독립적으로 움직이다.
+* __Local Time__: System Clock은 UTC를 유지하고 애플리케이션에 따라 Local Time으로 변경된다(timedatectl, date, hwclock)
+* Reference : https://yenalee.blogspot.com/2017/05/linux-date-time.html?m=1
+</br>
+</br>
+
 
 
 ## Chrony
@@ -85,7 +99,7 @@
       * __driftfile__: System Clock이 실제 시간과의 오차 비율을 계산하여 기록하는 파일
       * __logdir__: Chrony Server Log 파일
       * __dumpdir__: 시간의 오차 비율을 계산하기 위해 각 시간 소스에 대한 측정 히스토리를 저장하는 파일
-      * __sourcedir__: 
+      * __sourcedir__: 현재 버전에서는 안 사용되는 거 같다.
 </br>
 
 3. Client Access
@@ -109,21 +123,35 @@
         deny 1.2.3
         allow 1.2       # allow all 1.2
         ```
-        * 
-
+        * allow all을 쓰지 않은 경우, 1.2.3.4 허용 -> 1.2.3.4를 제외한 1.2.3.x 허용 -> 1.2.a.b 허용
+        * allow all을 쓰는 경우, 1.2.x.y 모두 허용. allow all은 이전 지시문을 무의미 시킨다.
 
 </br>
 
-1. ETC Setting
+4. ETC Setting
     ```
+    # makestep threshold limit
+    makestep 1.0 3
 
+    # rtcsync
+    rtcsync
+
+    # keyfile
+    keyfile /etc/chrony.keys
+
+    # log
+    log measurements statistics tracking
+
+    # dumponexit
+
+    # commandkey
     ```
-    * a
-    * b
-    * c
-
-
-
+    * __makestep__ : 일반적으로 Chronyd는 필요에 따라 Clock 속도를 늦추거나 빠르게 함으로써 점차적으로 time offset을 맞춘다(Slewing). 하지만 특정 상황에서 이 경우 System Clock 표류하는 경우가 생길 수 있다. 이를 방지하기 위해 해당 지시문은 offset이 임계값보다 커진 이후로 업데이트가 없는 경우, 강제로 값을 조정한다(Stepping).
+    * __rtcsync__ : System Time이 RTC Time으로 복사된다(동기화) 그리고 Chronyd가 더이상 drift를 추적하지 않는다. Linux에서는 RTC 복사본은 11분 마다 실행된다.
+    * __keyfile__ : NTP 패킷 인증을 위해 사용되는 파일.
+    * __log__ : Log 파일에 저장할 내용.
+    * __dumponexit__ : 현재 버전에서는 안 사용되는 거 같다.
+    * __commandkey__ : 현재 버전에서는 안 사용되는 거 같다.
 
 </br>
 
