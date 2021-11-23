@@ -26,3 +26,5 @@
 	* fstab 설정 정보
 		| Filed 이름 | 내용 | 비 고 |
 		|------------|------|------|
+        | nfsvers | NFS version 정보 | 4.1 : Linux </br>4.0 : MacOS |
+        |  |  |  |
