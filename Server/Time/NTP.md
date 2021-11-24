@@ -147,7 +147,7 @@
     # commandkey
     ```
     * __makestep__ : 일반적으로 Chronyd는 필요에 따라 Clock 속도를 늦추거나 빠르게 함으로써 점차적으로 time offset을 맞춘다(Slewing). 하지만 특정 상황에서 이 경우 System Clock 표류하는 경우가 생길 수 있다. 이를 방지하기 위해 해당 지시문은 offset이 임계값보다 커진 이후로 업데이트가 없는 경우, 강제로 값을 조정한다(Stepping).
-    * __rtcsync__ : System Time이 RTC Time으로 복사된다(동기화) 그리고 Chronyd가 더이상 drift를 추적하지 않는다. Linux에서는 RTC 복사본은 11분 마다 실행된다.
+    * __rtcsync__ : Real-Time Clock(RTC)을 실제 시간에 가깝게 유지하기 위해 System Time이 RTC Time에 복사된다(동기화). Linux에서는 RTC 복사본은 11분 마다 실행된다.
     * __keyfile__ : NTP 패킷 인증을 위해 사용되는 파일.
     * __log__ : Log 파일에 저장할 내용.
     * __dumponexit__ : 현재 버전에서는 안 사용되는 거 같다.
