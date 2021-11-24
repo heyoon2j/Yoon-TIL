@@ -49,3 +49,18 @@
     * Provisioning 시 Template에 대한 SNS 알람, IAM 등 설정
 4. Provisioning Product 생성 (User)
     * 제품 선택 -> 제품 시작 -> 버전 선택 -> 입력 값 설정 -> 이벤트 알림 활성화 -> 제품 시작
+
+
+
+
+## Hub and Spoke Model
+
+
+
+
+
+
+
+
+
+
