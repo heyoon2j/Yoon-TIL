@@ -138,6 +138,7 @@
 	UUID=e6c06bf4-70a3-4524-84fa-35484afc0d19     /           xfs    defaults,noatime  1   1
 	UUID=1c2161b7-f8e5-416f-afec-7d18a00a8fbb	/log	ext4	defaults,nofail  0  2
 	/dev/xvdf1	/log	ext4	rw,noexec,nouser,auto,suid	0	0
+	UUID=abcdef12345test	/data	ext4	defaults	0	0
 
 	# 적용
 	$ sudo mount -a
