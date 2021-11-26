@@ -48,9 +48,10 @@
     * 생성 완료 후, Portfolio에 제품 추가
 3. Constraints 설정
     * Product에 대한 제한 설정.
-    * Template : Product 생성 시, Resource 에 대한 제한
-    * StackSet : 
-    * zxcv
+    * Launch : Product 시작 시, 위임할 권한 Role을 설정
+    * Template : Product 생성 시, Resource에 대한 제한
+    * StackSet : 다른 Account에 배포 설정
+    * Alarm : Product 시작 시 알림이 오도록 설정
 4. Groups, Roles and Users 설정
     * Product를 Provisioning 할 수 있는 __"그룹, 역할 및 사용자"__ 설정
     * Provisioning 시 Template에 대한 SNS 알람, IAM 등 설정
@@ -67,20 +68,37 @@
 ## Hub and Spoke Model
 * 많은 조직에는 수만~수백 개의 계정과 AWS에서 서비스가 필요한 수천 명의 사용자가 있을 수 있다.
 * Organizational Governance 제어를 적용하려면 필수적인 Guardrails, Security Control and Auditing이 구축되어야 하며 시간과 리소스가 필요하다.
-* AWS Service Catalog Hub aand Spoke Model과 Constraints(제약 사항)을 이용하여 Master/Child Account 관계에서의 Service Catalog 배포를 중앙에서 관리할 수 있다.
+* AWS Service Catalog Hub and Spoke Model과 Constraints(제약 사항)을 이용하여 Master/Child Account 관계에서의 Service Catalog 배포를 중앙에서 관리할 수 있다.
 
 > 물류 또는 항공 노선을 구성하는 한 형태. 출발지(Spoke)에서 발생하는 물량을 중심 거점(Hub)으로 모으고, 중심 거점에서 물류를 분류하여 다시 각각의 도착지(Spoke)로 배송하는 형태.
 
 > Resource 요청(Spoke)에 대하여 Hub Account에서 권한 제어, Template 생성을 하고 이를 다시 각각의 Spoke Account에 전달 
 
-### Hub Account (Master Account)
+## Architecture
+![]()
+</br>
 
+### Hub Account (Master Account)
+* Master Account, 사용할 AWS Resource, 제약 사항, 권한 등을 설정한 Portfolio, Product를 Spoke Account에 배포
 </br>
 
 ### Spoke Account (Child Account)
-
+* Child Account, Hub Account로부터 받은 Portfolio, Product를 사용하여 Resource를 구축/운영
+</br>
 </br>
 
+
+## 장단점
+### __장점__
+* 중앙에서 모든 Resource에 대한 관리 가능
+* 미리 작성한 Template을 통해 요청이 있을 때 바로 적용함으로써 생산성 증가
+* 동일한 특성을 가진 프로젝트에 대해 동일한 Guardrail을 적용함으로써 관리가 용이해짐
+</br>
+
+### __단점__
+* Guardrail 정하고, 필요한 Template을 구축하는데 시간과 리소스가 필요
+</br>
+</br>
 
 
 ## Portfolio 공유 방법
