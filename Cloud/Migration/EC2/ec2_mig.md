@@ -20,19 +20,30 @@
 </br>
 
 
-## VMWare -> OVF -> AMI
+## VMWare -> OVF -> OVA -> AMI
 * 공식
     * https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html
     * https://docs.aws.amazon.com/vm-import/latest/userguide/vmie_prereqs.html#vmimport-role
 * Reference
     * https://cloudest.oopy.io/posting/055
     * https://www.megazone.com/vmware/
-
-1. S3 객체 생성
-2. IAM 생성
+1. Export OVF
+    * VMWare Client에서 Export OVF Template Click
+2. OVF convet to OVA
+    * VMWare OVF Tool 설치 : https://developer.vmware.com/web/tool/4.4.0/ovf
+    * OVF Tool로 이동 : ```cd "C:\ProgramFiles\VMware\VMware OVF Tool"```
+    * OVF를 OVA로 변환 : ```ovftool.exe -tt=ova "<Path>\test.ovf" "<Path>"```
+    * OVA 파일이 있는 Dir으로 이동
+    * SFTP 전송
+        ```
+        $ sftp -P 40022 <account>@<ip>
+        $ put test.ova
+        ```
+3. S3 객체 생성
+4. IAM 생성
     * IAM Role 생성 : vmimport stst assume / s3 access policy / kms policy
     * 
-3. AWS CLI
+5. AWS CLI
     * 디스크를 S3에 저장
         * Metadata 
         ```
@@ -42,8 +53,10 @@
         * encrypted, kms-key-id option을 통해 암호화된 Root Volume을 가진 이미지를 ami로 import 할 수 있다.
         ```
         aws ec2 import-image --description "My server disks" --disk-containers "file://C:\import\containers.json"
+
+        aws ec2 import-image --description "My server VM" --disk-containers "file://~/containers.json" --role-name vmimport
         ```
-4. 고려해야할 상황
+6. 고려해야할 상황
     * 
     * 일부 운영체제는 Import 중 향상된 네트워킹 Driver가 자동으로 설치가 되지 않는다. 그렇기 때문에 활성화가 필요 (https://docs.aws.amazon.com/ko_kr/vm-import/latest/userguide/vmimport-image-import.html)
         * 유형에 따라 ENA / intel 82599 VF Interface를 사용해야 한다.
