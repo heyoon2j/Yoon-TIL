@@ -177,6 +177,12 @@
 </br>
 
 
+## EventBridge
+* 기존 AWS 클라우드워치 이벤트 API위에 구축된 서버리스 이벤트 버스입니다.
+</br>
+</br>
+
+
 
 ## CloudWatch 사용방법
 * 규칙은 다음과 같이 사용하면 될거 같다.
@@ -205,7 +211,7 @@
 4. 알람을 받을 SNS 선택
 </br>
 
-## 사용자 지정 EventBride 사용
+## 사용자 지정 EventBridge 사용
 1. EventBus 생성
     * 각 Event 특성에 따라 Event들을 분리시킨다.
 2. Lambda 생성

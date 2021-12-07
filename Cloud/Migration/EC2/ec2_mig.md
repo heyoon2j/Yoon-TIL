@@ -42,8 +42,51 @@
         ```
 3. S3 객체 생성
 4. IAM 생성
-    * 전환 작업을 위한 Role 생성 : vmimport sts assume or ec2 sts assume / s3 access policy / kms policy / ec2 policy
-    * ec2에 필요한 policy는 다음과 같다.
+    * 전환 작업을 위한 Role 생성 : vmimport sts assume & ec2 sts assume / s3 access policy / kms policy / ec2 policy
+    * sts assume policy
+        ```
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "ec2.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole"
+                },
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "vmie.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole",
+                    "Condition": {
+                        "StringEquals": {
+                        "sts:Externalid": "vmimport"
+                        }
+                    }
+                }
+            ]
+        }
+        ```
+    * s3 access policy
+        ```
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "s3:*",
+                    "Resource": [
+                        "arn:aws:s3:::<Bucket_Name>/*",
+                        "arn:aws:s3:::<Bucket_Name>"
+                    ]
+                }
+            ]
+        }
+        ```
+    * ec2 import policy
         ```
         {
             "Sid": "VisualEditor2",
@@ -53,9 +96,29 @@
                 "ec2:Describe*",
                 "ec2:ModifySnapshotAttribute",
                 "ec2:RegisterImage",
-                "ec2:ImportImage"
+                "ec2:ImportImage",
+                "ec2:CancelImportTask"
             ],
             "Resource": "*"
+        }
+        ```
+    * kms policy
+        ```
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "kms:Decrypt",
+                        "kms:DescribeKey",
+                        "kms:Encrypt",
+                        "kms:GenerateDataKey*",
+                        "kms:ReEncrypt*"
+                    ],
+                    "Resource": "<s3_kms_arn>"
+                }
+            ]
         }
         ```
 5. AWS CLI
