@@ -164,6 +164,13 @@
 ## VPC Traffic Mirroring
 * 네트워크 트래픽 캡처 및 검사 기능
 * ENI를 통해서 캡처를 하는 것이기 때문에, ENI 사용이 필요하며
+</br>
+</br>
+
+
+## DHCP Option Set
+
+
 
 
 ## Cost
