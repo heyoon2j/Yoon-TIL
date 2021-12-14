@@ -20,7 +20,7 @@
 *  Controller Node: Ansible 설치된 모든 시스템. Windows machine은 Control Node가 될 수 없다.
 * Managed Node: Ansible로 관리되는 장치. "hosts"라고도 한다.
 * Inventory: Managed node들의 IP address 목록을 정의하는 파일, "hostfile"이라고 말한다. Managed node들의 IP address나 그룹화 등의 정보가 저장된다.
-* Role: Ansible을 모듈화시키는가 저장된다. 핵심 구성 요소로 Service와 Playbook의 전반적인 코드를 충분히 재사용하도록 할 수 있다.
+* Role: 핵심 구성 요소로 Service 전반적인 코드를 Playbook에서 충분히 재사용하도록 모듈화할 수 있다.
 * Playbook: Anisble 구성, 배포 및 오케스트레이션이 포함된 파일. 해당 파일을 작성함으로 OS 구성에서 응용 프로그램 배포와 모니터링까지 시스템의 상태를 순차적으로 정의할 수 있다.
 * Module: Ansible에서 정의해둔 실행 단위로 실행할 수 있는 라이브러리를 의미.
 * Ansible Config: Ansible 환경변수 정의 파일.

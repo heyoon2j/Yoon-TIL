@@ -16,6 +16,7 @@
 
 ## Binary Log vs Redo Log
 * https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=parkjy76&logNo=220918956412
+> 찾아본 결과 엔진에 따라 이름이 다르게 부르는 거 같다. 엔진이 달라서 특징이 다를 수 있지만 결국 Rollback과 Replication, Recovery에 사용되는 Log 들이다.
 
 |        | Redo Log | BinLog |
 |--------|------------|----------|
