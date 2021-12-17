@@ -15,6 +15,7 @@
 ## Component
 * __Automation runbook__ : AWS 리소스에 대한 자동화 작업들을 정의 (자동화 문서)
 * __Automation action__ : runbook에 작성된 하나의 작업 단계 (AWS Resource에 대한 작업)
+* __Resource Group__ : runbook이 적용될 Resources 집합
 * __Automation quota__ : 각 AWS 계정은 100개의 자동화를 동시에 실행할 수 있다 (동시 실행에 대한 개수 제한)
 * __Automation queue quota__ : 동시 자동화 제한보다 많은 자동화를 실행하려면 후속 자동화 대기열에 추가된다 (1000개의 자동화 대기열)
 * __Rate control automation quota__ : 각 AWS 계정은 25개의 속도 제어 자동화를 동시에 실행할 수 있다 (동시 실행 시, 각 자동화 순서 제어)
@@ -52,10 +53,37 @@
     * ```ssm:StartAutomationExecution``` : 사용할 자동화문서 실행 정책
 
 
-## Automation
+## Automation Resource Group
+* Automation runbook에 대한 Target Group을 설정할 수 있다.
+* https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-targets.html#automation-working-targets-resource-groups
+1. Tag 설정
+    * Key / Value를 통해 사용
+    * Example
+        ```
+        aws ssm start-automation-execution \
+        --document-name AWS-DeleteSnapshot \
+        --targets Key=tag:Name,Values=January2018Backups \
+        --target-parameter-name VolumeId
+        ```
+2. Parameter 값 입력
+    * 직접 Target들을 적는다.
+    * 
+        ```
+        aws ssm start-automation-execution 
+        --document-name AWS-CreateImage \
+        --target-parameter-name InstanceId \
+        --targets Key=ParameterValues,Values=i-02573cafcfEXAMPLE,i-0471e04240EXAMPLE
+        ```
+    * Target Map 사용
+        ```
+
+        ```
+3. 전체 인스턴스
+4. d
+5. 
 
 
-### Automation actions reference
+## Automation actions reference
 * aws:invokeLambdaFunction : Lambda 실행
 * aws:approve : 수동 승인을 위해 자동화 일시 중지 동작
 * aws:assertAwsResourceProperty : AWS 리소스 상태 또는 이벤트 상태가 특정 상태로 될 때까지 대기
@@ -71,3 +99,21 @@
 * aws:sleep : 지정된 시간 동안 자동화를 지연
 * aws:waitForAwsResourceProperty : AWS 리소스 상태 또는 이벤트 상태가 특정 상태가 될 때까지 대기
 * https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-action-copyimage.html
+
+
+### 작업 순서
+1. Resource Group 생성
+    * Resource Group에 대하여 자식 자동화(Child Automation)를 실행 (Multi Thread? Process? 형태로 작동한다는 의미인듯)
+    * https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-targets.html#automation-working-targets-resource-groups
+2. Lambda 작성
+3. Automation runbook 작성
+4. 실행
+
+
+
+
+
+
+
+
+

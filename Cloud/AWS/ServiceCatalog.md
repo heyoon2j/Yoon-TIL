@@ -11,12 +11,11 @@
 
 
 ## Service Catalog 요소
-![]()
+![ServiceCatalogComponent](../img/ServiceCatalogComponent.png)
 ### Portfolio
 * 버전관리 중인 Products 모임.
 * Portfolio에서 사용할 Products 관리와 PortFolio를 관리할 수 있는 권한 설정.
 > 현재 AWS Landing Zone Account Vending Machine Product를 사용 중.
-
 </br>
 
 ### Product
@@ -82,16 +81,23 @@
     * Product를 Provisioning 할 수 있는 __"그룹, 역할 및 사용자"__ 설정
     * Provisioning 시 Template에 대한 SNS 알람, IAM 등 설정
 5. Shared 설정
-    * qwer
-    * asdf
-    * zxcv
+    * Protfolio 공유 설정
 6. Provisioning Product 생성 (User)
     * 제품 선택 -> 제품 시작 -> 버전 선택 -> 입력 값 설정 -> 이벤트 알림 활성화 -> 제품 시작
 </br>
 </br>
 
 
-## Hub and Spoke Model
+## Portfolio 공유 방법
+1. Imported portfolio - Leverage the imported portfolio
+    * Protfolio를 자신의 Service Catalog에 import한다.
+2. Local portfolio - Create a local portfolio and import products from the shared portfolio
+    * 공유 Portfolio로부터 Local Portfolio에 Product를 import 한다.
+</br>
+</br>
+
+
+# Hub and Spoke Model
 * 많은 조직에는 수만~수백 개의 계정과 AWS에서 서비스가 필요한 수천 명의 사용자가 있을 수 있다.
 * Organizational Governance 제어를 적용하려면 필수적인 Guardrails, Security Control and Auditing이 구축되어야 하며 시간과 리소스가 필요하다.
 * AWS Service Catalog Hub and Spoke Model과 Constraints(제약 사항)을 이용하여 Master/Child Account 관계에서의 Service Catalog 배포를 중앙에서 관리할 수 있다.
@@ -103,7 +109,7 @@
 </br>
 
 ## Architecture
-![]()
+![Hub_SpokeModel](../img/Hub_SpokeModel.png)
 </br>
 
 ### Hub Account (Master Account)
@@ -129,11 +135,21 @@
 </br>
 
 
-## Portfolio 공유 방법
-1. Imported portfolio - Leverage the imported portfolio
-    * Protfolio를 자신의 Service Catalog에 import한다.
-2. Local portfolio - Create a local portfolio and import products from the shared portfolio
-    * 공유 Portfolio로부터 Local Portfolio에 Product를 import 한다.
+## 동작 방식
+![ServiceCatalogStep](../img/ServiceCatalogStep.png)
+
+### Hub Account 동작 과정
+1. AWS Resource 자원 요청 시, 자원에 대한 CloudFormation Template과 S3, IAM Policy & Role, SNS 생성
+2. Portfolio에 포함시킬 Product와 Constraint 생성
+3. 템플릿에 대한 제약 사항, 권한을 포함 시킨 Portfolio를 생성 및 배포
+</br>
+
+
+### Spoke Account 동작 과정
+1. 배포 받은 Portfolio를 자신의 Service Catalog에 Import
+2. Import한 Portfolio에서 필요한 Product를 Provisioning
+
+
 
 
 
