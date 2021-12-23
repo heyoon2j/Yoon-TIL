@@ -124,6 +124,9 @@
 	
 	4. fstab Example
 	```
+	# blkid
+	$ blkid
+
 	# sudo lsblk -o +UUID,PARTLABEL,FSTYPE
 	NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT UUID                                 PARTLABEL FSTYPE
 	xvda    202:0    0    8G  0 disk
