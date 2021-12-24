@@ -35,18 +35,15 @@
 
 
 ### Step 1. Gateway 생성
-1. EC2 Instance 생성
+1. Storage Gateway Instance 생성
     * 기본적으로 다음과 같은 포트 요구
         * NFS : 2049
+        * Gateway 정품 Key를 얻기 위한 Port : 80
         * SSH : 22
     * Cahe or Upload Buffer로 사용할 EBS를 추가로 붙인다.
         * 비동기식으로 작업당 Buffer를 나눠놓은거 같다!
 2. Storage Interface Endpoint 생성
-    * 기본적으로 다음과 같은 포트를 요구
-    * 
     * Storage Gateway 활성화에 필요한 Port : 443, 1026, 1027, 1028, 1031, 2222
-    * Gateway 정품 Key를 얻기 위한 Port : 80
-    * 관리를 위한 SSH : 22
 3. Gateway 정품 인증 키 받기
     * curl 명령어
         * https://docs.aws.amazon.com/ko_kr/storagegateway/latest/userguide/get-activation-key.html
