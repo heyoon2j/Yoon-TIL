@@ -169,8 +169,10 @@
 
 
 ## DHCP Option Set
-
-
+* Dynamic Host Configureation Protocol
+* TCP/IP 네트워크 상의 호스트로 구성 정보를 전달하기 위한 표준을 제공.
+</br>
+</br>
 
 
 ## Cost

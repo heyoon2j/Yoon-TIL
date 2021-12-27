@@ -180,11 +180,19 @@
 </br>
 
 
-## Route53 Resolver
+## Route53 DNS Resolver
+* 기본적으로 VPC를 생성하면 Route 53 Resolver는 자동으로 VPC용 DNS 서버(Amazon Route 53 Resolver)를 제공한다.
+</br>
 
-
-
-
+### 기능
+* Inbound Endpoint
+    * 다른 네트워크 (On-premise, VPC 등) -> Inbound Enpoint -> Route 53 Resolver
+    * 네트워크의 DNS Resolver가 해당 Endpoint를 통해 DNS Query를 Route 53 Resolver에게 전달힐 수 있다.
+* Outbound Endpoint
+    * VPC -> 
+    * DNS Resolver가 해당 Endpoint를 통해 Query를 네트워크의 DNS Resolver에게 전달
+* Rule
+    * 
 
 </br>
 </br>

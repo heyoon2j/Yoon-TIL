@@ -81,7 +81,7 @@
     * Product를 Provisioning 할 수 있는 __"그룹, 역할 및 사용자"__ 설정
     * Provisioning 시 Template에 대한 SNS 알람, IAM 등 설정
 5. Shared 설정
-    * Protfolio 공유 설정
+    * Potfolio 공유 설정
 6. Provisioning Product 생성 (User)
     * 제품 선택 -> 제품 시작 -> 버전 선택 -> 입력 값 설정 -> 이벤트 알림 활성화 -> 제품 시작
 </br>
