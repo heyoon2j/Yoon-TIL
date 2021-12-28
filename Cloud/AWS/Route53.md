@@ -181,21 +181,34 @@
 
 
 ## Route53 DNS Resolver
-* 기본적으로 VPC를 생성하면 Route 53 Resolver는 자동으로 VPC용 DNS 서버(Amazon Route 53 Resolver)를 제공한다.
+* VPC와 네트워크 간(On-premise, VPC, Route 53 Resolver) DNS Query 해석을 위해 사용.
+* 기본적으로 VPC를 생성하면 Route 53 Resolver는 자동으로 VPC용 DNS 서버(Amazon Route 53 Resolver)를 제공.
 </br>
 
 ### 기능
 * Inbound Endpoint
-    * 다른 네트워크 (On-premise, VPC 등) -> Inbound Enpoint -> Route 53 Resolver
-    * 네트워크의 DNS Resolver가 해당 Endpoint를 통해 DNS Query를 Route 53 Resolver에게 전달힐 수 있다.
+    ![ResolverInboundEndpoint](../img/ResolverInboundEndpoint.png)
+    * 다른 네트워크 (On-premise, VPC 등) -> Inbound Endpoint VPC Resolver -> Inbound Endpoint -> Inbound Endpoint -> Route 53 Resolver
+    * 네트워크의 DNS Resolver가 해당 Inbound Endpoint를 통해 DNS Query를 Route 53 Resolver에게 전달힐 수 있다.
 * Outbound Endpoint
-    * VPC -> 
-    * DNS Resolver가 해당 Endpoint를 통해 Query를 네트워크의 DNS Resolver에게 전달
+    ![ResolverOutboundEndpoint](../img/ResolverOutboundEndpoint.png)
+    * VPC -> Outbound Endpoint VPC Resolver -> Outbound Endpoint -> 다른 네트워크 (On-premise, VPC 등)의 Resolver
+    * DNS Resolver가 해당 Outbound Endpoint를 통해 Outbound VPC DNS Resolver에게 전달
 * Rule
-    * 
+    * VPC에 매핑되어 있는 2번에 있는 Route 53 Resolver Server에 적용되는 규칙
 
+> Inbound VPC는 연결할 Route 53 Resolver(Hostzones)을 관리할 수 있다. Outbount VPC는 다른 네트워크의 Resolver에 대한 VPC들을 관리할 수 있다.
+> VPC 내에 상주하지 않는 다는 것 보니 Endpoint로 Resolver Server에 접근하는 개념으로 봐도 될거 같다.
+</br>
+
+### Multi VPC에 대한 Resolver Architecture
+![]()
+* Inbound/Outbound Endpoint는 원래의 용도는 다른 네트워크를 위한 거지만, 여기서는 Multi VPC에 대한 Resolver Architecture를 위해 원래 의도와는 다르게 사용되었다.
+* Rule에 의해 Outbound Endpoint -> Resolver가 아닌 Outbound Endpoint -> Inbound Endpoint로 Forwarding하고 있다.
 </br>
 </br>
+
+
 
 
 
@@ -203,6 +216,7 @@
 * DNS 장애조치를 빠르게 제공하여, 제공하는 네트워크에 뛰어난 복원력을 제공한다.
 * 또한 사용자와 애플리케이션의 캐싱 문제를 방지하고 거의 즉각적으로 트래픽을 정상적인 엔트포인트로 리디렉션한다.
 * Anycast부터 AWS 엣지 로케이션까지 정적 IP 주소를 사용하는 Global Accelerator는 고정 진입점 주소를 제공하여 사용자와 가까운 엣지 로케이션에서 트래픽을 수신하도록 한다.
+</br>
 
 
 
@@ -234,6 +248,10 @@
 1. ELB는 여러 AZ 간에 트래픽을 분산하지만, 여러 리전에는 분산하지 않는다. Route53은 여러 리전에 트래픽을 분산할 수 있다.
 2. Route53과 ELB 모두 상태 확인을 수행하고 정상적인 리소스로만 트래픽을 라우팅한다. 그러나 DNS는 캐시되어 unhealty 대상이 한동안 방문자 캐시에 남아 있게 된다. 반면에 ELB는 캐시되지 않으며 대상 그룹에서 unhealty 대상을 즉시 제거합니다.
 > Region, AZ 기준으로 Traffic 분산을 한다.
+</br>
+</br>
+
+
 
 ## Cost
 * 호스팅 영역 관리

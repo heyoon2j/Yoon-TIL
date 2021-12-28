@@ -154,8 +154,8 @@
 * IGW, VPN, NAT or Proxy를 사용할 필요가 없다.
 * 대신 동일한 리전에 있어야 한다.
 * VPC Endpoint 유형
-    1) Interface Endpoint: EC2에 네트워크 카드를 추가해서 사설의 네트워크 사용. ENI가 추가가 된다.
-    2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 전용의 게이트웨이를 둔다. ENI가 추가되지 않는다.
+    1) Interface Endpoint: 각 Subnet에 ENI 네트워크 카드를 추가해서 사설의 네트워크 사용. (ENI가 추가가 된다)
+    2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 VPC에 전용 게이트웨이를 둔다. (Routing Table이 추가가 된다)
         ![GatewayEndpoint](../img/GatewayEndpoint.png)
     3) Gateway Load Balancer Endpoint
 </br>
@@ -169,7 +169,7 @@
 
 
 ## DHCP Option Set
-* Dynamic Host Configureation Protocol
+* Dynamic Host Configuration Protocol
 * TCP/IP 네트워크 상의 호스트로 구성 정보를 전달하기 위한 표준을 제공.
 </br>
 </br>
