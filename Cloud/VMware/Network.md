@@ -26,7 +26,8 @@
 ### Host-Only Networking (VMnet1)
 ![Host-OnlyNetworking](img/Host-OnlyNetworking.png)
 * https://docs.vmware.com/en/VMware-Workstation-Pro/16.0/com.vmware.ws.using.doc/GUID-93BDF7F1-D2E4-42CE-80EA-4E305337D2FC.html#GUID-93BDF7F1-D2E4-42CE-80EA-4E305337D2FC
-* NAT Networking과 같이 Host와 통신이 가능하며 Host와는 다른 Network 대역을 사용한다.
+* NAT Networking과 같이 Host와 다른 Network 대역을 사용한다.
+* NAT Device가 따로 존재하지 않기 때문에 Host 및 외부와는 통신이 불가능하다.
 </br>
 
 
