@@ -1,4 +1,4 @@
-bㅠㅠb# Cloud에 필요한 지식
+# Cloud에 필요한 지식
 
 ## Virtualization 기술
 1. Virtualization
