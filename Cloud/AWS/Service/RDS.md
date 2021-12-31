@@ -117,6 +117,5 @@
     * __Shared Storage__ : Storage Node 관리
     * __Storage Node__ : Node는 Distributed Volume 이중화를 위한 Cluster => Distributed Volume이 2대
     * __Distributed Volume__ : 분산 저장을 위한 Storage(Server)에 대한 관리 Cluster => File 1은 exp1에 File 2는 exp2에 저장
-
 </br>
 </br>

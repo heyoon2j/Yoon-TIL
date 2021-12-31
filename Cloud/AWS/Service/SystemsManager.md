@@ -116,9 +116,80 @@
 ## 작성 방법
 *
 ```
-
+---
+description: Sample runbook using AWS API operations
+schemaVersion: '0.3'
+assumeRole: "{{ AutomationAssumeRole }}"
+parameters:
+  AutomationAssumeRole:
+    type: String
+    description: "(Optional) The ARN of the role that allows Automation to perform the actions on your behalf."
+    default: ''
+  ImageName:
+    type: String
+    description: "(Optional) Image Name to launch EC2 instance with."
+    default: "Windows_Server-2016-English-Full-Base-2018.07.11"
+mainSteps:
+- name: getImageId
+  action: aws:executeAwsApi
+  inputs:
+    Service: ec2
+    Api: DescribeImages
+    Filters:  
+    - Name: "name"
+      Values: 
+      - "{{ ImageName }}"
+  outputs:
+  - Name: ImageId
+    Selector: "$.Images[0].ImageId"
+    Type: "String"
+- name: launchOneInstance
+  action: aws:executeAwsApi
+  inputs:
+    Service: ec2
+    Api: RunInstances
+    ImageId: "{{ getImageId.ImageId }}"
+    MaxCount: 1
+    MinCount: 1
+  outputs:
+  - Name: InstanceId
+    Selector: "$.Instances[0].InstanceId"
+    Type: "String"
+- name: waitUntilInstanceStateRunning
+  action: aws:waitForAwsResourceProperty
+  # timeout is strongly encouraged for action - aws:waitForAwsResourceProperty
+  timeoutSeconds: 60
+  inputs:
+    Service: ec2
+    Api: DescribeInstanceStatus
+    InstanceIds:
+    - "{{ launchOneInstance.InstanceId }}"
+    PropertySelector: "$.InstanceStatuses[0].InstanceState.Name"
+    DesiredValues:
+    - running
+- name: assertInstanceStateRunning
+  action: aws:assertAwsResourceProperty
+  inputs:
+    Service: ec2
+    Api: DescribeInstanceStatus
+    InstanceIds:
+    - "{{ launchOneInstance.InstanceId }}"
+    PropertySelector: "$.InstanceStatuses[0].InstanceState.Name"
+    DesiredValues:
+    - running
+outputs:
+- "launchOneInstance.InstanceId"
+...
 
 ```
+* ```"{{ parameter }}"``` : 파라미터 값 사용
+* ```"{{ stepName.output }}"``` : 다른 Step의 Output 값 사용
+    * 기본적으로 Output Value
+* ```Selector : $..."``` : aws:executeAwsApi의 경우 사용 가능
+    * Python Boto3의 Response 값
+* ```PropertySelector``` : aws:assertAwsResourceProperty 및 aws:waitForAwsResourceProperty의 경우 사용 가능
+* `````` : 
+* `````` : 
 
 
 
