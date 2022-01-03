@@ -4,7 +4,7 @@
 * DB Server는 크게 Memory / Redo Log(Transaction) /  Disk 로 구분할 수 있다.
 * Memory에서 명령을 처리하고, 이를 Redo Log에 기록 -> 기록을 이용하여 Disk에 Data 저장
     * Memory, Redo Log / Disk로 분리함으로써, Disk에 저장시  에러가 발생해도 Redo Log를 통해 Rollback이 가능해진다. 
-    * RW와 다르게 RO는 
+    * RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
 </br>
 </br>
 
