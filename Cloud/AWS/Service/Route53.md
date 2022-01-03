@@ -102,22 +102,42 @@
 
 
 ## DNS Record Type
-| Type | Type id. | Description | Function |
-|------|----------|-------------|----------|
-| A | 1 | Address record | 호스트 이름과 IPv4 주소를 저장 |
-| AAAA | 28 | IPv6 record | 호스트 이름과 IPv6 주소를 저장 |
-| CERT | 37 | Certificate record | PKIX, SPKI, PGP 등의 암호화 인증서를 저장 |
-| CNAME | 5 | Canonical name record | 호스트 이름을 다른 호스트 이름으로 별칭하는데 사용 |
-| DNAME | 39 | Delegation name record |  |
-| HINFO | 13 | Host Information | 호스트에 대한 일반 정보를 얻는데 사용. 하지만 보안상의 이유로 공용 서버에서는 사용되지 않는다 |
-| MX | 15 | Mail Exchange record | 이메일을 수신할 이메일 서버를 지정 (SMTP 이메일 서버). MX record를 설정하려면 A record가 지정되어 있어야 하며, MX record 데이터에는 A record의 호스트를 입력하면 된다. |
-| NS | 2 | Name Server record | 주어진 호스트에 대한 authoritative name server를 알려준다. 즉, 해당 도메인의 IP 주소를 찾기 위해 가야할 곳을 알려준다 |
-| PTR | 12 | Reverse-lookup Pointer record | 순방향 DNS 확인(A or AAAA)과 달리 IP 주소를 기반으로 호스트 이름을 찾는데 사용 / Reverse DNS lookup |
-| SOA | 6 | Start Of [a zone of] Authority record | DNS Zone 파일의 시작 부분에 나타내며 관리자의 연락처 세부 정보, 타이머 설정 등을 저장 |
-| SRF |  | Sender Policy Framework | TXT record 안에서 사용되며, 메일 스푸핑을 방지하는데 사용되는 레코드. 특정 사업체(네이버, 다음, 구글) |
-| TXT | 16 | Text record | 역할 등의 도메인 설명을 기입하는 용도 또는 SRF 역할로 사용되는 레코드 |
+| Type  | Type id. | Description                           | Function                                                                                                                                                               |
+| ----- | -------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A     | 1        | Address record                        | 호스트 이름과 IPv4 주소를 저장                                                                                                                                         |
+| AAAA  | 28       | IPv6 record                           | 호스트 이름과 IPv6 주소를 저장                                                                                                                                         |
+| CERT  | 37       | Certificate record                    | PKIX, SPKI, PGP 등의 암호화 인증서를 저장                                                                                                                              |
+| CNAME | 5        | Canonical name record                 | 호스트 이름을 다른 호스트 이름으로 별칭하는데 사용                                                                                                                     |
+| DNAME | 39       | Delegation name record                |                                                                                                                                                                        |
+| HINFO | 13       | Host Information                      | 호스트에 대한 일반 정보를 얻는데 사용. 하지만 보안상의 이유로 공용 서버에서는 사용되지 않는다                                                                          |
+| MX    | 15       | Mail Exchange record                  | 이메일을 수신할 이메일 서버를 지정 (SMTP 이메일 서버). MX record를 설정하려면 A record가 지정되어 있어야 하며, MX record 데이터에는 A record의 호스트를 입력하면 된다. |
+| NS    | 2        | Name Server record                    | 주어진 호스트에 대한 authoritative name server를 알려준다. 즉, 해당 도메인의 IP 주소를 찾기 위해 가야할 곳을 알려준다                                                  |
+| PTR   | 12       | Reverse-lookup Pointer record         | 순방향 DNS 확인(A or AAAA)과 달리 IP 주소를 기반으로 호스트 이름을 찾는데 사용 / Reverse DNS lookup                                                                    |
+| SOA   | 6        | Start Of [a zone of] Authority record | DNS Zone 파일의 시작 부분에 나타내며 관리자의 연락처 세부 정보, 타이머 설정 등을 저장                                                                                  |
+| SRF   |          | Sender Policy Framework               | TXT record 안에서 사용되며, 메일 스푸핑을 방지하는데 사용되는 레코드. 특정 사업체(네이버, 다음, 구글)                                                                  |
+| TXT   | 16       | Text record                           | 역할 등의 도메인 설명을 기입하는 용도 또는 SRF 역할로 사용되는 레코드                                                                                                  |
 * Reference: http://dns-record-viewer.online-domain-tools.com/
 </br>
+
+## Zone File Example
+```
+
+```
+* 
+</br>
+
+### SOA Record
+```
+@     IN     SOA    {primary-name-server}     {hostmaster-email} (
+                    {serial-number}
+                    {time-to-refresh}
+                    {time-to-retry}
+                    {time-to-expire}
+                    {minimum-TTL} )
+```
+* https://help.dyn.com/how-to-format-a-zone-file/
+* Primary name server : 
+
 
 ### A Record
 * Example
