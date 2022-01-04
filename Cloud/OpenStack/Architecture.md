@@ -4,15 +4,16 @@
 
 
 ## Network
-* 
 
-## 1. 기본 네트워크 아키텍처
-![](img/OpenStackNewtorkArchitecture.png)
+## 1. Network Architecture (Basic)
+![OpenStackNewtorkArchitecture](img/OpenStackNewtorkArchitecture.png)
+* 
 
 </br>
 
-## 2. 
-![](img/OpenStackSelf-ServiceArchitecture.png)
+
+## 2. Provider/Self-service Network Architecture
+![OpenStackSelf-ServiceArchitecture](img/OpenStackSelf-ServiceArchitecture.png)
 * Provider Network
     * Provider가 Self-service Network를 제공하기 위해 구축하는 네트워크
     * Provider만 접근 가능
@@ -20,7 +21,9 @@
     * 
 
 
-## 
+## 3. Network Architecture (Detail)
+![OpenStackNewtorkArchitecture_detail]()
+* 
 
 
 
