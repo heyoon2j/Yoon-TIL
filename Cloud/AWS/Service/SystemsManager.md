@@ -29,6 +29,12 @@
 * Inventory : 관리할 대상 IP Address 목록
 * Role : 작업들에 대한 모듈화(모음)
 * Ansible Config : Ansible 환경변수 정의 파일
+* 비교 표
+    | SSM Automation | Ansible |
+    |----------------|---------|
+    | Runbook | Playbook/Role |
+    | Action | Module |
+    | Resource Group/TAG | Inventory |
 </br>
 </br>
 
@@ -187,6 +193,7 @@ outputs:
     * 기본적으로 Output Value
 * ```Selector : $..."``` : aws:executeAwsApi의 경우 사용 가능
     * Python Boto3의 Response 값
+    * 
 * ```PropertySelector``` : aws:assertAwsResourceProperty 및 aws:waitForAwsResourceProperty의 경우 사용 가능
 * `````` : 
 * `````` : 
