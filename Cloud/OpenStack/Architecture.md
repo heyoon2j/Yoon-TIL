@@ -1,7 +1,5 @@
 # Architecture
-
-
-
+</br>
 
 ## Network
 
@@ -53,14 +51,17 @@
 
 
 ## 4. Network Architecture (AWS)
-![OpenStackNewtorkArchitecture_AWS]()
+![OpenStackNewtorkArchitecture_AWS](img/OpenStackNewtorkArchitecture_AWS.png)
 * OpenStack으로 AWS를 구축한다고 하면 다음과 같은거라 생각해서 비교하기 위해 그렸다.
 * Network 비교 표
-    | OpenStack                              | AWS                                           |
+    | Underlay                              | Overlay                                      |
     | -------------------------------------- | --------------------------------------------- |
-    | Provider Network(External)             | Internet Gateway or Global Service Public DNS |
-    | Self-service Network(Guest)            | VPC and Subnet                                |
-    | Network Node에서 Domain + Routing 작업 | VPC Enpoint 생성                              |
+    | External Network             | Public Network (Internet Gateway or Global Service) |
+    | Internal Network | Private Link |
+    | Guest Network            | VPC and Subnet, 서비스 내부 네트워크                                |
+    | Storage Network | 안 보임 / 각 서비스들끼리만 연결하는 네트워크 (EC2 <-> EBS) |
+    | Management/API Network | 안 보임 |
+* VPC Enpoint 생성 == Internal Network에 Domain + Routing 작업
 </br>
 </br>
 
