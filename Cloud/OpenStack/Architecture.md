@@ -54,13 +54,13 @@
 ![OpenStackNewtorkArchitecture_AWS](img/OpenStackNewtorkArchitecture_AWS.png)
 * OpenStack으로 AWS를 구축한다고 하면 다음과 같은거라 생각해서 비교하기 위해 그렸다.
 * Network 비교 표
-    | Underlay                              | Overlay                                      |
-    | -------------------------------------- | --------------------------------------------- |
-    | External Network             | Public Network (Internet Gateway or Global Service) |
-    | Internal Network | Private Link |
-    | Guest Network            | VPC and Subnet, 서비스 내부 네트워크                                |
-    | Storage Network | 안 보임 / 각 서비스들끼리만 연결하는 네트워크 (EC2 <-> EBS) |
-    | Management/API Network | 안 보임 |
+    | Underlay               | Overlay                                                     |
+    | ---------------------- | ----------------------------------------------------------- |
+    | External Network       | Public Network (Internet Gateway or Global Service)         |
+    | Internal Network       | Private Link                                                |
+    | Guest Network          | VPC and Subnet, 서비스 내부 네트워크                        |
+    | Storage Network        | 안 보임 / 각 서비스들끼리만 연결하는 네트워크 (EC2 <-> EBS) |
+    | Management/API Network | 안 보임                                                     |
 * VPC Enpoint 생성 == Internal Network에 Domain + Routing 작업
 </br>
 </br>
@@ -69,10 +69,12 @@
 ### Reference
 * OpenStack
     * https://docs.openstack.org/ocata/networking-guide/intro-os-networking.html
-    * https://docs.openstack.org/security-guide/networking/architecture.html
+    * https://docs.openstack.org/secur*ity-guide/networking/architecture.html
     * https://docs.openstack.org/neutron/xena/admin/deploy-lb-selfservice.html
     * https://docs.openstack.org/mitaka/ko_KR/install-guide-obs/launch-instance-networks-selfservice.html
-* Redhat : https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/11/html/architecture_guide/components#sec-networking
+* Redhat
+    * https://www.intel.com/content/dam/www/public/us/en/documents/reference-architectures/redhat-cloud-blocks-reference-architecture.pdf
+    * https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/11/html/architecture_guide/components#sec-networking
 * Oracle : https://docs.oracle.com/cd/E65465_01/html/E61044/archover.html
 * https://ssup2.github.io/theory_analysis/OpenStack_Network_Neutron/
 * https://printf.kr/3
