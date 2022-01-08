@@ -30,11 +30,11 @@
 * Role : 작업들에 대한 모듈화(모음)
 * Ansible Config : Ansible 환경변수 정의 파일
 * 비교 표
-    | SSM Automation | Ansible |
-    |----------------|---------|
-    | Runbook | Playbook/Role |
-    | Action | Module |
-    | Resource Group/TAG | Inventory |
+    | SSM Automation     | Ansible       |
+    | ------------------ | ------------- |
+    | Runbook            | Playbook/Role |
+    | Action             | Module        |
+    | Resource Group/TAG | Inventory     |
 </br>
 </br>
 
@@ -60,10 +60,11 @@
 
 
 ## Automation Resource Group
-* Automation runbook에 대한 Target Group을 설정할 수 있다.
+* Automation runbook의 Parameter에 대하여 Target Group을 설정할 수 있다.
+* Resource Group 생성 방법으로 4가지가 있다.
 * https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-targets.html#automation-working-targets-resource-groups
-1. Tag 설정
-    * Key / Value를 통해 사용
+1. Tag 지정
+    * 대상으로 지정할 Instances의 Tag Key/Value 지정
     * Example
         ```
         aws ssm start-automation-execution \
@@ -73,7 +74,7 @@
         ```
 2. Parameter 값 입력
     * 직접 Target들을 적는다.
-    * 
+    * Document에서 리소스 타입을 지정해두고 해당하는 Resource의 Parameter 값을 입력
         ```
         aws ssm start-automation-execution 
         --document-name AWS-CreateImage \
@@ -84,9 +85,10 @@
         ```
 
         ```
-3. 전체 인스턴스
-4. d
-5. 
+3. 모든 인스턴스
+  *  현재 AWS 계정 및 AWS 리전의 모든 관리형 인스턴스에 대해 자동화를 실행
+4. Resource Group
+  * AWS Resource Group에서 지정한 Resource Group 사용
 
 
 ## Automation actions reference
@@ -105,7 +107,7 @@
 * aws:sleep : 지정된 시간 동안 자동화를 지연
 * aws:waitForAwsResourceProperty : AWS 리소스 상태 또는 이벤트 상태가 특정 상태가 될 때까지 대기
 * https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-action-copyimage.html
-
+</br>
 
 ### 작업 순서
 1. Resource Group 생성
@@ -114,13 +116,15 @@
 2. Lambda 작성
 3. Automation runbook 작성
 4. 실행
+</br>
+</br>
 
 
 
 
-
-## 작성 방법
-*
+## 시스템 변수
+* 다음은 간단한 작성 예시이다.
+* https://docs.aws.amazon.com/ko_kr/systems-manager/latest/userguide/automation-variables.html
 ```
 ---
 description: Sample runbook using AWS API operations
@@ -136,67 +140,65 @@ parameters:
     description: "(Optional) Image Name to launch EC2 instance with."
     default: "Windows_Server-2016-English-Full-Base-2018.07.11"
 mainSteps:
-- name: getImageId
-  action: aws:executeAwsApi
-  inputs:
-    Service: ec2
-    Api: DescribeImages
-    Filters:  
-    - Name: "name"
-      Values: 
-      - "{{ ImageName }}"
+  - name: getImageId
+    action: aws:executeAwsApi
+    inputs:
+      Service: ec2
+      Api: DescribeImages
+      Filters:  
+      - Name: "name"
+        Values: 
+        - "{{ ImageName }}"
+    outputs:
+    - Name: ImageId
+      Selector: "$.Images[0].ImageId"
+      Type: "String"
+  - name: launchOneInstance
+    action: aws:executeAwsApi
+    inputs:
+      Service: ec2
+      Api: RunInstances
+      ImageId: "{{ getImageId.ImageId }}"
+      MaxCount: 1
+      MinCount: 1
+    outputs:
+    - Name: InstanceId
+      Selector: "$.Instances[0].InstanceId"
+      Type: "String"
+  - name: waitUntilInstanceStateRunning
+    action: aws:waitForAwsResourceProperty
+    # timeout is strongly encouraged for action - aws:waitForAwsResourceProperty
+    timeoutSeconds: 60
+    inputs:
+      Service: ec2
+      Api: DescribeInstanceStatus
+      InstanceIds:
+      - "{{ launchOneInstance.InstanceId }}"
+      PropertySelector: "$.InstanceStatuses[0].InstanceState.Name"
+      DesiredValues:
+      - running
+  - name: assertInstanceStateRunning
+    action: aws:assertAwsResourceProperty
+    inputs:
+      Service: ec2
+      Api: DescribeInstanceStatus
+      InstanceIds:
+      - "{{ launchOneInstance.InstanceId }}"
+      PropertySelector: "$.InstanceStatuses[0].InstanceState.Name"
+      DesiredValues:
+      - running
   outputs:
-  - Name: ImageId
-    Selector: "$.Images[0].ImageId"
-    Type: "String"
-- name: launchOneInstance
-  action: aws:executeAwsApi
-  inputs:
-    Service: ec2
-    Api: RunInstances
-    ImageId: "{{ getImageId.ImageId }}"
-    MaxCount: 1
-    MinCount: 1
-  outputs:
-  - Name: InstanceId
-    Selector: "$.Instances[0].InstanceId"
-    Type: "String"
-- name: waitUntilInstanceStateRunning
-  action: aws:waitForAwsResourceProperty
-  # timeout is strongly encouraged for action - aws:waitForAwsResourceProperty
-  timeoutSeconds: 60
-  inputs:
-    Service: ec2
-    Api: DescribeInstanceStatus
-    InstanceIds:
-    - "{{ launchOneInstance.InstanceId }}"
-    PropertySelector: "$.InstanceStatuses[0].InstanceState.Name"
-    DesiredValues:
-    - running
-- name: assertInstanceStateRunning
-  action: aws:assertAwsResourceProperty
-  inputs:
-    Service: ec2
-    Api: DescribeInstanceStatus
-    InstanceIds:
-    - "{{ launchOneInstance.InstanceId }}"
-    PropertySelector: "$.InstanceStatuses[0].InstanceState.Name"
-    DesiredValues:
-    - running
-outputs:
-- "launchOneInstance.InstanceId"
+  - "launchOneInstance.InstanceId"
 ...
-
 ```
 * ```"{{ parameter }}"``` : 파라미터 값 사용
 * ```"{{ stepName.output }}"``` : 다른 Step의 Output 값 사용
     * 기본적으로 Output Value
+* ```{{automation:EXECUTION_ID}}``` : 자동화 실행서에 대한 변
 * ```Selector : $..."``` : aws:executeAwsApi의 경우 사용 가능
     * Python Boto3의 Response 값
-    * 
+    * AWS는 기본적으로 Python boto3 으로 구성되어 있다.
 * ```PropertySelector``` : aws:assertAwsResourceProperty 및 aws:waitForAwsResourceProperty의 경우 사용 가능
 * `````` : 
 * `````` : 
-
-
-
+</br>
