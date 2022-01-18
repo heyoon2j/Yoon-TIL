@@ -3,10 +3,12 @@
 
 
 
+
 ## Node Type
 1. RA3
 
 2. DC2
+
 
 
 
@@ -33,5 +35,21 @@ Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\W
 New-NetFirewallRule -DisplayName 'RDPPORTLatest' -Direction Inbound -Action Allow -Protocol TCP -LocalPort $port
 Restart-Service termservice -Force
 </powershell>
+
+
+
+## 구축 방법
+* 
+1. q
+2. w
+3. e
+4. r
+
+
+
+
+
+
+
 
 

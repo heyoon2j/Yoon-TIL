@@ -221,10 +221,11 @@
 > VPC 내에 상주하지 않는 다는 것 보니 Endpoint로 Resolver Server에 접근하는 개념으로 봐도 될거 같다.
 </br>
 
-### Multi VPC에 대한 Resolver Architecture
-![](../imag/)
+### Multi Account에 대한 Resolver Architecture
+![MultiAccountResolver](../img/MultiAccountResolver.png)
 * Inbound/Outbound Endpoint는 원래의 용도는 다른 네트워크를 위한 거지만, 여기서는 Multi VPC에 대한 Resolver Architecture를 위해 원래 의도와는 다르게 사용되었다.
-* Rule에 의해 Outbound Endpoint -> Resolver가 아닌 Outbound Endpoint -> Inbound Endpoint로 Forwarding하고 있다.
+* Rule에 의해 Outbound Endpoint -> Resolver가 아닌, Outbound Endpoint -> Inbound Endpoint로 Forwarding하고 있다.
+> Rule을 다른 Account에 공유하고, 각 VPC를 Rule에 적용시킨다.
 </br>
 </br>
 
