@@ -135,6 +135,7 @@ $ deactivate
 * Show Command Palette (F1 or Ctrl+Shift+P) -> Python select interpreter 클릭
 * 현재 PC에서 사용 가능한 Python version과 virtual environment를 보여준다.
 * 원하는 환경 선택, 없다면 원하는 venv의 python.exe 파일 위치를 찾는다.
+* ```Error Message: The Python path in your debug configuration is invalid.```
 
 #### 4. Code Convention Tool 설치
 ##### 1) Pylint

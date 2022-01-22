@@ -65,8 +65,8 @@
 ### JAVA 컴파일 과정
 ![JVM](img/JVM.png)
 * 기본 과정
-    1) a
-    2) b
+    1) Java Source File(*.java) 작성
+    2) Compiler(javac.exe)을 통해 
     3) c
 * ____ : 
 * ____ : 
