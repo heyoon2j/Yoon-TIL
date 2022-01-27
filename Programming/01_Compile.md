@@ -46,18 +46,39 @@
             * Memory에 허가되지 않은 접근이 존재한지
         6) Execution Engin에 의해서 Byte Code File을 __Binary Code__ 로 변환 및 실행
 
-### 
+### Class Loader
+* 생성된 Byte Code File(*.class)들을 엮어서 JVM으로 로드하고, Runtime Data Area에 적재한다(자바 애플리케이션이 실행 중일 때 해당 작업을 수행)
+</br>
 
+### Execution Engine (= Interpreter & JIT Compiler(Just In TIme))
+* 기본적으로 Interpreter가 동작하여 명령어 단위로 Byte Code를 해석하게 된다.
+* Interpreter가 코드를 해석하며, 루프, 반복적인 함수 호출 등을 만나 몇 번 이상 중복적인 해석이 이루어진다고 판단되며 JIT Compiler를 통해 Byte Code를 Binary Code로 직접 컴파일하게 된다(__Hot Spot Detection__)
+> JVM의 경우 메소드 영역에 있는 코드 캐시(Code Cache) 공간에 컴파일된 기계어 코드를 캐싱한다.
+</br>
 
-### 
+### Garbage Collector (GC)
+* Heap 메모리 영역에 적재되어 있는 객체들 중에 참조되지 않는 개체들을 탐색하여 제거하는 역할을 한다.
+* GC가 언제 동작하는지 알 수 없다 (동작 구조를 볼 수 없음)
+> 단점으로 특징 중 하나는 GC가 수행되는 동안 GC를 수행하지 않는 다른 모든 Thread들은 일시적으로 정지된다.
+</br>
 
-
-###
-
-
-###
-
-
+### Runtime Data Area
+1. Stack Area
+    * Class 내의 Method에서 사용되는 정보들이 저장되는 공간, 매개변수, 지역변수, 리턴 값 등이 LIFO 방식으로 저장된다.
+    * 각 Thread 마다 하나씩 존재하며 Thread가 시작될 때 할당되며, 추가적으로 Thread를 생성하지 않았다면 main Thread만 존재한다.
+2. Method Area (== C/C++ Data Area)
+    * 전역 변수와 static 변수가 저장된다.
+    * 프로그램이 종료될 때까지 메모리에 남는다.
+    * 코드에서 사용되는 클래스(*.class)들을 클래스 별로 런타임 상수풀(runtime constant pool), 필드(field) 데이터, 메소드(method) 데이터, 메소드 코드, 생성자(constructor) 코드 등을 분류해서 저장된다.
+3. Heap Area
+    * new 명령어를 통해 생성한 인스턴스와 배열 등의 참조형 변수 정보가 저장되며, Method Area에 저장된 Area에 저장된 클래스들만으로 생성이 가능하다.
+4. PC Register Area
+    * Program Counter. 즉, 현재 Thread가 실행되는 부분의 주소와 명령을 저장하고 있는 영역이다.
+    * 해당 Area를 통해 Threaad가 돌아가면서 수행할 수 있게 된다.
+    * Thread가 생성될 때마다 생성된다.
+5. Native Method Stack Area
+    * 자바 외 언어로 작성된 Native Code를 위한 영역. C/C++의 Method를 호출할 때 사용된다.
+> Heap Area, Method Area는 모든 Thread가 공유 / 나머지 Area는 Thread 당 1개씩 존재
 
 
 </br>
@@ -71,14 +92,13 @@
 * __JVM(Java Virtual Machine)__ : 자바 가상 기계. 실제 운영체제를 대신해서 자바 프로그램을 실행하는 가상의 운영체제 역할을 한다(JIT + Complier + GC 등)
 > JDK와 JRE는 운영체제 별로 제공된다.
 </br>
-
-### JDK
-* 
-
-
-</br>
 </br>
 
 
-
-
+### Reference
+* https://www.holaxprogramming.com/2013/07/08/java-jvm-bytecode/ 
+* https://m.blog.naver.com/2feelus/220738480797
+* http://blog.naver.com/PostView.nhn?blogId=kbh3983&logNo=220985785358
+* https://aboullaite.me/understanding-jit-compiler-just-in-time-compiler/
+* https://aljjabaegi.tistory.com/387
+* https://jeong-pro.tistory.com/148
