@@ -127,6 +127,7 @@ __4. SAML (Security Assertion Markup Language)__
   }]
 }
 ```
+* (__"Principal"__ 이) __"Resource"__를 대상으로 __"Action"__ 을 수행하도록  __"Effect"__ 한다.
 * ```Version``` : 해당 정책 언어에 대한 Version을 의미 (현재는 ```2012-10-17```).
 * ```Statement``` : 정책의 요소들을 컨테이너화한다(그룹화). 정책에는 1개 이상의 Statement를 추가할 수 있다.
 * ```Sid``` : ```Statement```를 구분하는 ID
@@ -138,10 +139,10 @@ __4. SAML (Security Assertion Markup Language)__
         2) 읽기(Read)
         3) 쓰기(Write)
         4) 권한 관리(Manage Permission)
-
 * ```Resource``` : __IAM 권한 정책을 생성하는 경우 작업을 적용할 리소스 목록을 지정.__ 리소스 기반 정책을 생성하는 경우에는 선택사항이다.
 * ```Condition``` : 정책이 권한을 부여하는 조건을 지정
 * 요약: 대상(Principal)에게 해당 요소(Resource)에 대해 특정 행동(Action)을 조건(Condition)에 따라 허가/불허(Effect)한다
+> "Princinpal"은 리소스 기반에서, 보안 주체를 지정한다.
 </br>
 
 ### Policy Type
@@ -176,6 +177,26 @@ __4. SAML (Security Assertion Markup Language)__
     		}
     	]
     }
+    # => Rescoure에게 역할 권한 위임을 할 수 있는 정책을 허용한다.
+
+    #########################################################
+    
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": [
+              "ec2.amazonaws.com",
+              "rds.amazonaws.com"
+            ]
+          },
+          "Action": "sts:AssumeRole"
+        }
+      ]
+    }
+    # => Principal은 역할 권한 위임을 할 수 있다. 리소스 기반에서 사용된다.
     ```
     * "arn:aws:iam::Trusted_Account_ID:role/CVAppAssumeRole"의 실제 예시는 다음과 같다(```arn:aws:iam::123456789022:role/dev-role```)
 </br>
