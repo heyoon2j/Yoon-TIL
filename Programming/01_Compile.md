@@ -1,43 +1,8 @@
-# Programming Basic
-1. 절차지향 & 객체지향 프로그래밍
-2. 컴파일러 & 인터프린터
-3. 
-</br>
-
-## 절차지향 & 객체지향 프로그래밍
-* 프로그래밍 방법론(패러다임)
-* Example : 사람이 음료 자판기에서 음료를 뽑는다.
-    ![POP_OOP](img/POP_OOP.png)
-* ref
-    * https://www.slideshare.net/QooJuice/vs-60147566
-    * http://www.incodom.kr/%EC%A0%88%EC%B0%A8_%EC%A7%80%ED%96%A5
-
-### 절차지향 (Procedural Oriented)
-* __절차를 중심으로 코드를 작성한다.__
-* 데이터(구조체)와 함수(기능)가 분리되어 있다.
-* 함수들이 데이터에 "종속성"을 나타내지 못하기 때문에 다른 영역에서 해당 함수를 호출하는 실수를 범할 수 있다.
-</br>
-
-### 객체지향 (Object Oriented)
-* __객체를 중심으로 함수를 작성한다.__
-* 데이터(클래스)와 함수가 분리되어 있지 않다.
-* 함수가 클래스에 "종속성"을 띤다.
-</br>
-
-### 결론 (Conclusion)
-* 정리를 하며 든 나의 생각은 규모가 커지고, 유지/보수가 커짐에 따라 절차지향 -> 객체지향으로 바뀌었다고 생각한다.
-> 그러면 무조건 객체지향이 좋나? => 아니다. 소규모 작업인 경우는 절차지향이 더 좋을 수 있다고 생각한다.
-
-> 하지만 설계와 개발 시간이 충분하고, 유지/보수 등을 생각하면 객체지향이 좋다고 생각한다.
-</br>
-</br>
-
-
-
-## 컴파일러 & 인터프리터
+# Compile 과정
+## Compile 과정 (컴파일러 & 인터프리터)
 * 각 방식의 Build Process는 다음과 같다.
 
-### 컴파일러 (Compiler)
+## 컴파일러 (Compiler)
 ![Compiler](img/Compiler.png)
 * 기본 과정
     1) 헤더 파일(.h) 작성, 함수 및 클래스 선언
@@ -52,8 +17,9 @@
 * __라이브러리__ : 컴파일된 함수(기능)를 구현하는 코드가 저장되어 있는 파일들 모음
 * __헤더 파일__ : 함수(기능)를 호출하기 위한 방법(인터페이스) 정보가 저장되어 있는 파일
 </br>
+</br>
 
-### 인터프리터 (Interpreter)
+## 인터프리터 (Interpreter)
 ![Interpreter](img/Interpreter.png)
 * 기본 과정
     1) 소스 파일(.java/.py)을 컴파일러를 통해 바이트 코드 파일(.class/.pyc) 생성
@@ -61,23 +27,57 @@
 * __바이트 코드 파일__ : 특정 VM이 읽을 수 있는(해석) 코드 파일 
 * __인터프리터__ : 특정 VM에서 바이트 코드 파일을 해석하고 실행시키는 장치
 </br>
+</br>
 
-### JAVA 컴파일 과정
+
+## JAVA 컴파일 과정
 ![JVM](img/JVM.png)
 * 기본 과정
-    1) Java Source File(*.java) 작성
-    2) Compiler(javac.exe)을 통해 
-    3) c
-* ____ : 
-* ____ : 
-* ____ : 
-* ____ : 
-* ____ : 
-* ____ : 
+    * __JDK__
+        1) __Java Source File(*.java)__ 작성
+        2) __Compiler(javac.exe)__ 을 통해 __Byte Code File(*.class)__ 로 변환
+        3) __JVM(java.exe)__ 구동
+    * __JRE__
+        4) Runtime에 __Class Loader__ 를 통해 __Byte Code File__ 을 JVM 내로 로드
+        5) ByteCode Verifier을 통해 검증 단계를 거친다.
+            * Data Types 체크
+            * Stack Overflow 체크
+            * Code가 JVM이 명시한 내용과 일치한지
+            * Memory에 허가되지 않은 접근이 존재한지
+        6) Execution Engin에 의해서 Byte Code File을 __Binary Code__ 로 변환 및 실행
+
+### 
+
+
+### 
+
+
+###
+
+
+###
+
+
+
+
 </br>
 </br>
 
 
+## JDK (Java Development Kit)
+![JDK](img/JDK.png)
+* __JDK(Java Development Kit)__ : 자바 개발 키트. JRE ++ 개발에 필요한 도구(Compiler, java.exe 등)
+* __JRE(Java Runtime Environment)__ : 자바 실행 환경. JVM + 표준 클래스 라이브러리
+* __JVM(Java Virtual Machine)__ : 자바 가상 기계. 실제 운영체제를 대신해서 자바 프로그램을 실행하는 가상의 운영체제 역할을 한다(JIT + Complier + GC 등)
+> JDK와 JRE는 운영체제 별로 제공된다.
+</br>
+
+### JDK
+* 
+
+
+</br>
+</br>
 
 
 
