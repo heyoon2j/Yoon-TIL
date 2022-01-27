@@ -16,14 +16,21 @@
 
 
 ## 3) 기본 문법
-## 들여쓰기
+### 들여쓰기
 * 들여쓰기는 4개의 공백을 사용할 것을 권장
+</br>
 
-## 주석
+### 주석
 * '#' 을 이용
-* 여러 줄인 경우, ```"""..."""``` 또는 ```''''...'''``` 이용
+* 여러 줄인 경우, ```"""..."""``` 또는 ```'''...'''``` 이용
+</br>
 
-## Scope
+### Naming
+* 변수나 함수의 경우, __Camel Case__ 사용 (```strValue, intValue```)
+* Class, Interface, Enum, Annotation 등인 경우, PascalCase 사용 (```Car, Persion```)
+</br>
+
+### Scope
 * Python Scope는 총 4개의 범위를 가진다.
 * Local, Enclosed, Global, Built-in
 1. Local Scope
@@ -35,7 +42,7 @@
 4. Built-in Scope
     * 가장 광범위한 Scope. 따로 선언이 없어도 모든 파이썬 파일에서 유요한 범위를 가지고 있다.
     예로는 list 등과 같은 자료구조의 len() 함수가 있다.
-
+</br>
 
 ## 4) 많이 사용되는 함수
 ## 내장 함수

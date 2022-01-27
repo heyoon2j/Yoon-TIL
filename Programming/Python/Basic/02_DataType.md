@@ -1,4 +1,4 @@
-# 2. Data Type & Variable
+# 2. Data Type
 
 | Data Type | Description | Example |
 |-----------|-------------|---------|
@@ -8,6 +8,7 @@
 | str | 문자열 | a = "abc" |
 | bool | 참, 거짓 | a = True   # False |
 | None | Null | a = None |
+
 
 
 ## 2.1. Numbers
