@@ -47,6 +47,10 @@
     maria2 = Person(**{'name': '마리아', 'age': 20, 'address': '서울시 서초구 반포동'})
     ```
 
+## 특수 메소드
+* https://hcr3066.tistory.com/85
+
+
 ## 7.2. 상속
 * 상속하는 방법
     ```

@@ -1,4 +1,4 @@
-# 2. Data Type
+# 3. Data Type
 
 | Data Type | Description | Example |
 |-----------|-------------|---------|
@@ -11,7 +11,7 @@
 
 
 
-## 2.1. Numbers
+## 3.1. Numbers
 * Python이 지원하는 수에는 정수(Integer), 실수(Real Number), 복소수(Complex Number) 3가지가 있다.
 * 그 외로 Class Decimal 이나 Class Fraction 등을 지원
 1) 정수 (Integer)
@@ -31,7 +31,7 @@
     v.imag    # 3
     ```
 
-## 2.2. String
+## 3.2. String
 * 기본적으로 문자열은 불변하다(immutable). 그러므로 대입 연산이 불가능하다.
 * 작은 따음표 또는 큰 따음표를 이용
     ```python
@@ -86,7 +86,7 @@
     print(s)
     ```
 
-## 2.3. Byte
+## 3.3. Byte
 * 앞에 ```b''``` 가 붙는다.
 * 바이트를 표현하며, Immutable Type이다.
 * bytearray 클래스의 경우, Mutable Type이다.
@@ -101,7 +101,7 @@ a = b'123'
 ```
 
 
-## 2.5. Boolean
+## 3.5. Boolean
 * Python에서는 Boolean은 True, False 둘 중 하나의 값을 가질 수 있다.
     ```
     condition = False
@@ -118,7 +118,7 @@ a = b'123'
     ```
 
 
-## 2.4. List
+## 3.4. List
 * 리스트는 [] 를 이용하여 감싸고, 가변하다(mutable). 그러므로 내용을 추가, 변경, 삭제할 수 있다.
     ```
     cubes = [1, 4, 9, 16, 125]
@@ -230,7 +230,7 @@ a = b'123'
     # [2, 4, 6]
     ```
 
-## 2.5. Tuple
+## 3.5. Tuple
 * 튜플은 () 로 감싸고, 불변하다(immutable). 
 * 기술적인 차이점
     * 리스트는 가변이기 때문에 빠른 요소 추가를 위해 메모리를 더 많은 공간을 차지한다. 
@@ -254,7 +254,7 @@ a = b'123'
     ```
 
 
-## 2.6. Set
+## 3.6. Set
 * 집합은 {} 또는 set()를 이용하여 만들 수 있다. 단, 빈 집합인 경우 set()을 이용해서만 만들 수 있다.
 * 순서가 존재하지 않는다.
 * 중복되는 요소가 없다.
@@ -277,7 +277,7 @@ a = b'123'
     ```
 
 
-## 2.7. Dictionary
+## 3.7. Dictionary
 * 딕셔너리는 {} 와 dict() 이용하고, 가변이다(mutable).
 * Key-Value 형태로 저장한다. 
 * Hash를 이용해 값을 저장한다(HashMap, HashTable)
@@ -317,5 +317,4 @@ a = b'123'
     | dict[key] | 해당 key 값에 대한 value 값 추가 또는 변경 (에러발생 O) | dict["a"] |
     | dict.get(key) | 해당 key 값에 대한 value 값 (에러발생 X) | dict.get("a") |
 
-    
-
+   
