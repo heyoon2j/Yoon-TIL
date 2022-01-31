@@ -33,6 +33,7 @@ x = 3
 y = 4
 z = x + y
 
+print("########################\n")
 
 ##############################################
 # 1) 지역 변수 (Local Variable)
@@ -41,6 +42,7 @@ z = x + y
 * Stack Area에 할당된다.
 * 선언된 함수 내에서만 접근이 가능하며, 함수 종료 시 소멸된다.
 """
+print("---------- 지역 변수 ----------")
 
 def localVarFunc():
     a = 3
@@ -55,41 +57,43 @@ def localVarFunc():
 
 localVarFunc()
 # print(a)
-print("############\n")
+print("########################\n")
 
 ##############################################
 # 2) 전역 변수 (Global Variable)
 """
 - 어디서든 접근이 가능한 변수로 함수 외부에 선언된 변수
 - 지역 변수와 이름이 같을 시, 지역 변수에 가려진다.
-    => 전역 변수로 사용하려면 global 명령어를 사용해야 한다.
+    => 함수 내의 지역변수를 전역 변수로 사용하려면 global 명령어를 사용해야 한다.
 """
-
+print("---------- 전역 변수 ----------")
 
 globalVar = 10
 globalVar2 = 20
+
 def testFunc2():
-    # global globalVal2
+    global globalVar2
     globalVar2 = 30
     print(globalVar)
     print(globalVar2)
-    # print(locals())
+    print(locals())
 
 testFunc2()
 print(globalVar)
 print(globalVar2)
-# print(globals())
+print(globals())
 
-print("############\n")
+print("########################\n")
 
 ##############################################
 # 3) 정적 변수 (== 클래스 변수)
 """
 - 시작과 동시에 할당되어 프로그램이 종료될 떄까지 남아있다.
 - 그렇기 때문에 외부에서 클래스 이름으로 접근이 가능하다.
-- static 변수를 사용하는 이유는 __접근 범위를 지역 변수는 해당 함수로, 전역 변수는 해당 파일로, 멤버 변수는 클래스로 제한하기 위해서__
+- static 변수를 사용하는 이유는 접근 범위를 지역 변수는 해당 함수로, 전역 변수는 해당 파일로, 멤버 변수는 클래스로 제한하기 위해서__
     => Static 변수의 경우, 클래스를 위해 메모리 공간에 딱 하나만 할당된다.
 """
+print("---------- 정적 변수 ----------")
 
 class TestClass:
     classVar = 3
@@ -99,7 +103,7 @@ class TestClass:
         self.attr2 = 2
   
 print(TestClass.classVar)
-print("############\n")
+print("########################\n")
 
 
 ##############################################
@@ -109,6 +113,8 @@ print("############\n")
 - 각 객체마다 변수가 생성된다.
     => 파이썬에서는 init method에서 self 명령어를 사용하여 선언할 수 있다.
 """
+print("---------- 멤버 변수 ----------")
+
 class TestClass2:
     classVal = 3
     # memberVar = 3
@@ -126,7 +132,7 @@ class TestClass2:
 # print(TestClass.memberVar)
 testClass = TestClass2()
 testClass.testFunc()
-print("############\n")
+print("########################\n")
 
 
 ##############################################
@@ -149,18 +155,18 @@ str = "Sing"
 # 대문자로 표시하며, 상수이지만 실질적으로 변경이 가능하며, 개발자 간의 약속으로 생각하면된다.
 SYMBOLIC_VALUE = 30
 
-
+print("########################\n")
 
 ##############################################
 # 3. Naming
 """
 1) 변수의 이름은 알파벳, 숫자로 구성된다.
-2. 대소문자를 구분한다.
-3. 변수의 이름은 숫자로 시작할 수 없고, 예약어는 사용할 수 없다.
+2) 대소문자를 구분한다.
+3) 변수의 이름은 숫자로 시작할 수 없고, 예약어는 사용할 수 없다.
     => 숫자를 사용하고 싶다면 ```_8value```
-4. 특수 문자는 ```_```만 가능
-5. 다음은 변수에 대한 Naming Rule이다.
-    => 변수나 함수는 camelCase (intVale, keyOfPiano)
+4) 특수 문자는 ```_```만 가능
+5) 다음은 변수에 대한 Naming Rule이다.
+    => 변수나 함수는 camelCase (intVal, keyOfPiano)
     => 클래스, 인터페이스 등은 PascalCase (ComputerTheory, LoveSong)
     => 상수는 대문자 사용 (MOVIE_NUMBER, FINAL_VALUE)
 """
@@ -181,5 +187,6 @@ print(Val)
 # 3) 변수의 이름은 숫자로 시작할 수 없고, 예약어는 사용할 수 없다.
 # 4) 특수 문자는 ```_```만 가능
 # 2x = 3
-# _2x = 3
+#_2x = 3
 
+print("########################\n")

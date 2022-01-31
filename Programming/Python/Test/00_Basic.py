@@ -18,11 +18,15 @@ def 함수명(매개변수1, 매개변수2, ... 매개변수n):
     ...
 """
 
-def testFunc(x, y):
-    a = 3
-    b = 4
-    c = a + b
-    return c
+def testFunc(x, y, z):
+   return x + y + z
+
+a = 1
+b = 2
+d = testFunc(a, b)
+print("#######")
+print(d)
+
 
 
 ##############################################
@@ -36,7 +40,10 @@ def test2Sapce():
   b = 4
   for x in a:
       print(x)
-
+  for y in a:
+      print(y)
+      print(b)
+print(None)
 
 
 def test4Sapce():
