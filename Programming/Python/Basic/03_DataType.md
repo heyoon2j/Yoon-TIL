@@ -1,27 +1,39 @@
 # 3. Data Type
+![DataType](../img/DataType.png)
+* Data Type은 크게 기본형(Primitive Type)과 참조형(Reference Type)으로 구분된다.
+> 파이썬에서는 Class로 구성되어 있기 때문에 참조형만 있다!
+1. 기본형
+    * 값을 변수에 직접 저장하는 자료형
+2. 참조형
+    * 값을 직접 저장하지 않고, 값이 저장된 주소를 저장하는 자료형
+    * ex> ```Class a = new Class();```
+</br>
+
+### Python Data Type
+* 모든 Data Type은 Class 형태로 참조형 타입이다.
 
 | Data Type | Description | Example |
 |-----------|-------------|---------|
 | int | 정수형 데이터 | a = 100   # 0xFF(16진수), Oo56(8진수) |
-| float | 소수점을 포함한 실수 | a = 10.25 |
+| float | 소수점을 포함한 실수형 | a = 10.25 |
 | complex | 복소수 | a = 3 + 1j |
-| str | 문자열 | a = "abc" |
 | bool | 참, 거짓 | a = True   # False |
 | None | Null | a = None |
+| str | 문자열 | a = "abc" |
 
+
+</br>
 
 
 ## 3.1. Numbers
 * Python이 지원하는 수에는 정수(Integer), 실수(Real Number), 복소수(Complex Number) 3가지가 있다.
 * 그 외로 Class Decimal 이나 Class Fraction 등을 지원
 1) 정수 (Integer)
-    * 메모리가 허용하는 선에서 무한대의 정수를 사용
-    
+    * 메모리가 허용하는 선에서 무한대의 정수를 사용    
 2) 실수 (Real Number)
     * 8 바이트 크기의 부동 소수형 제공
     * 소수점 15자리까지 표현된다.
-    * 정밀한 계산을 하기는 힘들다.
-    
+    * 정밀한 계산을 하기는 힘들다.    
 3) 복소수 (Complex Number)
     * ```a + bj``` 와 같이 표현
     * i 대신 j로 표현된다.
@@ -30,6 +42,8 @@
     v.real    # 2
     v.imag    # 3
     ```
+</br>
+
 
 ## 3.2. String
 * 기본적으로 문자열은 불변하다(immutable). 그러므로 대입 연산이 불가능하다.
@@ -85,6 +99,8 @@
     s = "Name: %s, Age: %d " % ("ABC", 25)
     print(s)
     ```
+</br>
+
 
 ## 3.3. Byte
 * 앞에 ```b''``` 가 붙는다.
@@ -99,6 +115,7 @@ print(decodedS)     # "Python"
 
 a = b'123'
 ```
+</br>
 
 
 ## 3.5. Boolean
@@ -116,6 +133,7 @@ a = b'123'
     x, y = True + 0, False + 0
     print(x, y)     # 1, 0
     ```
+</br>
 
 
 ## 3.4. List
@@ -229,6 +247,8 @@ a = b'123'
     list = [n + 2 for n in range(0,5) if (n % 2) == 0]
     # [2, 4, 6]
     ```
+</br>
+
 
 ## 3.5. Tuple
 * 튜플은 () 로 감싸고, 불변하다(immutable). 
@@ -252,6 +272,7 @@ a = b'123'
     
     v = ([1, 2, 3], [3, 2, 1])
     ```
+</br>
 
 
 ## 3.6. Set
@@ -275,6 +296,7 @@ a = b'123'
     a & b                       # letters in both a and b, {'a', 'c'}
     a ^ b                       # letters in a or b but not both, {'r', 'd', 'b', 'm', 'z', 'l'}
     ```
+</br>
 
 
 ## 3.7. Dictionary

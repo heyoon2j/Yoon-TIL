@@ -76,12 +76,12 @@ def testFunc2():
     globalVar2 = 30
     print(globalVar)
     print(globalVar2)
-    print(locals())
+    # print(locals())
 
 testFunc2()
 print(globalVar)
 print(globalVar2)
-print(globals())
+# print(globals())
 
 print("########################\n")
 
