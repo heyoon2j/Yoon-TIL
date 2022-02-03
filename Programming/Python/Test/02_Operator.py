@@ -218,9 +218,9 @@ print("---------- Slice 연산자 ----------")
 str = "I love you."
 print(str[2:8])             # 결과 : 
 print(str[0:12])            # 결과 : 
-print(str)            # 결과 : 
-print(str[-4:-1])           # 결과 : 
-
+print(str)                  # 결과 : 
+print(str[-1:12])           # 결과 :
+print(str[-4:-1])           # 결과 :
 
 ##############################################
 # 2-10. None
