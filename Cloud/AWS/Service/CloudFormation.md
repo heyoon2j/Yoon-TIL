@@ -70,7 +70,7 @@ Outputs:
 * __Rules__ : Stack 생성하거나 업데이트할 때, Tamplate에 전달된 파라미터 또는 파라미터 조합을 검증
 * __Mappings__ : 조건부 파라미터 값을 지정하는데 사용할 수 있는 키와 관련된 값의 매핑으로 조회 테이블과 비슷. ```Resources```, ```Outputs``` 섹션에서 ```Fn::FindInMap``` 내장 함수를 사용하여 키를 해당 값으로 매핑 가능
 * __Conditions__ : 스택 생성 또는 업데이트 시 특정 리소스 속성에 값이 할당되는지 또는 특정 리소스가 생성되는지 여부를 제어하는 조건 (예를 들면 스택이 프로덕션용인지 테스트 환경용인지에 따라 달라지는 리소스를 조건부로 생성)
-* __Tranform__ : Serverless Application인 경우 버전 지정
+* __Transform__ : Serverless Application인 경우 버전 지정
 * __Resources__ : 리소스 및 해당 속성 지정. ```Resources```, ```Outputs``` 섹션에서 리소스 참조 가능
 * __Outputs__ : 스택의 속성을 볼 때마다 반환되는 값 지정
 </br>
@@ -105,7 +105,7 @@ Outputs:
 * CloudFormation은 Metadata 섹션에 포함된 정보를 변환, 수정 또는 삭제하지 않는다. 이러한 이유 때문에 이 섹션을 사용하여 암호나 보안 암호와 같은 민감한 정보를 저장하지 않는 것이 좋다.
 > 리소스를 추가, 삭제, 변경을 할 때만 업데이트를 할 수 있다. 그렇기 때문에 변하지 않는 정보를 저장하면 될 거 같다.
 
-> UserData 또는 OS CLI에서 사용할 정보, Cfn-init을 활용 => AWS::CloudFormation::Init
+> UserData 또는 OS CLI에서 사용할 정보, cfn-init을 활용 => AWS::CloudFormation::Init
 
 > 입력 파라미터에 대한 그룹화 및 순서 정의 => AWS::CloudFormation::Interface
 * Example
@@ -177,6 +177,7 @@ Outputs:
 ### Mappings
 * 키를 해당하는 명명된 값 세트와 맞춘다. 해당 값의 경우, 파라미터, 가상 파라미터 또는 내장 함수를 포함할 수 없다.
 * ```Fn::FindInMap``` 내장 함수를 사용하여 맵에서 값을 불러올 수 있다.
+> 파라미터에 대하여 다양한 내용을 전달하고 싶을 때 사용
 * Example
     ```
     AWSTemplateFormatVersion: "2010-09-09"
@@ -210,6 +211,7 @@ Outputs:
 
 ### Conditions
 * 파라미터에 대한 조건을 설정하여, 리소스 또는 출력에 연결할 수 있다.
+> 리소스를 파라미터 기준으로 추가/삭제 하고 싶을 때
 * https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
 * Example
     ```
@@ -457,4 +459,23 @@ Outputs:
         InstanceId: !Ref MyEC2Instance
     ```
 </br>
+</br>
+
+
+## Pseudo parameters
+* 가상 파라미터는 AWS CloudFormation에서 사전 정의된 파라미터
+* ```AWS::AccountId``` : 스택이 생성되는 계정의 AWS 계정 ID를 반환(예: 123456789012).
+* ```AWS::NotificationARNs``` : 현재 스택에 대한 알림 Amazon 리소스 이름(ARN) 목록을 반환
+* ```AWS::NoValue``` : 반환 값으로 지정된 경우 해당 리소스 속성을 제거
+* ```AWS::Partition``` : 리소스가 있는 파티션을 반환
+* ```AWS::Region``` : 리소스를 생성하는 리전을 나타내는 문자열 반환(예: us-west-2).
+* ```AWS::StackId``` : aws cloudformation create-stack 명령으로 지정된 스택의 ID 반환(예: arn:aws:cloudformation:us-west-2:123456789012:stack/teststack/51af3dc0-da77-11e4-872e-1234567db123).
+* ```AWS::StackName``` : aws cloudformation create-stack 명령으로 지정된 스택의 이름 반환(예: teststack).
+* ```AWS::URLSuffix``` : 도메인에 대한 접미사를 반환한다. 접미사는 일반적으로 amazonaws.com이지만 리전에 따라 다를 수 있고, 예를 들면 중국(베이징) 리전의 접미사는 amazonaws.com.cn 이다.
+</br>
+</br>
+
+
+## Module
+
 
