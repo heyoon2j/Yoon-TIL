@@ -268,6 +268,21 @@ Outputs:
 
 ## Function
 * https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html
+* 연속된 Short Syntax 사용 불가
+  ```
+  # 불가
+  !Base64 !Sub string
+  !Base64 !Ref logical_ID
+
+  # 가능
+  !Base64
+    "Fn::Sub": string
+
+  Fn::Base64:
+    !Sub string
+
+  !Select [5, !Ref PriSubNameList]
+  ```
 </br>
 
 ### Fn::Base64
