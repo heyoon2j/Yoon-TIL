@@ -115,7 +115,30 @@ Outputs:
         Description: "Information about the instances"
       Databases: 
         Description: "Information about the databases"
+
+    Metadata: 
+      AWS::CloudFormation::Interface: 
+        ParameterGroups: 
+          - 
+            Label: 
+              default: "Network Configuration"
+            Parameters: 
+              - VPCID
+              - SubnetId
+              - SecurityGroupID
+          - 
+            Label: 
+              default: "Amazon EC2 Configuration"
+            Parameters: 
+              - InstanceType
+              - KeyName
+        ParameterLabels: 
+          VPCID: 
+            default: "Which VPC should this be deployed to?"
     ```
+    * ```ParameterGroups```: 그룹 이름, 각 그룹의 파라미터 및 파라미터가 표시되는 순서를 지정
+    * ```ParameterLabels```: Stack을 생성하거나 업데이트할 때 CloudFormation Console에 표시되는 파라미터 및 해당 표시 이름의 매핑
+
 </br>
 
 
