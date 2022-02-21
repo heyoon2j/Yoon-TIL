@@ -229,7 +229,7 @@
   3) 동일한 VPC에 Outbound/Inbound Endpoint 생성(관리를 위한 VPC)
   4) Outbound Endpoint -> Resolver가 아닌, Outbound Endpoint -> Inbound Endpoint로 Forwarding하는 Rule 생성
 > Rule을 다른 Account에 공유하고, 각 VPC를 Rule에 적용시킨다.
-> 
+
 </br>
 </br>
 
