@@ -234,6 +234,20 @@
 </br>
 
 
+## Reverse Domain 조회
+* 역방향 도메인 조회라고도 한다. 기존에 FQDN으로 IP를 찾는 것과 반대로, IP로 FQDN를 조회한다.
+* 등록방법은 다음과 같다.
+    * Class 단위로 관리되며, Hosted Zone: ```(x.x.x.x).in-addr.arpa```, Record Type: ```PTR```, Value: ```FQDN``` 형태로 등록.
+    * https://docs.aws.amazon.com/ko_kr/Route53/latest/DeveloperGuide/resolver-rules-managing.html#add-reverse-lookup
+    * EX> 10.0.0.190 : abc.test.com
+    1) 10.0.0.0/24 범위의 주소에 대한 조회가 필요한 경우, 다음과 같이 Hoszted Zone 등록
+        * ```0.0.10.in-addra.arpa``` 등록
+    2) 레코드 등록
+        * Record Name: ```190.0.0.10.in-addra.arap```
+        * Record Type: ```PTR```
+        * Value: ```abc.test.com```
+</br>
+</br>
 
 
 
