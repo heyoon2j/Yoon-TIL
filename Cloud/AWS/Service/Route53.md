@@ -231,6 +231,7 @@
 > Hosted Zone에 연결할 VPC는 Inbound VPC만 적용하면 된다. 즉, Hosted Zone에 대한 VPC 관리는 Inbound VPC에 대해서만 관리하면 된다.
 
 > Resolver를 사용할 Account들에게는 Rule만 공유하면 된다. 즉, 다른 VPC들은 Rule만 관리하면 된다.
+
 </br>
 </br>
 
