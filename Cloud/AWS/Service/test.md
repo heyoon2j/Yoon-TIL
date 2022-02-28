@@ -33,10 +33,8 @@ DBClusterIdentifier
 DBName
 DeleteAutomatedBackups
 EnablePerformanceInsights
-
-
 KmsKeyId
-
+StorageEncrypted
 MasterUsername
 
 MonitoringInterval
@@ -47,12 +45,80 @@ PerformanceInsightsKMSKeyId
 
 PerformanceInsightsRetentionPeriod
 
-PromotionTier
 
 SourceDBInstanceIdentifier
 
 SourceRegion
-
-StorageEncrypted
-
 Timezone
+
+
+########################
+engine
+- mariadb / mysql / postgres
+- oracle
+- sqlserver
+
+
+SQL인경우
+* LicencseModel 
+    license-included
+* TimeZone
+    * q
+    * w
+    * e
+    * 
+* CA Certificate
+
+Oracle인 경우
+* LicencseModel 
+    bring-your-own-license
+    license-included
+* TimeZone
+    * q
+    * w
+    * e
+* CA Certificate
+
+
+
+
+
+
+TimezoneParam
+CharacterSetNameParam
+CACertificateIdentifierParam
+
+
+DBSnapshotIdentifierParam
+SourceDBInstanceIdentifierParam
+SourceRegionParam
+
+
+
+StorageTypeParam
+StorageSizeParam
+MaxAllocatedStorageParam
+KmsKeyParam
+
+
+
+
+PubliclyAccessibleParam
+SubnetGroupNameParam
+AzParam
+SecurityGroupListParam
+
+
+MultiAz
+
+
+BackupRetentionPeriodParam
+PreferredBackupWindowParam
+
+
+CloudwatchLogsExportParam
+MonitoringIntervalParam
+MonitoringRoleArnParam
+PreferredMaintenanceWindowParam
+
+
