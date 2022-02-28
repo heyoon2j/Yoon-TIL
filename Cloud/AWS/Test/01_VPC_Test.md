@@ -11,7 +11,7 @@
     3) __Prod / Dev VPC__
         * Application Zone
         * Production VPC: AZ 2개(ap-northeast-2a, 2c), 각 AZ에 private Subnet 3개씩(ELB, APP, DB), APP쪽에 EC2 1개 생성
-        * Develop VPC: VPC 생성까지만
+        * Develop VPC: VPC 생성까지만 
 2. __Tansit Gateway 연결__
     1) Transit Gateway 생성
     2) Transit Gateway와 각 VPC Routing Table 작업
@@ -24,6 +24,10 @@
 5. VGW 사용해보기
     1) 개인 PC와 연동
     2) 
+
+</br>
+</br>
+
 
 ## Architecture
 

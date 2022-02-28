@@ -147,6 +147,7 @@
 > 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
 <br>
 
+
 ## VPC Endpoint
 ![VPCEndpoint](../img/VPCEndpoint.png)
 * AWS를 벗어나지 않고 EC2 인스턴스를 VPC 외부 서비스와 Private하게 연결한다.
