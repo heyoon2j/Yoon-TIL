@@ -1,54 +1,21 @@
-Type: AWS::RDS::DBCluster
-Properties: 
-  AssociatedRoles: 
-    - DBClusterRole
-  AvailabilityZones: 
-    - String
-  BacktrackWindow: Long
-  BackupRetentionPeriod: Integer
-  CopyTagsToSnapshot: Boolean
-  DatabaseName: String
-  
-  DBClusterIdentifier: String
-  DBClusterParameterGroupName: String
+* Snapshot 지우기
 
-
-  ReplicationSourceIdentifier: String
-
-
-  SnapshotIdentifier: String
-  SourceDBClusterIdentifier: String
-  SourceRegion: String
-
-  UseLatestRestorableTime: Boolean
-  VpcSecurityGroupIds: 
-    - String
-
-
-
-
-
+MasterUsername
+MasterUserPassword
 CharacterSetName
 DBClusterIdentifier
 DBName
 DeleteAutomatedBackups
 EnablePerformanceInsights
 KmsKeyId
-StorageEncrypted
-MasterUsername
-
 MonitoringInterval
-
 MonitoringRoleArn
-
+PromotionTier
 PerformanceInsightsKMSKeyId
-
 PerformanceInsightsRetentionPeriod
-
-
 SourceDBInstanceIdentifier
-
 SourceRegion
+StorageEncrypted
 Timezone
 
 
@@ -62,26 +29,26 @@ Postgres는 no option?
 
 
 SQL인경우
-* LicencseModel 
-    license-included
 * TimeZone
-    * q
-    * w
-    * e
-    * 
-* CA Certificate
+    * Korea Standard Time
+    * UTC
+    * UTC-02
+    * UTC-09
+    * UTC-08
+    * UTC-11
+    * UTC+12
+    * UTC+13
+CharacterSetNameParam
+    SQL_Latin1_General_CP1_CI_AS
 
+    
 Oracle인 경우
-* LicencseModel 
+* LicenseModel 
     bring-your-own-license
     license-included
-* TimeZone
-    * q
-    * w
-    * e
-* CA Certificate
-    * Oracle 제외
-
+CharacterSetNameParam
+    AL32UTF8
+    UTF8
 
 DBInstanceIdentifier
 DBInstanceClass
@@ -136,3 +103,8 @@ MonitoringRoleArnParam
 PreferredMaintenanceWindowParam
 
 
+# Test 진행
+* postgres (o)
+* mysql ()
+* mssql (o)
+* oracle ()

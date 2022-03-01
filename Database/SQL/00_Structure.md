@@ -36,3 +36,31 @@
 </br>
 
 * https://stackoverflow.com/questions/56823591/mysql-innodb-differences-between-wal-double-write-buffer-log-buffer-redo-log
+
+
+## Character Set & Collation
+### Character Set
+* 문자 저장시, 인코딩 방식
+* 일반적으로 다음과 같은 방식 사용
+    1) UTF-8
+    2) UTF-16
+    3) ASCII
+    4) EUC-KR
+* 데이터를 저장하는 관점
+    1) Server-Level
+    2) Database-Level
+    3) Table-Level
+    4) Column-Level
+* Server와 Client 간의 관점
+    1) character_set_client: Client -> Server로 넘어올 때, Client가 넘겨줄 때의 방식
+    2) character_set_connection: Client -> Server로 넘어올 때, Server가 해석하는 방식
+    3) character_set_results: Server -> Client로 응답을 넘겨줄 때의 방식
+
+> 인코딩 방식에 대해서 확인할 때, 데이터를 저장하는 관점 4개와 Server-Client 간의 관점 3개 모두 확인해봐야 한다.
+
+### Collation
+* 데이터베이스에 저장된 값들을 검색하거나 정렬 등의 작업을 위해 문자들간에 서로 비교할 때 사용하는 규칙들의 집합
+* CHAR, VARCHAR, TEXT와 같은 데이터 타입을 가지는 Column에 대해서만 적용된다 (주로 대소문자 구별)
+
+* https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=cambo95&logNo=100106067950
+
