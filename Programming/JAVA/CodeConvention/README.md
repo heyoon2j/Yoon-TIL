@@ -1,6 +1,7 @@
 # Code Convention
 * Google Java Code Convention 정리
 * 공식 문서 : https://google.github.io/styleguide/javaguide.html
+* https://soojin.ro/blog/naming-boolean-variables
 
 ## 1. Source file 기본 사항
 ### 1.1. File name

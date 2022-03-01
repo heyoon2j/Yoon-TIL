@@ -58,6 +58,8 @@ engine
 - oracle
 - sqlserver
 
+Postgres는 no option?
+
 
 SQL인경우
 * LicencseModel 
@@ -78,29 +80,41 @@ Oracle인 경우
     * w
     * e
 * CA Certificate
+    * Oracle 제외
 
 
+DBInstanceIdentifier
+DBInstanceClass
+Engine: !Ref EngineParam
+EngineVersion: 
+# LicenseModel: 
 
 
+#  DBSnapshotIdentifierParam:
+#  SourceDBInstanceIdentifierParam:
+#  SourceRegionParam:
 
 
-TimezoneParam
-CharacterSetNameParam
+DBName
+MasterUsername
+MasterUserPassword
+Port
+DBParameterGroupName
+OptionGroupName
+# TimezoneParam
+# CharacterSetNameParam
 CACertificateIdentifierParam
 
 
-DBSnapshotIdentifierParam
-SourceDBInstanceIdentifierParam
-SourceRegionParam
-
+# DBSnapshotIdentifierParam
+# SourceDBInstanceIdentifierParam
+# SourceRegionParam
 
 
 StorageTypeParam
 StorageSizeParam
 MaxAllocatedStorageParam
 KmsKeyParam
-
-
 
 
 PubliclyAccessibleParam
