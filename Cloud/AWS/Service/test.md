@@ -18,6 +18,10 @@ SourceRegion
 StorageEncrypted
 Timezone
 
+postgres (o)
+oracle
+mssql
+
 
 ########################
 engine
@@ -40,6 +44,7 @@ SQL인경우
     * UTC+13
 CharacterSetNameParam
     SQL_Latin1_General_CP1_CI_AS
+LicenseModel
 
     
 Oracle인 경우
@@ -107,4 +112,4 @@ PreferredMaintenanceWindowParam
 * postgres (o)
 * mysql ()
 * mssql (o)
-* oracle ()
+* oracle (o)
