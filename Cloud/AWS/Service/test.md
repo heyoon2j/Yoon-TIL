@@ -113,3 +113,82 @@ PreferredMaintenanceWindowParam
 * mysql ()
 * mssql (o)
 * oracle (o)
+
+
+############################
+Cluster
+
+
+Type: AWS::RDS::DBCluster
+Properties:
+
+
+  DBClusterIdentifier: String
+  GlobalClusterIdentifier: String
+  Engine: String
+  EngineVersion: String
+  EngineMode: String
+
+  DatabaseName: String
+  MasterUsername: String
+  MasterUserPassword: String
+  Port: Integer
+  DBClusterParameterGroupName: String
+
+  AssociatedRoles: 
+    - DBClusterRole
+  EnableIAMDatabaseAuthentication: Boolean
+
+
+  ScalingConfiguration: 
+    ScalingConfiguration
+  SnapshotIdentifier: String
+  SourceDBClusterIdentifier: String
+  SourceRegion: String
+
+
+  KmsKeyId: String
+  StorageEncrypted: Boolean
+
+
+  DBSubnetGroupName: String
+  AvailabilityZones: 
+    - String
+  VpcSecurityGroupIds: 
+    - String
+
+
+  BackupRetentionPeriod: Integer
+  PreferredBackupWindow: String
+  CopyTagsToSnapshot: Boolean
+
+
+  BacktrackWindow: Long
+  EnableHttpEndpoint: Boolean
+
+
+  EnableCloudwatchLogsExports: 
+    - String
+  PreferredMaintenanceWindow: String
+
+
+  ReplicationSourceIdentifier: String
+  RestoreType: String
+  UseLatestRestorableTime: Boolean
+
+
+  DeletionProtection: true
+
+
+  Tags: 
+    - Tag
+
+
+
+
+
+
+
+
+
+
