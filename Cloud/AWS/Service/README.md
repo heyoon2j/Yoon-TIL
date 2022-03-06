@@ -27,4 +27,5 @@
 | crontab | CloudWatch Rule / Auto Scaling 반복 예약 | 작업 예약 스케줄러 |
 | TEE module | VPC Packet Mirroring | 네트워크 트래픽 캡처 및 검사 기능 |
 | HSM | KMS | 키 관리 시스템 |
+| HAProxy | ALB | Proxy / Load Balancing |
 
