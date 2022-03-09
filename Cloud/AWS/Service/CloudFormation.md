@@ -406,8 +406,13 @@ Outputs:
 * 다른 스택에서 내보낸 출력의 값을 반환한다.
 * Example
     ```
+    !ImportValue sharedValueToImport
+
     Fn::ImportValue:
       !Sub "${NetworkStack}-SubnetID"
+
+    !ImportValue:
+      Fn::Sub "${NetworkStack}-SubnetID"
     ```
 </br>
 
