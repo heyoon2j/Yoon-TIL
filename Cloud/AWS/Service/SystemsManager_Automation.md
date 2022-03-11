@@ -278,7 +278,7 @@ mainSteps:
 * ```"{{ stepName.output }}"``` : 다른 Step의 Output 값 사용
     * 기본적으로 Output Value
 * ```{{automation:EXECUTION_ID}}``` : 자동화 실행서에 대한 변
-* ```Selector : $..."``` : aws:executeAwsApi의 경우 사용 가능
+* ```Selector : $.<>.<>.<>"``` : aws:executeAwsApi의 경우 사용 가능
     * Python Boto3의 Response 값
     * AWS는 기본적으로 Python boto3 으로 구성되어 있다.
 * ```PropertySelector``` : aws:assertAwsResourceProperty 및 aws:waitForAwsResourceProperty의 경우 사용 가능
