@@ -45,6 +45,44 @@
 </br>
 
 
+## ELB Attribute
+### All LB
+* "deletion_protection.enabled" : 삭제 방지 활성화 (기본 값: false / true,false)
+
+
+### Application LB and Network LB
+* "access_logs.s3.enabled" : 액세스 로그 활성화 (기본 값: false / true,false)
+* "access_logs.s3.bucket" : 액세스 로그를 저장할 S3 버킷 이름
+* "access_logs.s3.prefix" : S3 버킷에 저장할 때, Prefix
+* "ipv6.deny_all_igw_traffic" : IGW의 액세스를 방지. internet-facing인 경우 false, internal인 경우 true로 설정
+
+
+### Only Application LB
+* "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
+* "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
+    * defensive
+        1) RFC 7230 규칙을 준수하는지 여부와 무관하게 애플리케이션이 알려진 안전한 요청을 수신하도록 허용
+        2) RFC 규칙을 준수하지 않는 요청과 알려진 보안 위협에 해당하는 요청을 차단
+        3) 모호한 요청에 대해서는 HTTP 유지 한도와 무관하게 클라이언트 및 업스트림 연결을 모두 종료 (모호한 요청이란 RFC 7230 규칙을 준수하지 않고 프록시 또는 웹 서버마다 해석이 달라져서 Desync를 초래할 수 있는 요청)
+    * strictest : RFC 7230 규칙을 준수하는 요청만 확인
+    * monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
+* "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
+* "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true,false)
+* "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더를 추가할지 여부 (기본 값: false / true,false)
+    * X-Forwarded-For: 타겟이 클라이언트의 IP를 알도록 기록하는 헤더
+* "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true,false)
+* "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true,false)
+    * WAF를 사용하지 않으면 true로 할 필요가 없다.
+
+
+### Network LB and Gateway LB
+* "load_balancing.cross_zone.enabled" : 교차 영역 로드 밸런싱이 활성화되었는지 여부 (기본 값: false / true,false)
+
+</br>
+</br>
+
+
+
 ## Listener
 * REQ를 수신하고 Packet을 분석하여 Target Group으로 전달한다.
 * Packet 분석은 Listner Rule에 의해 결정된다.
