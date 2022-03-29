@@ -1,9 +1,27 @@
 # Volume Resizing
 
 ## Resizing 과정
+* Resizing 하는 과정은 다음과 같다. 
+* https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html
+1. Resizing 할 대상 파티션 또는 볼륨 확인
+    ```
+    $ df -hT
 
 
 
+    $ lsblk
+    
+    ```
+2. 파티션 확장
+    ```
+    $ 
+    ```
+
+3. 파일 시스템 확장
+    ```
+
+    ```
+</br>
 
 
 ## Optimizing 과정
@@ -17,5 +35,3 @@
 5. 최적화 완료
 </br>
 
-
-## 
