@@ -42,6 +42,37 @@
 * 모든 Request에는 Body가 포함되어 있지 않으며, Body에는 요청에 대한 결과 내용이 
 
 
+## HTTP Header
+### Transfer-Encoding
+* https://withbundo.blogspot.com/2017/08/http-20-http-ii-transfer-encoding.html
+* hbh(hop-by-hop) 헤더로 데이터를 전송하기 위한 인코딩 형식을 지정
+    ```
+    Transfer-Encoding: chunked
+    Transfer-Encoding: compress
+    Transfer-Encoding: deflate
+    Transfer-Encoding: gzip
+    Transfer-Encoding: identity
+    ```
+    * chunked
+    * compress
+    * deflate
+    * gzip
+    * identity
+
+</br>
+</br>
+
+
+### Content-Length
+```
+```
+* 
+* ```Transfer-Encoding: chunked``` 인 경우, 생략된다.
+
+
+
+
+
 
 ## HTTP Request
 ### Request Method
