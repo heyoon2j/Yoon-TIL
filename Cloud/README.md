@@ -244,5 +244,28 @@
 * __MTTR__ : Mean Time To Repair, 평균 수리 시간. 고장나 있는 시간을 의미한다.
 * __MTTF__ : Mean Time to Failure, 평균 고장 시간. 수리된 이후 다시 고장나기 전까지의 시간을 의미
 * https://m.blog.naver.com/pxckr/220838433353
+</br>
 
+
+
+## Server-Side Encrytion vs Client-Side Encrytion
+### Server-Side Encrytion
+* 클라이언트 측(Application, PC etc)에서 파일이 전송되면 서버 측(S3)에서 파일을 암호화하여 저장
+* Pros
+    1) 키 관리가 중앙(서버)에서 관리가 가능하다.
+* Cons
+    1) 정책에 의해서만 보호되므로, 서버에 대한 접근 정책을 잘 관리해야 한다.
+
+### Client-Side Encrytion
+* 클라이언트 측(Application, PC etc)에서 파일을 암호화하여 서버 측(S3)에 전송
+* Pros
+    1) 정책으로 관리가 제대로 되지 않더라도, 키가 없으면 아무도 파일에 접근할 수 없다.
+* Cons
+    1) 해당 서버에 접근하는 모든 클라이언트는 키를 가지고 있어야 한다.
+    2) 키가 원치않는 곳으로 복사 및 이동할 수 있다.
+
+### Decision
+* 기본적으로 비즈니스 사용자와 논의한다. 
+* 데이터의 민감도에 따라 클라이언트 측 암호화를 기대하는 규제 규범이 있을 수 있다.
+* 규제 규범이 특별하게 있지 않은 경우, 서버 측 암호화를 수행하며 추가 보안을 원할 시 클라이언트 측 암호롸를 진행
 
