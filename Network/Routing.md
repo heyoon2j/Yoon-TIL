@@ -1,7 +1,11 @@
 # Routing
 
 ## Routing Path 결정 순서
-* Longest Match Rule -> AD -> Metric
+* 물리적 장치 (Routing Rule) / Longest Match Rule -> AD -> Metric
+
+### 물리적 장치(Routing Rule)
+* 물리적 장치에서 Virual 등 설정으로 우선순위를 결정할 수 있다.
+</br>
 
 ### Longest Match Rule
 * IP 패킷의 목적지 IP 주소가 라우팅 테이블에 있는 수많은 목적지 IP 주소 중 일치하는 부분이 가장 긴 곳으로 라우팅하는 규칙
