@@ -3,6 +3,11 @@
 * 서비스 제한: 리전 당 5개 생성 가능
 </br>
 
+
+## VPC Traffic Flow
+![VPCTrafficFlow](../img/VPCTrafficFlow.png)
+
+
 ## Subnet
 * 한 번 설정된 Subnet은 변경할 수 없다. 
 * 첫 IP 4개와 마지막 IP 주소는 AWS에 의해 예약되어 있다.
@@ -75,7 +80,8 @@
     * ACL: allow and deny rules
 3. State
     * SG: Stateful
-        * Inbound를 허용하면 자동적으로 Outbound 허용 
+        * Inbound를 허용하면 자동적으로 Outbound 허용
+        * 반대로 마찬가지 Outbound가 허용되면 Inbound도 허용 
         * 기본적으로 모든 Inbound는 차단이며, 모든 Outbound는 허용되어 있다.
     * ACL: Stateless
         * Inbound, Outbound 모두 명시적으로 적용해야 됨
@@ -84,13 +90,9 @@
     * SG: Traffic을 허용하는지 모든 rule을 비교한다.
     * ACL: 기본적으로 선언한 순서대로 우선순위를 가지며, 그 후에는 Number Order에 의해 우선순위가 결정된다.
 5. When to use?
-    * ACL: 모든 트래픽에 대해 동일한 규칙을 정할 때 사용
+    * ACL: VPC안의 모든 Subnet Routing 트래픽에 대해 동일한 규칙을 정할 때 사용
     * SG: 해당 인스턴스에만 해당하는 규칙 및 보안 강화를 위해 사용
 </br>    
-
-
-## VPC Traffic Flow
-![VPCTrafficFlow](../img/VPCTrafficFlow.png)
 
 
 ## VPC Flow Log
@@ -102,7 +104,15 @@
     * 
 
 > 결론적으로 비용은 S3가 더 싸며, insight는 CloudWatch가 더 효율적이다.
+</br>
+</br>
 
+
+## Gateway
+![VPCGateway.png](../img/VPCGateway.png)
+* Layer 2 기능 : 경로 전파/전달/결정
+* Layer 1 기능 : 경로 결정
+</br>
 
 ## Virtual Gateway (VGW)
 * 가상 프라이빗 게이트웨이
@@ -159,6 +169,7 @@
     2) Gateway Endpoint: EC2와 S3 or DynamoDB를 연결할 때 VPC에 전용 게이트웨이를 둔다. (Routing Table이 추가가 된다)
         ![GatewayEndpoint](../img/GatewayEndpoint.png)
     3) Gateway Load Balancer Endpoint
+> Gateway 통과시에는 NAT 처리가 되어 Source IP가 해당 Gateway Endpoint IP로 변경된다.    
 </br>
 
 
