@@ -1,5 +1,10 @@
 # Proxy Server
 
+
+## Forward vs Reverse
+* 
+
+
 ### Reference
 * https://aws.amazon.com/ko/premiumsupport/knowledge-center/ec2-al1-al2-update-yum-without-internet/
 * https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/add-repositories.html
@@ -45,5 +50,7 @@
     ```
 
 
+4. SSL
+    * 
 
 
