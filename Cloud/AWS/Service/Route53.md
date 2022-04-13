@@ -208,11 +208,11 @@
 ### 기능
 * Inbound Endpoint
     ![ResolverInboundEndpoint](../img/ResolverInboundEndpoint.png)
-    * 다른 네트워크 (On-premise, VPC 등) -> Inbound Endpoint VPC Resolver -> Inbound Endpoint -> Inbound Endpoint -> Route 53 Resolver
+    * 다른 네트워크 (On-premise, VPC 등) -> 다른 네트워크 Resolver -> VPN or Direct Connnect -> Inbound Endpoint -> Route 53 Resolver
     * 네트워크의 DNS Resolver가 해당 Inbound Endpoint를 통해 DNS Query를 Route 53 Resolver에게 전달힐 수 있다.
 * Outbound Endpoint
     ![ResolverOutboundEndpoint](../img/ResolverOutboundEndpoint.png)
-    * VPC -> Outbound Endpoint VPC Resolver -> Outbound Endpoint -> 다른 네트워크 (On-premise, VPC 등)의 Resolver
+    * VPC -> VPC Resolver -> Outbound Endpoint -> 다른 네트워크 (On-premise, VPC 등)의 Resolver
     * DNS Resolver가 해당 Outbound Endpoint를 통해 Outbound VPC DNS Resolver에게 전달
 * Rule
     * VPC에 매핑되어 있는 2번에 있는 Route 53 Resolver Server에 적용되는 규칙
