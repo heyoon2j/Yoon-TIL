@@ -184,5 +184,34 @@
 </br>
 
 
+## curl
+* https://kibua20.tistory.com/148?msclkid=68ffe5d1baec11ec87468542110afbc0
+* Example
+    ```
+    curl --proxy 10.20.200.10:5000 \
+        --proxy-header "Proxy-Connection:" \
+        --verbose \
+        --request GET \
+        --header "Content-Type:application/json" \
+        --data "{\"title\":\"aaaaa\",\"text\":\"TTT\"}" \
+        --key ~/tls-ca.pem \
+        --output curl_result.txt
+            https://test.com:4321
+    ```
+
+| Option | Argument | Content |
+|--------|----------|---------|
+| --data / -d |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
 
 
+* https://help.claris.com/ko/pro-help/content/curl-options.html#:~:text=%EC%A7%80%EC%9B%90%EB%90%98%EB%8A%94%20cURL%20%EC%98%B5%EC%85%98%20cURL%20%28Client%20for%20URLs%29%EC%9D%80%20URL%EC%97%90%EC%84%9C,%EC%98%B5%EC%85%98%20%EC%A7%80%EC%A0%95%20%EC%97%90%20%EB%8C%80%ED%95%9C%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%8A%B5%EB%8B%88%EB%8B%A4.?msclkid=68ffc045baec11ec85eb3ddb6f27226b
