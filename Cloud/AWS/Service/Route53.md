@@ -201,6 +201,7 @@
 
 
 ## Route53 DNS Resolver
+* https://aws.amazon.com/ko/blogs/security/simplify-dns-management-in-a-multiaccount-environment-with-route-53-resolver/
 * VPC와 네트워크 간(On-premise, VPC, Route 53 Resolver) DNS Query 해석을 위해 사용.
 * 기본적으로 VPC를 생성하면 Route 53 Resolver는 자동으로 VPC용 DNS 서버(Amazon Route 53 Resolver)를 제공.
 </br>
@@ -232,6 +233,8 @@
 > 모든 규칙은 Rule에 의해 정의되기 때문에 Hosted Zone에 VPC를 연결할 필요가 없어진다. 즉, Hosted Zone에 대한 모든 VPC 관리는 Rule에 의해서만 관리된다.
 
 > Resolver를 사용할 Account들에게는 Rule만 공유하면 된다. AWS RAM을 이용하여 관리된다.
+
+> Resolver / Endpoint / Hosted Zone은 Private Link로 통신한다.
 
 </br>
 </br>
