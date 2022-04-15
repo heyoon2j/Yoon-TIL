@@ -234,7 +234,7 @@
 
 > Resolver를 사용할 Account들에게는 Rule만 공유하면 된다. AWS RAM을 이용하여 관리된다.
 
-> Resolver / Endpoint / Hosted Zone은 Private Link로 통신한다.
+31
 
 </br>
 </br>
