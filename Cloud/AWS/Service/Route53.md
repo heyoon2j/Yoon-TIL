@@ -229,12 +229,10 @@
   2) 여러 개의 VPC의 Resolver는 Ountbound Endpoint를 통해서 다른 VPC의 Resolver로 넘어간다.
   3) 동일한 VPC에 Outbound/Inbound Endpoint 생성(관리를 위한 VPC)
   4) Outbound Endpoint -> Resolver가 아닌, Outbound Endpoint -> Inbound Endpoint로 Forwarding하는 Rule 생성
-  5) 
+   
 > 모든 규칙은 Rule에 의해 정의되기 때문에 Hosted Zone에 VPC를 연결할 필요가 없어진다. 즉, Hosted Zone에 대한 모든 VPC 관리는 Rule에 의해서만 관리된다.
 
 > Resolver를 사용할 Account들에게는 Rule만 공유하면 된다. AWS RAM을 이용하여 관리된다.
-
-31
 
 </br>
 </br>
