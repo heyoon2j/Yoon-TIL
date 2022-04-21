@@ -1,0 +1,12 @@
+## at / crontab 명령어
+* crontab : 특정 시간대에 실행
+* at : 딱 한 번 실행
+
+
+## Linux journal log
+* systemd log
+
+
+## RNGD
+Random Number Generator 
+

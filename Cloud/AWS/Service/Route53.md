@@ -100,6 +100,11 @@
 </br>
 </br>
 
+## RFC 1034
+* 같은 도메인에 대해 CNAME RR은 다른 데이터는 존재하면 안된다 (MX, TXT와 같이 쓰일 수 없다!)
+    * https://totaluptime.com/kb/cname-and-mx-for-the-same-host-name/
+    * https://serverfault.com/questions/18000/dns-subdomains-that-require-both-an-mx-record-and-a-cname
+</br>
 
 ## DNS Record Type
 | Type  | Type id. | Description                           | Function                                                                                                                                                               |
