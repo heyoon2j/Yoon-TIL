@@ -69,30 +69,40 @@
 
 ## 백업 방법
 ## cpio
-* __copy in and out__ 전체 파일 시스템을 복사하는 방법
-* 
-* 
+* __copy input to output__ 전체 파일 시스템을 복사하는 방법
+* Hard Link, FIFO 및 비표준 파일 기능 등을 보존한다.
+* Full Backup에 사용된다.
+* Option
+    * o : 표준 입력으로 받은 파일 리스트를 출력 형태로 압축 생성
+    * i : 표준 입력으로 받은 압축 파일을 압축 해제
+    * p : 디렉토리의 데이터를 다른 디렉토리로 복사
+    * d : 필요한 디렉토리를 자동으로 생성
+    * m : 파일의 변경시간을 그대로 유지
+    * v : 파일명 목록을 출력
+    * a : 한번 access하기 때문에 access time을 기본 시간으로 재설정
 </br>
 
 ### Example
 ```
-# 
+# Create Archive
+$ find . | cpio -oav > test.cpio
 
 
-# 
-find . -depth -print | cpio -pamVd /data2
+# Restore Archive
+$ cpio -idmv < test.cpio
 
-# 
 
+# Copy
+find . -depth -print | cpio -padmv /data2
 ```
 </br>
 </br>
 
 
 ## tar
-* q
-* w
-* e
+* tape a archive
+* Incremental Backup, Full Backup 등에 모두 사용 가능
+* 즈로 소량의 파일을 백업하는데 사용한다.
 * 
 </br>
 
@@ -103,7 +113,7 @@ find . -depth -print | cpio -pamVd /data2
 </br>
 
 
-## rsync
+## 
 * q
 * w
 * e
