@@ -49,9 +49,20 @@
 
 
 
-# Single Sign-On
+# Single Sign-On (SSO)
 * 
 
 
-
+## 
+1. SSO 설정
+    * ID Source 설정 : User 및 Group의 
+    * 
+2. Portal 생성
+3. ab
+4. c
+5. d
+6. e
+7. f
+8. g
+9.  
 
