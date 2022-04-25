@@ -50,19 +50,37 @@
 
 
 # Single Sign-On (SSO)
-* 
+* Choice 
 
 
-## 
+## SSO 구성
+### Identity Source
+* 사용자 및 그룹을 관리할 서비스 정의. 서비스는 종류는 다음과 같다.
+1. AWS SSO 
+2. Active Directory 
+3. SAML 2.0 IdP
+</br>
+
+### Permisstion Set
+* 사용자 및 그룹에 대한 권한 세트를 설정.
+</br>
+
+### User & Group
+* SSO에 등록할 사용자를 생성.
+* 사용자를 그룹핑하기 위한 그룹을 생성.
+</br>
+</br>
+
+## 동작 과정
 1. SSO 설정
     * ID Source 설정 : User 및 Group의 
     * 
 2. Portal 생성
-3. ab
-4. c
-5. d
-6. e
-7. f
-8. g
-9.  
-
+3. Choice Identity Source
+    * 
+4. Create User and Group
+    * ID Source에서 User 및 Group을 생성
+5. Manage Permission Set
+    * User 및 Goup에 적용할 권한 관리
+6. Access Portal
+    * User 정보를 이용하여 Portal에 접속
