@@ -138,12 +138,14 @@ __4. SAML (Security Assertion Markup Language)__
         1) 목록(List)
         2) 읽기(Read)
         3) 쓰기(Write)
-        4) 권한 관리(Manage Permission)
+        4) 권한 관리(Manage Permission
+* ```NotAction``` : 해당 Action은 제외 (Action과 같이 사용 불가)
 * ```Resource``` : __IAM 권한 정책을 생성하는 경우 작업을 적용할 리소스 목록을 지정.__ 리소스 기반 정책을 생성하는 경우에는 선택사항이다.
 * ```Condition``` : 정책이 권한을 부여하는 조건을 지정
 * 요약: 대상(Principal)에게 해당 요소(Resource)에 대해 특정 행동(Action)을 조건(Condition)에 따라 허가/불허(Effect)한다
 > "Princinpal"은 리소스 기반에서, 보안 주체를 지정한다.
 </br>
+
 
 ### Policy Type
 1. __AWS 관리형 정책__
@@ -196,9 +198,20 @@ __4. SAML (Security Assertion Markup Language)__
         }
       ]
     }
-    # => Principal은 역할 권한 위임을 할 수 있다. 리소스 기반에서 사용된다.
+    # => Principal에게 역할 권한 위임할 수 있다. 리소스 기반에서 사용된다.
     ```
     * "arn:aws:iam::Trusted_Account_ID:role/CVAppAssumeRole"의 실제 예시는 다음과 같다(```arn:aws:iam::123456789022:role/dev-role```)
+</br>
+</br>
+
+
+## IAM 생성 과정
+1. STS Policy 생성 (Resource 기반 또는 특수한 경우에만 해당)
+   * 누가(Principal or Resource) 해당 Role을 사용하도록 허락할지 정한다.
+2. Policy 생성
+   * 해당 Role이 사용할 수 있는 권한을 정한다.
+3. Role 생성
+   * STS 및 Policy 적용한다.
 </br>
 </br>
 
