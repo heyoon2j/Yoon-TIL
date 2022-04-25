@@ -12,9 +12,8 @@
     * Network Device에서 MAC Address를 비교하고 처리한다.
 * Process
     1) Packet을 전송하기 위해 Frame에 자신의 MAC Address와 Target의 MAC Address를 감싸서 전송한다.
-    2) Target의 Local Network의 Network Device(Lan Card, Router, Switch)들은 해당 Packet을 받아 MAC Address를 비교하여(ARP Table) 정보가 있으면 해당 Device로 전달한다. 없으면 차단한다.
-    3) Unicast를 받은 Lan Card는 CPU에 인터럽트를 발생시켜 Packet을 처리한다.
-    4) MAC Address를 모르는 Unicast Packet이 들어오는 경우, 해당 Packet은 Switch에 연결되어 있는 모든 포트로 Broadcast 된다(__Unicast flood__)
+    2) Target Local Network의 Network Device(Router, Switch)들은 해당 Packet을 받아 MAC Address를 비교하여(ARP Table) 정보가 있으면 해당 Device로 전달한다. 모르는 Unicast Packet이 들어온 경우, Switch에 연결되어 있는 모든 포트로 Broadcast 된다(__Unicast flood__)
+    4) Unicast를 받은 Lan Card는 CPU에 인터럽트를 발생시켜 Packet을 처리한다.
 * Transmission (전파 대상)
     * ```One-to-One```
 * Bandwidth (대역폭)
