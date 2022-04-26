@@ -156,10 +156,10 @@ $ find . -depth -print | cpio -pdmv /data2
     * f : dump 파일명 지정
     * u : dump 작업에 대한 정보를 /etc/dumpdates에 기록
 * restore option
-    * 
-    * 
-    * 
-    * 
+    * f : dump 파일명 지정
+    * r : Full Backup에 사용
+    * h : Directory 생성
+    * v : verbose. 복원 과정 출력
 </br>
 
 ### Example
@@ -175,6 +175,9 @@ $ find . -depth -print | cpio -pdmv /data2
     ```
 * restore
     ```
+    # Restore Dump
+    # restore 
+    $ restore 
 
     ```
 </br>
