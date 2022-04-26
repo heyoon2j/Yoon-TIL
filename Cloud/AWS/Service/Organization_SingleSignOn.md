@@ -72,15 +72,13 @@
 </br>
 
 ## 동작 과정
-1. SSO 설정
-    * ID Source 설정 : User 및 Group의 
-    * 
-2. Portal 생성
-3. Choice Identity Source
-    * 
-4. Create User and Group
+1. Choice Identity Source
+    * SSO를 관리할 Identity Source 선택
+2. Create User and Group
     * ID Source에서 User 및 Group을 생성
-5. Manage Permission Set
-    * User 및 Goup에 적용할 권한 관리
-6. Access Portal
+3. Allocate User and Group to Account
+    * Identity Source의 Account에 User 및 Group 할당
+4. Manage Permission Set
+    * Identity Source의 Account의 Permission Set 관리 (User 및 Goup에 적용할 권한)
+5. Access Portal
     * User 정보를 이용하여 Portal에 접속
