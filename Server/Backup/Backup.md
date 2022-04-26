@@ -116,7 +116,7 @@ $ find . -depth -print | cpio -pdmv /data2
 
 ### Example
 * Full Backup
-    ```
+    ```wnj
     # Create Archive
     # tar -cvzfp [file_name] [target_path]
     $ tar -cvzfp test.tar.gz /data
@@ -160,6 +160,7 @@ $ find . -depth -print | cpio -pdmv /data2
     * r : Full Backup에 사용
     * h : Directory 생성
     * v : verbose. 복원 과정 출력
+    * i : 대화형 모드로 파일 복원
 </br>
 
 ### Example
@@ -167,18 +168,24 @@ $ find . -depth -print | cpio -pdmv /data2
     ```
     # Create Dump
     # dump [option] <backup_name> [target]
-    $ dump -0u -f test.dump /dev/sda1
+    $ dump -0u -f bak.dump /dev/sda1
 
-    $ dump -0u -f test.dump /home/sysadmin
+    $ dump -0u -f bak.dump /home/sysadmin
 
 
     ```
 * restore
     ```
-    # Restore Dump
-    # restore 
-    $ restore 
+    # Restore Dump (Full Backup)
+    # restore [option] [backup_name]
+    $ restore -rhv -f bak.dump
 
+    # Restore Dump (Incremental Backup)
+    $ restore -ihv -f bak.dump
+    restore > ls
+    restore > add [dump_name]
+    restore > extract
+    restore > quit
     ```
 </br>
 </br>
@@ -186,26 +193,46 @@ $ find . -depth -print | cpio -pdmv /data2
 
 
 ## dd
-* 
-* 
-* 
+* https://myowntime.tistory.com/14
+* 디스크 단위 백업할 때 사용하거나, 블럭 단위 백업할 때 사용
+* option
+    * if : 
+    * of : 
 </br>
 
 ### Example
 ```
+# Create Dump
+
+# Restore Dump
+
 ```
 </br>
 </br>
 
 
 ## rsync
-* 
-* 
-* 
+* 네트워크로 연결된 파일들을 동기화하는데 사용
+* option
+    * r : recursive, 하위 디렉터리까지 실행
+    * l : 심볼릭 링크 유지
+    * p : 권한 유지
+    * t : 타임 스탬프 유지
+    * g : 그룹 소유권 유지
+    * o : 사용자 소유권 유지
+    * D : 디바이스 파일을 그대로 유지
+    * H : 하드링크 유지
+    * a : rlptgoD 한번에 실행
+    * h : 결과를 사람이 이해하기 편안하게 출력
+    * v : verbose, 작업 과정 출력
+    * e : 접속할 때 사용할 프로토콜 지정 (Default: ssh)
+    * z : 전송할 때 압축
 </br>
 
 ### Example
 ```
+# resync [option] [target_path] [remote_path]
+$ rsync -ahv -e 'ssh -p 40022' /test 10.10.10.10:/test
 ```
 </br>
 </br>
