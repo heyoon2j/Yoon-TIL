@@ -73,7 +73,7 @@
 
 ## 동작 과정
 1. Choice Identity Source
-    * 
+    * SSO를 관리할 Identity Source 선택
 2. Create User and Group
     * ID Source에서 User 및 Group을 생성
 3. Manage Permission Set
