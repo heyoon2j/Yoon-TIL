@@ -79,30 +79,112 @@
     * d : 필요한 디렉토리를 자동으로 생성
     * m : 파일의 변경시간을 그대로 유지
     * v : 파일명 목록을 출력
-    * a : 한번 access하기 때문에 access time을 기본 시간으로 재설정
+    * a : 한번 access하기 때문에 access time을 재설정
 </br>
 
 ### Example
 ```
 # Create Archive
-$ find . | cpio -oav > test.cpio
+$ find . | cpio -ov > test.cpio
 
 
 # Restore Archive
-$ cpio -idmv < test.cpio
+$ cpio -imv < test.cpio
 
 
 # Copy
-find . -depth -print | cpio -padmv /data2
+$ find . -depth -print | cpio -pdmv /data2
 ```
 </br>
 </br>
 
 
 ## tar
-* tape a archive
+* __tape a archive__
 * Incremental Backup, Full Backup 등에 모두 사용 가능
-* 즈로 소량의 파일을 백업하는데 사용한다.
+* 주로 소량의 파일을 백업하는데 사용한다.
+* Option
+    * c : 압축 생성
+    * x : 압축 해제
+    * z : gzip 압축 생성 및 해제
+    * v : verbose. 압축 과정 출력
+    * p : 권한 유지
+    * f : 압축 파일 명 지정
+    * g : 증분 백업 사용을 위한 증분 백업 내용 저장 파일 지정
+    * C : 해당 Directory 변경후 명령 실행 
+</br>
+
+### Example
+* Full Backup
+    ```
+    # Create Archive
+    # tar -cvzfp [file_name] [target_path]
+    $ tar -cvzfp test.tar.gz /data
+
+
+    # Restore Archive
+    # tar -xvzfp [file_name] -C [directory_name]
+    $ tar -xvzfp test.tar.gz -C /data2
+    ```
+
+* Incremental Backup
+    ```
+    # Create Archive 1
+    # tar -g [backup_name] -cvzfp [file_name] [target_path]
+    $ tar -g test_ic_back -cvzfp test_0.tar.gz /data
+
+
+    # Create Archive 2
+    $ tar -g test_ic_back -cvzfp test_1.tar.gz /data
+
+
+    # Restore Archive
+    # tar -xvzfp [file_name] -C [directory_name]
+    $ tar -xvzfp test_0.tar.gz -C /data2
+    $ tar -xvzfp test_1.tar.gz -C /data2
+    ```
+</br>
+</br>
+
+
+## dump & restore
+* 파일이 아닌 파일 시스템 전체를 백업할 때 사용 (파티션 단위 백업)
+* Full Backup & Incremental Backup 지원
+* 백업시, /etc/fstab 파일 참조
+* dump Option
+    * 0~9 : 0 == Full Backup / 1~9 == Incremental Backup
+    * f : dump 파일명 지정
+    * u : dump 작업에 대한 정보를 /etc/dumpdates에 기록
+* restore option
+    * 
+    * 
+    * 
+    * 
+</br>
+
+### Example
+* dump
+    ```
+    # Create Dump
+    # dump [option] <backup_name> [target]
+    $ dump -0u -f test.dump /dev/sda1
+
+    $ dump -0u -f test.dump /home/sysadmin
+
+
+    ```
+* restore
+    ```
+
+    ```
+</br>
+</br>
+
+
+
+## dd
+* 
+* 
 * 
 </br>
 
@@ -113,10 +195,9 @@ find . -depth -print | cpio -padmv /data2
 </br>
 
 
-## 
-* q
-* w
-* e
+## rsync
+* 
+* 
 * 
 </br>
 
@@ -125,7 +206,6 @@ find . -depth -print | cpio -padmv /data2
 ```
 </br>
 </br>
-
 
 
 ### Reference
