@@ -259,7 +259,14 @@ __4. SAML (Security Assertion Markup Language)__
 * 추가 비용 없이 사용할 수 있다.
 
 
-## IAM
+## Policy evaluation logic
+![PolicyEvaluationHorizontal](../img/PolicyEvaluationHorizontal.png)
+* 허용 여부 결정
+
+</br>
+
+
+
 
 ### KMS에 대한 권한
 * __kms:CreateGrant__
