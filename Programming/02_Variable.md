@@ -26,7 +26,3 @@
 
 ## Build-in Scope
 
-
-
-## Class Level Scope
-
