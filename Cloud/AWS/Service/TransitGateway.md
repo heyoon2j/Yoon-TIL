@@ -6,7 +6,8 @@
 * Routing Table
     * Routing Table Module : Source/Destination에 따른 Table 분리
     * Routing Rule : 어떤 대역을 Static으로 정하고, 어떤 대역을 Propagation 받아 정할지 결정
-    * Propagation : 어떤 Network Device에 네트워크 정보를 전달받을지, 다른 Network Device에게 어떤 정보를 전달할지
+    * Propagation : 어떤 Network Device에 네트워크 정보를 전달받을지
+    * Advertise : 다른 Network Device에게 어떤 정보를 전달할지
     * Routing Path Decision: Longest Match / Administrative Distance / Metric
 
 
