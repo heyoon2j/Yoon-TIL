@@ -261,7 +261,15 @@ __4. SAML (Security Assertion Markup Language)__
 
 ## Policy evaluation logic
 ![PolicyEvaluationHorizontal](../img/PolicyEvaluationHorizontal.png)
-* 허용 여부 결정
+* 우선순위는 다음과 같다.
+1. Deny evaluation (Explict Deny)
+  * 명시적 거부로 OU SCPs, 리소스 기반 정책, 자격 증명 기반 정책, IAM 권한 경계, 세션 정책에 Deny 코드가 명시적으로 작성되어 있으면 
+2. Organizatioins SCPs
+  * 
+3. Resource-based policies
+4. Identity-based policies
+5. IAM permissions boundaries
+6. Session policies
 
 </br>
 
