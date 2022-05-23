@@ -159,14 +159,15 @@ __4. SAML (Security Assertion Markup Language)__
 </br>
 
 
-## STS & Assume Role
+## STS & Assume Role / Pass Role
+### STS & Assume Role
 ![AssumRole](../img/AssumRole.png)
-* __Assume Role__: STS로 부터 역할에 대한 임시 보안 자격 증명을 얻기 위해서는 해당 역할에 대해 AssumeRole 권한이 있어야 한다.
+* __Assume Role__: 권한을 위임받을 수 있는 권한. STS로 부터 역할에 대한 임시 보안 자격 증명을 얻기 위해서는 해당 역할에 대해 AssumeRole 권한이 있어야 한다.
 * __STS (AWS Security Token Service)__: 임시 보안 자격 증명을 생성해준다.
 * __자격 증명 위임 과정__
     1) 사용자, 리소스 등이 AssumeRole 권한을 통해 STS에게 임시 보안 자격 증명을 요청
     2) STS에서 해당 사용자에게 임시 보안 자격 증명을 반환
-    3) 사용자는 임시 보안 자격 증명을 통해 리소스에 접근
+    3) 사용자, 리소스는 임시 보안 자격 증명을 통해 리소스에 접근
 * Example
     ```
     {
@@ -179,7 +180,7 @@ __4. SAML (Security Assertion Markup Language)__
     		}
     	]
     }
-    # => Rescoure에게 역할 권한 위임을 할 수 있는 정책을 허용한다.
+    # => 권한(Resource)을 위임 받을 수 있다.
 
     #########################################################
     
@@ -198,20 +199,28 @@ __4. SAML (Security Assertion Markup Language)__
         }
       ]
     }
-    # => Principal에게 역할 권한 위임할 수 있다. 리소스 기반에서 사용된다.
+    # => Principal는 해당 역할 권한을 위임 받을 수 있다. 리소스 기반에서 사용된다.
     ```
     * "arn:aws:iam::Trusted_Account_ID:role/CVAppAssumeRole"의 실제 예시는 다음과 같다(```arn:aws:iam::123456789022:role/dev-role```)
 </br>
+
+### Pass Role
+* Role을 전달할 권한.
+* Assume Role과 Pass Role은 제대로 정의해 놓지 않으면, 많이 헷갈릴 수 있는 정책이다. 이유는 크게 2가지라고 생각한다.
+  1) 사용자, 서비스에 따라 Role을 적용하는 방식이 다르기 때문에
+  2) 권한을 위임받는 과정이 Assume Role만으로 끝난다고 생각하기 때문에 
+  > 어떤 서비스는 Assume Role만 해도 되고, 어떤 서비스는 Pass Role까지 적용시켜야 한다. 
 </br>
 
-
-## IAM 생성 과정
+### IAM 생성 및 적용 과정
 1. STS Policy 생성 (Resource 기반 또는 특수한 경우에만 해당)
-   * 누가(Principal or Resource) 해당 Role을 사용하도록 허락할지 정한다.
+*  권한 위임의 주체 또는 위임할 권한을 정한다(Assume Role).
 2. Policy 생성
    * 해당 Role이 사용할 수 있는 권한을 정한다.
 3. Role 생성
    * STS 및 Policy 적용한다.
+4. Role 적용
+   * 해당 Role에 대하여 적용시킬 권한(Pass Role)을 가진 주체가 사용자 또는 리소스에게 적용시켜준다.
 </br>
 </br>
 
@@ -261,11 +270,13 @@ __4. SAML (Security Assertion Markup Language)__
 
 ## Policy evaluation logic
 ![PolicyEvaluationHorizontal](../img/PolicyEvaluationHorizontal.png)
+* IAM 권한의 설계는 기본적으로 액세스를 거부하며, Allow 코드를 작성하지 않으면 모두 거부된다.
 * 우선순위는 다음과 같다.
 1. Deny evaluation (Explict Deny)
-  * 명시적 거부로 OU SCPs, 리소스 기반 정책, 자격 증명 기반 정책, IAM 권한 경계, 세션 정책에 Deny 코드가 명시적으로 작성되어 있으면 
+  * 명시적 거부로 OU SCPs, 리소스 기반 정책, 자격 증명 기반 정책, IAM 권한 경계, 세션 정책에 Deny 코드가 명시적으로 작성되어 있으면 거부로 결정된다.
 2. Organizatioins SCPs
-  * 
+  * Allow 코드가 없으면, 묵시적 거부로 결정된다.
+  * 2, 3, 4, 5의 경우도 동일하게 적용
 3. Resource-based policies
 4. Identity-based policies
 5. IAM permissions boundaries
