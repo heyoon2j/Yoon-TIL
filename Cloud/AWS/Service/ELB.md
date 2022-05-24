@@ -41,6 +41,7 @@
 * REST API의 구현은 일반적으로 ELB와 Computing Service를 사용하는 것보다 AWS API Gateway가 더 나은 선택이다. 하지만 API Gareway의 경우 확장성에 제한이 있기 때문에 잘 선택하는 것이 좋다.
 * Static IP를 사용하려면 NLB를 사용해야 하며, 교차 영역 활성화를 하지 않으면 Static IP가 해당하는 가용 영역의 서버에만 트래픽을 전달한다.
     * Reference : https://stackoverflow.com/questions/60934851/in-aws-why-is-that-an-nlb-can-provide-static-ip-addresses-whereas-an-alb-cannot#:~:text=As%20per%20AWS%2C%20Network%20Load%20Balancer%20routes%20traffic,Also%2C%20NLB%20supports%20static%20%2F%20Elastic%20IP%20addresses.
+    * https://stackoverflow.com/questions/3821333/amazon-ec2-elastic-load-balancer-does-its-ip-ever-change
     > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이다.
 </br>
 </br>
