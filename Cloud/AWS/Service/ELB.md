@@ -14,11 +14,17 @@
     * 사용 가능 Protocol: HTTP/1.1, HTTP/2, HTTPS, gRPC
     * Redirection 또는 고정 응답을 반환하도록 구성 가능
     * 동적 호스트 매핑 지원
+    * Static IP 사용 불가(Dynamic IP)
+        * Dynamic IP 사용하기 위한 과정은 다음과 같다.
+        1) 트래픽 증가/감소
+        2) 트래픽에 따른 ELB Node 증가/감소
+        3) Node에 대한 IP를 Route 53 DNS에 업데이트(추가/삭제)
 2. __NLB (Network Load Balancer)__
     * 4 Layer Transport 계층에서 Routing 결정(TCP/UDP/SSL)
     * 초당 수백만 개의 요청을 처리할 수 있다.
     * 지정한 TCP 프로토콜과 포트 번호를 사용하여 Routing
     * 동적 호스트 매핑 지원
+    * Static IP 사용
 3. __GLB (Gateway Load Balancer)__
     * 3 Layer Network 계층에서 작동
     * 방화벽, 침임 탐지 및 방지 시스템, 심층 패킷 검사 시스템과 같은 가상 어플라이언스를 배포, 확장 및 관리할 수 있다.
@@ -33,6 +39,10 @@
 * HTTP/HTTPS Protocol을 사용하지 않는 경우, NLB 사용
 * ALB는 HTTP Packet 분석으로 인한 큰 Overhead가 존재하지만, NLB는 4 Layer까지만 분석하므로 속도가 빠르다. 그렇기 때문에 NLB는 ALB가 다루지 않는 모든 것에 사용된다. 일반적인 사용 사례는 실시간 데이터 스트리밍 서비스(비디오, 주식 시세 등) 등이 있다.
 * REST API의 구현은 일반적으로 ELB와 Computing Service를 사용하는 것보다 AWS API Gateway가 더 나은 선택이다. 하지만 API Gareway의 경우 확장성에 제한이 있기 때문에 잘 선택하는 것이 좋다.
+* Static IP를 사용하려면 NLB를 사용해야 하며, 교차 영역 활성화를 하지 않으면 Static IP가 해당하는 가용 영역의 서버에만 트래픽을 전달한다.
+    * Reference : https://stackoverflow.com/questions/60934851/in-aws-why-is-that-an-nlb-can-provide-static-ip-addresses-whereas-an-alb-cannot#:~:text=As%20per%20AWS%2C%20Network%20Load%20Balancer%20routes%20traffic,Also%2C%20NLB%20supports%20static%20%2F%20Elastic%20IP%20addresses.
+    > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이다.
+</br>
 </br>
 
 
