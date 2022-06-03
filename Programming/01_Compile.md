@@ -38,13 +38,13 @@
         2) __Compiler(javac.exe)__ 을 통해 __Byte Code File(*.class)__ 로 변환
         3) __JVM(java.exe)__ 구동
     * __JRE__
-        4) Runtime에 __Class Loader__ 를 통해 __Byte Code File__ 을 JVM 내로 로드
-        5) ByteCode Verifier을 통해 검증 단계를 거친다.
+        1) Runtime에 __Class Loader__ 를 통해 __Byte Code File__ 을 JVM 내로 로드
+        2) ByteCode Verifier을 통해 검증 단계를 거친다.
             * Data Types 체크
             * Stack Overflow 체크
             * Code가 JVM이 명시한 내용과 일치한지
             * Memory에 허가되지 않은 접근이 존재한지
-        6) Execution Engin에 의해서 Byte Code File을 __Binary Code__ 로 변환 및 실행
+        3) Execution Engin에 의해서 Byte Code File을 __Binary Code__ 로 변환 및 실행
 
 ### Class Loader
 * 생성된 Byte Code File(*.class)들을 엮어서 JVM으로 로드하고, Runtime Data Area에 적재한다(자바 애플리케이션이 실행 중일 때 해당 작업을 수행)
