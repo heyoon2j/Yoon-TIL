@@ -38,25 +38,25 @@
     * 각 OUs에 해당하는 AWS Account 생성
 3. Add Account
     * 각 OUs에 AWS Account 등록
-4. Apply Policies
+4. Enable Policies
+    * Organization에서 사용할 Policy 활성화
+5. Apply Policies
+    * 사용할 Policy 생성
     * OUs 또는 AWS Account에 Policy 적용
-5. Enable AWS services
+6. Enable AWS services
     * Organization에서 사용할 AWS 서비스 활성화
 </br>
 </br>
 
 
 
-
-
 # Single Sign-On (SSO)
 * Choice 
-
 
 ## SSO 구성
 ### Identity Source
 * 사용자 및 그룹을 관리할 서비스 정의. 서비스는 종류는 다음과 같다.
-1. AWS SSO 
+1. AWS SSO (AWS Organization 연동)
 2. Active Directory 
 3. SAML 2.0 IdP
 </br>
@@ -82,3 +82,6 @@
     * Identity Source의 Account의 Permission Set 관리 (User 및 Goup에 적용할 권한)
 5. Access Portal
     * User 정보를 이용하여 Portal에 접속
+
+
+> Organization은 Account, SSO는 IAM User and Group으로 생각하면 된다. 그렇기 때문에 Organization에서 Account에 권한을 할당해야 SSO에서 User와 Group에게 사용 권한을 줄 수 있다.
