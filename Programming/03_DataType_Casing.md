@@ -1,7 +1,4 @@
-# Data
-
-
-# Type
+# Data Type
 
 
 # Casting
