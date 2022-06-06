@@ -23,7 +23,8 @@ def testFunc(x, y, z):
 
 a = 1
 b = 2
-d = testFunc(a, b)
+c = 4
+d = testFunc(a, b, c)
 print("#######")
 print(d)
 
