@@ -20,6 +20,11 @@
         $ useradd -c TestUser -e 2021-12-31 -u 1234 -U -s /bin/bash -p 1234567890! user1
         ```
 * ```$ passwd <user_name>```: 사용자의 패스워드 설정
+    * -a : 모든 사용자에 대해서
+    * -S : 사용자에 대한 패스워드 정보 출력
+    * -n : 변경 후, 최소 사용 날짜
+    * -x : 최대 사용 가능한 날짜 (영구 사용 설정: 99999)
+    * -W : 패스워드 만료 전, 경고하는 날짜
 * ```$ usermod [option] <user_name>```: 사용자 정보 변경. 옵션은 useradd와 거의 동일하다 생각하면 된다.
     * -g : 기본 Group 변경
     * -G : Group 추가 (1개만 추가 가능하므로, 2개 이상부터는 /etc/group 파일을 수정해야 한다)
@@ -36,6 +41,22 @@
 * /etc/group : 그룹 정보 파일
 
 
+
+## 비밀번호 정책 관리
+* ```/etc/login.defs```
+
+    ```
+    $ vi /etc/login.defs
+
+    PASS_MAX_DAYS   90
+    PASS_MIN_DAYS   1
+    PASS_MIN_LEN    8
+    PASS_WARN_AGE   7
+    ```
+    * 일반적으로 패스워드 길이는 8자리 이상 권장
+    * 패스워드 최대 사용기간은 90일
+    * 패스워드 최소 사용기간은 1일 (0인 경우, 잦은 변경 방지)
+* 
 
 
 ## sudo 권한 부여
