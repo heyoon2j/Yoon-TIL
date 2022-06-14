@@ -66,20 +66,21 @@
 1. Stack Area
     * Class 내의 Method에서 사용되는 정보들이 저장되는 공간, 매개변수, 지역변수, 리턴 값 등이 LIFO 방식으로 저장된다.
     * 각 Thread 마다 하나씩 존재하며 Thread가 시작될 때 할당되며, 추가적으로 Thread를 생성하지 않았다면 main Thread만 존재한다.
-2. Method Area (== C/C++ Data Area)
+2. Method Area (== C/C++ Data Area + Code Area)
     * 전역 변수와 static 변수가 저장된다.
-    * 프로그램이 종료될 때까지 메모리에 남는다.
     * 코드에서 사용되는 클래스(*.class)들을 클래스 별로 런타임 상수풀(runtime constant pool), 필드(field) 데이터, 메소드(method) 데이터, 메소드 코드, 생성자(constructor) 코드 등을 분류해서 저장된다.
+    > 정말 좋은 글 : https://velog.io/@syleemk/Java-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B5%AC%EC%A1%B0
+    > 메소드 영역이라고 하는 추측은 클래스 파일로 컴파일하게 되면 메소드 별로 바이트 코드를 생성하기 때문에.
 3. Heap Area
     * new 명령어를 통해 생성한 인스턴스와 배열 등의 참조형 변수 정보가 저장되며, Method Area에 저장된 Area에 저장된 클래스들만으로 생성이 가능하다.
-4. PC Register Area
+4. PC Register Area (JVM Area)
     * Program Counter. 즉, 현재 Thread가 실행되는 부분의 주소와 명령을 저장하고 있는 영역이다.
     * 해당 Area를 통해 Threaad가 돌아가면서 수행할 수 있게 된다.
     * Thread가 생성될 때마다 생성된다.
-5. Native Method Stack Area
+    > JVM이 CPU에 직접 Instruction을 실행하지 않고, Stack에서 직접 뽑아내 별도의 메모리 공간에 저장하는 방식을 취하고 있다. (https://doohong.github.io/2018/03/02/Java-runtime-data-area/)
+5. Native Method Stack Area (JVM Area)
     * 자바 외 언어로 작성된 Native Code를 위한 영역. C/C++의 Method를 호출할 때 사용된다.
 > Heap Area, Method Area는 모든 Thread가 공유 / 나머지 Area는 Thread 당 1개씩 존재
-
 
 </br>
 </br>
