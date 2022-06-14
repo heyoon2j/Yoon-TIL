@@ -7,6 +7,7 @@
 * ```$ whoami```: 현재 로그인한 사용자 출력
 * ```$ id```: 현재 로그인한 사용자의 정보 출력
 * ```$ useradd```: 사용자 계정 생성
+    * -c : Comment, 설명
     * -u : UID 설정, 설정하지 않을 시 자동 증가 값으로 설정
     * -g : GID 설정
     * -U : 같은 user 이름으로 group 생성
@@ -20,6 +21,8 @@
         ```
 * ```$ passwd <user_name>```: 사용자의 패스워드 설정
 * ```$ usermod [option] <user_name>```: 사용자 정보 변경. 옵션은 useradd와 거의 동일하다 생각하면 된다.
+    * -g : 기본 Group 변경
+    * -G : Group 추가 (1개만 추가 가능하므로, 2개 이상부터는 /etc/group 파일을 수정해야 한다)
 * ```$ userdel [option] <user_name>```: 사용자 삭제. 꼭 -r 옵션을 추가해줘야 Home Dir가 같이 삭제된다. 그렇지 않으면 직접 Dir를 삭제해야 한다(이후에 있을 에러를 방지하기 위해)
 * ```$ groupadd <user_name>```: 그룹 생성
 * ```$ gpasswd [option] <group_name>]```: 그룹 맴버 관리
@@ -28,8 +31,9 @@
 
 
 ## User 관련된 파일
-* /etc/passwd: 
-* /etc/s:
+* /etc/passwd : 
+* /etc/s :
+* /etc/group : 그룹 정보 파일
 
 
 
