@@ -66,7 +66,7 @@
 1. Stack Area
     * Class 내의 Method에서 사용되는 정보들이 저장되는 공간, 매개변수, 지역변수, 리턴 값 등이 LIFO 방식으로 저장된다.
     * 각 Thread 마다 하나씩 존재하며 Thread가 시작될 때 할당되며, 추가적으로 Thread를 생성하지 않았다면 main Thread만 존재한다.
-2. Method Area (== C/C++ Data Area + Code Area)
+2. Method Area (== C/C++ : Data Area + Code Area)
     * 전역 변수와 static 변수가 저장된다.
     * 코드에서 사용되는 클래스(*.class)들을 클래스 별로 런타임 상수풀(runtime constant pool), 필드(field) 데이터, 메소드(method) 데이터, 메소드 코드, 생성자(constructor) 코드 등을 분류해서 저장된다.
     > 정말 좋은 글 : https://velog.io/@syleemk/Java-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B5%AC%EC%A1%B0
