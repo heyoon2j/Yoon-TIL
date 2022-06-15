@@ -14,7 +14,6 @@
 </br>
 
 
-
 ## 동작 과정
 * Phase 1 : Full load
 * Phase 2 : The application of cached changes
@@ -61,4 +60,6 @@
 
 ### 조심해야 할 점
 * AWS DMS는 Minimalist 접근 방식을 취해 Primary Key, Unique Index는 생성하지만, Non-Primary Key, Secondary Index 등 불필요한 것들은 생성하지 않는다.
-    * Reading form source is paused. Total Storage used by swap files exceeded the limit 1048576000 bytes(Memory 1 GiB를 초과했을 때 나오는 로그)
+* Reading form source is paused. Total Storage used by swap files exceeded the limit 1048576000 bytes (Memory 1 GiB를 초과했을 때 나오는 로그)
+* [ERROR] duplicate key value violates unique constraint, DETAIL: Key (acc_t_f) = (210000) already exists (마이그레이션 도중 Sequence 객체와 Table Key 값이 차이가 발생해서 나오는 로그. 동기화가 제대로 적용되지 않아서로 이 경우에는 수동으로 동기화시켜야 한다)
+
