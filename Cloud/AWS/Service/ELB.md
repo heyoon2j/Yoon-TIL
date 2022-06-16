@@ -48,10 +48,12 @@
 
 
 ## ELB 동작 과정
-* __Load Balncer의 Listener가 Request(REQ)를 수신하고 REQ를 Taget Group에 전달__
-1. __Listener는 REQ를 수신하고 요청을 전달할 Target Group을 Rule들에 의해 결정__
+1. __Load Balncer의 Listener가 Request(REQ)를 수신하고, REQ를 Listener Rules 의해 결정된 Taget Group에 전달__
+    1) LB Server 설정 
+    2) Target Group Routing 기준 설정
 2. __Target Group은 REQ를 Instance, Container 또는 IP 주소, Lambda로 Routing__
-    * Target Group은 Traffic 분할 Algorithm을 기준으로 결정
+    1) Instance 관리
+    2) Instance Traffic Routing Algorithm 결정
     * 분할하기 위해 Target Group은 Target에 대해 지속적인 Health Check를 하게 된다.
 </br>
 
@@ -88,7 +90,10 @@
 
 ### Network LB and Gateway LB
 * "load_balancing.cross_zone.enabled" : 교차 영역 로드 밸런싱이 활성화되었는지 여부 (기본 값: false / true,false)
-
+    * 기본적으로 가용 영역 별로 ELB 노드가 생성됨
+    * Application LB는 항상 적용됨
+    * 밸런싱 비율 = 100 / 교차 영역에 대한 모든 인스턴스 수
+    > NLB는 기본적으로 온프레미스도 포함되어 있기 때문에 false로 설정되어 있는거 같다.
 </br>
 </br>
 
@@ -273,6 +278,43 @@
 * 등록 취소 또는 Unhealthy 인스턴스에 대해서 ELB는 연결을 중지시키지만(요청을 더이상 보내지 않는다), 해당 옵션을 활성화하게 되면 요청 전송은 보내지 않지만 설정한 시간까지 연결을 유지시킨다.
 * 이를통해 인스턴스가 등록 취소되기 전에 받은 요청을 완료할 수 있다.
 * 옵션: Deregistration delay
+</br>
+
+
+### Preserve Source IP
+* HTTP/HTTPS는 XFF가 있기 때문에 따로 설정이 없고, TCP/UDP는 따로 존재하지 않기 때문에 설정이 존재한다.
+* NLB는 2가지 방법을 지원한다.
+    1) preserve_client_ip : 같은 VPC에서만 사용 가능, LB 자체에서 Client IP를 전달
+    2) proxy_protocol_v2 : 다른 네트워크에서도 사용 가능, LB에서 Proxy Protocol을 사용해서 전달
+    > "preserve_client_ip.enabled"를 true로 하면 무조건 다른 서버들에 대해 Client IP를 보내게 되므로 false로 지정하고 "proxy_protocol_v2.enabled"와 Server의 설정을 이용하도록 권장하는 것이 좋아 보인다.
+</br>
+
+
+## Target Group Attribute
+### All LB
+* "stickiness.enabled" : 고정 세션을 활성화할지 여부를 나타냅니다.
+* "stickiness.type" : 고정의 유형. 가능한 값은 source_ip, lb_cookie, app_cookie.
+* "deregistration_delay.timeout_seconds" : Elastic Load Balancing이 대상의 등록 취소 상태를 draining에서 unused로 변경하기 전에 대기하는 시간입니다. 범위는 0~3600초입니다. 기본 값은 300초입니다.
+* "deregistration_delay.connection_termination.enabled" : 등록 취소 시간 제한이 끝날 때 로드 밸런서가 연결을 종료하는지 여부를 나타냅니다. 값은 true 또는 false입니다. 기본값은 false입니다.
+</br>
+
+
+### Application LB
+
+
+</br>
+
+
+### Network LB
+* "preserve_client_ip.enabled" : 클라이언트 IP 보존이 활성화되었는지를 나타냅니다. 값은 true 또는 false입니다. 
+    * 인스턴스 유형 대상 그룹: 활성화됨
+    * IP 유형 대상 그룹(UDP, TCP_UDP): 활성화됨 / 클라이언트 IP 보존을 비활성화할 수 없다.
+    * IP 유형 대상 그룹(TCP, TLS): 비활성화됨
+* "proxy_protocol_v2.enabled" : 프록시 프로토콜 버전 2의 활성화 여부를 나타냅니다. 기본적으로 프록시 프로토콜은 비활성화되어 있습니다.
+    * 해당 속성은 IP 유형 대상 그룹(TCP, TLS)인 경우에만 생각하면 된다.
+</br>
+</br>
+
 
 
 ## ELB Logging
