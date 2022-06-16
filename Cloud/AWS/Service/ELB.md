@@ -102,11 +102,13 @@
 ## Listener
 * REQ를 수신하고 Packet을 분석하여 Target Group으로 전달한다.
 * Packet 분석은 Listner Rule에 의해 결정된다.
+</br>
 
 ## ALB Listener Rule
 ### 우선 순위
 * 숫자가 작은 거부터 우선 순위를 가진다(1 ~ 50000)
 * 규칙은 서비스가 정상일 때 우선순위가 앞서야 하고, 오류 발생시 처리는 뒤에 나와야 한다.
+</br>
 
 ### 규칙 작업
 * 기본적으로 각 규칙에는 ```fixed-response```, ```forward```, ```redirect``` 작업 중 하나는 꼭 포함되어 있어야 하며, 이 작업이 수행할 마지막 작업이어야 한다.
@@ -165,7 +167,7 @@
     > 웹 개발자가 할 내용인거 같다...?, 필요시 찾아서 사용할면 될 거 같다.
 4. ```authenticate-cognito```: [HTTPS 리스너] Amazon Cognito와 호환되는 자격 증명 공급자를 사용하여 사용자를 인증
 5. ```authenticate-oidc```: [HTTPS 리스너] OpenID Connect(OIDC)와 호환되는 자격 증명 공급자를 사용하여 사용자를 인증
-
+</br>
 
 ### 규칙 조건 형식
 1. ```host-header```
@@ -229,6 +231,8 @@
     * 연결은 연결 수명 동안 하나의 대상에 라우팅
 * UDP Traffic
     * Protocl, Source IP, Source Port, Destination IP, Destination Port를 사용하여 Routing
+</br>
+</br>
 
 
 ## Target Group
