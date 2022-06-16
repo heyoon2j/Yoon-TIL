@@ -39,7 +39,7 @@
 </br>
 
 
-2. ACL Rule 설정 : ```acl [aclname] [acltype] [argument ...]```
+2. ACL Rule List 작성 : ```acl [aclname] [acltype] [argument ...]```
     ```
     acl localnet src 10.0.0.0/8     # RFC1918 possible internal network
 
@@ -111,7 +111,7 @@
     http_access deny all
     ```
     * squid.conf에 규칙이 없으면 거부한다.
-</br>
+1</br>
 
 
 4. Log
@@ -140,7 +140,7 @@
     ```
     * ```cache_dir``` : Cache Data를 저장하고 있는 Directory
     * ```cache_mem``` : Cahce Memory Size
-    * ```memory_cache_shared``` : SMP 모드에서마 사용 가능하며, 그 외 충족 조건들을 만족해야 한다.
+    * ```memory_cache_shared``` : SMP 모드에서만 사용 가능하며, 그 외 충족 조건들을 만족해야 한다.
 
 * Cache Refresh : ```refresh_pattern [-i] regex min percent max [options]```
     ```
@@ -165,7 +165,7 @@
 </br>
 
 
-1. Core Dump
+6. Core Dump
     ```
     coredump_dir /var/spool/squid
     #coredump_dir /var/spool/squid/coredump
@@ -173,14 +173,49 @@
     * 기본 설정은 캐시 디렉토리로 설정된다.
 
 
-2. SSL
+7. HTTPS
     ```
+    # 1) Connet Tunnel
+    # Connect 메서드 사용
+
+    acl SSL_ports port 443
+    http_access deny CONNECT !SSL_ports
+
+    # 2) 직접 TLS 연결
+
+
+
+    # 3) 암호화된 브라우저 와 연결
+    # https_port
+
+
+
 
     ```
+    * 크게 Proxy에 대해 HTTPS 연결 방법으로 3가지가 있다 (https://wiki.squid-cache.org/Features/HTTPS)
+        1) Tunnel 연결
+            * 
+        2) 직접 TLS 연결
+        3) 암호화된 브라우저     
+    * 
     * 
 
 </br>
+
+
+8. SSL
+    ```
+    auth_param basic program /usr/lib/squid3/basic_ncsa_auth /etc/squid/htpasswd
+    auth_param basic realm proxy
+    acl myauth proxy_auth REQUIRED
+    ```
+
+
+
 </br>
+</br>
+
+
 
 
 ### Reference
