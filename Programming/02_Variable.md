@@ -132,14 +132,49 @@
 </br>
 
 ### 지역 변수 (Local Variable)
+* 함수 내에서 선언되는 변수를 의미한다.
+* Stack Area에 메모리 할당된다.
+* 선언된 함수 내에서만 접근이 가능하며, 함수 종료시 소멸된다.
+```python
+print("---------- 지역 변수 ----------")
+
+def localVarFunc(param1, param2):
+    a = param2 - param1
+    b = param2 + param1
+    print(a + b)
+
+localVarFunc(4, 5)      #  10
+```
+</br>
 
 ### 전역 변수 (Global Variable)
+* 어디서든 접근이 가능한 변수로 함수 외부에 선언된 변수
+* 지역 변수와 이름이 같을 시, 지역 변수에 가려진다.
+    => 함수 내의 지역변수를 전역 변수로 사용하려면 global 명령어를 사용해야 한다(잘 사용 안한다!!!)
+```python
+print("---------- 전역 변수 ----------")
 
+globalVar = 10              # Global
+globalVar2 = 20             # Global
+
+def testFunc2():
+    globalVar1 = 100        # Local
+    global globalVar2       # Global
+    globalVar2 = 30         # Global
+    print(globalVar)
+    print(globalVar2)
+    # print(locals())
+
+testFunc2()
+print(globalVar)
+print(globalVar2)
+``` 
+</br>
 
 ### 정적 변수 (Static Varibale)
 * 클래스 변수(Class Variable)라고도 한다.
 
-
+</br>
 
 ### 멤버 변수 
 
