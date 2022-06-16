@@ -2,8 +2,35 @@
 
 
 ## Forward vs Reverse
-* 
+* Forward : Server ---> Proxy
+* Reverse : Client ---> Proxy
+</br>
+</br>
 
+
+## Proxy Server
+1. HAProxy
+    * 
+2. NGINX
+    * 
+3. Squid
+    * Caching Proxy
+</br>
+</br>
+
+-------------------------------------------------------
+## HAProxy
+
+
+
+
+</br>
+</br>
+
+--------------------------------------------------------
+
+## Squid
+* 
 
 ### Reference
 * https://aws.amazon.com/ko/premiumsupport/knowledge-center/ec2-al1-al2-update-yum-without-internet/
@@ -175,33 +202,24 @@
 
 7. HTTPS
     ```
-    # 1) Connet Tunnel
+    # 1) HTTP Connet Tunnel
     # Connect 메서드 사용
 
     acl SSL_ports port 443
     http_access deny CONNECT !SSL_ports
 
-    # 2) 직접 TLS 연결
+    # 2) TLS 연결
 
-
-
-    # 3) 암호화된 브라우저와 연결
-    # https_port
-
-
-
-
+    https_port [ip:]포트 [모드] tls-cert=certificate.pem [옵션]
     ```
     * 크게 Proxy에 대해 HTTPS 연결 방법으로 3가지가 있다 (https://wiki.squid-cache.org/Features/HTTPS)
         1) Tunnel 연결
             * Client와 Proxy간의 터널을 만들어 전달받는다.
             * 대신 HTTPS 말고도 다른 프로토콜도 터널링이 가능하기 때문에 주의가 필요하다.
-        2) 직접 TLS 연결
-            * 브라우저가 원본 서버와 직접 TLS 연결을 만든다.
-        3) 암호화된 브라우저     
+        2) TLS 연결
+            * Proxy와 TLS 통신을 한다.
+            * Reverse Proxy에서 사용한다.
     * 기본적으로 Proxy Server로 들어왔다가 나가기 때문에 가로채기가 가능하다(주의 필요)
-    * 
-
 </br>
 
 
@@ -211,11 +229,11 @@
     auth_param basic realm proxy
     acl myauth proxy_auth REQUIRED
     ```
-
-
-
 </br>
 </br>
+
+
+
 
 
 
