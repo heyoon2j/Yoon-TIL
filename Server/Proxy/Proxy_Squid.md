@@ -1,38 +1,4 @@
-# Proxy Server
-
-
-## Forward vs Reverse
-* Forward : Server ---> Proxy
-* Reverse : Client ---> Proxy
-</br>
-</br>
-
-
-## Proxy Server
-1. HAProxy
-    * Reverse Proxy & Load Balancer
-    * 
-2. Squid
-    * Caching & Foward/Reverse Proxy
-    * 
-3. NGINX
-    * Caching & Load Balancer & Reverse Proxy
-    * 가볍기 때문에 실제 운영에서는 Proxy로 사용되는지 모르겠음?!
-</br>
-</br>
-
--------------------------------------------------------
-## HAProxy
-
-
-
-
-</br>
-</br>
-
---------------------------------------------------------
-
-## Squid
+# Squid
 * Squid는 Proxy Mode와 Web Accelerator Mode가 있다.
 * Proxy Mode : Caching Forward Proxy 동작
 * Web Accelerator Mode : Caching Reverse Proxy 동작
@@ -45,6 +11,7 @@
 * https://hgko1207.github.io/2020/09/28/linux-3/
 * https://sncap.tistory.com/773
  
+ -----
 
 ## Installation
 * Amazon Linux2 / CentOS
@@ -59,6 +26,7 @@
 </br>
 </br>
 
+-----
 
 ## Setting
 ### __Config File 수정__
@@ -197,14 +165,13 @@
 
 </br>
 
-
 6. Core Dump
     ```
     coredump_dir /var/spool/squid
     #coredump_dir /var/spool/squid/coredump
     ```
     * 기본 설정은 캐시 디렉토리로 설정된다.
-
+</br>
 
 7. HTTPS
     ```
@@ -258,10 +225,3 @@
     * https://wiki.squid-cache.org/ConfigExamples
 </br>
 </br>
-
-
-
-
-
-### Reference
-* https://goodgid.github.io/HTTP-Keep-Alive/
