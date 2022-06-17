@@ -10,11 +10,14 @@
 
 ## Proxy Server
 1. HAProxy
+    * Reverse Proxy & Load Balancer
     * 
-2. NGINX
+2. Squid
+    * Caching & Foward/Reverse Proxy
     * 
-3. Squid
-    * Caching Proxy
+3. NGINX
+    * Caching & Load Balancer & Reverse Proxy
+    * 가볍기 때문에 실제 운영에서는 Proxy로 사용되는지 모르겠음?!
 </br>
 </br>
 
@@ -30,7 +33,9 @@
 --------------------------------------------------------
 
 ## Squid
-* 
+* Squid는 Proxy Mode와 Web Accelerator Mode가 있다.
+* Proxy Mode : Caching Forward Proxy 동작
+* Web Accelerator Mode : Caching Reverse Proxy 동작
 
 ### Reference
 * https://aws.amazon.com/ko/premiumsupport/knowledge-center/ec2-al1-al2-update-yum-without-internet/
@@ -138,7 +143,7 @@
     http_access deny all
     ```
     * squid.conf에 규칙이 없으면 거부한다.
-1</br>
+</br>
 
 
 4. Log
@@ -164,6 +169,7 @@
     # cache_mem 256MB (Default: 256MB)
     # memory_cache_mode always|disk|network (Default: always)
     # memory_cache_shared on
+
     ```
     * ```cache_dir``` : Cache Data를 저장하고 있는 Directory
     * ```cache_mem``` : Cahce Memory Size
@@ -230,9 +236,28 @@
     acl myauth proxy_auth REQUIRED
     ```
 </br>
+
+9. Reverse Proxy
+    ```
+    ### Accelerator Mode Set
+    http_port 80 accel defaultsite
+
+
+    ######
+    # Cache Peer (for hierarchy architecture)
+    # cache_peer hostname type http-port icp-port [options]
+    cache_peer backend.webserver.ip.or.dnsname parent 80 0 no-query originserver name=myAccel
+
+    acl our_sites dstdomain your.main.website.name
+    http_access allow our_sites
+    cache_peer_access myAccel allow our_sites
+    cache_peer_access myAccel deny all
+    ```
+    * http_port의 ```accel``` 옵션 사용하여 Accelerator Mode 사용
+    * ```cache_peer```를 이용하여 실제 웹서버 설정
+    * https://wiki.squid-cache.org/ConfigExamples
 </br>
-
-
+</br>
 
 
 
