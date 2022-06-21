@@ -11,7 +11,6 @@
 
 
 
-
 ## 변수 (Variable)
 ![Python_Varialbe](img/Python_Variable.png)
 * 변할 수 있는 데이터
@@ -30,6 +29,21 @@
 > 인터프린터 언어는(Python, Javascript etc) 자료형을 선언하지 않아도 된다. 인터프리터가 자동으로 R value를 가지고 자료형을 판단한다.
 
 </br>
+
+### Naming Rule
+* 변수의 이름은 알파벳, 숫자, 특수문자로 구성
+* 대소문자 구분
+* 변수의 이름은 숫자로 시작할 수 없고, 예약어는 사용할 수 없다.
+* 특수문자는 ```_```와 ```$```만 사용 가능
+* 다음은 일반적인 Naming convention 이다.
+    * 변수나 함수의 경우, Camel Case 사용. 소문자부터 시작 (ex> strValue, intValue)
+    * Class, Interface, Enum, Annotation 등의 경우, Pascal Case 사용 (ex> Car, Persion)
+    * 상수의 경우, 대문자 사용 (ex> CONST_VALUE, PI)    
+        | 대상 | 내용 |
+        |------|------|
+        | Variable, Method | camelCase |
+        | Class, Interface, Enum, Annotation | PascalCase |
+        | Const Varibale | CONST_VALUE |
 </br>
 
 
@@ -158,26 +172,44 @@ globalVar = 10              # Global
 globalVar2 = 20             # Global
 
 def testFunc2():
-    globalVar1 = 100        # Local
+    globalVar = 100        # Local
     global globalVar2       # Global
     globalVar2 = 30         # Global
     print(globalVar)
     print(globalVar2)
     # print(locals())
 
-testFunc2()
-print(globalVar)
-print(globalVar2)
+print(globalVar)            # 10
+print(globalVar2)           # 20
+testFunc2()                 # 100 \ 30
+print(globalVar)            # 10
+print(globalVar2)           # 30
 ``` 
 </br>
 
 ### 정적 변수 (Static Varibale)
 * 클래스 변수(Class Variable)라고도 한다.
+* 시작과 동시에 할당되어 프로그램이 종료될 때까지 남아있다. 외부에서 클래스 이름만으로 접근이 가능하다.
+* Static 변수를 사용하는 이유는 크게 두가지 이유라고 생각한다.
+    1) 접근 범위 제어 : 지역 변수는 해당 함수, 전역 변수는 해당 파일, 멤버 변수는 클래스로 제한하기 위해서.
+        > 원래도 그런데 무슨 소리인가 싶은 내용이다. 여기서 제한한다는 의미는 해당 변수를 그냥 사용할 수 없고 함수, 파일, 클래스를 통해서만 접근이 가능하다는 의미이다!
+    2) 공통 변수 사용 : 해당 함수, 클래스, 파일에서 하나의 변수를 공유해야 되는 경우.
+```python
+Class TestClass:
 
+
+
+```
 </br>
 
-### 멤버 변수 
 
+
+
+
+### 멤버 변수 
+* 클래스 내에 선언된 변수이다.
+* 각 객체마다(instance)마다 변수가 생성된다.
+* 
 
 </br>
 </br>
