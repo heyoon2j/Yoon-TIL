@@ -158,16 +158,15 @@ globalVar = 10              # Global
 globalVar2 = 20             # Global
 
 def testFunc2():
-    globalVar1 = 100        # Local
+    globalVar = 100        # Local
     global globalVar2       # Global
     globalVar2 = 30         # Global
-    print(globalVar)
-    print(globalVar2)
-    # print(locals())
+    print(globalVar)                # 100     
+    print(globalVar2)               # 30
 
 testFunc2()
-print(globalVar)
-print(globalVar2)
+print(globalVar)            # 10
+print(globalVar2)           # 30
 ``` 
 </br>
 
