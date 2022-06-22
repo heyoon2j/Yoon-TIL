@@ -1,6 +1,6 @@
 # Bind 설정
 * MX, TXT는 CNAME과 같이 쓰일 수 없다!
- 
+</br> 
 
 
 ## Configuration
@@ -48,8 +48,9 @@
 ### ACL 선언
 ```
 # Create List
-# acl <name> {acl_list, ...}
-acl trusted { 172.16.30.0/24, 172.16.18.0/24 }
+# acl <name> {acl_list, ...};
+acl trusted { 172.16.30.0/24, 172.16.18.0/24 };
+acl "untrusted" { 192.168.10.0/23 };
 
 allow-query { trusted };
 ```
@@ -95,13 +96,44 @@ options {
 
 
 ## Zone 설정
-```
-
-```
-* 
-
-
 
 https://dev.dwer.kr/2020/04/bind-9.html
 https://bind9.readthedocs.io/en/v9_18_3/reference.html
 https://froghome.tistory.com/37
+
+
+```
+// Provide a reverse mapping for the loopback
+// address 127.0.0.1
+zone "0.0.127.in-addr.arpa" {
+     type primary;
+     file "localhost.rev";
+     notify no;
+};
+// We are the primary server for example.com
+zone "example.com" {
+     type primary;
+     file "example.com.db";
+     // IP addresses of secondary servers allowed to
+     // transfer example.com
+     allow-transfer {
+      192.168.4.14;
+      192.168.5.53;
+     };
+};
+// We are a secondary server for eng.example.com
+zone "eng.example.com" {
+     type secondary;
+     file "eng.example.com.bk";
+     // IP address of eng.example.com primary server
+     primaries { 192.168.4.12; };
+};
+```
+
+
+## Zone File 작성
+
+
+
+### Load Balancing
+

@@ -175,13 +175,16 @@ def testFunc2():
     globalVar = 100        # Local
     global globalVar2       # Global
     globalVar2 = 30         # Global
-    print(globalVar)
-    print(globalVar2)
-    # print(locals())
+    print(globalVar)                # 100     
+    print(globalVar2)               # 30
 
+<<<<<<< HEAD
+testFunc2()
+=======
 print(globalVar)            # 10
 print(globalVar2)           # 20
 testFunc2()                 # 100 \ 30
+>>>>>>> 05bf33963e6d9901cc8cfe2d533fe95ae61a56f5
 print(globalVar)            # 10
 print(globalVar2)           # 30
 ``` 
