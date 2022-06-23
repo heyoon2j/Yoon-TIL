@@ -64,7 +64,7 @@
 ## 3. Cloud-init
 * https://cloudinit.readthedocs.io/en/latest/index.html
 * 클라우드 인스턴스 초기화를 위한 업계 표준 다중 배포 방법
-* Cloud-init은 부팅하는 동안 실행중인 클라우드를 식별하고, 클라우드에서 제공된 Meta data를 읽고 그에 따라 시스템을 초기화한다. 
+* Cloud-init은 부팅하는 동안 실행중인 클라우드를 식별하고, 클라우드에서 제공된 Meta data를 읽고 그에 따라 시스템을 초기화한다.
 </br>
 </br>
 
