@@ -67,11 +67,20 @@
 ### 심볼릭 상수 (Symbolic)
 * 실질적으로 변수이지만 키워드를 이용하여 상수처럼 취급.
 * 대문자, _를 사용하여 Naming 한다.
-* const, final 명령어를 사용
+* define, const, final 명령어를 사용
+* 상수 선언과 동시에 초기화를 해야한다.
 * Example
     ```
     # C/C++
+
+    #define PI 3.1415
+
     const int CONST_NUM = 0;
+
+    const int *prt1 = &var1;    // ptr1을 이용하여 var1 값을 변경할 수 없다.
+    int* const ptr2 = &var2;    // ptr2가 상수화 된다. var2가 가리키는 값을 변경할 수 있다.
+    const int* const ptr3 = &var3;
+
 
     # JAVA
     public static final int CONST_FI = 3.14;
@@ -150,6 +159,7 @@
 * Stack Area에 메모리 할당된다.
 * 선언된 함수 내에서만 접근이 가능하며, 함수 종료시 소멸된다.
 ```python
+print("PYTHON")
 print("---------- 지역 변수 ----------")
 
 def localVarFunc(param1, param2):
@@ -164,8 +174,8 @@ localVarFunc(4, 5)      #  10
 ### 전역 변수 (Global Variable)
 * 어디서든 접근이 가능한 변수로 함수 외부에 선언된 변수
 * 지역 변수와 이름이 같을 시, 지역 변수에 가려진다.
-    => 함수 내의 지역변수를 전역 변수로 사용하려면 global 명령어를 사용해야 한다(잘 사용 안한다!!!)
 ```python
+print("PYTHON")
 print("---------- 전역 변수 ----------")
 
 globalVar = 10              # Global
@@ -178,41 +188,75 @@ def testFunc2():
     print(globalVar)                # 100     
     print(globalVar2)               # 30
 
-<<<<<<< HEAD
-testFunc2()
-=======
 print(globalVar)            # 10
 print(globalVar2)           # 20
 testFunc2()                 # 100 \ 30
->>>>>>> 05bf33963e6d9901cc8cfe2d533fe95ae61a56f5
 print(globalVar)            # 10
 print(globalVar2)           # 30
-``` 
+```
+> 파이썬에서는 C/JAVA와 다르게 함수 내의 지역변수를 전역 변수로 사용하려면 global 명령어를 사용해야 한다 (잘 사용 안한다!!!)
 </br>
 
 ### 정적 변수 (Static Varibale)
 * 클래스 변수(Class Variable)라고도 한다.
 * 시작과 동시에 할당되어 프로그램이 종료될 때까지 남아있다. 외부에서 클래스 이름만으로 접근이 가능하다.
-* Static 변수를 사용하는 이유는 크게 두가지 이유라고 생각한다.
+* static 변수를 사용하는 이유는 크게 두가지 이유라고 생각한다.
     1) 접근 범위 제어 : 지역 변수는 해당 함수, 전역 변수는 해당 파일, 멤버 변수는 클래스로 제한하기 위해서.
         > 원래도 그런데 무슨 소리인가 싶은 내용이다. 여기서 제한한다는 의미는 해당 변수를 그냥 사용할 수 없고 함수, 파일, 클래스를 통해서만 접근이 가능하다는 의미이다!
     2) 공통 변수 사용 : 해당 함수, 클래스, 파일에서 하나의 변수를 공유해야 되는 경우.
 ```python
-Class TestClass:
+print("PYTHON")
+print("---------- 정적 변수 ----------")
 
 
+class TestClass:
+    classVar = 3
 
+    def __init__(self):
+        self.memVar1 = 1
+        self.memVar2 = "abc"
+
+
+testClassObj = TestClass()
+print(TestClass.classVar)           # 3
+print(testClassObj.classVar)        # 3
+
+testClassObj.classVar = 10
+print(TestClass.classVar)           # 3
+print(testClassObj.classVar)        # 10 / 이때부터 클래스 변수는 멤버 변수 취급을 하게 된다!!!!
 ```
+> 멤버 변수는 init Function을 이용하여 선언한다.
 </br>
-
-
-
 
 
 ### 멤버 변수 
 * 클래스 내에 선언된 변수이다.
-* 각 객체마다(instance)마다 변수가 생성된다.
-* 
+* 각 객체마다(instance)마다 변수가 생성된다. 
+```python
+print("PYTHON")
+print("---------- 멤버 변수 ----------")
+
+
+class TestClass2:
+    classVal = 3
+
+    def __init__(self):
+        self.memVar1 = 1
+        self.memVar2 = "abc"
+    
+    def testFunc(self):
+        memVar1 = 25
+        print(memVar1)          # Local Variable
+        print(self.memVar1)     # Member Variable
+
+testClass = TestClass2()
+testClass.testFunc()        # 25 \ 1
+
+testClass.memVar1 = 30
+print(testClass.memVar1)    # 30
+testClass.testFunc()        # 25 \ 30
+```
+> Python은 Class의 Method를 호출할 때, 기본적으롤 첫번째 인자 값으로 Instance 주소 값을 전달한다!(self 값) 이걸 활용하면 정적 함수와 비슷한 기능을 구현할 수 있다(@staticmethod 활용)
 
 </br>
 </br>
