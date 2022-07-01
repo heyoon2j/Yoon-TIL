@@ -86,23 +86,91 @@ print(type(v.imag))     # <class 'float'>
     1) 기본적으로 문자열은 불변하다(immutable). 그러므로 대입 연산이 불가능하다.
     2) 인덱싱과 슬라이싱 가능
     3) 이스케이프(\)를 사용하여 특수문자 표현 가능
+        * 이스케이프(\)를 특수문자  취급하기 싫으면 첫 따옴표 앞에 r을 붙이면 된다(raw string). 대신 이 경우 모든 이스케이프(\)를 일반 문자 취급하게 된다.
     4) """""" 또는 ''''''를 사용하여 여러줄 표현 가능
         * 줄 넘김 문자는 자동으로 문자열에 포함된다. 하지만 줄 끝에 \를 붙여 방지할 수 있다.
     5) 문자열로 연산이 가능
+    6) 문자열 Formatting이 가능
+> char 형은 문자형으로 가변이다(mutable). 그러므로 대입 연산이 가능하다!
+</br>
 
+```python
+print("PYTHON")
+print("---------- String ----------")
+
+
+## 1) 문자열은 불변하다
+str = "abcdefg"
+#str[2] = "j"       Error Code
+
+
+## 2) 인덱싱과 슬라이싱 가능
+str = "abc"
+print(str[0])           # a
+print(str[2])           # c
+print(str[0:2])         # ab
+
+
+## 3) 이스케이프(\)를 사용하여 특수문자 표현 가능
+str = "123\n456"
+print(str)              # 123
+                        # 456
+str = "\"Python\""
+print(str)              # "Python"
+
+str = r"\"Python\""
+print(str)              # \"Python\"
+
+
+## 4) """""" 또는 ''''''를 사용하여 여러줄 표현 가능
+str = """
+abc
+def
+"""
+print(str)      # abc
+                # def
+
+str = """\
+abc\
+def
+"""
+print(str)      # abcdef
+
+# 5) 문자열로 연산이 가능
+print(3 * 'un' + 'ium')     # unununium
+```
 </br>
 
 
 ### Byte
 
 
+
+
+
+
+
+
 </br>
 
 
 ### Boolean
+* Boolean은 True, False 둘 중 하나의 값을 가질 수 있다.
+* True == 1, False == 0 으로 대응시킬 수 있다.
 
+```python
+print("PYTHON")
+print("---------- Boolean ----------")
 
+isTrue = True
+isFalse = False
 
+print(type(isTrue))         # <class 'bool'>
+print(type(isFalse))        # <class 'bool'>
+
+x, y = True + 1, False + 0 
+print(x, y)                 # 2 0
+```
 
 ----
 

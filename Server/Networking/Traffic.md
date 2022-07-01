@@ -1,8 +1,9 @@
 # Traffic Check
 
-## TCPDump
+## TCPDump / WinDump
 * 네트워크 인터페이스를 통해 송수신 되는 패킷을 캡쳐하는 SW
 * Body 등을 확인하려면 WireShark 같은 Tool을 사용해야 한다.
+* Linux : TCPDump / Windows : WinDump
 
 ### 사용법
 * 명령어 : ```tcpdump [option] [expression]```
@@ -11,8 +12,9 @@
     |------|------|-----|
     | -A | ASCII 형태로 패킷 출력 | tcpdump -A |
     | -c count | 패킷 갯수 지정 | tcpdump -c 10 |
+    | -D | Network Interface 리스트 출력(Windows에서만 사용) | windump -D |
     | -i interface | 네트워크 인터페이스 지정 | tcpdump -i eth0 |
-    | -nn | hostname -> ip address, protocol -> port 출력  | tcpdump -nn |
+    | -n | hostname -> ip address, protocol -> port 출력  | tcpdump -n |
     | -r file | 캡쳐한 파일 내용 읽기 | tcpdump -r ~/test.plog |
     | -tttt | Timestamp 형태 출력 |
     | -v | verbose, 상세 내역 확인 | tcpdump -v |
@@ -34,7 +36,11 @@
     | src | 출발지 | tcpdump src 10.0.0.8 |
     | dst | 목적지 | tcpdump src 10.0.0.20 |
     | port | 포트 | tcpdump port 80 |
+    | src port | Source 도메인 | tcpdump src hsot naver.com |
+    | dst host | Destination 도메인 | tcpdump dst host naver.com |    
     | host | 도메인 | tcpdump host test.com |
+    | src host | Source 도메인 | tcpdump src hsot naver.com |
+    | dst host | Destination 도메인 | tcpdump dst host naver.com |
 
 </br>
 
@@ -66,13 +72,20 @@
 ### Example
 ```shell
 # Check Network Interface
-$ ifconfig
+$ ifconfig # Linux
+$ windump -D # windows
 
-$ tcpdump -nn -vvv -tttt -A -i eth0 -w packetCheck.log 
+
+$ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log
+$ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log dst port 80 and dst port 443
+
 # quit : ctrl + c
 ```
 </br>
 </br>
+
+
+--------
 
 
 ## Traceroute
