@@ -77,7 +77,7 @@ $ windump -D # windows
 
 
 $ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log
-$ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log dst port 80 && dst port 443
+$ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log dst port 80 and dst port 443
 
 # quit : ctrl + c
 ```
