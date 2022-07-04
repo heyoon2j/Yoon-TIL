@@ -1,15 +1,6 @@
-print("PYTHON")
-print("---------- Numbers ----------")
+a = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+print(a[2:8:3])    # [20, 50]
 
-a = 2
-print(type(a))      # int
 
-b = 3.15
-print(type(b))      # float
-
-v = 2 + 3j 
-v.real    # 2
-v.imag    # 3
-print(type(v))      # complex
-print(type(v.real))
-print(type(v.imag))
+# 음수로 마지막 부분부터 연산가능
+print(a[6:-2])    

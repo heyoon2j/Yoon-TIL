@@ -118,7 +118,7 @@ print(str)              # 123
 str = "\"Python\""
 print(str)              # "Python"
 
-str = r"\"Python\""
+str = r'\"Python\"'
 print(str)              # \"Python\"
 
 
@@ -143,13 +143,22 @@ print(3 * 'un' + 'ium')     # unununium
 
 
 ### Byte
+* 앞에 b'' 가 붙는다.
+* 바이트를 표현하며, Immutable Type이다.
+* bytearray 클래스의 경우, Mutable Type이다.
+```python
+print("PYTHON")
+print("---------- String ----------")
 
+s = "Python"
+encodedS = s.encode("UTF-8")
+print(encodedS)     # b'Python'
+decodedS = encodedS.decode("UTF-8")
+print(decodedS)     # "Python"
 
-
-
-
-
-
+a = b'123'
+print(a)            # b'123'
+```
 
 </br>
 
@@ -175,13 +184,78 @@ print(x, y)                 # 2 0
 ----
 
 ## Python Data Structure
-1) list
-2) tuple
-3) set
-4) dictionary
+1) List
+2) Tuple
+3) Set
+4) Dictionary
 </br>
 
-### 
+### List
+* 순서가 있는 데이터의 집합. 데이터 중복 허용
+* 데이터의 순서(index)가 유일한 데이터의 구분자(identifier)로 사용
+* 리스트는 [] 를 이용하여 감싸고, 가변하다(mutable). 그러므로 내용을 추가, 변경, 삭제할 수 있다.
+    ```python
+    cubes = [1, 4, 9, 16, 125]
+    print(cubes)     # [1, 4, 9, 16, 125]
+
+    # 변경
+    cubes[3] = 64       # [1, 4, 9, 64, 125]
+    print(cubes)
+
+
+    a[2:5] = ['a', 'b', 'c']     # [0, 10, 'a', 'b', 'c', 50, 60, 70, 80, 90]
+
+
+    # 추가
+    cubes.append(216)   # [1, 4, 9, 64, 125, 216]
+    print(cubes)
+
+    # 삭제
+    cubes[2:4] = []     # [1, 4, 125, 216]
+    print(cubes)
+    ```
+* 증가폭 사용 가능
+    ```python
+    # list[]
+    a = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+    print(a[2:8:3])    # [20, 50]
+
+
+    # 음수로도 표현 가능 (-1 == 마지막 인덱스)
+    print(a[6:-2])      # [60, 70]  
+
+
+   ```
+* 
+    ```
+    ```
+
+
+
+</br>
+ 
+
+### Tuple
+
+
+</br>
+
+
+### Set
+* 순서가 없는 데이터 {집합}을 다루는 인터페이스
+* 중복되는 데이터를 효율적으로 제거하는데에 사용 가능
+* 중복을 검사하는 수단으로 hashCode(), equals()
+    * hash를 빠르게 계산해서 hash만 비교
+    * 그 다음에 판정이 안 나면 equals()로 추가 비교
+
+</br>
+
+
+### Dictionary
+* Key, Value 쌍으로 구성된 자료의 집합을 다루는 인터페이스
+    * Map.Entry<K, V>
+* Key는 중복될 수 없으며, Value는 중복이 가능
+    * Key가 identifier 역할을 한다.
 
 
 </br>
