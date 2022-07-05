@@ -196,7 +196,8 @@ print(x, y)                 # 2 0
 </br>
 
 ### List
-* 순서가 있는 데이터의 집합. 데이터 중복 허용
+* 순서가 있는 데이터의 집합 인터페이스
+* 데이터 중복 허용
 * 데이터의 순서(index)가 유일한 데이터의 구분자(identifier)로 사용
 * 리스트는 [] 를 이용하여 감싸고, 가변하다(mutable). 그러므로 내용을 추가, 변경, 삭제할 수 있다.
     ```python
@@ -250,7 +251,7 @@ print(x, y)                 # 2 0
     | insert(i, x)	| 주어진 위치에 항목을 삽입	| list.insert(2, 10) | 
     | remove(x)	| 리스트에서 값이 x와 같은 첫 번째 항목을 삭제, 없으면 ValueError 발생	| list.remove(10) | 
     | pop([i])	| 주어진 위치에 있는 항목을 삭제하고, 값 반환. 인덱스를 지정하지 않으면 마지막 항목을 삭제	| list.pop() | 
-    | clear()	| 리스트의 모든 항목을 삭제. del a[:] 와 동등	| list.clear | 
+    | clear()	| 리스트의 모든 항목을 삭제. del a[:] 와 동등	| list.clear() | 
     | index(x[,start[,end]])	| 리스트에 있는 항목 중 값이 x와 같은 첫 번째의 인덱스를 반환(start와 end를 이용하여 범위를 지정할 수 있다). 항목이 없는 경우 ValueError 발생	| list.index("abc", 2) | 
     | count(x)	| 리스트에서 x가 등장하는 횟수를 반환	| list.count(3) | 
     | sort(*, key=None, reverse=False)	| 기존 리스트를 key 기준으로 정렬, Return None	| list.sort(str.lower) | 
@@ -351,41 +352,150 @@ print(x, y)                 # 2 0
 * 튜플은 () 로 감싸고, 불변하다(immutable).
 * 기술적인 차이점
     * 리스트는 가변이기 때문에 빠른 요소 추가를 위해 메모리를 더 많은 공간을 차지한다.
-    * 튜플은 불변이다. 그렇기 때문에 Dict의 Key로 사용될 수 있다. 또한 메모리를 효율적으로 사용이 가능하다(*args는 튜플로 저장)
+    * 튜플은 불변이다. 그렇기 때문에 Dict의 Key로 사용될 수 있다. 또한 메모리를 효율적으로 사용이 가능하다
+    * 파이썬에서 보통 튜플로 인자값을 처리한다!!! __(*args는 튜플로 저장)__
 * 문화적인 차이점
     * https://edykim.com/ko/post/python-list-vs.-tuple/
     * 리스트는 단일 종류의 요소를 갖고 있고, 그 일련의 요소가 몇 개나 들어있는지 명확하지 않은 경우에 주로 사용
     * 튜플은 들어 있는 요소의 수를 사전에 정확히 알고 있을 경우에 주로 사용.
 > 기술적, 문화적 차이점을 고려해 선택을 하면된다.
-* 튜플 요소에 대한 변경 추가/삭제 불가능
-    ```
-    ```
-* 
-    ```
-    ```
+* 튜플 요소에 대한 변경/삭제 불가능
+    ```python
+    t = 12345, 54321, 'hello!'
+    print(t[0])        # 12345
+    print(t)           # (12345, 54321, 'hello!')
 
+    # Error
+    t[0] = 88888
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    TypeError: 'tuple' object does not support item assignment
 
+    # Error
+    del t[1]
+    Traceback (most recent call last):
+    File "main.py", line 5, in <module>
+        del t[1]
+    TypeError: 'tuple' object doesn't support item deletion
+    ```
+* 변경, 삭제는 불가능하지만 슬라이싱 등을 통해 새로운 튜플 생성 가능
+    ```python
+    u = t, (1, 2, 3, 4, 5)      # Tuples may be nested, ((12345, 54321, 'hello!'), (1, 2, 3, 4, 5))
+    print(u)
 
+    v = ([1, 2, 3], [3, 2, 1])
+    print(v)
+
+    x = t[1:]
+    ```
+* Function
+    | Function	| Description	| Example | 
+    |-----------|---------------|---------| 
+    | index(x[,start[,end]])	| 리스트에 있는 항목 중 값이 x와 같은 첫 번째의 인덱스를 반환(start와 end를 이용하여 범위를 지정할 수 있다). 항목이 없는 경우 ValueError 발생	| tuple.index("abc", 2) | 
+    | count(x)	| 리스트에서 x가 등장하는 횟수를 반환	| tuple.count(3) |
+</br>
 </br>
 
 
 ### Set
 * 순서가 없는 데이터 {집합}을 다루는 인터페이스
-* 중복되는 데이터를 효율적으로 제거하는데에 사용 가능
+* 중복을 허용하지 않고, 중복되는 데이터를 효율적으로 제거하는데에 사용 가능
 * 중복을 검사하는 수단으로 hashCode(), equals()
     * hash를 빠르게 계산해서 hash만 비교
     * 그 다음에 판정이 안 나면 equals()로 추가 비교
+    ```python
+    basket = set([1,2,3])
 
+    basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
+    print(basket)       # show that duplicates have been removed, {'orange', 'banana', 'pear', 'apple'}
+    'orange' in basket  # fast membership testing, True
+    'crabgrass' in basket   # False
+
+    # Demonstrate set operations on unique letters from two words
+    a = set('abracadabra')      # {'a', 'r', 'b', 'c', 'd'}
+    print(a)
+    b = set('alacazam')
+    print(b)
+    a - b                       # letters in a but not in b, {'r', 'd', 'b'}
+    a | b                       # letters in a or b or both, {'a', 'c', 'r', 'd', 'b', 'm', 'z', 'l'}
+    a & b                       # letters in both a and b, {'a', 'c'}
+    a ^ b                       # letters in a or b but not both, {'r', 'd', 'b', 'm', 'z', 'l'}
+    ```
+* Function
+    | Function	| Description	| Example | 
+    |-----------|---------------|---------|
+    | add(x) | 요소 추가 | set.add(2) |
+    | update(iterable) | Iterable 추가 | set.update([1, 2, 3]) |
+    | remove(x)	| 값이 x와 같은 항목을 삭제, 없으면 KeyError 발생	| set.remove(10) |
+    | discard(x) | 값이 x와 같은 항목을 삭제, 없어도 Error를 발생시키지 않음 | set.discard(10) |
+    | clear()	| 모든 항목을 삭제. del a[:] 와 동등	| set.clear() | 
+    | pop()	| 임의의 요소 삭제 후, 반환 | list.pop() | 
+    * Example
+    ```python
+</br>
 </br>
 
 
 ### Dictionary
+* 딕셔너리는 {} 와 dict() 이용하고, 가변이다(mutable).
 * Key, Value 쌍으로 구성된 자료의 집합을 다루는 인터페이스
     * Map.Entry<K, V>
 * Key는 중복될 수 없으며, Value는 중복이 가능
     * Key가 identifier 역할을 한다.
+* Key로 인덱싱이 되며, 중복되지 않는다. 그리고 모든 불변형(immutable)이 Key가 될 수 있다.
+    * 튜플을 Key로 사용될 수 있으나, 튜플에 가변 객체가 포함되어 있으면 키로 사용될 수 없다.
+* 리스트에서 사용되는 함수가 사용되나 정렬의 경우 sorted(d)를 사용하면 된다.
+    ```
+    ```
+* Function
+    | Function	| Description	| Example | 
+    |-----------|---------------|---------|
+    | keys() | 모든 Key 값 출력 (dict_keys[list] 반환) |  dict.keys() |
+    | values() | 모든 Value 값 출력 (dict_values[list] 반환) | dict.values() |
+    | items() | 모든 Key-Value 값 출력 (dict_items[List(Tuple)] 반환) | dict.items() |
+    | has_key(key) | 해당 키 값의 존재 여부 (True / False) | dict.has_key("a") |
+    | dict[key] | 해당 Key 값에 대한 Value 값 추가 또는 변경 (에러 발생 O) | dict["a"] |
+    | dict.get(key) | 해당 Key 값에 대한 Value 값 반환 (에러 발생 X) | dict.get["a"] |
+    | clear()	| 모든 항목을 삭제. del a[:] 와 동등	| dict.clear() | 
+    * Example
+    ```python
+    dict([('sape', 4139), ('guido', 4127), ('jack', 4098)])
+
+    tel = {'jack': 4098, 'sape': 4139}
+    tel['guido'] = 4127     # {'jack': 4098, 'sape': 4139, 'guido': 4127}
+    print(tel['jack'])      # 4098
 
 
+    # Insert 'irv' : 4127
+    tel['irv'] = 4127       # {'jack': 4098, 'sape': 4139, 'guido': 4127, 'irv': 4127}
+    print(tel)
+
+    # Delete 'sape' : 4139
+    del tel['sape']         # {'jack': 4098, 'guido': 4127, 'irv': 4127}
+    print(tel)
+
+    # Key, Value
+    print(tel.keys())       # dict_keys(['jack', 'guido', 'irv'])
+    print(tel.values())     # dict_values([4098, 4127, 4127])
+    print(tel.items())      # dict_items([('jack', 4098), ('guido', 4127), ('irv', 4127)])
+
+    for value in tel.values():
+        print(value)
+        
+
+    # Check
+    print('a' in tel)                    # False / Key Check
+    print('4127' in tel.values())        # True / Value Check
+
+
+    # 리스트로 받으면 Key를 저장한 리스트 반환
+    list(tel)               # ['jack', 'guido', 'irv']
+    sorted(tel)             # ['guido', 'irv', 'jack']
+
+    # in 연산자로 확인
+    'guido' in tel          # True
+    'jack' not in tel       # False    
+    ```
 </br>
 </br>
 
@@ -394,4 +504,12 @@ print(x, y)                 # 2 0
 ----
 
 # Casting
+* 
+* 
+
+
+
+
+
+
 
