@@ -503,12 +503,20 @@ print(x, y)                 # 2 0
 
 ----
 
-# Casting
-* 
-* 
+# Type Casting
+* 메모리 크기를 기준으로 보는 것이 아닌 Data Type을 기준으로 변환한다.
+* Class 다형성은 이후에 정리할 예정.
+</br>
+
+## Upcasting
 
 
+</br>
 
+## Downcasting
+
+
+</br>
 
 
 
