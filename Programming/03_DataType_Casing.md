@@ -138,6 +138,11 @@ print(str)      # abcdef
 
 # 5) 문자열로 연산이 가능
 print(3 * 'un' + 'ium')     # unununium
+
+
+# 6) 문자열 Formatting
+s = "Name: %s, Age: %d" % ("ABC", 30)
+print(s)
 ```
 </br>
 
@@ -224,18 +229,141 @@ print(x, y)                 # 2 0
     # 음수로도 표현 가능 (-1 == 마지막 인덱스)
     print(a[6:-2])      # [60, 70]  
 
-
    ```
+* Merge & Repeat
+    ```
+    # Merge
+    a = [1, 2]
+    b = [3, 4, 5]
+    c = a + b       # c == [1, 2, 3, 4, 5]
+
+    # Repeat
+    d = a * 3       # d == [1, 2, 1, 2, 1, 2]
+    ```
+</br>
+ 
+* Function
+    | Function	| Description	| Example | 
+    |-----------|---------------|---------|
+    | append(x)	| 리스트 끝에 추가	| list.append(3) | 
+    | extend(iterable) | 리스트 끝에 iterable의 모든 항목을 덧붙이다. a[len(a):] = iterable 과 동일	| list.extend([1, 2]) |
+    | insert(i, x)	| 주어진 위치에 항목을 삽입	| list.insert(2, 10) | 
+    | remove(x)	| 리스트에서 값이 x와 같은 첫 번째 항목을 삭제, 없으면 ValueError 발생	| list.remove(10) | 
+    | pop([i])	| 주어진 위치에 있는 항목을 삭제하고, 값 반환. 인덱스를 지정하지 않으면 마지막 항목을 삭제	| list.pop() | 
+    | clear()	| 리스트의 모든 항목을 삭제. del a[:] 와 동등	| list.clear | 
+    | index(x[,start[,end]])	| 리스트에 있는 항목 중 값이 x와 같은 첫 번째의 인덱스를 반환(start와 end를 이용하여 범위를 지정할 수 있다). 항목이 없는 경우 ValueError 발생	| list.index("abc", 2) | 
+    | count(x)	| 리스트에서 x가 등장하는 횟수를 반환	| list.count(3) | 
+    | sort(*, key=None, reverse=False)	| 기존 리스트를 key 기준으로 정렬, Return None	| list.sort(str.lower) | 
+    | reverse()	| 리스트의 요소들을 제자리에서 뒤집는다.	| list.reverse() | 
+    | copy()	| 리스트의 얕은 사본을 돌려준다. a[:] 와 동등	| a.copy() | 
+    * Example
+    ```python
+    a = ["ABC", 25, True]
+
+    # Append
+    a.append(30.01)     # ["ABC", 25, True, 30.01]
+    a[1] = 28           # ["ABC", 28, True, 30.01]
+    del a[2]           # ["ABC", 25, 30.01]
+
+    # Extend
+    a.extend([200, 300])  # ["ABC", 25, 30.01, 200, 300]
+
+    # Insert
+    a.insert(2, 0)      # ["ABC", 25, 0, 30.01, 200, 300]
+
+    # 자주 사용되는 패턴
+    a.insert(0, 3)      # 처음 위치에 삽입
+                        # [3, "ABC", 25, 0, 30.01, 200, 300]
+    a.insert(len(a), 3) # 마지막 위치에 삽입 == a.append(3)
+                        # [3, "ABC", 25, 0, 30.01, 200, 300, 3]
+
+    # 삭제
+    a = [10, 20, 30]
+    x = a.pop()     # 30
+    print(x)        # [10, 20]
+
+    a.insert(2, 30)
+    x = a.pop(1)    # 20, index 1번 위치
+    print(x)
+
+    a.remove(30)
+
+    a.clear()    
+    print(a)    # 
+    ```
+* list.sort(reverse=True|False, key=myFunc) vs sorted(iterable)
+    1) list.sort()
+        * 기존에 있는 리스트를 정렬한다.
+            > 그렇기 때문에 sorted()보다  빠르다.
+        * 반환 값은 None
+        * https://www.w3schools.com/python/ref_list_sort.asp#:~:text=%20Python%20List%20sort%20%28%29%20Method%20%201,...%20%204%20More%20Examples.%20%20More%20
+        ```python
+        names = ['Yeeun', 'Sion', 'Jadudu', 'YounS', 'A', 'OTL']
+
+        names.sort(reverse=True)
+        print(names)            # ['YounS', 'Yeeun', 'Sion', 'OTL', 'Jadudu', 'A']
+
+
+        def testFunc(e):
+            return len(e)
+
+        names.sort(key=testFunc)
+        print(names)            # ['A', 'OTL', 'Sion', 'YounS', 'Yeeun', 'Jadudu']
+        ```
+    2) sorted(iterable)
+        * 정렬된 새로운 Iterable을 반환한다.
+            > 그렇기 때문에 list.sort()보다 느리다.
+        * 반환 값은 Iterable
+        ```python
+
+        ```
+* del 문
+    * 변수와 객체의 연결을 끊는다. 메모리를 지우는 것은 아니고, GC가 메모리에서 제거하도록 도와준다.
+        * 메모리를 참조하고 있는 포인터를 지운다고 생각하면 될 거 같다.
+    * 인덱싱과 슬라이싱을 이용하여 리스트의 값을 삭제할 수 있다. 그 외에도 키 값을 이용해 딕셔너리의 값을 삭제할 수 있다.
+    * 리스트 변수 자체를 삭제할 수 있다.
+        ```python
+        a = [-1, 1, 66.25, 333, 333, 1234.5]
+        del a[0]        # [1, 66.25, 333, 333, 1234.5]
+        print(a)
+
+        del a[2:4]      # [1, 66.25, 1234.5]
+        print(a)
+
+        del a[:]        # []
+        print(a)
+
+        del a           # a를 참조할 수 없다. 즉 에러가 발생한다.
+        print(a)
+        ```
+
+* List Comprehension
+    * ```[expression for element in collection [if condition]]```
+    ```python
+    list = [n + 2 for n in range(0,5) if (n % 2) == 0]
+    # [2, 4, 6]
+    ```
+</br>
+</br>
+
+
+### Tuple
+* 튜플은 () 로 감싸고, 불변하다(immutable).
+* 기술적인 차이점
+    * 리스트는 가변이기 때문에 빠른 요소 추가를 위해 메모리를 더 많은 공간을 차지한다.
+    * 튜플은 불변이다. 그렇기 때문에 Dict의 Key로 사용될 수 있다. 또한 메모리를 효율적으로 사용이 가능하다(*args는 튜플로 저장)
+* 문화적인 차이점
+    * https://edykim.com/ko/post/python-list-vs.-tuple/
+    * 리스트는 단일 종류의 요소를 갖고 있고, 그 일련의 요소가 몇 개나 들어있는지 명확하지 않은 경우에 주로 사용
+    * 튜플은 들어 있는 요소의 수를 사전에 정확히 알고 있을 경우에 주로 사용.
+> 기술적, 문화적 차이점을 고려해 선택을 하면된다.
+* 튜플 요소에 대한 변경 추가/삭제 불가능
+    ```
+    ```
 * 
     ```
     ```
 
-
-
-</br>
- 
-
-### Tuple
 
 
 </br>
@@ -267,16 +395,3 @@ print(x, y)                 # 2 0
 
 # Casting
 
-
-개발 공부 순서
-1 - 변수 스코프 정리
-2 - 데이터 타입 / 타입 캐스팅
-3 - 연산자
-4 - 조건문 / 제어문 / 반복문
-5 - 함수
-6 - 클래스 / 상속 overriding overloading
-7 - 인터페이스 / 추상 클래스 
-7 - 모듈
-8 - 입출력
-9 - 예외처리
-10 - 라이브러리
