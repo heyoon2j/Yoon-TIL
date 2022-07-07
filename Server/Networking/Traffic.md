@@ -15,6 +15,7 @@
     | -D | Network Interface 리스트 출력(Windows에서만 사용) | windump -D |
     | -i interface | 네트워크 인터페이스 지정 | tcpdump -i eth0 |
     | -n | hostname -> ip address, protocol -> port 출력  | tcpdump -n |
+    | -Q in/out/inout | Inbound/Outbound 지정 | tcpdump -Q in |
     | -r file | 캡쳐한 파일 내용 읽기 | tcpdump -r ~/test.plog |
     | -tttt | Timestamp 형태 출력 |
     | -v | verbose, 상세 내역 확인 | tcpdump -v |
