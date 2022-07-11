@@ -504,20 +504,34 @@ print(x, y)                 # 2 0
 ----
 
 # Type Casting
-* 메모리 크기를 기준으로 보는 것이 아닌 Data Type을 기준으로 변환한다.
-* Class 다형성은 이후에 정리할 예정.
+* Data Type을 변환한다.
+* 연산은 Data Type 특성(Binding)을 가지고 진행이 된다. 예시는 다음과 같다.
+    ```c++
+    long x = 10              # long type은 8 byte로 연산하는 특성을 가지고 있다.
+    int y = x                # int type은 4 byte로 연산하는 특성을 가지고 있다.
+                             # 
+
+    ```
+    * __Upcasting__ : 
+    * __Downcasting__ : 
+
+> 헷갈리기 쉬운데, 메모리를 기준으로 보는 것이 아닌 Data Type을 기준으로 생각해야 한다! Class 다형성은 이후에 정리할 예정.
 </br>
 
 ## Upcasting
-
+* 
+* 
 
 </br>
 
 ## Downcasting
+* 
+* 
 
 
 </br>
 
-
-
+## Class Type Casting
+* 
+* 
 
