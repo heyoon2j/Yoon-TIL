@@ -505,33 +505,42 @@ print(x, y)                 # 2 0
 
 # Type Casting
 * Data Type을 변환한다.
-* 연산은 Data Type 특성(Binding)을 가지고 진행이 된다. 예시는 다음과 같다.
-    ```c++
-    long x = 10              # long type은 8 byte로 연산하는 특성을 가지고 있다.
-    int y = x                # int type은 4 byte로 연산하는 특성을 가지고 있다.
-                             # 
+* 연산은 Data Type 특성(Binding)을 가지고 진행이 된다. 크게 Upcasting과 Downcasting으로 분류된다.
 
-    ```
-    * __Upcasting__ : 
-    * __Downcasting__ : 
+
+
+* __Upcasting__ : 범위가 작은 쪽에서 
+* __Downcasting__ : 
 
 > 헷갈리기 쉬운데, 메모리를 기준으로 보는 것이 아닌 Data Type을 기준으로 생각해야 한다! Class 다형성은 이후에 정리할 예정.
 </br>
 
 ## Upcasting
-* 
-* 
-
+* 범위가 작은 쪽 ---> 큰 쪽으로 타입 변환
+1. 메모리 크기가 작은 쪽 ---> 큰 쪽
+2. 정밀도가 작은 쪽 ---> 높은 쪽
+3. Parent Class ---> Child Class (아마 가능은 하나? 사용하지 않음)
 </br>
 
 ## Downcasting
-* 
-* 
+* 범위가 큰 쪽 ---> 작은 쪽으로 타입 변환
+* 범위가 작아짐에 따라 제약 사항이 따라온다!
+1. 메모리 크기가 큰 쪽 ---> 작은 쪽
+    * 
+2. 정밀도가 높은 쪽 ---> 작은 쪽
+3. Child Class ---> Parent Class
+```c++
+long x = 10             # long type은 8 byte로 연산하는 특성을 가지고 있다. => x는 8 byte 메모리를 할당받는다(초기화 및 대입연산)
+int y = x               # int type은 4 byte 로 연산하는 특성을 가지고 있다. => y는 4 byte 메모리를 할당받는다(초기화 및 대입연산산
+                        # y는 4 byte만 저장 가능하므로 x의 8 byte 중 4 byte만 저장된다. 즉, 앞 4 byte는 잘려나간다.
 
+# Class
+Child a = new Child()       # 
+Parent b = a                # 
+                            # 
+```
 
 </br>
 
-## Class Type Casting
-* 
-* 
+
 
