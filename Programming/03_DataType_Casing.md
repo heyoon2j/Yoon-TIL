@@ -524,9 +524,8 @@ print(x, y)                 # 2 0
 
 ## Downcasting
 * 범위가 큰 쪽 ---> 작은 쪽으로 타입 변환
-* 범위가 작아짐에 따라 제약 사항이 따라온다!
+> 범위가 작아짐에 따라 제약 사항이 따라온다!
 1. 메모리 크기가 큰 쪽 ---> 작은 쪽
-    * 
 2. 정밀도가 높은 쪽 ---> 작은 쪽
 3. Child Class ---> Parent Class
 ```c++
@@ -535,11 +534,10 @@ int y = x               # int type은 4 byte 로 연산하는 특성을 가지�
                         # y는 4 byte만 저장 가능하므로 x의 8 byte 중 4 byte만 저장된다. 즉, 앞 4 byte는 잘려나간다.
 
 # Class
-Child a = new Child()       # 
-Parent b = a                # 
-                            # 
+Child a = new Child()       # a는 Parent Class를 상속. Child 뿐만 아니라 Parent의 멤버변수, 멤버함수도 접근 가능하다.
+Parent b = a                # b는 Parent Class. 클래스는 주소 값을 저장하기 때문에 대입 연산으로 인해 메모리 크기가 줄어들거나 하지 않는다.
+                            # 하지만 b는 Parent Type이고 Data Type으로 연산을 하기 때문에, 변수의 값은 Child를 가리키지만 Child의 멤버면수, 멤버함수에 접근이 불가능하다.
 ```
-
 </br>
 
 
