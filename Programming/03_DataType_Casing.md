@@ -506,20 +506,50 @@ print(x, y)                 # 2 0
 # Type Casting
 * Data Type을 변환한다.
 * 연산은 Data Type 특성(Binding)을 가지고 진행이 된다. 크게 Upcasting과 Downcasting으로 분류된다.
-
-
-
-* __Upcasting__ : 범위가 작은 쪽에서 
-* __Downcasting__ : 
-
-> 헷갈리기 쉬운데, 메모리를 기준으로 보는 것이 아닌 Data Type을 기준으로 생각해야 한다! Class 다형성은 이후에 정리할 예정.
+    > 헷갈리기 쉬운데, 메모리를 기준으로 보는 것이 아닌 Data Type을 기준으로 생각해야 한다! Class 다형성은 이후에 정리할 예정.
+* Data Type을 변환하는 방법으로는 크게 자동 형 변환과 강제 형 변환이 있다.
+    > Python은 신경쓰지 않아도 된다. 전부 자동...
 </br>
+
+
+## 자동 형 변환 (== 묵시적 형 변환)
+* 형 변환 시 명시적으로 표시를하지 않아도 자동으로 변환된다.
+* 자동 형 변환이 되는 경우는 다음과 같다.
+1. 대입 연산의 전달과정에서 발생하는
+    ```c++
+    double num1 = 245;       # 245.0
+    int num2 = 3.1415;       # 3
+    ```
+2. 정수 승격에 의한
+    * short나 char의 경우 연산할 때, int 형으로 자동 승격된다.
+3. 피연산자의 자료형 불일치로 발생하는
+    ```c++
+    double num1 = 5.15 + 19;     # 19 --> 19.0으로 변경된 후 계산된다.
+    ```
+    * 순서 : int -> long -> longlong -> float -> double -> longdouble
+    * 데이터 손실을 최소화하는 방향으로 진행하며, char, short는 정수의 승격에 의해 자동으로 변환
+</br>
+</br>
+
+## 강제 형 변환 (== 명시적 형 변환)
+* 형 변환 시 명시적으로 표시를 해야 변환된다.
+    ```c++
+    int num1 = 3;
+    int num2 = 4;
+
+    double divResult;
+    divResult = (double)num1 / num2;
+    ```
+</br>
+</br>
+
 
 ## Upcasting
 * 범위가 작은 쪽 ---> 큰 쪽으로 타입 변환
 1. 메모리 크기가 작은 쪽 ---> 큰 쪽
 2. 정밀도가 작은 쪽 ---> 높은 쪽
 3. Parent Class ---> Child Class (아마 가능은 하나? 사용하지 않음)
+</br>
 </br>
 
 ## Downcasting
@@ -529,16 +559,13 @@ print(x, y)                 # 2 0
 2. 정밀도가 높은 쪽 ---> 작은 쪽
 3. Child Class ---> Parent Class
 ```c++
-long x = 10             # long type은 8 byte로 연산하는 특성을 가지고 있다. => x는 8 byte 메모리를 할당받는다(초기화 및 대입연산)
-int y = x               # int type은 4 byte 로 연산하는 특성을 가지고 있다. => y는 4 byte 메모리를 할당받는다(초기화 및 대입연산산
+long x = 10;             # long type은 8 byte로 연산하는 특성을 가지고 있다. => x는 8 byte 메모리를 할당받는다(초기화 및 대입연산)
+int y = x;               # int type은 4 byte 로 연산하는 특성을 가지고 있다. => y는 4 byte 메모리를 할당받는다(초기화 및 대입연산산
                         # y는 4 byte만 저장 가능하므로 x의 8 byte 중 4 byte만 저장된다. 즉, 앞 4 byte는 잘려나간다.
 
 # Class
-Child a = new Child()       # a는 Parent Class를 상속. Child 뿐만 아니라 Parent의 멤버변수, 멤버함수도 접근 가능하다.
-Parent b = a                # b는 Parent Class. 클래스는 주소 값을 저장하기 때문에 대입 연산으로 인해 메모리 크기가 줄어들거나 하지 않는다.
+Child a = new Child();       # a는 Parent Class를 상속. Child 뿐만 아니라 Parent의 멤버변수, 멤버함수도 접근 가능하다.
+Parent b = a;                # b는 Parent Class. 클래스는 주소 값을 저장하기 때문에 대입 연산으로 인해 메모리 크기가 줄어들거나 하지 않는다.
                             # 하지만 b는 Parent Type이고 Data Type으로 연산을 하기 때문에, 변수의 값은 Child를 가리키지만 Child의 멤버면수, 멤버함수에 접근이 불가능하다.
 ```
 </br>
-
-
-
