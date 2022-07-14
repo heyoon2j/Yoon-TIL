@@ -1,4 +1,4 @@
-## Operators
+# Operators
 연산자(Operator) : 연산에 사용되는 표시나 기호
 피연산자(Operand) : 연산에 사용되는 데이터
 연산식(Expression) : 연산자와 피연산자를 이용하여 연산 과정을 기술한 것
