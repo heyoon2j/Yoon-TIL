@@ -2,9 +2,9 @@
 * 제어 흐름은 프로그램에서 실행되는 각 구문, 명령어나 함수가 호출되는 순서를 의미한다.
 
 
-## 4.1. 조건문
+## 조건문
 * if, else if, else 문 사용
-    ```
+    ```python
     # if 문
     if x > 10:
         print(x)
@@ -18,9 +18,9 @@
         print(-x)
     ```
 
-## 4.2. 반복문
+## 반복문
 1. while 문
-    ```
+    ```python
     while i != 5:
         print(i)
         i += 1
@@ -28,7 +28,7 @@
 
 2. for in 문
     * range() 이용
-    ```
+    ```python
     for i in range(10):     # 0 ~ 9
         print(i)
    
@@ -37,14 +37,14 @@
     ```
    
     * list 이용
-    ```
+    ```python
     list = ["Python", "is", "good."]
     for s in list:
         print(s)    # Python is good.
     ```
 
 3. break / continue 문
-    ```
+    ```python
     while True:
         if i == 1:
             continue
@@ -68,7 +68,7 @@
 
 5. pass 문
     * pass 문은 아무것도 하지 않는다. 프로그램이 특별히 할 일이 없을 때 사용할 수 있다.
-    ```
+    ```python
     while True:
         pass
    
@@ -92,7 +92,7 @@
     * iterable 자료형(list, set, tuple, dictionary, string)을 입력받아 인덱스 값을 포함하는 enumerate 객체를 반환
     * 보통 for문과 함께 자주 사용된다.
     * Example
-        ```
+        ```python
         # enumerate 함수
         data = enumerate((1, 2, 3))
         print(data, type(data))     # <enumerate object at 0x0000000002424EA0> <class 'enumerate'>
@@ -112,7 +112,7 @@
 
 * zip()
     * 둘이나 그 이상의 시퀀스를 동시에 루핑하기 위한 방법
-    ```
+    ```python
     questions = ['name', 'quest', 'favorite color']
     answers = ['lancelot', 'the holy grail', 'blue']
     for q, a in zip(questions, answers):
@@ -125,14 +125,14 @@
 
 * reversed()
     * 시퀀스를 거꾸로 루핑하기
-    ```
+    ```python
     for i in reversed(range(1, 10, 2)):
         print(i)
     ```
 
 * sorted()
     * 정렬된 순서로 시퀀스 루핑
-    ```
+    ```python
     basket = ['apple', 'orange', 'apple', 'pear', 'orange', 'banana']
     for i in sorted(basket):
         print(i)
