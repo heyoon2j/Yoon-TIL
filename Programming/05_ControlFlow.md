@@ -1,17 +1,9 @@
-<<<<<<< HEAD
 # Control flow
 * 제어 흐름은 프로그램에서 실행되는 각 구문, 명령어나 함수가 호출되는 순서를 의미한다.
 </br>
 
 
 ## 조건문 (Condition)
-=======
-# 4. Control flow
-* 제어 흐름은 프로그램에서 실행되는 각 구문, 명령어나 함수가 호출되는 순서를 의미한다.
-
-
-## 조건문
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
 * if, else if, else 문 사용
     ```python
     # if 문
@@ -26,10 +18,7 @@
     else:
         print(-x)
     ```
-<<<<<<< HEAD
 </br>
-=======
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
 
 ## 반복문
 1. while 문
@@ -41,11 +30,7 @@
 
 2. for in 문
     * range() 이용
-<<<<<<< HEAD
-    ```
-=======
     ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     for i in range(10):     # 0 ~ 9
         print(i)
    
@@ -54,22 +39,14 @@
     ```
    
     * list 이용
-<<<<<<< HEAD
-    ```
-=======
     ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     list = ["Python", "is", "good."]
     for s in list:
         print(s)    # Python is good.
     ```
 
 3. break / continue 문
-<<<<<<< HEAD
-    ```
-=======
     ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     while True:
         if i == 1:
             continue
@@ -93,11 +70,8 @@
 
 5. pass 문
     * pass 문은 아무것도 하지 않는다. 프로그램이 특별히 할 일이 없을 때 사용할 수 있다.
-<<<<<<< HEAD
-    ```
-=======
+    >  추상 클래스/메서드 및 예외처리 시에 사용!
     ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     while True:
         pass
    
@@ -116,16 +90,13 @@
     # gallahad the pure
     # robin the brave
     ```
+    
 * enumerate()
     * enumerate(iterable, start=0)
     * iterable 자료형(list, set, tuple, dictionary, string)을 입력받아 인덱스 값을 포함하는 enumerate 객체를 반환
     * 보통 for문과 함께 자주 사용된다.
     * Example
-<<<<<<< HEAD
         ```
-=======
-        ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
         # enumerate 함수
         data = enumerate((1, 2, 3))
         print(data, type(data))     # <enumerate object at 0x0000000002424EA0> <class 'enumerate'>
@@ -145,11 +116,7 @@
 
 * zip()
     * 둘이나 그 이상의 시퀀스를 동시에 루핑하기 위한 방법
-<<<<<<< HEAD
     ```
-=======
-    ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     questions = ['name', 'quest', 'favorite color']
     answers = ['lancelot', 'the holy grail', 'blue']
     for q, a in zip(questions, answers):
@@ -162,22 +129,14 @@
 
 * reversed()
     * 시퀀스를 거꾸로 루핑하기
-<<<<<<< HEAD
     ```
-=======
-    ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     for i in reversed(range(1, 10, 2)):
         print(i)
     ```
 
 * sorted()
     * 정렬된 순서로 시퀀스 루핑
-<<<<<<< HEAD
     ```
-=======
-    ```python
->>>>>>> e283ef6e6a1171b091ca65ca5e603c76aa9e2d95
     basket = ['apple', 'orange', 'apple', 'pear', 'orange', 'banana']
     for i in sorted(basket):
         print(i)
