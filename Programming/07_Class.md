@@ -1,25 +1,53 @@
 # Class
 * OOP 프로그래밍 언어 문법 중 하나이다.
+* 심화 내용
+    1) class variable (== static variable)
+    2) class method
+    3) static method
+    4) Inheritance
 </br>
+
+
 
 ## 선언 방법
 * 기본적인 선언 방법
     ```python
-    class class_name:
+    class Class_name:
         # 모든 인스턴스가 공유하는 속성 값, class variable
         class_val = 'all'
-  
-        # __init__ method에서 각 인스턴스의 속성 값을 설정, instance variable
+
+        # __init__ method : 생성자 메서드. 각 인스턴스의 속성 값을 설정, instance variable
+        # self : 인스턴스 주소값
         def __init__(self):
-            self.attr1 = value1
-            self.attr2 = value2
-  
-        # Method
-        def method_name(self, parm):
-            code... 
-  
+            self.attr1 = 10
+            self.attr2 = 20
+
+        # @classmethod : 클래스 메서드
+        # cls : 클래스 주소값
+        @classmethod
+        def clsMethod_name(cls, param = 0):
+            print(id(cls))
+            print(param)
+
+        # @staticmethod : 정적 메소드
+        # 인자 값을 받지 않는다.
+        @staticmethod
+        def staticMethod_name():
+            print("static")
+
+        # Instance Method
+        # self : 인스턴스 주소값
+        def method_name(self, param = 1):
+            print(id(self))
+            print(param)
+
+
+    Class_name.clsMethod_name() # 1
+
     # Class 선언
-    obj = MyClass()    
+    obj = Class_name()    
+    obj.method_name()           # 0
+    obj.clsMethod_name()        # 1
     ```
     * 
     * Class의 Method들은 기본적으로 인자로 self를 가진다.
