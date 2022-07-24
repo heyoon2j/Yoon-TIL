@@ -40,14 +40,26 @@
         def method_name(self, param = 1):
             print(id(self))
             print(param)
+    
+    obj = Class_name()
 
+    # Variable 접근    
+    print(obj.class_val)            # all
+    print(Class_name.class_val)     # all
+
+    print(obj.attr1)                # 10
+    print(obj.class_val)            # error !
+
+    # Method 접근
+
+    ## 
+    obj.method_name()           # 0
 
     Class_name.clsMethod_name() # 1
-
-    # Class 선언
-    obj = Class_name()    
-    obj.method_name()           # 0
     obj.clsMethod_name()        # 1
+    
+
+
     ```
     * 
     * Class의 Method들은 기본적으로 인자로 self를 가진다.
