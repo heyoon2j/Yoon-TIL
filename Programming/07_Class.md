@@ -25,7 +25,7 @@
         # @classmethod : 클래스 메서드
         # cls : 클래스 주소값
         @classmethod
-        def clsMethod_name(cls, param = 0):
+        def clsMethod_name(cls, param = "clsMethod"):
             print(id(cls))
             print(param)
 
@@ -33,11 +33,11 @@
         # 인자 값을 받지 않는다.
         @staticmethod
         def staticMethod_name():
-            print("static")
+            print("staticMethod")
 
         # Instance Method
         # self : 인스턴스 주소값
-        def method_name(self, param = 1):
+        def method_name(self, param = "instanceMethod"):
             print(id(self))
             print(param)
     
@@ -45,12 +45,15 @@
 
     # Variable 접근    
     print(obj.class_val)            # all
-    print(Class_name.class_val)     # all
+    print(Class_name.class_val)     # all, 접근은 가능하다
 
     print(obj.attr1)                # 10
-    print(obj.class_val)            # error !
+    print(Class_name.attr1)         # error!
 
     # Method 접근
+    obj.method_name()
+    obj.staticMethod_name()
+    obj.clsMethod_name()
 
     ## 
     obj.method_name()           # 0
