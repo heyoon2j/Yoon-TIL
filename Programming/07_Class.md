@@ -44,37 +44,26 @@
     obj = Class_name()
 
     # Variable 접근    
-    print(obj.class_val)            # all
-    print(Class_name.class_val)     # all, 접근은 가능하다
+    print(obj.class_val)            # all, 접근은 가능하다 (추천하지 않음!!)
+    print(Class_name.class_val)     # all
 
     print(obj.attr1)                # 10
-    print(Class_name.attr1)         # error!
+    #print(Class_name.attr1)         # error!!
 
     # Method 접근
-    obj.method_name()
-    obj.staticMethod_name()
-    obj.clsMethod_name()
+    obj.method_name()               # instance       
+    obj.staticMethod_name()         # static (추천하지 않음!!)
+    obj.clsMethod_name()            # class  (추천하지 않음!!) 
 
-    ## 
-    obj.method_name()           # 0
-
-    Class_name.clsMethod_name() # 1
-    obj.clsMethod_name()        # 1
+    #Class_name.method_name()            # error!
+    Class_name.staticMethod_name()      # static
+    Class_name.clsMethod_name() # 1     # class
     
-
-
     ```
-    * 
-    * Class의 Method들은 기본적으로 인자로 self를 가진다.
     * ```__init__``` Method는 생성자이다.
-
-
-
-
-class method
-static method
-상속
-
+    * Class의 Method들은 기본적으로 첫번째 인자로 self(인스턴스 주소)인자를 가진다.
+    * @classmethod는 첫번째 인자로 self 대신 cls(클래스 주소) 인자를 가진다.
+</br>
 
 * 인자로 List 언패킹을 사용할 때
     ```
