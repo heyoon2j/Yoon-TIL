@@ -113,6 +113,10 @@
         def sound(self):
             print("...")
 
+        @classmethod
+        def clsSound(cls):
+            cls.sound()
+
 
     class Cat (Animal):
         """Sub Class"""
@@ -121,6 +125,15 @@
         
         def sound(self):
             print("ya~ong~")
+
+
+    a = Animal()
+    c = Cat()
+
+    a.sound()           # ...
+    c.sound()           # ya~ong~
+
+    Animal.clsSound(c)
 
 
     ```
