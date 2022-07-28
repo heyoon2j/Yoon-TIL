@@ -56,6 +56,7 @@
     obj.clsMethod_name()            # class  (추천하지 않음!!) 
 
     #Class_name.method_name()            # error!
+    Class_name.method_name(obj)         # instance (추천하지 않음!!)
     Class_name.staticMethod_name()      # static
     Class_name.clsMethod_name() # 1     # class
     
@@ -75,8 +76,9 @@
      
     maria = Person(*['마리아', 20, '서울시 서초구 반포동'])
     ```
-  
- * 인자로 Dictionary 언패킹을 사용할 때
+</br>
+
+* 인자로 Dictionary 언패킹을 사용할 때
     ```
     class Person:
         def __init__(self, **kwargs):    # 키워드 인수
@@ -87,16 +89,53 @@
     maria1 = Person(name='마리아', age=20, address='서울시 서초구 반포동')
     maria2 = Person(**{'name': '마리아', 'age': 20, 'address': '서울시 서초구 반포동'})
     ```
+</br>
+</br>
+
 
 ## 특수 메소드
 * https://hcr3066.tistory.com/85
+</br>
+</br>
 
 
-## 7.2. 상속
+## 상속 (Inheritance)
+* 부모 클래스(Super Class)의 속성과 함수를 물려받는 것.
+* 자식 클래스(Sub Class)는 상속 받은 부모 클래스의 속성과 함수를 사용할 수 있다.
 * 상속하는 방법
+    ```python
+    class Animal:
+        """Super Class"""
+
+        def __init__(self):
+            self.name = "Animal"
+
+        def sound(self):
+            print("...")
+
+
+    class Cat (Animal):
+        """Sub Class"""
+        def __init__(self):
+            self.name = "Cat"
+        
+        def sound(self):
+            print("ya~ong~")
+
+
     ```
-    class DerivedClassName(modname.BaseClassName):
-    ```
+
+
+### Overriding
+* 같은 이름, 같은 인자를 가진 함수가 부모/자식 클래스에 각 각 선언되어 있으면, 자식 클래스의 함수로 재정의 되어 재정의된 함수가 실행된다.
+*  
+
+
+### @classmethod vs @staticmethod
+* 이분이 작성한 글과 비슷한 의견을 가짐: https://hamait.tistory.com/635
+
+
+
 
 ## 7.3. 다중 상속
 
