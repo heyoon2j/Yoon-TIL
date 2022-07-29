@@ -106,22 +106,101 @@
     ```python
     class Animal:
         """Super Class"""
-
-        def __init__(self):
-            self.name = "Animal"
+        # 생성자 오버로딩
+        def __init__(self, name = None, age = None):
+            self.name = name
+            self.age = age
 
         def sound(self):
             print("...")
 
-        @classmethod
-        def clsSound(cls):
-            cls.sound()
 
-
-    class Cat (Animal):
+    # Animal Class 상속받는다.
+    class Cat(Animal):
         """Sub Class"""
-        def __init__(self):
-            self.name = "Cat"
+
+        # 생성자 오버로딩
+        def __init__(self, name = None, age = None, existsOwner = None):
+            super().__init__(name, age)
+            self.existsOwner = existsOwner
+        
+        def sound(self):
+            print("ya~ong~")
+    ```
+</br>
+
+### Overloading
+* 같은 이름의 메서드를 여러개 정의하는 것. 기능이 동일한 메서드들의 이름을 동일하게 가주가기 위해서 사용한다.
+* 매개변수의 타입 또는 갯수가 달라야 한다.
+    > Return Type은 상관없다!!
+* Example(Method Overloading)
+    ```python
+    class Test:
+        def add(self, a, b):
+            return a + b
+    ```
+    ```java
+    public class Test {
+        int add(int a, int b) {
+            return a + b;
+        }
+
+        double add(double a, double b) {
+            return a + b;
+        }
+        """
+        !!! Error Code, 매개변수 타입과 갯수가 add(int a, int b)와 동일하므로
+        double add(int c, int d) {
+            return (double)(c + d)
+        }
+        """
+    }
+    ```
+    * Python은 변수 타입이 정해져있지 않기 때문에, 타입을 생각할 필요가 없다. 갯수를 줄이는 방법은 ```None``` Type을 사용한다.
+* Example(Constructor Overloading)
+    ```python
+    class Animal:
+        """Super Class"""
+        # 생성자 오버로딩
+        def __init__(self, name = None, age = None):
+            self.name = name
+            self.age = age
+
+
+    # Animal Class 상속받는다.
+    class Cat(Animal):
+        """Sub Class"""
+
+        # 생성자 오버로딩
+        def __init__(self, name = None, age = None, existsOwner = None):
+            super().__init__(name, age)
+            self.existsOwner = existsOwner        
+    ```
+</br>
+
+
+
+### Overriding
+* 같은 이름, 같은 인자를 가진 함수가 부모/자식 클래스에 각 각 선언되어 있으면, 자식 클래스의 함수로 재정의 되어 재정의된 함수가 실행된다.
+    ```python
+    class Animal:
+        """Super Class"""
+        # None을 사용하여 생성자 오버로딩 ()
+        def __init__(self, name = None, age = None):
+            self.name = name
+            self.age = age
+
+        def sound(self):
+            print("...")
+
+
+    class Cat(Animal):
+        """Sub Class"""
+
+        # 생성자 오버로딩
+        def __init__(self, name = None, age = None, existsOwner = None):
+            super().__init__(name, age)
+            self.existsOwner = existsOwner
         
         def sound(self):
             print("ya~ong~")
@@ -132,82 +211,116 @@
 
     a.sound()           # ...
     c.sound()           # ya~ong~
-
-    Animal.clsSound(c)
-
-
     ```
+</br>
 
-
-### Overriding
-* 같은 이름, 같은 인자를 가진 함수가 부모/자식 클래스에 각 각 선언되어 있으면, 자식 클래스의 함수로 재정의 되어 재정의된 함수가 실행된다.
-*  
 
 
 ### @classmethod vs @staticmethod
-* 이분이 작성한 글과 비슷한 의견을 가짐: https://hamait.tistory.com/635
+* 좋은 의견 중 하나 (https://hamait.tistory.com/635). 해당 글에서 확인하고 싶은 것은 크게 두가지이다.
+    1) @classmethod와 @staticmethod에 대해 Memory 저장 및 처리하는 방식이 다른가? => Memory 위치에 따라 처리하는 로직이 다를 수 있으므로(처리 향상)
+    2) 클래스로 함수 저장하는 것(@staticmethod)과 모듈로 함수 저장하는 것에 대한 Memory 저장 및 처리하는 방식이 다른가?
+* 이렇게 말했지만 cls를 쓰는 경우는 거의 드물다(ex> Factory Method 등) 
+</br>
 
 
 
-
-## 7.3. 다중 상속
-
-
-
-## 7.4. 비공개 변수
+## 다중 상속
 
 
 
-## 7.5. Init, Getter, Setter
-* Python은 접근제어자가 없다. 기본적으로 public을 권장하며, 제약이 필요할 시 ```@property``` 등으로 처리한다.
-* ```__```가 앞에 있으면 private, ```_``` protected로 약속한다.
+## 제어자 (Modifiers)
+* 클래스, 변수, 메서드에 부가 기능을 부여하는 키워드
 
-1. __init__ Method
-    * class의 변수를 정의할 수 있는 생성자 함수이다.
+
+### 접근 제어자 (Access Modifiers)
+* 접근할 수 있는 범위를 정하는 제어자
+    * public : 전체에서 사용 가능
+    * protected : 같은 Package 또는 다른 Package에 속한 자식 클래스에서 사용 가능
+    * private : Class 안에서만 사용 가능
+* https://yoonix.tistory.com/217?category=838902
+    ```python
+    class Test:
+        def __init__(self):
+            self.__var1 = 10
+            self.var2 = 20
+
+        def aaa(self):
+            print(self.__var1)
+
+        def __bbb(self):
+            print(self.var2)
+
+
+    a = Test()
+    a.aaa()             # 10
+    print(a.__var1)     # Error!!
+    print(a.var2)       # 20
+    a.bbb()             # Error!!
+
     ```
-        class Student:
-            def __init__(self, name="yn"):
-                self.name = name    
+    * Python은 기본적으로 Public이다.
+    * ```_``` : 밑줄 하나. Protected 접근 제어자. 내부적으로만 사용하는 변수 혹은 메서드 (Coding Convention이기 때문에 실질적으로 에러를 발생시키지 않음)
+    * ```__``` : 밑줄 두개. Private 접근 제어자
+</br>
+
+
+### final
+* 더 이상 바뀔 수 없음을 의미
+* Class : 상속 불가
+* Method : Overriding 불가
+* Variable : 변수의 값이 초기화된 이후에 변경 불가
+    > 생성자에서 초기화가 이루어지는 것을 blank final이라고 한다.
+* Python은 없다.
+</br>
+
+### static
+* Python은 없다.
+
+
+
+</br>
+</br>
+
+
+## Getter, Setter
+1. get, set 이용
+    ```python
+    class Student:
+        def __init__(self):
+            self.name = "yn"
+
+        def getName(self):
+            return self.name
+               
+        def setName(self, name):
+            self.name = name
+        
+    if __name__ == "__main__":
+   
+        a = Student()
+        a.set_name("ww")
+        
+        print(a.get_name())
     ```
+    * Method만 get, set이므로 ```a.name = "ww"```도 가능하다.
 
-2. Getter, Setter Method
-    1) get, set 이용
-        ```
-        class Student:
-            def __init__(self):
-                self.name = "yn"
+2. ```@property``` 이용
+    ```python
+    class Student:
+        def __init__(self):
+            self.__name = "yn"
+        
+        @property
+        def name(self):
+            return self.__name
 
-            def getName(self):
-                return self.name
-                   
-            def setName(self, name):
-                self.name = name
-            
-        if __name__ == "__main__":
-       
-            a = Student()
-            a.set_name("ww")
-            
-            print(a.get_name())
-        ```
-        * Method만 get, set이므로 ```a.name = "ww"```도 가능하다.
-
-    2) ```@property``` 이용
-        ```
-        class Student:
-            def __init__(self):
-                self.__name = "yn"
-            
-            @property
-            def name(self):
-                return self.__name
-
-            @name.setter
-            def name(self, name):
-                self.__name = name  
-        ```
-        * 먼저 ```__init__``` Method에서 변수를 정의할 때, ```__``` 기호를 붙인다.
-        * 그 후에 ```@property```와 ```@변수.setter```를 이용하여 은닉할 수 있다.
+        @name.setter
+        def name(self, name):
+            self.__name = name  
+    ```
+    * ```__``` 변수명 앞에 해당 기호가 붙여 private으로 만든다.
+    * 그 후에 ```@property```와 ```@변수.setter```를 이용하여 은닉할 수 있다.
 
 
 
