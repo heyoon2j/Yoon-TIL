@@ -324,7 +324,12 @@
 
 
 
+## Initializer & 소멸자
+https://yoonix.tistory.com/214?category=838902
 
+
+def __del__(self):
+        print("{}가 없어졌어요!" .format(self.name))
 
 
 ## 얕은 복사 vs 깊은 복사
