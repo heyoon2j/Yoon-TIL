@@ -22,6 +22,11 @@
             self.attr1 = 10
             self.attr2 = 20
 
+        # __delete__ method : 소멸자 메서드. 사용한 리소스를 정리한다.
+        def __del__(self):
+            del attr1
+            del attr2     
+
         # @classmethod : 클래스 메서드
         # cls : 클래스 주소값
         @classmethod
@@ -328,13 +333,12 @@
 https://yoonix.tistory.com/214?category=838902
 
 
-def __del__(self):
-        print("{}가 없어졌어요!" .format(self.name))
+
 
 
 ## 얕은 복사 vs 깊은 복사
 * https://wikidocs.net/16038
 * 
-
+* 멤버 대 멤버의 복사(얕은 복사)를 하기 때문에, 동적 할당 시 에러가 발생한다. 이를 해결하기 위해 깊은 복사를 하는 복사 생성자를 정의해야 한다.
 
 
