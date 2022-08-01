@@ -8,6 +8,10 @@
     * Routing Rule : 어떤 대역을 Static으로 정하고, 어떤 대역을 Propagation 받아 정할지 결정
     * Propagation : 어떤 Network Device에 네트워크 정보를 전달받을지
     * Advertise : 다른 Network Device에게 어떤 정보를 전달할지
+        > 해당 장비에 연결되어 있는 다른 네트워크 장비에게 Routing Table에 등록되어 있는 대역을 전파한다.
+
+        > ex) 'A' Network ---> 'B' Routing Device ---> 'C' Network (설정: 10.10.0.0/26 인 경우 'C' Network로 전달)
+        > BGP 전파에 의해 'A' Network의 Local Routing Device에는 10.10.0.0/26인 경우 'B' Routing Device로 보내라는 Rule을 전달받는다!!
     * Routing Path Decision: Longest Match / Administrative Distance / Metric
 
 
