@@ -93,7 +93,7 @@ $ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log dst port 80 and dst port 4
 * ping과 마찬가지로 ICMP를 이용하여 경로를 추적한다.
 
 ### 사용법
-* 명령어 : ```tracerout [option] host```
+* 명령어 : ```traceroute [option] host```
 * 옵션
     | 구분 | 설명 | 예시 |
     |------|------|-----|
@@ -107,7 +107,7 @@ $ tcpdump -n -vvv -tttt -A -i eth0 -w packetCheck.log dst port 80 and dst port 4
 
 ### Example
 ```
-$ tracerout -g [proxy] -i eth0 -T -p 443 test.com
+$ traceroute -g [proxy] -i eth0 -T -p 443 test.com
 ```
 </br>
 </br>

@@ -50,3 +50,8 @@
 
 #### Reference
 * https://jootc.com/p/201808031462
+
+
+
+## scp / pscp
+pscp : windows scp
