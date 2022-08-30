@@ -2,9 +2,31 @@
 
 
 ## Boot Stage
+* 서버 부팅 시 동작 과정은 다음과 같다.
+1. Generator
+2. Local
+j3. Network
+4. Config
+5. Final
+</br>
 
+### Generator
+* Booting 시에 Systemd에서 cloud-init.target을 부팅 목표에 포함되어야 하는지 여부를 결정한다.
+* 기본적으로 cloud-init을 사용하도록 설정하며, 다음의 경우에 cloud-init을 사용하지 않도록 설정된다.
+    1) ```/etc/cloud/cloud-init.disabled``` exists
+    2) ```/proc/cmdline``` contains ```cloud-init=disabled```
+</br>
 
+### Local
+* 
 
+### Network
+
+### Config
+
+### Final
+* 모든 시스템이 실행 된 후, 마지막 필요한 스크립트들을 실행하는 모듈
+* Modeule : ```cloud_final_modules``` in ```/etc/cloud/cloud.cfg```
 
 
 sudo vi /etc/cloud/cloud.cfg
