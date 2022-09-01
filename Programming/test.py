@@ -1,30 +1,81 @@
-a = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
-print(a[2:8:3])    # [20, 50]
-
-def sortedKey(e):
-    return e[0]
-
-
-def solution(priorities, location):
+"""
+def solution(bridge_length, weight, truck_weights):
     answer = 0
-    sortedList = []
+    trucksOnBridge = []
+    curBridgeWeight = 0
 
-    for i in range(0, len(priorities)):
-        sortedList.append((priorities[i], i + 1))
+    answer += 1
 
-    print(sortedList)
-    sortedList.sort(key=sortedKey,reverse=True)
-    print(sortedList)
 
-    for i in sortedList:
+
+    #while len(truck_weights) != 0:
+    while True:
         answer += 1
-        if i[1] == location:
-            return answer
+        if len(trucksOnBridge) != 0:
+            for i in trucksOnBridge:
+                i[1] += 1
+            if trucksOnBridge[0][1] == weight:
+                truck = trucksOnBridge.pop(0)
+                curBridgeWeight -= truck[0]
 
-    return len(priorities)
+        if (curBridgeWeight + truck_weights[0] <= weight) and len(trucksOnBridge) < bridge_length:
+            truck = truck_weights.pop(0)
+            curBridgeWeight += truck
+            trucksOnBridge.append([truck, 0])
+            
+        if len(truck_weights) == 0 and len(trucksOnBridge) == 0:
+            answer -= 1
+            break
+        print(curBridgeWeight)
+        print(str(trucksOnBridge)+ " / " +str(truck_weights))
+        
+    return answer
 
 
-priorities = [2, 1, 3, 2]
-location = 1
-print(solution(priorities, location))
+# 2, 10, [7, 4, 5, 6]
+# 100, 100 [10]
+# 100, 100, [10,10,10,10,10,10,10,10,10,10]
+bridge_length, weight, truck_weights = 100, 100, [10,10,10,10,10,10,10,10,10,10]
+print(solution(bridge_length, weight, truck_weights))
+"""
 
+
+
+from collections import deque
+
+
+def solution(bridge_length, weight, truck_weights):
+    answer = 0
+    trucksOnBridge = deque()
+    totalWetight = 0
+
+    while True:
+        answer += 1
+
+        if len(trucksOnBridge) != 0:
+            for i in trucksOnBridge:
+                i[1] += 1
+
+            if trucksOnBridge[0][1] == bridge_length:
+                truckOut = trucksOnBridge.popleft()
+                totalWetight -= truckOut[0]
+
+
+        if len(truck_weights) != 0 and len(trucksOnBridge) < bridge_length:
+            if totalWetight + truck_weights[0] <= weight:
+                truckIn = truck_weights.pop(0)
+                trucksOnBridge.append([truckIn, 0])
+                totalWetight += truckIn
+
+
+        print(trucksOnBridge)
+
+        #if len(trucksOnBridge) == 0 and len(truck_weights) == 0:
+        if totalWetight == 0:
+            return answer        
+
+# 2, 10, [7, 4, 5, 6]
+# 100, 100, [10]
+# 100, 100, [10,10,10,10,10,10,10,10,10,10]
+bridge_length, weight, truck_weights =2, 10, [7, 4, 5, 6] 
+print(solution(bridge_length, weight, truck_weights))
