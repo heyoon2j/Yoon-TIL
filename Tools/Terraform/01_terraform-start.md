@@ -163,6 +163,38 @@
         │   │   ├── main.tf
         │   ├── exampleB/
         │   ├── .../
+
+        ============================================================
+        https://www.digitalocean.com/community/tutorials/how-to-structure-a-terraform-project
+        .
+        └── tf/
+            ├── modules/
+            │   ├── network/
+            │   │   ├── main.tf
+            │   │   ├── dns.tf
+            │   │   ├── outputs.tf
+            │   │   └── variables.tf
+            │   └── spaces/
+            │       ├── main.tf
+            │       ├── outputs.tf
+            │       └── variables.tf
+            └── applications/
+                ├── backend-app/
+                │   ├── env/
+                │   │   ├── dev.tfvars
+                │   │   ├── staging.tfvars
+                │   │   ├── qa.tfvars
+                │   │   └── production.tfvars
+                │   └── main.tf
+                └── frontend-app/
+                    ├── env/
+                    │   ├── dev.tfvars
+                    │   ├── staging.tfvars
+                    │   ├── qa.tfvars
+                    │   └── production.tfvars
+                    └── main.tf
+
+        
         ```
     
 2) Root Module
