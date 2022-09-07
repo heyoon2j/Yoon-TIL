@@ -87,3 +87,9 @@
         tags = local.common_tags
     }
     ```
+
+## 
+
+
+### Reference
+* https://spacelift.io/blog/terraform-tfvars

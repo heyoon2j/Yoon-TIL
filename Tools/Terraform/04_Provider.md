@@ -1,6 +1,6 @@
 # Provider
 * Terraform은 "Provider" 플러그인을 사용하여 원격 시스템과 상호작용을 한다.
-* 모든 Resource Type과 Data  source들은 Provider에 의해 구현된다(implements)
+* 모든 Resource Type과 Data source들은 Provider에 의해 구현된다(implements)
 * 
 
 ## Requiring Providers
