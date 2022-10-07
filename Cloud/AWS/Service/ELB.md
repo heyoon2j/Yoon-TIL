@@ -239,7 +239,7 @@
 * Target에게 보내기 위해서 해당 Target이 정상적으로 동작하는지 Check하게 된다.
 </br>
 
-### Routing Alogrithm
+### ALB Routing Alogrithm
 1. __Round Robin__
     * 기본 알고림즘
     * 요청을 Target에 번갈아가며 순차적으로 전달하게 된다.
@@ -247,7 +247,24 @@
 2. __Least Outstanding Requests__
     * 미처리 요청이 가장 적은 대상에 요청을 보낸다.
     * 요청의 복잡성이 다양하거나 대상의 처리 기능이 다양한 경우 사용하는 것이 좋다.
+
+### NLB Routing Algorithm
+* Roud Robin만 제공한다.
 </br>
+
+
+### Type
+1. Insatnces
+    * VPC 안에 있는 Intance들과 연결할 때 사용
+2. IP addresses
+    * On-premise에 있는 장비들과 연결할 때 사용
+    * VPC를 나가다보니 NLB가 NAT로 작동하게 되어 Client IP가 보존되지 않는다.
+3. Lambda function
+    * Single Labmda function과 연결할 때 사용
+4. Application Load Balancer
+    * ALB와 연결할 때 사용
+</br>
+
 
 ### Health Check
 * 요청을 주기적으로 전송하여 상태를 확인한다.
