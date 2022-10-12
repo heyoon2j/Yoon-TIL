@@ -1,10 +1,18 @@
 # Structure
 
 ## Basic
-* DB Server는 크게 Memory / Redo Log(Transaction) /  Disk 로 구분할 수 있다.
-* Memory에서 명령을 처리하고, 이를 Redo Log에 기록 -> 기록을 이용하여 Disk에 Data 저장
-    * Memory, Redo Log / Disk로 분리함으로써, Disk에 저장시  에러가 발생해도 Redo Log를 통해 Rollback이 가능해진다. 
-    * RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
+* https://stackoverflow.com/questions/56823591/mysql-innodb-differences-between-wal-double-write-buffer-log-buffer-redo-log
+* https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=parkjy76&logNo=220918956412
+* https://qiita.com/yoheiW@github/items/8a5326a516ec4452e774#%E6%9B%B4%E6%96%B0%E5%87%A6%E7%90%86
+* DB Server는 크게 Memory / Disk 로 구분할 수 있다. Memory / Disk로 분리함으로써, Disk에 저장시 에러가 발생해도 Log를 통해 Rollback이 가능해진다.
+* 업데이트 순서는 다음과 같다.
+    1) Buffer Pool(memory)에서 Query 처리 및 내용을 저장
+    2) Buffer Pool에 저장되어 있는 내용을 Log Buffer(memory)에 저장
+    3) Commit 시에 Log Buffer에 있는 내용을 Redo Log 파일(disk)에 저장한다.
+    4) 그 후 Commit Alarm이 발생하면 Buffer Pool에 있던 내용을 Dubblewrite_buffer -> table space(disk)에 저장한다.
+    5) 이 때, Check Point가 발생한다. Check Point가 발생한다는 것은 DB 파일이 새로 써졌다는 의미이다.
+        > CDC는 이를 기준으로 Squence를 확인하여 실행한다(정확하지 않다!!!)
+* RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
 </br>
 </br>
 
@@ -24,18 +32,16 @@
 ## File
 
 ## Binary Log vs Redo Log
-* https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=parkjy76&logNo=220918956412
-> 찾아본 결과 엔진에 따라 이름이 다르게 부르는 거 같다. 엔진이 달라서 특징이 다를 수 있지만 결국 Rollback과 Replication, Recovery에 사용되는 Log 들이다.
-
 |        | Redo Log | BinLog |
 |--------|------------|----------|
 | 출력원 | Engine Level | Server Level |
-| 구분 | 물리적 로그 | SQL에 대응하는 논리적인 로그 |
+| 구분 | 물리적 로그 | SQL 문을 기록하는 논리적인 로그 |
 | 용도 | Engine의 갱신 정보의 일시적 보존. ACID를 보장. Recovery | DB의 데이터 복원. Replication |
-
+* 각 Log는 CREATE, DROP, ALTER 등과 같은 변경사항이 발생할 때마다 변화된 이벤트를 기록한다.
+> 찾아본 결과 전체적이 생성 위치나 특징이 다를 수 있지만, 결국 Rollback과 Replication, Recovery에 사용되는 Log 들이다.
+</br>
 </br>
 
-* https://stackoverflow.com/questions/56823591/mysql-innodb-differences-between-wal-double-write-buffer-log-buffer-redo-log
 
 
 ## Character Set & Collation
