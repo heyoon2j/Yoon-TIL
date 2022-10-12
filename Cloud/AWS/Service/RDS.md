@@ -98,7 +98,8 @@
 ## Aurora DB Cluster
 ![DBCluster](../img/DBCluster.png)
 * Amazon Aurora DB Cluster는 하나 이상의 DB Instance와 해당 DB Instance의 데이터를 관리하는 Cluster Volumn으로 구성된다.
-
+* https://aws.amazon.com/ko/blogs/database/introduction-to-aurora-postgresql-cluster-cache-management/
+> https://notemusic.tistory.com/69 내용이 잘못됐다. Aurora 캐시 버퍼 동기화이지 Storage 동기화는 Cluster Volume을 통해서 한다.
 
 ## RDS DB vs Aurora DB
 * Cluster 구성시 서로 다른 방식으로 구성하게 된다.
