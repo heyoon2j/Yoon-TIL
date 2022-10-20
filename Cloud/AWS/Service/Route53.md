@@ -241,6 +241,7 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
     * VPC에 매핑되어 있는 2번에 있는 Route 53 Resolver Server에 적용되는 규칙
 
 > Inbound VPC는 연결할 Route 53 Resolver(Hostzones)을 관리할 수 있다. Outbount VPC는 다른 네트워크의 Resolver에 대한 VPC들을 관리할 수 있다.
+
 > VPC 내에 상주하지 않는 다는 것 보니 Endpoint로 Resolver Server에 접근하는 개념으로 봐도 될거 같다.
 </br>
 
@@ -248,7 +249,7 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 ![MultiAccountResolver](../img/MultiAccountResolver.png)
 * Inbound/Outbound Endpoint는 원래의 용도는 다른 네트워크의 DNS를 사용하기 위한 거지만, 여기서는 Multi VPC에 대한 Resolver Architecture를 위해 원래 의도와는 다르게 사용되었다.
   1) Inbound Endpoint를 통해 Route 53 Resolver에 접근해야되므로, 여러 개의 VPC는 Inbound Endpoint에 접근해야된다.
-  2) 여러 개의 VPC의 Resolver는 Ountbound Endpoint를 통해서 다른 VPC의 Resolver로 넘어간다.
+  2) 여러 개의 VPC의 Resolver는 Outbound Endpoint를 통해서 다른 VPC의 Resolver로 넘어간다(Backbone 사용하여 Outbound Endpoint로 넘어간다, VPC Flow logs에 안보인다)
   3) 동일한 VPC에 Outbound/Inbound Endpoint 생성(관리를 위한 VPC)
   4) Outbound Endpoint -> Resolver가 아닌, Outbound Endpoint -> Inbound Endpoint로 Forwarding하는 Rule 생성
    
