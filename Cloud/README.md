@@ -75,9 +75,14 @@
     * DB 튜닝시 Sequential의 선택 비중을 높이고, Random 을 줄인다.
 
 
-## IOPS vs Throughput
-* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 입출력 작업을 수행하는데 걸리는 시간. 작업 수 또는 트랜잭션이라고도 한다.
+## IOPS vs Throughput vs Latency
+## 시스템 관점
+* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 읽기/쓰기 작업을 수행하는데 걸리는 작업 수(또는 트랜잭션이라고도 한다)
 * __Throughput(MB/s)__: 초당 읽거나 쓰는 비트 수 또는 전송 속도. IOPS 보다는 Throughput이 더 정확한 성능 측정 기준.
+* __Latency(ms)__ : 지연 시간. 네트워크에서 하나의 데이터 패킷이 다른 지점에 도착하는 데 소요되는 시간.
+    > IOPS는 시스템에 대한 내용이고, Throughput은 네트워크에 대한 내용이다!
+    > 시스템 관점에서 Latency는 트랜잭션을 처리하는데 필요한 시간
+
 * Throughput 계산 방법
     ```
     Throughput in MiB/s = ((Volume size in GiB) × (IOPS per GiB) × (I/O size in KiB))
