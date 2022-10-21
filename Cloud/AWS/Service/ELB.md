@@ -72,6 +72,7 @@
 
 ### Only Application LB
 * "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
+    > 참고로 NLB는 TCP: 350초 / UDP: 120초
 * "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
     * defensive
         1) RFC 7230 규칙을 준수하는지 여부와 무관하게 애플리케이션이 알려진 안전한 요청을 수신하도록 허용
