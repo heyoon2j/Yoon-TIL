@@ -187,6 +187,28 @@
 </br>
 
 
+## Virtual Environment
+* Overlay Network를 구성하는 것과 Virtual IP를 사용하는 것은 엄연히 다르다.
+* 보통 Overlay Network를 구성하는 이유는 전반적인 네트워크 통신을 제공하기 위해 사용하고, Virtal IP를 사용하는 이유는 특정 서비스를 제공하기 위해 사용되는 네트워크라고 생각하면 될거 같다.
+</br>
+
+### Overlay Network
+* VXLAN, VLAN 등 Overlay Network를 구성하기 위해서는 해당 기능을 제공하는 Network 장비가 필요하다.
+> VPC 자체가 Overlay Network 이다.
+</br>
+
+### Virtual IP
+* 특정 서비스들에 대해서만 제공하면 되기 때문에 해당 내용들에 대한 Routing Table을 만들어서 트래픽을 관리한다.
+* VPC, Subnet을 새로 생성하는 것이 아닌, Routing Table을 이용하여 구성한다.
+* 또는 ENI를 Attach/Detach, Route53 등을 활용하여 구성
+    * https://aws.amazon.com/ko/blogs/apn/making-application-failover-seamless-by-failing-over-your-private-virtual-ip-across-availability-zones/
+    * https://kb.mantech.co.kr/docs/aws-aws-cloud-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-vip-%EA%B5%AC%ED%98%84%EB%B0%A9%EC%95%88/
+    * https://docs.aws.amazon.com/ko_kr/sap/latest/sap-hana/sap-oip-architecture.html
+</br>
+</br>
+
+
+
 ## Cost
 * __VPC Reachability Analyzer__
     * 분석당 요금: 0.10 USD

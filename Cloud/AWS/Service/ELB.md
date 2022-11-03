@@ -92,7 +92,7 @@
 
 ### Network LB and Gateway LB
 * "load_balancing.cross_zone.enabled" : 교차 영역 로드 밸런싱이 활성화되었는지 여부 (기본 값: false / true,false)
-    * 기본적으로 가용 영역 별로 ELB 노드가 생성됨
+    * 기본적으로 가용 영역 별로 ELB 노드가 생성됨. 각 노드는 자신의 가용 영역에 있는 대상에게만 라우팅 가능
     * Application LB는 항상 적용됨
     * 밸런싱 비율 = 100 / 교차 영역에 대한 모든 인스턴스 수
     > NLB는 기본적으로 온프레미스도 포함되어 있기 때문에 false로 설정되어 있는거 같다.
@@ -260,7 +260,7 @@
     * VPC 안에 있는 Intance들과 연결할 때 사용
 2. IP addresses
     * On-premise에 있는 장비들과 연결할 때 사용
-    * VPC를 나가다보니 NLB가 NAT로 작동하게 되어 Client IP가 보존되지 않는다!!!
+    * 이론적으로 다른 네트워크와 통신하기 위해서 이므로 NLB가 NAT로 동작하도록 설정된다. 따라서 Client IP가 보존되지 않는다!!! (Ref: https://aws-hyoh.tistory.com/135)
 3. Lambda function
     * Single Labmda function과 연결할 때 사용
 4. Application Load Balancer
