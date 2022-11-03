@@ -82,14 +82,9 @@
     * monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
 * "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
 * "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true,false)
-<<<<<<< HEAD
-* "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Client Port를 추가할지 여부 (기본 값: false / true,false)
-    * X-Forwarded-For: 타겟이 클라이언트의 정보(IP 등)를 알도록 기록하는 헤더
-=======
 * "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
     * X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
 * "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 추가할지 여부 (기본 값: false / true,false)
->>>>>>> 59b8f4b2840f5242c13b490398cb2552abd41b58
 * "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true,false)
 * "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true,false)
     * WAF를 사용하지 않으면 true로 할 필요가 없다.
@@ -97,7 +92,7 @@
 
 ### Network LB and Gateway LB
 * "load_balancing.cross_zone.enabled" : 교차 영역 로드 밸런싱이 활성화되었는지 여부 (기본 값: false / true,false)
-    * 기본적으로 가용 영역 별로 ELB 노드가 생성됨. 각 노드는 자신의 가용 영역에 있는 대상에게만 라우팅 가능
+    * 기본적으로 가용 영역 별로 ELB 노드가 생성됨. 각 노드는 자신의 가용 영역에 있는 대상에게만 라우팅 가능. 활성화시 모든 가용 영역에 라우팅이 가능해짐
     * Application LB는 항상 적용됨
     * 밸런싱 비율 = 100 / 교차 영역에 대한 모든 인스턴스 수
     > NLB는 기본적으로 온프레미스도 포함되어 있기 때문에 false로 설정되어 있는거 같다.
