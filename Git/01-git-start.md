@@ -40,7 +40,7 @@ description
 * GNU General Public License 
     
 ## Git Process
-![git-Data-Transper.png](https://github.com/yoon2ix/Yoon-TIL/blob/master/Git/img/gitDataTransport.png)
+![git-Data-Transper.png](img/gitDataTransport.png)
 * Git은 기본적으로 파일의 변경 이력 별로 구분하여 저장한다.
 * __workspace__ : Working Directory, 현재 작업하고 있는 Directory 
 * __index__ : Stagin Area, Local Repository에 저장하기 위해서는 이곳에 등록을 해야된다.
