@@ -1,3 +1,8 @@
+# Environment Setting
+
+
+
+
 # IDE Setting
 ## Intellij IDE
 1. Install Intellij
@@ -34,3 +39,19 @@
     
 
 ## VSCode
+
+## Extension
+### Editor
+* Vim : Text editor - Vim
+* Markdown : Text editor - Markdown Support
+
+### Design
+* Atom One Dark Theme : Theme
+* Material Icon : Icon
+
+
+
+
+
+
+
