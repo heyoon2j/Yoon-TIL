@@ -41,9 +41,29 @@
 
 ## Using Terraform
 * 동작을 위한 기본 Step은 다음과 같다.
-    1) HCL을 이용하여 .tf 파일에 Infra Resources을 정의한다.
-    2) **terraform plan** 명령어를 통해 Resources를 확인한다.
-    3) **terraform apply** 명령어를 통해 Resources를 적용시킨다.
+1) HCL을 이용하여 .tf 파일에 Infra Resources을 정의한다.
+2) __terraform init__
+    * provider, module, state 파일을 읽어 초기화 작업 진행
+    * 초기화에 대한 라이브러리 등이 .terraform Directory에 저장
+    * 인프라 관련 동시성처리를 위한 .terraform.lock.hcl 파일 생성
+    * 기존에 .tfstate 파일이 정의되어 있다면, 현재 상태와 Backend Storage와 Sync를 맞춘다.
+3) __terraform plan__
+    * 작업한 코드에 대한 결과를 예측하여 작업할 내용 출력
+4) __terraform apply__
+    * 실제 환경에 인프라 구성 작업 진행
+    * 작업 결과에 대하여 .tftate file에 저장(Local/Backend Storage 모두 저장)
+</br>
+</br>
+
+
+## Terraform File
+* ```.terraform```
+    * 인프라를 프로비저닝 하는데 사용되는 모듈과 플러그인 등이 포함되어 있다.
+* ```terraform.tfstate``` 및 ```terraform.tfstate.backup```
+    * Terraform 상태를 포함하며, Terraform의 구성과 프로비저닝된 인프라 간의 관계를 추적할 수 있다.
+    * 기본적으로 .terraform Directory에 저장된다.
+</br>
+</br>
 
 
 ### Step 1. Provider Definition & Initialization
@@ -163,6 +183,38 @@
         │   │   ├── main.tf
         │   ├── exampleB/
         │   ├── .../
+
+        ============================================================
+        https://www.digitalocean.com/community/tutorials/how-to-structure-a-terraform-project
+        .
+        └── tf/
+            ├── modules/
+            │   ├── network/
+            │   │   ├── main.tf
+            │   │   ├── dns.tf
+            │   │   ├── outputs.tf
+            │   │   └── variables.tf
+            │   └── spaces/
+            │       ├── main.tf
+            │       ├── outputs.tf
+            │       └── variables.tf
+            └── applications/
+                ├── backend-app/
+                │   ├── env/
+                │   │   ├── dev.tfvars
+                │   │   ├── staging.tfvars
+                │   │   ├── qa.tfvars
+                │   │   └── production.tfvars
+                │   └── main.tf
+                └── frontend-app/
+                    ├── env/
+                    │   ├── dev.tfvars
+                    │   ├── staging.tfvars
+                    │   ├── qa.tfvars
+                    │   └── production.tfvars
+                    └── main.tf
+
+        
         ```
     
 2) Root Module
@@ -265,5 +317,3 @@
 
 #### 참고하기 좋은 사이트
 * https://github.com/futurice/terraform-examples
-
-

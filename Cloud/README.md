@@ -1,4 +1,4 @@
-bㅠㅠb# Cloud에 필요한 지식
+# Cloud에 필요한 지식
 
 ## Virtualization 기술
 1. Virtualization
@@ -75,9 +75,14 @@ bㅠㅠb# Cloud에 필요한 지식
     * DB 튜닝시 Sequential의 선택 비중을 높이고, Random 을 줄인다.
 
 
-## IOPS vs Throughput
-* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 입출력 작업을 수행하는데 걸리는 시간. 작업 수 또는 트랜잭션이라고도 한다.
+## IOPS vs Throughput vs Latency
+## 시스템 관점
+* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 읽기/쓰기 작업을 수행하는데 걸리는 작업 수(또는 트랜잭션이라고도 한다)
 * __Throughput(MB/s)__: 초당 읽거나 쓰는 비트 수 또는 전송 속도. IOPS 보다는 Throughput이 더 정확한 성능 측정 기준.
+* __Latency(ms)__ : 지연 시간. 네트워크에서 하나의 데이터 패킷이 다른 지점에 도착하는 데 소요되는 시간.
+    > IOPS는 시스템에 대한 내용이고, Throughput은 네트워크에 대한 내용이다!
+    > 시스템 관점에서 Latency는 트랜잭션을 처리하는데 필요한 시간
+
 * Throughput 계산 방법
     ```
     Throughput in MiB/s = ((Volume size in GiB) × (IOPS per GiB) × (I/O size in KiB))
@@ -244,5 +249,27 @@ bㅠㅠb# Cloud에 필요한 지식
 * __MTTR__ : Mean Time To Repair, 평균 수리 시간. 고장나 있는 시간을 의미한다.
 * __MTTF__ : Mean Time to Failure, 평균 고장 시간. 수리된 이후 다시 고장나기 전까지의 시간을 의미
 * https://m.blog.naver.com/pxckr/220838433353
+</br>
 
 
+
+## Server-Side Encrytion vs Client-Side Encrytion
+### Server-Side Encrytion
+* 클라이언트 측(Application, PC etc)에서 파일이 전송되면 서버 측(S3)에서 파일을 암호화하여 저장
+* Pros
+    1) 키 관리가 중앙(서버)에서 관리가 가능하다.
+* Cons
+    1) 정책에 의해서만 보호되므로, 서버에 대한 접근 정책을 잘 관리해야 한다.
+
+### Client-Side Encrytion
+* 클라이언트 측(Application, PC etc)에서 파일을 암호화하여 서버 측(S3)에 전송
+* Pros
+    1) 정책으로 관리가 제대로 되지 않더라도, 키가 없으면 아무도 파일에 접근할 수 없다.
+* Cons
+    1) 해당 서버에 접근하는 모든 클라이언트는 키를 가지고 있어야 한다.
+    2) 키가 원치않는 곳으로 복사 및 이동할 수 있다.
+
+### Decision
+* 기본적으로 비즈니스 사용자와 논의한다. 
+* 데이터의 민감도에 따라 클라이언트 측 암호화를 기대하는 규제 규범이 있을 수 있다.
+* 규제 규범이 특별하게 있지 않은 경우, 서버 측 암호화를 수행하며 추가 보안을 원할 시 클라이언트 측 암호롸를 진행

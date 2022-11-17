@@ -1,0 +1,1 @@
+/tmp : https://www.ubuntupit.com/everything-you-need-to-know-about-linux-tmp-directory/

@@ -1,4 +1,6 @@
 # GPG Key
+* GunPG == GUN Privacy Gurad
+* Encryption/Decryption Key
 
 ## GPG 설치
 
