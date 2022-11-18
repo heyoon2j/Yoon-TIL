@@ -107,7 +107,7 @@
 ### RDS DB
 ![RDSCluster](../img/RDSCluster.jpg)
 * RDS DB들은 EBS에 Data Write/Read를 한다. 그렇기 때문에 Read DB(Replication)는 Binlog에 대한 Write 동작을 추가적으로 해야되기 때문에 Only Read 이지만 실질적으로 Write 동작을 하게된다.
-* Data 이중화를 위해 EBS는 Mirroring Storage(EBS)에 Data르 복제하게 된다.
+* Data 이중화를 위해 EBS는 Mirroring Storage(EBS)에 Data를 복제하게 된다.
 </br>
 
 ### Aurora DB

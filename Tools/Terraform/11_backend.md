@@ -3,7 +3,7 @@
 * Local Storage가 아닌 Remote Storage에 저장함으로써 상태 데이터를 공유할 수 있고, 이를 통해 다수가 작업할 수 있게 된다.
 </br>
 
-## Backend 구성
+## Backend 구성 방식
 GitOps 형태로 구성 : Github Action + S3(+DynamoDB) 사용하여 구성
 * https://velog.io/@xgro/terraform-infra-provisioning
 * Github Action
@@ -16,7 +16,23 @@ GitOps 형태로 구성 : Github Action + S3(+DynamoDB) 사용하여 구성
 </br>
 
 
-## Install
+## Backend 설정
+```
+terraform {
+  backend "remote" {
+    organization = "example_corp"
+
+    workspaces {
+      name = "my-app-prod"
+    }
+  }
+}
+
+```
+* 하나의 백엔드 블록만 제공 가능
+* 백엔드 블록은 변수를 참조할 수 없다
+
+
 1) Download Terraform
     * https://www.terraform.io/downloads.html
     * 해당 OS에 맞는 버전 설치

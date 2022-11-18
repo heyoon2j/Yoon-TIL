@@ -1,7 +1,7 @@
 # Provider
 * Terraform은 "Provider" 플러그인을 사용하여 원격 시스템과 상호작용을 한다.
 * 모든 Resource Type과 Data source들은 Provider에 의해 구현된다(implements)
-* 
+* Provider는 루트 Terraform 모듈에서만 정의할 수 있습니다.
 
 ## Requiring Providers
 * Provider requirements가 선언되며, ```required_providers``` 블럭에 선언한다.
@@ -40,7 +40,8 @@
         * ```>```, ```>=```, ```<```, ```<=```: 지정된 버전 번호와 비교
         * ```~>```: 오직 가장 오른쪽 버전 구성 요소만 증가할 수 있다. 예로 ```~>1.0.4```의 경우, ```1.0.5```, ```1.0.10```는 허용하지만 ```1.1.0```는 허용하지 않는다.
         
-<br/>        
+</br>        
+</br>
 
 ## Provider Configuration
 * ```required_providers```에서 입력한 Provider에 대해 필요한 설정을 작성한다.
@@ -73,9 +74,6 @@
   }
   ```
   * Provdier 선택하는 방법은 ```<provider name>.<alias>```를 이용하여 선택
-
-
-
-
+  * Provder가 하나인 경우, Module은 암시적으로 상속을 받는다. 여러 개인 경우, 명시적 상속을 선언해야 한다.
 
 
