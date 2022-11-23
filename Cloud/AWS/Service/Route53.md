@@ -231,7 +231,7 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 ### 기능
 * Inbound Endpoint
     ![ResolverInboundEndpoint](../img/ResolverInboundEndpoint.png)
-    * 다른 네트워크 (On-premise, VPC 등) -> 다른 네트워크 Resolver -> VPN or Direct Connnect -> Inbound Endpoint -> Route 53 Resolver
+    * 다른 네트워크 (On-premise, VPC 등) -> 다른 네트워크 Resolver -> VPN or Direct Connnect -> Inbound Endpoint -> 해당 VPC의 Route 53 Resolver
     * 네트워크의 DNS Resolver가 해당 Inbound Endpoint를 통해 DNS Query를 Route 53 Resolver에게 전달힐 수 있다.
 * Outbound Endpoint
     ![ResolverOutboundEndpoint](../img/ResolverOutboundEndpoint.png)
