@@ -22,6 +22,7 @@
         mycloud = {
           source  = "mycorp/mycloud"
           version = "~> 1.0"
+          configuration_aliases = [ mycloud.alter ]
         }
       }
     }
@@ -39,6 +40,7 @@
         * ```!=```: 정확한 버전 번호를 제외
         * ```>```, ```>=```, ```<```, ```<=```: 지정된 버전 번호와 비교
         * ```~>```: 오직 가장 오른쪽 버전 구성 요소만 증가할 수 있다. 예로 ```~>1.0.4```의 경우, ```1.0.5```, ```1.0.10```는 허용하지만 ```1.1.0```는 허용하지 않는다.
+    * ```configuration_aliases```: Alias를 사용하는 경우, 사용할 Alias를 명시적으로 선언해 줘야한다.
         
 </br>        
 </br>
@@ -52,15 +54,23 @@
       mycloud = {
         source  = "mycorp/mycloud"
         version = "~> 1.0"
+        configuration_aliases = [ mycloud.test1, mycloud.test2 ]
       }
     }
   }
 
+  # Default Provider
+  provider "mycloud" {
+    region = "ap-northeast-2"
+  }
+
+  # Alias
   provider "mycloud" {
     alias = "test1"
     region = "ap-northeast-2"
   }
 
+  # Alias
   provider "mycloud" {
     alias = "test2"
     region = "us-west-2"

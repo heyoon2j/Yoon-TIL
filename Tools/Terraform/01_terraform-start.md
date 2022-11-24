@@ -309,11 +309,23 @@
     $ terraform destroy [options] [dir]
     ```
 
-
 ### Reference
 * https://www.44bits.io/ko/post/terraform_introduction_infrastrucute_as_code
 * Terraform 공식 사이트 : https://www.terraform.io/
+</br>
+</br>
+
+
+## Terraform 전체 아키텍처
+* 코드를 저장할 Remote Repository 구축
+* 상태 파일을 격리시켜 저장할 Remote Storage 구축 (AWS S3, DynomoDB)
+* Terraform 인프라 구축을 위한 Direcotyr 구조 설계
+* Terraform Workspace 생성
+* Terraofrm Module, Resource 등의 코드 작성
+* 실행 (+ GitHub Actions 등과 같은 람다를 활용하여 자동화 구축)
+</br>
 
 
 #### 참고하기 좋은 사이트
 * https://github.com/futurice/terraform-examples
+
