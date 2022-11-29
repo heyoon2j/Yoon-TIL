@@ -36,6 +36,38 @@
     ```
 </br>
 
+### Variable 사용방법
+```
+resource "aws_vpc" "vpc-proj" {
+    cidr_block = var.cidr_block
+
+    ipv6_cidr_block = var.ipv6_cidr_block
+
+    instance_tenancy = var.instance_tenancy
+
+    enable_dns_hostnames = var.enable_dns_hostnames
+    enable_dns_support = var.enable_dns_support
+
+    # enable_classiclink = "false"
+    # enable_classiclink_dns_support = "false"
+
+    tags = {
+        Name = "vpc-${var.proj_name}"
+    }
+}
+```
+* 기본적으로 ```var.```을 이용하여 변수를 사용할 수 있다.
+* 문자열(String)에서 사용하기 위해서는 ```"${}"```을 이용하면 사용할 수 있다.
+</br>
+
+### Variable 우선순위
+
+
+</br>
+</br>
+
+
+
 ## Output Variables
 * 해당 Module에 대한 Output Parameter를 지정하여, 다른 구성간에 공유할 수 있다.
 * 함수의 반환 값과 같다.
