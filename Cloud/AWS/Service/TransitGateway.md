@@ -26,3 +26,8 @@
     4) Path 설정
 4. Share TGW using Resource Access Manager
     * 다른 Account 공유
+
+</br>
+
+## Routing Priority
+* https://docs.aws.amazon.com/ko_kr/vpc/latest/tgw/how-transit-gateways-work.html
