@@ -18,17 +18,13 @@ GitOps 형태로 구성 : Github Actions + S3(+DynamoDB) 사용하여 구성
 
 
 ## Backend 설정
-
-
-### .tf 
+### .tf 선언
 ```
 terraform {
-  backend "remote" {
-    organization = "example_corp"
-
-    workspaces {
-      name = "my-app-prod"
-    }
+  backend "s3" {
+      bucket = "s3-proj-temp"
+      key    = "backend/${terraform.workspace}/terraform.tfstate"
+      region = "ap-northeast-2"
   }
 }
 
@@ -36,9 +32,13 @@ terraform {
 * 하나의 백엔드 블록만 제공 가능
 * 백엔드 블록은 변수를 참조할 수 없다
 
-
+### 파일 사용
 ```
+# .tf 파일에 backend "s3" {} 는 등록해야 한다.
 
+bucket = "s3-temp"
+key    = "backend/dev/terraform.tfstate"
+region = "ap-northeast-2"
 ```
 * ```*.backendname.tfbackend``` (e.g. config.s3.tfbackend) 파일 명을 추천하다.
-
+* ```$ terraform init -backend-config=""``` 명령어에 해당 파일 경로 지정
