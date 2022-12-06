@@ -44,6 +44,7 @@ inputs = {
 
 
 ## Backend DRY
+Terraform ```backend {}```에는 변수가 입력이 불가하다보니, Hard Cording을 해야한다.
 * Terraform 구조
     ```
     stage
@@ -77,7 +78,8 @@ inputs = {
     }
     ```
     * 각 서비스, 리소스마다 비슷한 형태의 상태파일 설정이 필요
-    * ```backend {}```에는 변수 입력이 불가
+    * Terraform ```backend {}```에는 변수가 입력이 불가
+</br>
 
 * Terragrunt 구조
     ```
@@ -115,12 +117,36 @@ inputs = {
     }
     ```
     * ```path_relative_to_include()```를 사용하여 Path를 변수로 사용할 수 있다.
-    * ```include "root" {}```
+    * ```include "root" {}```는 Root의 구성을 상속받는다.
     * ```find_in_parent_folders()``` Helper는 자동으로 Root terragrunt.hcl을 찾아 구성을 업데이트 한다는 의미이다.
 </br>
 
 ## Provider DRY
+* Terraform 구조
+    ```
+    # stage/frontend-app/main.tf
+    variable "assume_role_arn" {
+        description = "Role to assume for AWS API calls"
+    }
 
+    provider "aws" {
+        assume_role {
+            role_arn = var.assume_role_arn
+        }
+    }
+    ```
+    * var 변수를 사용하여 리소스에 맞게 같은 변수 명을 이용하여 설정할 수 있다. 입렵 값을 다르게 넣으면 되기 때문이다.  
+
+
+```
+
+```
+
+
+
+```
+
+```
 
 
 
@@ -128,16 +154,49 @@ inputs = {
 
 
 ## Terraform CLI DRY
+* Terraform 구조
+    ```
+    # account.tfvars
+    account_id     = "123456789012"
+    account_bucket = "my-terraform-bucket"    
+    ```
+    ```
+    # region.tfvars
+    aws_region = "us-east-2"
+    foo        = "bar"    
+    ```
+    ```
+    $ terraform apply \
+    -var-file=../../common.tfvars \
+    -var-file=../region.tfvars
+    ```
+    * ```-var-file``` 인수를 활용하여 variable 파일 위치를 선언해줘야 하기 때문에, CLI 인수를 항상 기억해야 한다.
+</br>
 
+* Terragrunt
+    ```
+    # terragrunt.hcl
+    terraform {
+        extra_arguments "common_vars" {
+            commands = ["plan", "apply"]
+            # commands = get_terraform_commands_that_need_vars()
 
-
-
+            arguments = [
+            "-var-file=../../common.tfvars",
+            "-var-file=../region.tfvars"
+            ]
+        }
+    }
+    ```
+    * ```extra_arguments {}```을 통해 Terraform CLI에 대한 동작 방식을 지정할 수 있다.
+    * ```get_terraform_commands_that_need_vars()```는 ```-var-file``` 또는 ```-var``` 옵션을 수락하는 모든 명령 목록을 가지고 올 수 있다.
+</br>
 </br>
 
 
-
-
 ## ENV 
+
+
 
 
 </br>
