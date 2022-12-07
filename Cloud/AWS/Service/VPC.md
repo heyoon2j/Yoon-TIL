@@ -254,3 +254,11 @@
 * 무조건 VPC Peering이 저렴하다.
 * Reference: https://dev.classmethod.jp/articles/different-from-vpc-peering-and-transit-gateway/
 
+
+
+## VS On-Premise
+* VPC에서는 MAC이 아닌 IP로만 통신하기 때문에 ARP를 이용하지 않는다. 그래서 ARP Spoofing Attack이 거의 불가능하다.
+> 실질적으로 클라우드 서비스를 제공하는 Hypervisor에서는 MAC Address를 사용하겠지만, 클라우드 서비스 내에서는 Overlay Network로 IP로만 통신이 가능해 보인다.
+* 오직 Unicast만 허용되어 있다. Broadcast, Multicast 허용되어 있지 않다! 
+* Ref : https://aws.amazon.com/ko/blogs/apn/amazon-vpc-for-on-premises-network-engineers-part-one/
+
