@@ -54,3 +54,35 @@ workspace management
 제한 시간 : statement_timeout = 0 옵션 
 
 
+```
+└── live
+    ├── terragrunt.hcl
+    ├── prod
+    │   ├── app
+    │   │   └── terragrunt.hcl
+    │   ├── mysql
+    │   │   └── terragrunt.hcl
+    │   └── vpc
+    │       └── terragrunt.hcl
+    ├── qa
+    │   ├── app
+    │   │   └── terragrunt.hcl
+    │   ├── mysql
+    │   │   └── terragrunt.hcl
+    │   └── vpc
+    │       └── terragrunt.hcl
+    └── stage
+        ├── app
+        │   └── terragrunt.hcl
+        ├── mysql
+        │   └── terragrunt.hcl
+        └── vpc
+            └── terragrunt.hcl
+└── modules
+    ├── app
+    │   └── main.tf
+    ├── mysql
+    │   └── main.tf
+    └── vpc
+        └── main.tf
+```
