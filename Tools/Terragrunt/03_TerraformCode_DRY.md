@@ -197,4 +197,150 @@ include "root" {
 </br>
 </br>
 
+---
+## terraform Block
+Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의되는 내용은 다음과 같다.
+1. Module Source 설정
+2. Working Directory에 저장할 파일 설정
+3. CLI Flag 설정
+4. Hooking 설정
+* Template은 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+    ```
+    terraform {
+        # Module 위치 설정
+        source = "<module_path>"
 
+        # ???
+        include_in_copy "" {
+        }
+
+        # CLI에 대한 인자 설정
+        extra_arguments "" {
+            # Terragrunt 명령어에 대한 옵션 추가
+            commands = []
+            arguments = []
+            env_vars = []
+            required_var_files = []
+            optional_var_files = []
+        }
+
+        # Hooking 
+        before_hook "" {
+            commands = []
+            execute = []
+            working_dir = ""
+            run_on_error = true or none
+        }
+
+        after_hook "" {
+
+        } 
+
+        error_hook "" {
+            # be executed after before_hook/after_hook
+        }
+    }
+    ```
+
+---
+### 1. Module Source 설정
+```
+
+```
+
+
+---
+### 2. Working Directory에 저장할 파일 설정
+
+
+---
+### 3. CLI Flag 설정
+
+
+---
+### 4. Hooking 설정
+
+
+## 
+```
+terraform {
+   source = "git::git@github.com:acme/infrastructure-modules.git//networking/vpc?ref=v0.0.1"
+
+  # For any terraform commands that use locking, make sure to configure a lock timeout of 20 minutes.
+  extra_arguments "retry_lock" {
+    commands  = get_terraform_commands_that_need_locking()
+    arguments = ["-lock-timeout=20m"]
+  }
+
+  # You can also specify multiple extra arguments for each use case. Here we configure terragrunt to always pass in the
+  # `common.tfvars` var file located by the parent terragrunt config.
+  extra_arguments "custom_vars" {
+    commands = [
+      "apply",
+      "plan",
+      "import",
+      "push",
+      "refresh"
+    ]
+
+    required_var_files = ["${get_parent_terragrunt_dir()}/common.tfvars"]
+  }
+
+  # The following are examples of how to specify hooks
+
+  # Before apply or plan, run "echo Foo".
+  before_hook "before_hook_1" {
+    commands     = ["apply", "plan"]
+    execute      = ["echo", "Foo"]
+  }
+
+  # Before apply, run "echo Bar". Note that blocks are ordered, so this hook will run after the previous hook to
+  # "echo Foo". In this case, always "echo Bar" even if the previous hook failed.
+  before_hook "before_hook_2" {
+    commands     = ["apply"]
+    execute      = ["echo", "Bar"]
+    run_on_error = true
+  }
+
+  # Note that you can use interpolations in subblocks. Here, we configure it so that before apply or plan, print out the
+  # environment variable "HOME".
+  before_hook "interpolation_hook_1" {
+    commands     = ["apply", "plan"]
+    execute      = ["echo", get_env("HOME", "HelloWorld")]
+    run_on_error = false
+  }
+
+  # After running apply or plan, run "echo Baz". This hook is configured so that it will always run, even if the apply
+  # or plan failed.
+  after_hook "after_hook_1" {
+    commands     = ["apply", "plan"]
+    execute      = ["echo", "Baz"]
+    run_on_error = true
+  }
+
+  # After an error occurs during apply or plan, run "echo Error Hook executed". This hook is configured so that it will run
+  # after any error, with the ".*" expression.
+  error_hook "error_hook_1" {
+    commands  = ["apply", "plan"]
+    execute   = ["echo", "Error Hook executed"]
+    on_errors = [
+      ".*",
+    ]
+  }
+
+  # A special after hook to always run after the init-from-module step of the Terragrunt pipeline. In this case, we will
+  # copy the "foo.tf" file located by the parent terragrunt.hcl file to the current working directory.
+  after_hook "init_from_module" {
+    commands = ["init-from-module"]
+    execute  = ["cp", "${get_parent_terragrunt_dir()}/foo.tf", "."]
+  }
+
+  # A special after_hook. Use this hook if you wish to run commands immediately after terragrunt finishes loading its
+  # configurations. If "terragrunt-read-config" is defined as a before_hook, it will be ignored as this config would
+  # not be loaded before the action is done.
+  after_hook "terragrunt-read-config" {
+    commands = ["terragrunt-read-config"]
+    execute  = ["bash", "script/get_aws_credentials.sh"]
+  }
+}
+```
