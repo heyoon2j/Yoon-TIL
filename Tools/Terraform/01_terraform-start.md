@@ -39,7 +39,7 @@
     * **terraform apply** 명령어를 제공한다.
 
 
-## Using Terraform
+## Terraform Execution 과정
 * 동작을 위한 기본 Step은 다음과 같다.
 1) HCL을 이용하여 .tf 파일에 Infra Resources을 정의한다.
 2) __terraform init__
@@ -319,7 +319,7 @@
 ## Terraform 전체 아키텍처
 * 코드를 저장할 Remote Repository 구축
 * 상태 파일을 격리시켜 저장할 Remote Storage 구축 (AWS S3, DynomoDB)
-* Terraform 인프라 구축을 위한 Direcotyr 구조 설계
+* Terraform 인프라 구축을 위한 Directory 구조 설계
 * Terraform Workspace 생성
 * Terraofrm Module, Resource 등의 코드 작성
 * 실행 (+ GitHub Actions 등과 같은 람다를 활용하여 자동화 구축)

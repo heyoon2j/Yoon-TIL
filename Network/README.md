@@ -17,3 +17,12 @@
     * Packet 크기가 Bandwidth 크기와 동일
     * A Task는 작업
 > 일반적으로 Latency가 작을 수록 Throughput이 크다. 하지만 멀티 태스킹 환경에서는 달라질 수 있다! Latency 증가하더라도, 증가된 시간 비례 더 많은 양을 보낼 수 있게 되기 때문에 Throughput이 크게 증가할 수 있다.  
+
+
+
+## Network Tool
+* Wireshark : 패킷 분석
+* Nmap : 네트워크 매핑
+* Infection Monkey : 침투 테스트
+* fprove : 성능 테스트
+*ㅊ Cacti : 시각화 툴
