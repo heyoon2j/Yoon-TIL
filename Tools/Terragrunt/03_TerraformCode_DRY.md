@@ -189,7 +189,7 @@ include "root" {
 * 
 </br>
 
-### Terragrunt 구조
+# Terragrunt 구조
 ```
 
 ```
@@ -197,14 +197,32 @@ include "root" {
 </br>
 </br>
 
+# Terragrunt Configuration Blocks
+Terragrunt에서 제공하는 Block들을 이용하여 Terragrunt 사용을 위한 구성들을 설정할 수 있다. 제공하고 있는 Block들을 다음과 같다.
+1) terraform {}
+2) generate {}
+3) dependency {}
+4) dependencies {}
+5) locals {}
+6) include {}
+7) remote_state {} (여기서는 다루지 않는다. 자세한 내용은 03 Backedn_DRY.md에서)
+
+
 ---
 ## terraform Block
 Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의되는 내용은 다음과 같다.
 1. Module Source 설정
+   * Terraform Registry를 사용할때만 구문이 다르다(확인 필요)
 2. Working Directory에 저장할 파일 설정
 3. CLI Flag 설정
+   * CLI 사용 시 Terraform Locking: ```-lock-timeout=20m```
+   * 입력 값을 위한 tfvar 파일 설정
+   * etc
 4. Hooking 설정
-* Template은 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+   * 기본적을 명령어 실행 전, 실행 후, 에러 발생에 대한 Hook 사용 가능
+   * 특수한 Hook으로 terragrunt-read-config, init-from-module 이 있다.
+   * 기본 Working Directory는 terragrunt.hcl가 존재하는 디렉토리이다!
+* Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
     ```
     terraform {
         # Module 위치 설정
@@ -229,7 +247,7 @@ Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의�
             commands = []
             execute = []
             working_dir = ""
-            run_on_error = true or none
+            run_on_error = true / false(Defalse)
         }
 
         after_hook "" {
@@ -242,38 +260,22 @@ Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의�
     }
     ```
 
----
-### 1. Module Source 설정
+
+### Config 
 ```
 
-```
-
-
----
-### 2. Working Directory에 저장할 파일 설정
-
-
----
-### 3. CLI Flag 설정
-
-
----
-### 4. Hooking 설정
-
-
-## 
-```
 terraform {
-   source = "git::git@github.com:acme/infrastructure-modules.git//networking/vpc?ref=v0.0.1"
+  # source = "../modules/networking/vpc"
+  source = "git::git@github.com:acme/infrastructure-modules.git//networking/vpc?ref=v0.0.1"
 
-  # For any terraform commands that use locking, make sure to configure a lock timeout of 20 minutes.
+
+  #######################################################
+  # CLI Flag
   extra_arguments "retry_lock" {
     commands  = get_terraform_commands_that_need_locking()
     arguments = ["-lock-timeout=20m"]
   }
 
-  # You can also specify multiple extra arguments for each use case. Here we configure terragrunt to always pass in the
-  # `common.tfvars` var file located by the parent terragrunt config.
   extra_arguments "custom_vars" {
     commands = [
       "apply",
@@ -283,46 +285,36 @@ terraform {
       "refresh"
     ]
 
-    required_var_files = ["${get_parent_terragrunt_dir()}/common.tfvars"]
+    required_var_files = [
+      "${get_parent_terragrunt_dir()}/terraform.tfvars"
+    ]
+
+    optional_var_files = [
+      "${get_parent_terragrunt_dir()}/${get_env("TF_VAR_env", "dev")}.tfvars",
+      "${get_parent_terragrunt_dir()}/${get_env("TF_VAR_region", "us-east-1")}.tfvars",
+      "${get_terragrunt_dir()}/${get_env("TF_VAR_env", "dev")}.tfvars",
+      "${get_terragrunt_dir()}/${get_env("TF_VAR_region", "us-east-1")}.tfvars"
+    ]
   }
 
-  # The following are examples of how to specify hooks
-
-  # Before apply or plan, run "echo Foo".
+  #######################################################
+  # Hooking
   before_hook "before_hook_1" {
     commands     = ["apply", "plan"]
-    execute      = ["echo", "Foo"]
+    execute      = ["echo", "########## Execute Terragrunt command for changing infra (Before Hook) ##########"]
+    #run_on_error = true
   }
 
-  # Before apply, run "echo Bar". Note that blocks are ordered, so this hook will run after the previous hook to
-  # "echo Foo". In this case, always "echo Bar" even if the previous hook failed.
-  before_hook "before_hook_2" {
-    commands     = ["apply"]
-    execute      = ["echo", "Bar"]
-    run_on_error = true
-  }
-
-  # Note that you can use interpolations in subblocks. Here, we configure it so that before apply or plan, print out the
-  # environment variable "HOME".
-  before_hook "interpolation_hook_1" {
-    commands     = ["apply", "plan"]
-    execute      = ["echo", get_env("HOME", "HelloWorld")]
-    run_on_error = false
-  }
-
-  # After running apply or plan, run "echo Baz". This hook is configured so that it will always run, even if the apply
-  # or plan failed.
   after_hook "after_hook_1" {
     commands     = ["apply", "plan"]
-    execute      = ["echo", "Baz"]
+    execute      = ["echo", "########## End Terragrunt command for changing infra (After Hook) ##########"]
     run_on_error = true
   }
 
-  # After an error occurs during apply or plan, run "echo Error Hook executed". This hook is configured so that it will run
   # after any error, with the ".*" expression.
   error_hook "error_hook_1" {
     commands  = ["apply", "plan"]
-    execute   = ["echo", "Error Hook executed"]
+    execute   = ["echo", "########## Error Hook executed ##########"]
     on_errors = [
       ".*",
     ]
@@ -344,3 +336,24 @@ terraform {
   }
 }
 ```
+
+
+---
+## generate Block
+
+
+
+---
+## dependency Block
+
+
+---
+## dependencies Block
+
+
+---
+## locals Block
+
+---
+## include Block
+

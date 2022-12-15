@@ -4,7 +4,7 @@ AWS에서 제공하는 보안 정책에 따라 실시간 관제 및 알람 발�
 
 
 # AWS Detective
-분석 용도
+Guard Duty에 대한 분석 용도
 
 
 
