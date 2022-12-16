@@ -216,6 +216,7 @@ Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의�
 2. Working Directory에 저장할 파일 설정
 3. CLI Flag 설정
    * CLI 사용 시 Terraform Locking: ```-lock-timeout=20m```
+   * 
    * 입력 값을 위한 tfvar 파일 설정
    * etc
 4. Hooking 설정
@@ -229,11 +230,11 @@ Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의�
         source = "<module_path>"
 
         # ???
-        include_in_copy "" {
+        include_in_copy "<name>" {
         }
 
         # CLI에 대한 인자 설정
-        extra_arguments "" {
+        extra_arguments "<name>" {
             # Terragrunt 명령어에 대한 옵션 추가
             commands = []
             arguments = []
@@ -243,27 +244,26 @@ Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의�
         }
 
         # Hooking 
-        before_hook "" {
+        before_hook "<name>" {
             commands = []
             execute = []
             working_dir = ""
             run_on_error = true / false(Defalse)
         }
 
-        after_hook "" {
+        after_hook "<name>" {
 
         } 
 
-        error_hook "" {
+        error_hook "<name>" {
             # be executed after before_hook/after_hook
         }
     }
     ```
 
 
-### Config 
+### Config Template
 ```
-
 terraform {
   # source = "../modules/networking/vpc"
   source = "git::git@github.com:acme/infrastructure-modules.git//networking/vpc?ref=v0.0.1"
@@ -340,20 +340,131 @@ terraform {
 
 ---
 ## generate Block
+Terragrunt working directory에 파일을 생성하는데 사용된바. terraform block에서 설정할 수 없는 구성들을 설정한다. generate block으로 생성하는 내용은 다음과 같다.
+1. Provider
+2. Backend
+* Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+  ```
+  generate "<name>" {
+    path      = "<relative_path>" # 상대 경로ㅂ
+    if_exists = "overwrite" # overwrite / overwrite_terragrunt / skip / error
+    contents = <<EOF
+  # contents 입력
+  EOF
+  }
+  ```
+
+### Config Template
+```
+generate "provider" {
+  path      = "provider.tf"
+  if_exists = "overwrite"
+  contents = <<EOF
+provider "aws" {
+  region              = "us-east-1"
+  version             = "= 2.3.1"
+  allowed_account_ids = ["1234567890"]
+}
+EOF
+}
+```
+</br>
+</br>
 
 
 
 ---
 ## dependency Block
+모듈 종속성을 구성하는 데 사용되며, 참조하고 있는 모듈의 출력 값을 가지고 올 수 있다. depencies block은 ```run-all``` 명령어 실행 시, 어떤 순서대로 작업을 진행할지 지정하기 위한 구성 블럭이다.
+* Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+  ```
+  dependency "<name>" {
+    config_path = "<relative_path>"
+
+    # mock_* 은 쓰지 않는 것이 좋다고 한다.
+  }
+
+  inputs = {
+    vpc_id = dependency.<name>.outputs.output_var
+  }
+  ```
+
+### Config Template
+```
+dependency "vpc" {
+  config_path = "../vpc"
+}
+
+dependency "rds" {
+  config_path = "../rds"
+}
+
+inputs = {
+  vpc_id = dependency.vpc.outputs.vpc_id
+  db_url = dependency.rds.outputs.db_url
+}
+```
+</br>
+</br>
 
 
 ---
 ## dependencies Block
+```run-all``` 명령어 실행 시, 어떤 순서대로 작업을 진행할지 지정하기 위한 구성 블럭이다.
+* Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+  ```
+  dependencies {
+    paths = ["<module_relative_path1>", "<module_relative_path2>", ...]
+  }
+  ```
+
+### Config Template
+```
+dependencies {
+  paths = ["../vpc", "../rds"]
+}
+```
+</br>
+</br>
 
 
 ---
 ## locals Block
+해당 파일에서만 사용가능한 변수를 선언하는 블럭이다.
+</br>
+
+### Config Template
+```
+locals {
+  aws_region = "us-east-1"
+}
+
+inputs = {
+  region = local.aws_region
+  name   = "${local.aws_region}-bucket"
+}
+```
+</br>
+</br>
+
 
 ---
 ## include Block
+Terragrunt 구성 파일의 상속을 사용하기 위해 사용. Included config는 현재 구성과 통합된다.
 
+```run-all``` 명령어 실행 시, 어떤 순서대로 작업을 진행할지 지정하기 위한 구성 블럭이다.
+* Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+  ```
+  dependencies {
+    paths = ["<module_relative_path1>", "<module_relative_path2>", ...]
+  }
+  ```
+
+### Config Template
+```
+dependencies {
+  paths = ["../vpc", "../rds"]
+}
+```
+</br>
+</br>
