@@ -34,8 +34,12 @@
 </br>
 
 
-## 구축 순서
-1. 
+## Terragrunt 구축 순서
+1. Project's Infra Structure 확인
+2. Directory Stucture 생성
+3. 각 서비스의 종속성 그래프 그리기
+4. hcl 파일 구성
+5. Terragrunt 실행
 
 ---
 ## Terrgrunt Config File
