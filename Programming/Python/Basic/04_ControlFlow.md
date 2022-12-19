@@ -9,7 +9,7 @@
     if x > 10:
         print(x)
   
-    # if, else if, else 문
+    # if, elif, else 문
     if x > 0:
         print(x)
     elif x == 0:
