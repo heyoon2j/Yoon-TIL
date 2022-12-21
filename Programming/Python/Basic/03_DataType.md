@@ -228,6 +228,7 @@ a = b'123'
     * list.sort()
         * 기존에 있는 리스트를 정렬한다. 그렇기 때문에 sorted() 보다 빠르다.
         * 반환 값은 None
+        * 역방향 정럴 시, ```sort(reverse=True)```
     * sorted(iterable)
         * 정렬된 새로운 iterable을 반환한다. 그렇기 때문에 sort() 보다 느리다.
         * 반환 값은 iterable
