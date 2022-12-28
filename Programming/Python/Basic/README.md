@@ -416,3 +416,50 @@
 * https://dojang.io/mod/page/view.php?id=2281
 
 
+# 고촬
+* 기본적으로 Python은 수학적인 기능이 강력크하다.
+* 코드를 작성할때 정확한 기능을 수행하도록 짜는 것도 중요하지만, 유지/보수/수정 등을 위한 확장성을 위한 모델링, 코드 가독성, 속도, 메모리 사용 등도 생각하면서 작성해야 한다. 
+    1) 모델링
+        * Design Pattern
+        * 변수 사용 (고정값 사용 X)
+    2) 코드 가독성
+    3) 속도, 메모리
+       * 조건문이나 반복문으로 표현하는 것이 아닌 수학적으로 해결 가능한가 확인. 예는 다음과 같다.
+            > 단 수학적인 표현을 하면 너무 좋지만, 시간의 차이가 많이 나지 않는 경우 가독성도 생각해봐야 한다.
+            ```python
+            # 1) 조건문
+            def solution(num_list):
+                answer = [0,0]
+
+                for num in num_list:
+                    if num % 2 == 0:
+                        answer[0] += 1
+                    else:
+                        answer[1] += 1
+
+                return answer
+
+            # 2) 수학적 표현
+            def solution(num_list):
+                answer = [0,0]
+                for n in num_list:
+                    answer[n%2]+=1
+                return answer
+
+            ## https://school.programmers.co.kr/learn/courses/30/lessons/120829    
+            def solution(angle):
+                answer = (angle // 90) * 2 + (angle % 90 > 0) * 1
+                return answer
+            ```
+        * List, Set, Tuple, Dictionary, String 등 더 효율적으로 구현할 수 있는 자료구조를 사용해야 한다.
+* 빙어 코드 작성하기. 제약 사항에 대한 코드 작성 및 예외 발생 시 처리 코드 작성
+    ```python
+    def solution(n, k):
+        service = n//10
+        drink = max(0, k-service)
+        return (12000*n)+(2000*drink)
+    ```
+    ```
+
+    ```
+    

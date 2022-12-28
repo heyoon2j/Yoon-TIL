@@ -25,14 +25,11 @@
 
 * Save Error Message
     ```python
-    except as e :
+    except IndexError as e :
         print(e)
     ```
     * ```excpet as <변수명> :``` 문법을 사용한다.
     * 해당 변수에 에러메시지가 저장된다.
-
-
-
 
 
 
