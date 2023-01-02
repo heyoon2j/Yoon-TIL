@@ -133,6 +133,12 @@
 > VPN + 다중 VPC를 사용할 경우에는 TGW를 사용하는 것이 더 효율적이며, VPN + 단일 VPC인 경우는 VGW를 사용하는 것이 좋다.
 </br>
 
+## Customer Gateway (CGW)
+* 고객 게이트웨이
+* On-premise(고객) 측 접선장치이다 (즉, 물리적 또는 소프트웨어 어플라이언스)
+</br>
+</br>
+
 ## AWS Direct Connect(DX)
 * 1 또는 10 Gbps의 전용 Private Network 연결을 제공. 최대 50Gbps
 * VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
