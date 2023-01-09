@@ -4,7 +4,7 @@
 
 
 ## 조건문 (Condition)
-* if, else if, else 문 사용
+* if, elif, else 문 사용
     ```python
     # if 문
     if x > 10:
@@ -13,7 +13,7 @@
     # if, else if, else 문
     if x > 0:
         print(x)
-    else if x == 0:
+    elif x == 0:
         print(0)
     else:
         print(-x)
@@ -96,7 +96,7 @@
     * iterable 자료형(list, set, tuple, dictionary, string)을 입력받아 인덱스 값을 포함하는 enumerate 객체를 반환
     * 보통 for문과 함께 자주 사용된다.
     * Example
-        ```
+        ```python
         # enumerate 함수
         data = enumerate((1, 2, 3))
         print(data, type(data))     # <enumerate object at 0x0000000002424EA0> <class 'enumerate'>

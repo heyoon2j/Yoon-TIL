@@ -311,6 +311,12 @@ print(x, y)                 # 2 0
         names.sort(key=testFunc)
         print(names)            # ['A', 'OTL', 'Sion', 'YounS', 'Yeeun', 'Jadudu']
         ```
+        ```python
+        # 2차원 배열 정렬
+        a = [[1, 2], [3, 2] ,[1, 4]]
+        a.sort(key=lambda x : (x[0], -x[1]))
+        # [1, 4], [1, 2], [3, 2]
+        ```
     2) sorted(iterable)
         * 정렬된 새로운 Iterable을 반환한다.
             > 그렇기 때문에 list.sort()보다 느리다.
@@ -569,3 +575,6 @@ Parent b = a;                # b는 Parent Class. 클래스는 주소 값을 저
                             # 하지만 b는 Parent Type이고 Data Type으로 연산을 하기 때문에, 변수의 값은 Child를 가리키지만 Child의 멤버면수, 멤버함수에 접근이 불가능하다.
 ```
 </br>
+
+* ord(char) : 아스키 코드 -> 숫자
+* chr(number) : 숫자 -> 아스키 코드

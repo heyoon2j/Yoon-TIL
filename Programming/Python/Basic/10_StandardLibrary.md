@@ -10,11 +10,25 @@
 
 
 
+---
+# 
+* map(func, iterable)
+    * iterable을 받아, 각 요소에 함수를 적용
+    ```python
+    data = [[1, 2, 3, 4], [5, 6, 0, 9]]
+    minValue = min(map(min, data))      # 0
+    ```
+
+
 
 ---
 # Math
 * sum()
-    * 
+    * q
+    ```
+    # sum(iterable)
+
+    ```
 * comb()
     * 조합을 반환하는 Math 함수
     ```
@@ -24,8 +38,19 @@
     math.factorial(balls)
     ```
 * factorail()
-    
 
+* max(iterable)
+* min(iterable)
+* abs(number)
+    * 절대값 반환
+* divmod()
+    * 몫과 나머지 Tuple로 반환
+    ```python
+    # divmod(number, number)
+    a = 5
+    b = 2
+    print(divmod(5, 2))     # (2.5, 0)
+    ```
 
 
 ---
@@ -90,3 +115,62 @@
     tList = test.split(":")
     print(tList)    # ['c', 'b', 'b', 'd']
     ```
+* find()
+    * 문자열 검색
+    * 문자열이 있다면 첫번재 문자열 위치(index) 반환, 없다면 -1 반환
+    ```python
+    word = "1Python"
+    search = "Py"
+    print(word.find(search))    # 1
+
+    word = "1Python"
+    search = "llPy"
+    print(word.find(search))    # -1
+    ```
+
+* strip(), lstrip(), rstrip()
+    * 양 끝에 있는 문자열 제거. 입력 값이 없을때는 공백 제거
+    ```python
+    # <string>.strip(<find>)
+    text = ",,,,,123.....water....pp"
+    print(text.lstrip(',123.p'))    # water....pp
+    print(text.rstrip(',123.p'))    # ,,,,,123.....water
+    print(text.strip(',123.p'))     # water
+
+    ```
+        
+
+
+---
+# 정규표현식 regex
+Python 정규표현식 모듈 : re
+* re.compile()
+    * 정규표현식을 객체 타입으로 저장
+    ```python
+    # re.compile("<정규표현식>")
+
+    pattern = re.compile("[0-9]")
+    print(type(pattern))             # <class 're.Pattern'>
+    ```
+    
+* re.sub()
+    * 문자열 치환
+    ```python
+    # re.sub(정규표현식, 치환 문자, 문자열)
+
+    my_string = "aAb1B2cC34oOp"
+    pattern = re.compile("[0-9]")
+    ch_string = re.sub(pattern, '', my_string)  # aAbBcCoOp
+    ```
+
+* re.findall()
+    * 모든 매치를 찾아 리스트로 반환
+    ```python
+    my_string = "aAb1B2cC34oOp"
+    pattern = re.compile("[0-9]")
+    numbers = pattern.findall(my_string)        # ['1', '2', '3', '4']
+    ```
+
+
+
+

@@ -72,7 +72,7 @@
 </br>
 
 * 인자로 List 언패킹을 사용할 때
-    ```
+    ```python
     class Person:
         def __init__(self, *args):
             self.name = args[0]
@@ -84,7 +84,7 @@
 </br>
 
 * 인자로 Dictionary 언패킹을 사용할 때
-    ```
+    ```python
     class Person:
         def __init__(self, **kwargs):    # 키워드 인수
             self.name = kwargs['name']
@@ -140,9 +140,16 @@
     > Return Type은 상관없다!!
 * Example(Method Overloading)
     ```python
+    from multipledispatch import dispatch
+
     class Test:
+        @dispatch(int, int)
         def add(self, a, b):
             return a + b
+        
+        @dispatch(int, float)
+        def add(self, a, b):
+            return a + int(b)
     ```
     ```java
     public class Test {
@@ -162,6 +169,7 @@
     }
     ```
     * Python은 변수 타입이 정해져있지 않기 때문에, 타입을 생각할 필요가 없다. 갯수를 줄이는 방법은 ```None``` Type을 사용한다.
+    * 현업에서는 multipledispatch 패키지를 활용하여 Overriding 구현한다. 파이썬은 오버라이딩을 지원하지 않는다.
 * Example(Constructor Overloading)
     ```python
     class Animal:
