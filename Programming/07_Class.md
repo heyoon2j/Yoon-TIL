@@ -210,7 +210,7 @@
     class Cat(Animal):
         """Sub Class"""
 
-        # 생성자 오버로딩
+        # 생성자 오버라이딩
         def __init__(self, name = None, age = None, existsOwner = None):
             super().__init__(name, age)
             self.existsOwner = existsOwner
@@ -235,6 +235,34 @@
     2) 클래스로 함수 저장하는 것(@staticmethod)과 모듈로 함수 저장하는 것에 대한 Memory 저장 및 처리하는 방식이 다른가?
 * 이렇게 말했지만 cls를 쓰는 경우는 거의 드물다(ex> Factory Method 등) 
 </br>
+
+
+
+```python
+class Date :
+    word = 'date : '
+
+    def __init__(self, date):
+        self.date = self.word + date
+
+    @staticmethod
+    def now():
+        return Date("today")
+
+
+    def show(self):
+        print self.date
+
+class KoreanDate(Date):
+    word = '날짜 : '
+
+
+a = Date("2016, 9, 13")
+a.show()
+b = Date.now()
+b.show()
+```
+
 
 
 
