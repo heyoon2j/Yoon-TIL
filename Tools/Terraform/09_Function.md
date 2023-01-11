@@ -1,3 +1,38 @@
+## tostring(value)
+* 문자열로 변경
+  ```
+  var.example ? tostring(12) : "hello"
+  ```
+</br>
+
+## toset(list)
+* set으로 변경하여, 중복 값 제거
+    ```
+
+    ```
+
+
+## length(collection)
+* collection의 크기를 반환
+    ```
+    condition = length(var.items) != 0
+    ```
+
+## can(expression)
+* expression이 오류를 반환하는 경우에 사용. 오류 발생시 false를 반환
+    ```
+    condition = can(regex("^[a-z]+$", var.name))
+    ```
+
+
+
+## contains(list, value)
+* value가 list 안에 값 중 하나인제 체크
+    ```
+    contains(["STAGE", "PROD"], var.environment)
+    ```
+
+
 ## concat(list1, list2, ...)
 * https://www.terraform.io/docs/language/functions/concat.html
 * 둘 이상의 목록을 단일 목록으로 결합.
@@ -11,6 +46,12 @@
     ]
     ```
 </br>
+
+## upper(string)
+* 대문자로 변환
+    ```
+    uppser(s)
+    ```
 
 
 ## join(separator, list)

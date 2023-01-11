@@ -303,6 +303,91 @@ b.show()
     * Python은 기본적으로 Public이다.
     * ```_``` : 밑줄 하나. Protected 접근 제어자. 내부적으로만 사용하는 변수 혹은 메서드 (Coding Convention이기 때문에 실질적으로 에러를 발생시키지 않음)
     * ```__``` : 밑줄 두개. Private 접근 제어자
+* Java는 다음과 같다.
+    * private - 클래스 안에서만 사용 가능
+    * default - 같은 패키지 내에서 사용 가능
+    * protected - 같은 패키지 또는 다른 패키지에 속한 자식 클래스에서 사용 가능
+    * public - 전체에서 사용 가능
+    * Class는 private와 public만 가능하다.
+
+    ```java
+    package PackageA;
+
+    public class ClassA {
+        public int x;
+        protected int y;
+        int z;  // default (=package)
+        private int w;
+
+        public void methodA(){
+
+        }
+        protected void methodB(){}
+        void methodC() {}   // default (=package)
+        private void  methodD(){}   // 내부 구현을 위해서만 쓰인다.
+
+        public void methodTest(){
+            System.out.println(x);
+            System.out.println(y);
+            System.out.println(z);
+            System.out.println(w);
+
+            methodA();
+            methodB();
+            methodC();
+            methodD();
+        }
+    }
+
+    class ClassTest{
+        public static void main(String[] args) {
+            ClassA obj = new ClassA();
+            System.out.println(obj.x);  // public
+            System.out.println(obj.y);  // protected
+            System.out.println(obj.z);  // default
+    //        System.out.println(obj.w);// private
+
+            obj.methodA();  // public
+            obj.methodB();  // protected
+            obj.methodC();  // default
+    //        obj.methodD();// private
+        }
+    }
+    ```
+    * 다른 패키지
+    ```java
+    import PackageA.ClassA;
+
+    class AA extends ClassA {
+
+        public void methodTest(){
+            System.out.println(x);  // public
+            System.out.println(y);  // protected, 자식이면 다른패키지여도 가능하다.
+    //        System.out.println(z);  // default
+    //        System.out.println(w);  // private
+
+            methodA();  // public
+            methodB();  // protected
+    //        methodC();  // default
+    //        methodD();  // private
+        }
+    }
+
+    public class ClassB {
+        public static void main(String[] args) {
+            ClassA obj = new ClassA();
+            System.out.println(obj.x);  // public
+    //        System.out.println(obj.y);    // protected는 다른 패키지인 경우 자식만 된다.
+    //        System.out.println(obj.z);    // default는 다른 패키지면 안된다.
+    //        System.out.println(obj.w);    // private
+
+            obj.methodA();
+    //        obj.methodB();    // protected는 다른 패키지인 경우 자식만 된다.
+    //        obj.methodC();    // default는 다른 패지면 안된다.
+    //        obj.methodD();    // private
+        }
+    }
+    ```
 </br>
 
 
