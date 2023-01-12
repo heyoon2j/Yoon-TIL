@@ -308,7 +308,7 @@ print(x, y)                 # 2 0
         def testFunc(e):
             return len(e)
 
-        names.sort(key=testFunc)
+        names.sort(key=testFunc, revers)
         print(names)            # ['A', 'OTL', 'Sion', 'YounS', 'Yeeun', 'Jadudu']
         ```
         ```python
@@ -317,12 +317,13 @@ print(x, y)                 # 2 0
         a.sort(key=lambda x : (x[0], -x[1]))
         # [1, 4], [1, 2], [3, 2]
         ```
-    2) sorted(iterable)
+    2) sorted(iterable, key, reverse)
         * 정렬된 새로운 Iterable을 반환한다.
             > 그렇기 때문에 list.sort()보다 느리다.
         * 반환 값은 Iterable
         ```python
-
+        b = {"abc":10, "rt":5, "zok": 8}
+        x = sorted(b.items(), key=lambda x:x[1])    # [('rt', 5), ('zok', 8), ('abc', 10)]
         ```
 * del 문
     * 변수와 객체의 연결을 끊는다. 메모리를 지우는 것은 아니고, GC가 메모리에서 제거하도록 도와준다.
@@ -462,6 +463,7 @@ print(x, y)                 # 2 0
     | has_key(key) | 해당 키 값의 존재 여부 (True / False) | dict.has_key("a") |
     | dict[key] | 해당 Key 값에 대한 Value 값 추가 또는 변경 (에러 발생 O) | dict["a"] |
     | dict.get(key) | 해당 Key 값에 대한 Value 값 반환 (에러 발생 X) | dict.get["a"] |
+    | update(dict) | 다른 Dictionary의 값으로 해당  Dictionary의 값에 반영 | dict.update(dict2) |
     | clear()	| 모든 항목을 삭제. del a[:] 와 동등	| dict.clear() | 
     * Example
     ```python
