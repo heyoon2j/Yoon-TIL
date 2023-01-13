@@ -126,7 +126,7 @@
     }    
     ```
 
-
+---
 ## Error Class 생성
 * 필요에 따라 사용자가 정의한 클래스를 선언할 수 있다.
 * Exception or RuntimeException을 상속 받는다. (Python은 Exception)
