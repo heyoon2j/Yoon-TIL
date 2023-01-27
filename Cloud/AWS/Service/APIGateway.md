@@ -67,10 +67,10 @@ HTTP API 백엔드 서비스를 제공하는 AWS 서비스.
         ```
         * 관리형 : AmazonAPIGatewayPushToCloudWatchLogs
     - Resource 정책 ()
+    - 설정 : CloudWatch log role ARN 설정
     - 리소스 생성 : context (like "/test", "/service/file")
     - 메서드 생성 : GET / POST
-    - 
-
+    - API 배포
 
 
 3. Lambda
