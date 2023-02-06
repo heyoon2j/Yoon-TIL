@@ -122,7 +122,7 @@
 			7) usrquota : 개별 계정 사용자별 Quota 설정 가능
 			8) grpquota : 그룹별 Quota 설정 가능
 	
-	4. fstab Example
+	* fstab Example
 	```
 	# blkid
 	$ blkid
@@ -149,3 +149,11 @@
 	</br>
 
 	* https://mpjamong.tistory.com/19#:~:text=fstab%20%EC%84%A4%EC%A0%95%EC%9D%80%20%EB%94%94%EC%8A%A4%ED%81%AC%20%EB%A7%88%EC%9A%B4%ED%8A%B8%20%28Mount%29%20%ED%9B%84%20%EC%84%9C%EB%B2%84%EB%A5%BC%20%EC%9E%AC%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94,%7C%20fstab%20%EC%84%A4%EB%AA%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%ED%85%8C%EC%8A%A4%ED%8A%B8%20%EB%B3%BC%EB%A5%A8%20%EC%83%9D%EC%84%B1%EA%B3%BC%20%EB%A7%88%EC%9A%B4%ED%8A%B8
+
+
+
+4. UMOUNT
+	* ```$ umount MOUNT-DIR```: Mount 시킨 볼륨을 떼어낸다.
+	```
+	$ umount /data
+	```

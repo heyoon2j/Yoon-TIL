@@ -6,8 +6,6 @@
 
 
 
-
-
 ## Automation
 
 </br>
@@ -106,7 +104,7 @@
 * aws:executeScript : 지정된 런타임 및 핸들러를 사용하여 실행 (Lambda 없이 실행)
 * aws:invokeLambdaFunction : AWS Lambda 호출
 * aws:pause : 자동화 일시 중지, “SendAutomationSignal” API를 사용하여 신호를 주어야 재개
-* aws:runCommand : 간리형 인스턴스에서 명령 실행
+* aws:runCommand : 관리형 인스턴스에서 명령 실행
 * aws:sleep : 지정된 시간 동안 자동화를 지연
 * aws:waitForAwsResourceProperty : AWS 리소스 상태 또는 이벤트 상태가 특정 상태가 될 때까지 대기
 * https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-action-copyimage.html
@@ -205,3 +203,37 @@ mainSteps:
 * `````` : 
 * `````` : 
 </br>
+
+
+
+---
+## Patch Management
+보안 관련 및 기타 유형의 업데이트 패치에 대한 프로세스를 자동화한다.
+
+## 사전 조건
+* SSM Agent Version : 2.0.834.0 이상
+* Python Version :
+    * 대부분의 리눅스 : 2.6 ~ 3.9 지원
+* 지원되는 OS Version
+    * Amazon Linux 2 2~2.0
+    * CentOS 6.5~7.9, 8.0~8.5
+    * CentOS Stream 8
+    * Windows (R2 버전을 포함해 Windows Server 2008부터 Windows Server 2022)
+
+
+## 작동 방식
+
+1. 패치 기준 생성
+    * 패키지 릴리즈 기준 지정 (ex> 일정 기간 기준으로 릴리즈된 패키지)
+    * 승인/거부할 패키지 지정
+    * (Optino) 대체 소스 Repository 지정
+    * 
+2. 패치 그룹 추가
+3. 
+1. 패치 작업 모니터링
+    * 작업 상태
+    * 패치 기준 준수 여부
+* 
+
+
+

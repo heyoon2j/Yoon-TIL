@@ -278,6 +278,8 @@
 
 ### Stickiness
 * LB, APP Cookie는 ALB에서만, Source IP는 NLB에서만 사용 가능하다.
+* Source IP를 기준으로 Target을 결정한다.
+    > 2022년 가을인가에 변경됨. 원래는 2 tuple (Source IP, NLB Node IP)로 체크하였다. 그래서 이상한 동작을 하였다.
 * __사용하기 위해서는 Listener Rule에서 Stickness를 사용한다고 설정해놔야 한다.__
 * 고정 세션 해결 방법
     * https://kchanguk.tistory.com/146
@@ -308,6 +310,8 @@
 * HTTP/HTTPS는 XFF가 있기 때문에 따로 설정이 없고, TCP/UDP는 따로 존재하지 않기 때문에 설정이 존재한다.
 * NLB는 2가지 방법을 지원한다.
     1) preserve_client_ip : 같은 VPC에서만 사용 가능, LB 자체에서 Client IP를 전달
+    > https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html
+    > 클라이언트 IP 보존 사용 시, Client가 NLB로 요청하는 경우 Source IP와 Target IP가 동일하게 되어 간현적인 연결 실패를 가져올 수 있다.
     2) proxy_protocol_v2 : 다른 네트워크에서도 사용 가능, LB에서 Proxy Protocol을 사용해서 전달
     > "preserve_client_ip.enabled"를 true로 하면 무조건 다른 서버들에 대해 Client IP를 보내게 되므로 false로 지정하고 "proxy_protocol_v2.enabled"와 Server의 설정을 이용하도록 권장하는 것이 좋아 보인다(HAProxy Docs 읽어보면 비슷하게 설정하는 듯 보임)
 </br>

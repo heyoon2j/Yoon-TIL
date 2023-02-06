@@ -8,6 +8,5 @@ Guard Duty에 대한 분석 용도
 
 
 
-
 # AWS Security Hub
 Guard Duty, CloudTrail, Config에서 보안 정책에 따른 정보를 모으고, 위험도가 있는 정보에 대해서는 조치사항을 전달

@@ -17,29 +17,17 @@
 2) terragrunt init 자동으로 실행(auto-init 기능이 존재, 비활성 가능 : https://terragrunt.gruntwork.io/docs/features/auto-init/)
 3) 코드를 스크래치 디렉터리에 다운로드하고(Default: .terragrunt-cache file) 현재 작업 디렉터리의 코드를 동일한 스크래치 디렉터리에 복사한 다음 ```terraform <command>```를 실행한다.
 4) ```apply``` 명령어 시에 error가 발생한 것으로 간주되면, 자동으로 재실행을 시도(auto-retry 기능이 존재, 비활성 가능 : https://terragrunt.gruntwork.io/docs/features/auto-retry/)
-
-
-2) HCL을 이용하여 .tf 파일에 Infra Resources을 정의한다.
-3) __terraform init__
-    * provider, module, state 파일을 읽어 초기화 작업 진행
-    * 초기화에 대한 라이브러리 등이 .terraform Directory에 저장
-    * 인프라 관련 동시성처리를 위한 .terraform.lock.hcl 파일 생성
-    * 기존에 .tfstate 파일이 정의되어 있다면, 현재 상태와 Backend Storage와 Sync를 맞춘다.
-4) __terraform plan__
-    * 작업한 코드에 대한 결과를 예측하여 작업할 내용 출력
-5) __terraform apply__
-    * 실제 환경에 인프라 구성 작업 진행
-    * 작업 결과에 대하여 .tftate file에 저장(Local/Backend Storage 모두 저장)
 </br>
 </br>
 
-
+---
 ## Terragrunt 구축 순서
 1. Project's Infra Structure 확인
-2. Directory Stucture 생성
+2. Directory Structure 생성
 3. 각 서비스의 종속성 그래프 그리기
 4. hcl 파일 구성
 5. Terragrunt 실행
+</br>
 
 ---
 ## Terrgrunt Config File
@@ -73,3 +61,83 @@ Terragrunt 구성은 ```terragrunt.hcl``` 파일에 정의된다.
 
 </br>
 </br>
+
+
+---
+## Structure
+```script
+.
+├── provider.hcl
+├── remote_state.hcl
+├── terragrunt.hcl
+├── code
+│   ├── tgw_routing.py
+│   └── vpc_routing.py
+├── policy
+│   ├── assumeRole_apigw.json
+│   ├── assumeRole_ec2.json
+│   ├── policy_bucket_policy.json
+│   └── policy_lambda_InvokeFunction.json
+├── modules
+│   ├── computing
+│   │   ├── alb
+│   │   │   ├── main.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   ├── eks
+│   │   ├── nlb
+│   │   │   ├── main.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   └── sg
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
+│   ├── networking
+│   │   ├── tgw
+│   │   │   ├── main.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   └── vpc
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
+│   ├── security
+│   │   └── iam
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
+│   └── storage
+│       └── s3
+│           ├── main.tf
+│           ├── outputs.tf
+│           └── variables.tf
+├── network-proto
+│   ├── acl
+│   │   ├── config.hcl
+│   │   └── prd
+│   │       └── tgw
+│   │           └── terragrunt.hcl
+│   └── secure
+│       ├── config.hcl
+│       └── prd
+│           ├── iam
+│           │   └── terragrunt.hcl
+│           └── vpc
+│               └── terragrunt.hcl
+└── proto
+    ├── config.hcl
+    ├── dev
+    │   ├── efs
+    │   ├── s3
+    │   └── vpc
+    │       └── terragrunt.hcl
+    ├── prd
+    └── stg
+```
+* provider.hcl : Terraform Provider 정보
+* remote_state.hcl : 상태 정보에 대한 원격 저장 위치 정보
+* terragrunt.hcl : Terragrunt 설정 정보
+* code : Terraform으로 구현하지 못하는 내용에 대해서는 스크립트로 적용하기 코드
+* policy : IAM Policy 코드
+* modules : Terraform Module 코드

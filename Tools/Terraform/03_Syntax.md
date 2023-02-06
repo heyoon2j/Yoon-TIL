@@ -99,8 +99,8 @@ documents the syntaxes for string literals, including interpolation sequences an
         dynamic "website" {
             for_each = var.website_setting[*]
             content {
-            index_document = website.value.index_document
-            error_document = website.value.error_document
+                index_document = website.value.index_document
+                error_document = website.value.error_document
             }
         }
     }

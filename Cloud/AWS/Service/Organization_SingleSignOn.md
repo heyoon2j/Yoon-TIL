@@ -62,7 +62,8 @@
 </br>
 
 ### Permisstion Set
-* 사용자 및 그룹에 대한 권한 세트를 설정.
+* 사용자 및 그룹에 적용할 권한 세트를 설정.
+* OU 계정을 사용할 사용자 및 그룹 설정 및 권한을 매핑한다.
 </br>
 
 ### User & Group
@@ -76,8 +77,8 @@
     * SSO를 관리할 Identity Source 선택
 2. Create User and Group
     * ID Source에서 User 및 Group을 생성
-3. Allocate User and Group to Account
-    * Identity Source의 Account에 User 및 Group 할당
+3. Allocate User/Group and Permission Set to Account
+    * Identity Source의 Account에 User/Group와 Permission Set 할당
 4. Manage Permission Set
     * Identity Source의 Account의 Permission Set 관리 (User 및 Goup에 적용할 권한)
 5. Access Portal
