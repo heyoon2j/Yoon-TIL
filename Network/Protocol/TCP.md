@@ -71,6 +71,8 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
     * LB에서 Client측에 504 error 전달
     * Server 응답은 어떻게 되지?? 
     > 추측) LB가 Server로 FIN이나 RST을 보냄으로 통신을 종료시지 않았까 싶다. 아니라면 Server가 응답을 LB한테 전달하고, RST나 Connection Timeout으로 연결이 종료되지 않을까 싶다. 즉, Connection이 낭비되고 있을 것이다.
+    
+    > LB가 Server로 FIN이나 RST을 보냄으로 통신을 종료시지 않았까 싶다. : https://medium.com/tenable-techblog/lessons-from-aws-nlb-timeouts-5028a8f65dda
 2. ALB - Idle : 60s / Server - Timeout : 30s / Server의 응답 시간이 80s인 경우
     * Server에서 LB 측에 504 error 전달
     * LB에서 Client측에 504 error 전달

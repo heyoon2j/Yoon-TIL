@@ -1,6 +1,11 @@
 # Network
 
 ## Basic
+## Address
+* IP : 어떤 MAC Address를 가진 장비로 라우팅을 해야되는지 분별하기 위한 주소
+* MAC Address : 실제 장비 주소
+> 즉, IP 기준으로 어떤 장비에게 통신할지 결정된다.
+
 ## IOPS vs Throughput vs Latency
 * __Bandwidth__ : 대역폭. 네트워크를 통해 특정 시간 내에 전송할 수 있는 패킷 수. 클 수록 많은 양의 데이터를 동시에 보낼 수 있다.
 * __Throughput(MB/s)__: 처리량. 시간 단위 내에 송수신되는 데이터의 양. IOPS 보다는 Throughput이 더 정확한 성능 측정 기준.

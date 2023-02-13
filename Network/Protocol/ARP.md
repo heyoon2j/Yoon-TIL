@@ -14,5 +14,12 @@
 > 그렇기 때문에 이러한 목적에 의해 보통 MAC Address를 모르는 Target의 경우, ARP packet을 broadcasting 한다. 그리고 해당 정보는 APR Cache Memory에 Table 형태로 저장된다. MAC Address는 알지만 IP Address를 모르는 경우 __RARP Procotol__ 을 사용한다.
 </br>
 
+### GARP (Gratuitous ARP)
+자신의 IP를 타켓으로 ARP 요청하는 것을 의미한다. 이유는 아래와 같다.
+1. IP 주소 충돌 감지
+2. ARP Table 갱신 : 동일 서브넷에 존재하는 라우터의 ARP Talbe을 갱신(Refresh)하기 위해 사용.
+3. VRRR/HSRP 프로토콜에 사용
+
+
 ### Reference
 * https://www.stevenjlee.net/2020/06/07/%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0-arp-address-resolution-protocol-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C/

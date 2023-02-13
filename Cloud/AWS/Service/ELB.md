@@ -371,6 +371,14 @@
 * https://browndwarf.tistory.com/38
 
 
+## LB TCP 통신 과정
+### L4 3-way Handshaking
+* 기본 동작 과정 : Network/Switch.md 확인
 
+### Idle time 초과 동작
+* L4 : NLB는 자신만 세션을 종료시키며, 알지 못하는 Client는 동일한 Connection으로 트래픽을 보냈을 때 RST를 받게 된다.
+* L7 : Client와 Target에 FIN을 보내 세션 테이블을 종료 시킨다.
+* https://tech.kakao.com/2014/05/30/l4/
+* https://medium.com/tenable-techblog/lessons-from-aws-nlb-timeouts-5028a8f65dda
 
 
