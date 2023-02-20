@@ -20,7 +20,7 @@
 *  Controller Node: Ansible 설치된 모든 시스템. Windows machine은 Control Node가 될 수 없다.
 * Managed Node: Ansible로 관리되는 장치. "hosts"라고도 한다.
 * Inventory: Managed node들의 IP address 목록을 정의하는 파일, "hostfile"이라고 말한다. Managed node들의 IP address나 그룹화 등의 정보가 저장된다.
-* Role: 핵심 구성 요소로 Service 전반적인 코드를 Playbook에서 충분히 재사용하도록 모듈화할 수 있다.
+* Role: 핵심 구성 요소로 Service 전반적인 코드를 Playbook에서 충분히 재사용하도록 모듈화할 수 있다. 즉, 하나의 기능 동작을 의미한다.
 * Playbook: Anisble 구성, 배포 및 오케스트레이션이 포함된 파일. 해당 파일을 작성함으로 OS 구성에서 응용 프로그램 배포와 모니터링까지 시스템의 상태를 순차적으로 정의할 수 있다.
 * Module: Ansible에서 정의해둔 실행 단위로 실행할 수 있는 라이브러리를 의미.
 * Ansible Config: Ansible 환경변수 정의 파일.
@@ -32,7 +32,6 @@
 * Ansible은 Task 실행 시, 하나의 Module을 처리할 때마다 독립된 Process를 실행시켜 처리한다.
 * 동일한 command를 처리해도 PID가 다른 것을 볼 수 있다.
 * 그렇기 때문에, 하나의 Terminal에서 처리해야 되는 경우 주의해야 한다.
-
 
 
 ## Anisble 그 외 명령외
@@ -158,18 +157,46 @@
 * https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
 * Example
     ```
-    # Inventory Structure
+    # Inventory Structure (inventory/...)
     .
     ├── group_vars
     │   └── all
     ├── hosts
     └── host_vars
       └── test
-
+    ```
+    ```
     # hosts file
-    [all]
-    test
+    all:
+      hosts:
+        172.16.30.91
+      children:
+        webservers:
+          hosts:
+            dev:
+              ansible_host: 172.16.30.92
+              ansible_port: 40022
+            prd:
+              ansible_host: 172.16.30.93
+              ansible_port: 40022
+          vars:
+            ntp_server: ntp.atlanta.example.com
+            proxy: proxy.atlanta.example.com
+        wasServers:
+          hosts:
+            172.16.30.94
+            172.16.30.95
+    ```
+    * "all:"은 모든 Hosts를 의미한다.
+    * "children:"은 부모/자식 그룹을 만들 수 있다.
+    * 하위 그룹의 구성원인 모든 호스트는 자동으로 상위 그룹의 구성원이 됩니다.
+    * 그룹은 여러 부모와 자식을 가질 수 있다.
+    * 호스트는 여러 그룹에 있을 수도 있지만 런타임에는 호스트 인스턴스가 하나만 있게 된다(Ansible은 여러 그룹의 데이터를 병합하기 때문에)
 
+
+
+    ```
+    # group_vars/<group_name>/*
     # group_vars/all
     ---
     ansible_connection: local
@@ -177,15 +204,17 @@
     ansible_become_method: sudo
     ansible_python_interpreter: /usr/bin/python3
     ansible_user: ec2-user
-
-    # host_vars/test
+    ```
+    ```
+    # host_vars/<host_name>
+    # 
     ---
     ansible_host: 12.12.12.12
     ```
     * 기본적으로 all은 모든 그룹을 의미한다.
     * host_vars: host variables, 하나의 host에 대한 변수. 해당 Dir의 File들은 host 명으로 naming 한다.
     * group_vars: group variables, group에 대한 변수. 해당 Dir의 첫 File 또는 Dir는 group 명으로 naming을 한다. 
-
+    > 하위 그룹의 변수는 상위 그룹의 변수보다 높은 우선 순위(재정의)를 갖는다.
 
 ## 4. Playbook 작성
 * 실행할 명령 등이 포함된 Role과 Host 정보가 들어있는 Inventory를 이용하여 Playbook을 작성한다.
