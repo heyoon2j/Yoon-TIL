@@ -163,8 +163,12 @@
     │   └── all
     ├── hosts
     └── host_vars
-      └── test
+      └── 01_test_op
+      └── 02_test_ip
+      └── 03_test_ip      
     ```
+    * Ansible은 파일 이름에 따라 ASCII 순서로 병합한다. 파일에 접두사를 추가하여 로드 순서를 제어할 수 있다.
+
     ```
     # hosts file
     all:
@@ -182,7 +186,7 @@
           vars:
             ntp_server: ntp.atlanta.example.com
             proxy: proxy.atlanta.example.com
-        wasServers:
+        wasservers:
           hosts:
             172.16.30.94
             172.16.30.95
@@ -192,13 +196,16 @@
     * 하위 그룹의 구성원인 모든 호스트는 자동으로 상위 그룹의 구성원이 됩니다.
     * 그룹은 여러 부모와 자식을 가질 수 있다.
     * 호스트는 여러 그룹에 있을 수도 있지만 런타임에는 호스트 인스턴스가 하나만 있게 된다(Ansible은 여러 그룹의 데이터를 병합하기 때문에)
-
+    * 중복된 Host name을 가질 수 없다.
 
 
     ```
+    # group_vars/<group_name>
     # group_vars/<group_name>/*
-    # group_vars/all
-    ---
+    # group_vars/webserver
+    # group_vars/webserver/cluster_settings
+    # group_vars/webserver/db_settings
+    
     ansible_connection: local
     absible_become: True
     ansible_become_method: sudo
