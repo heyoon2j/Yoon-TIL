@@ -38,6 +38,66 @@
 * ```ansible-doc <command>```: <command> 모듈에 대한 문서를 확인할 수 있다.
 
 
+## Ansible Directory Structure
+```
+
+inventories/
+   production/
+      hosts               # inventory file for production servers
+      group_vars/
+         group1.yml       # here we assign variables to particular groups
+         group2.yml
+      host_vars/
+         hostname1.yml    # here we assign variables to particular systems
+         hostname2.yml
+
+   staging/
+      hosts               # inventory file for staging environment
+      group_vars/
+         group1.yml       # here we assign variables to particular groups
+         group2.yml
+      host_vars/
+         stagehost1.yml   # here we assign variables to particular systems
+         stagehost2.yml
+
+library/                  # if any custom modules, put them here (optional)
+module_utils/             # if any custom module_utils to support modules, put them here (optional)
+filter_plugins/           # if any custom filter plugins, put them here (optional)
+
+site.yml                  # master playbook
+webservers.yml            # playbook for webserver tier
+dbservers.yml             # playbook for dbserver tier
+
+roles/
+    common/               # this hierarchy represents a "role"
+        tasks/            #
+            main.yml      #  <-- tasks file can include smaller files if warranted
+        handlers/         #
+            main.yml      #  <-- handlers file
+        templates/        #  <-- files for use with the template resource
+            ntp.conf.j2   #  <------- templates end in .j2
+        files/            #
+            bar.txt       #  <-- files for use with the copy resource
+            foo.sh        #  <-- script files for use with the script resource
+        vars/             #
+            main.yml      #  <-- variables associated with this role
+        defaults/         #
+            main.yml      #  <-- default lower priority variables for this role
+        meta/             #
+            main.yml      #  <-- role dependencies
+        library/          # roles can also include custom modules
+        module_utils/     # roles can also include custom module_utils
+        lookup_plugins/   # or other types of plugins, like lookup in this case
+
+    webtier/              # same kind of structure as "common" was above, done for the webtier role
+    monitoring/           # ""
+    fooapp/               # ""
+
+
+```
+
+
+
 
 ## Use Ansible
 ## Ansible Config 파일 설정
@@ -49,6 +109,8 @@
     * ```/etc/ansible/ansible.cfg```
 * Example
     ```
+    # $ ansible-config init --disabled > ansible.cfg
+    # $ ansible-config init --disabled -t all > ansible.cfg
     # /etc/ansible/ansible.cfg
     [defaults]
     remote_user = ec2-user
@@ -61,7 +123,7 @@
     roles_path = ./roles
 
     ```
-
+> 가장 많이 사용되는 Config 파일 위치는 현재 디렉토리에 있는 Config이다.
 
 ## 1. user 생성 및 sudo 권한 부여
 * 기본적으로 root로 권한으로 모든걸 수행하는 것은 바람직하지 않다.
@@ -90,6 +152,8 @@
     ├── defaults
     │   └── main.yml
     ├── files
+    │   └── test.sh
+    │   └── y2.txt
     ├── handlers
     │   └── main.yml
     ├── meta
@@ -159,13 +223,13 @@
     ```
     # Inventory Structure (inventory/...)
     .
+    ├── 01_test_op
+    ├── 02_test_op    
+    ├── 03_test_op
     ├── group_vars
     │   └── all
     ├── hosts
-    └── host_vars
-      └── 01_test_op
-      └── 02_test_ip
-      └── 03_test_ip      
+    └── host_vars    
     ```
     * Ansible은 파일 이름에 따라 ASCII 순서로 병합한다. 파일에 접두사를 추가하여 로드 순서를 제어할 수 있다.
 
