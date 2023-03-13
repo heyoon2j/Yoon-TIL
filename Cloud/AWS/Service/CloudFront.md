@@ -7,7 +7,8 @@ CDN(Content Delivery Network) 서비스로 콘텐츠를 사용자에게 더 빨�
 2) 액세스 제한
 3) 보안
 4) 캐싱 주기 (배포 시 유의)
-5) 로그
+5) Keep-Alive
+6) 로그
 
 </br>
 
@@ -18,27 +19,14 @@ End Point에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: ht
         ```
         <img src="http://cdnUrl.com/img/test.png">
         ```
-    * 
     * 단점 : End Point가 두 군데이기 때문에 보안 및 액세스 제어에 대해서 양쪽을 신경써야 한다.
-
 
 2) CDN으로 통합 (CDN이 가장 앞단으로, URL에 따라 해당하는 Origin Server에게 전달)
     * 콘텐츠 안에 CDN URL을 표기한다.
         ```
         <img src="http://cdnUrl.com/img/test.png">
         ```
-    * 
     * 단점 : CDN 기능이 좋아야 한다.
-
-
-
-
-
-
-
-
-
-
 
 https://techblog.woowahan.com/2699/
 
@@ -89,6 +77,26 @@ HTTPS 사용 여부를 결정
 </br>
 </br>
 
+
+
+## Deploy
+1. Contents를 오리진 서버에 배포
+2. 캐싱 처리
+3. 
+4. 
+
+</br>
+</br>
+
+
+## 구축
+1. Distribution Config 설정
+
+
+2. 
+
+</br>
+</br>
 
 
 ### Troubleshooting
