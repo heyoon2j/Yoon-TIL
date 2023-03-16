@@ -12,13 +12,16 @@
 * OpenStack Service API를 노출시켜 모든 사용자가 연결할 수 있어야 한다.
 </br>
 
-### __Management Network_
+### __Management Network__
 * OpenStack 구성 요소 간의 내부 통신에 사용된다. 해당 Network는 데이터 센터 내에서만 연결할 수 있어야 한다.
 </br>
 
 ### __Guest Network__
 * 배포된 Cloud 내에서 VM 데이터 통신에 사용된다(내부적으로는 VXLAN 기술을 사용하여 Overlay Network 구성)
-* External Network : VM에 인터넷 액세스를 제공하는데 사용된다.
+</br>
+
+### __External Network__
+* VM에 인터넷 액세스를 제공하는데 사용된다.
 </br>
 
 
