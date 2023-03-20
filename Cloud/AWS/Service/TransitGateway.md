@@ -21,12 +21,11 @@
     * TGW에 다른 네트워크 연결 (VPC, TGW Peering, DXG, VGW)
 3. Create TGW Routing Table
     1) 각 Source 별 Routing Table 생성
-    2) Routing Table을 사용할 Attachment 연결
+    2) Routing Table을 사용할 Attachment 연결 (Source가 된다!)
     3) 전파받을 네트워크 Propagation 설정
-    4) Path 설정
+    4) Static Routing Path 설정
 4. Share TGW using Resource Access Manager
     * 다른 Account 공유
-
 </br>
 
 ## Routing Priority

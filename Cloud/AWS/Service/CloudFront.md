@@ -134,6 +134,7 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
     * Cache 정책 : 캐시 적중에 대한 정책
     * Origin Request 정책 : 캐시 누락이 있을 때, CloudFront에서 Origin으로 보내는 정책
     * 응답 정책 : 최종 사용자에게 응답 보낼 때 정책
+    > Caching TTL 설정 시, Application에서 Cache-Control: max-age, Expires 등을 설정해 뒀다면 CloudFront TTL 설정이 지워질 수 있고, Browser에서는 Application 설정을 따라간다. 그렇기 때문에  Application 헤더 설정 확인이 필요하다.
 3. Caching Default 동작 설정 (User --> CloudFront 설정)
     * 경로 패턴
     * View 설정 : 최종 사용자가 통신할 때 허용할 프로토콜 설정
@@ -170,9 +171,8 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
     * 변경 내용이 즉시 전파되지 않고 차근차근 전파된다. 그렇기 때문에 기존 설정과 새로운 설정 중 어느 설정을 따라 배포하는지 판단할 수 없다.
 * 콘텐츠 변경
     * 기존 파일의 이름과 다르게 변경하여 업데이트 : 변경된 내용으로 코드에서 링크를 수정해야 한다!
-    * 기존 파일과 동일한 이름을 사용하여 업데이트 : TTL 설정을 0초로 변경하여 만료시키고, 다시 TTL 변경한다 (단, application에서 설정한 값이 있다면 확인이 필요하다!!)
+    * 기존 파일과 동일한 이름을 사용하여 업데이트 : 설정해두었던 TTL 설정이 만료될 때까지 기다린다(Default: 24h)
     * 콘첸츠 무효화 : 엣지 캐시에서 파일이 만료되기 전에 파일을 제거할 수 있다. 이 경우는 아예 삭제하고 새로 가져오는 개념이므로 상관없는 파일에 대해서만 적용해야 한다!
-    > Application에서 Cache-Control: max-age, Expires 등을 설정해 뒀다면 CloudFront TTL 설정이 지워질 수 있다. 그렇기 때문에 확인이 필요하다.
 </br>
 </br>
 
