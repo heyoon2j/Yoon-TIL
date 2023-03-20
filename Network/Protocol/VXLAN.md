@@ -15,10 +15,20 @@
 * 수동적인 구성
     * Zone 별 VLAN Trunk 구성은 수동적이기 때문에 급변하는 Cloud 환경에서는 L2 구성은 불필요한 구성
     > Multicast 기반으로 구성함으로써 능동적인 구성이 가능
+    
 </br>
 </br>
 
+---
+## VLAN
+가상 랜, 컴퓨터 네트워크에서 여러 개의 구별되는 Broadcast Domain을 만들기 위해 단일 2 계층 네트워크를 분할할 수 있는데, 이렇게 분리되면 Packet들은 하나 이상의 Router들 사이에서만 이동할 수 있다.
+> Broadcast Domain을 이해하려면 ARP Protocol을 이해하면 된다!!
+* 보통 서로 다른 PC 정보를 Broadcasting을 통해 알 수 있기 때문에, 해당 Domain에 따라 통신이 가능해진다.
+* Switch Tunneling을 사용하여 VLAN을 구분지어 통신한다.
+</br>
+</br>
 
+---
 ## VXLAN 네트워크 구조
 ![VXLANNetworkArchitecture](../img/VXLANNetworkArchitecture.png)
 * VTEP(VXLAN Tunnel End Point)
