@@ -30,4 +30,14 @@
 * Nmap : 네트워크 매핑
 * Infection Monkey : 침투 테스트
 * fprove : 성능 테스트
-*ㅊ Cacti : 시각화 툴
+* Cacti : 시각화 툴
+
+
+
+## ETC (용어)
+* Clock Rate: 데이터 전송속도(bit)
+* DTE(Data Terminal Equipment): PC, Server, Router
+* DCE(Data Communication Equipment): DSU, CSU
+* 모뎀: Digital Signal -> Analogue Signal / Analogue Signal -> Digital Signal로 변환시켜준다. 변환시키는 이유는 Digital Signal은 거리가 짧기 때문이다.
+* CIDR: Classless Inter-Domain Routing, Class 없는 Domain 간 Routing 기법으로 VLSM을 사용하여 표현
+* VLSM: Variable Length Subnet Masks, 가변길이 서브넷 마스크

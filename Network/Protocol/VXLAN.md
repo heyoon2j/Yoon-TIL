@@ -44,6 +44,7 @@
     * VM의 논리적 IO 포트
     * veth 라고도 쓰인다.
 > 그림에서는 vSwitch와 VTEP가 분리되어 그려져있지만, 실제로는 vSwitch 위에 VTEP가 포함되어 있다고 생각하면 된다.
+
 </br>
 </br>
 

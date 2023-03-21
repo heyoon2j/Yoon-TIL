@@ -1,5 +1,93 @@
 # Routing
+최적의 경로를 선택하는 과정. Packet에 대한 Destination IP Address와 일치하는 경로를 Routing Table에서 검색하여 Packet을 전달.
+* 최적의 경로를 선택하기 위해서 Router는 다음과 같은 작업을 한다.
+    __1) 경로 수집(Path Discovery)__ : 네트워크에 할당된 Subnet에 도달할 수 있는 모든 경로 정보를 검색 및 수집
+    __2) 경로 선출(Path Selection)__ : 수집된 경로 정보들을 기반으로 각 목적지까지의 최적 경로를 선출하는 과정(Matrix 상수 계산)
+    __3) 경로 관리(Path Management)__ : 수집된 경로 정보와 그 안에서 선출된 최적 경로들의 변화를 지속적으로 감지하는 과정
+</br>
 
+
+---
+## __Routing Algorithm__
+1. Distance Vector Algorithm
+    * Router와 Router 간의 최적 경로만 교환
+    * 목적지까지 가기 위한 최적 경로만 관리
+    * Destination Subnet, Metric, Hop
+2. Link State Algorithm
+    * Router와 Router 간의 모든 경로 정보 교환 (Packet을 전달할 준비가 된 노드에 대해서)
+    * SPF Algorithm 사용 (Short Path First)
+3. Advanced Distance Vector Alogrithm
+    * Distance Vector + Link State
+    * Neighbor 관계 및 토폴로지 정보(Link, Node 등의 정보)를 Distance Vector에 추가
+</br>
+</br>
+
+
+---
+## __Routing Protocol__
+![Routing_protocol](../img/Routing_protocol.jpeg)
+크게 Routing을 하는데 Static Routing과 Dynamic Routing 방식이 존재하며, Dynamic Routing 방식을 위한 여러가지 Protocol이 있다. 
+</br>
+
+### __Static Routing (정적 라우팅)__
+수동으로 직접 목적지를 지정한다. 설정이 번거롭지만, Connected 다음으로 가장 신뢰있는 경로로 소규모 네트워크 환경에서 주로 사용한다.
+</br>
+
+### __Dynamic Routing (동적 라우팅)__
+Routing Protocol에 의해서 자동으로 설정되고 관리된다. 해당하는 Protocol은 다음과 같다.
+1. IGP(Interior Gateway Protocol)
+    * 동일 조직 내에서 사용
+    * Distance Vector :
+        * RIP (표준, 방향성만 가지고 있어서 최대 15개 ROuter 까지만)
+        * RIPv2
+        * IGRP (Cisco 전용)
+    * Link State :
+        * OSPF (업계 표준, 한 Area에 50대 이상은 묶지 않는다)
+        * IS-IS
+    * Advanced Distance Vector : 
+        * EIGRP (요즘 많이 사용되고, 성능이 가장 좋다)
+2. EGP(Exterior Gateway Protocol)
+    * 다른 조직 간에 사용. 대규모 Routing할 때 사용
+    * Path Vector : BGPv4
+</br>
+
+### __Connected 경로__
+Router의 Interface에 연결된 Local Network
+* Laycer 2계층 동작이 가능한 상태이고, IP Address 또는 Subnet이 할당되었다면 Router는 자신의 Interface와 연결된 Subnet을 Routing Table에 Connected로 등록한다.
+
+</br>
+
+### __Classfull Routing Protocol__
+Routing Update 정보에 Subnet Mask를 포함하지 않는 Protocol
+* CIDR 및 VLSM 사용 불가
+* RIPv1, IGRP
+</br>
+
+### __Classless Routing Protocol__
+Routing Update 정보에 Subnet Mask를 포함하는 Protocol
+* RIPv2, OSPF, EIGRP, BGPv4
+</br>
+
+
+---
+## ASN
+네트워크가 방대해짐에 따라 전체 네트워크를 가지기도, 관리하기도 불가능해졌다. 그에 따라 네트워크 관리 범위를 계층적으로 분리하고 단위 별로 라우팅 정보를 관리하기 위해 AS가 도입되었다. 
+* Autonomous System Number: 일관된 라우팅 정책을 가지고 있는 IP 접두사 그룹(AS)을 나타내는 번호 (172.16.30.0/24 == 100번, 172.16.20.0/24 == 90번)
+* 보통 보면 서로 다른 네트워크끼리 연결할 때(VPN 등) 정보가 필요하다.
+* 다른 네트워크는 ASN으로 해당 네트워크의 IP 목록과 라우팅 정책을 식별한다.
+* 통신 과정
+    * AS가 도입됨에 따라 라우터는 기본적으로 AS 내에 있는 라우터 도달 정보만 가지고 있는다.
+    * 외부 AS와 통신이 필요한 경우 ASBR(Autonomous System Boundary Router)을 이용하여 자신과 인접한 다른 AS에 대한 정보를 가진다.
+    > (추측이지만) 이 말은 즉, 원하지 않으면 인접해 있어도 안가질 수 있다는 의미일 것으로 보인다. 자세하게 설명하면 물리적으로 연결은 되어 있을 수 있으나 모든 라우팅 정보를 가져오는 것은 아니다로 해석할 수 있다.
+    
+    > 실제로 사설망에서 인터넷쪽 네트워크 정보를 가지지 않는다. 그리고 필요시에 설정을 통해서 원하는 AS만 BGP를 통해 라우팅 정보를 받게 되는데, BGP를 설정할 때 ASN 설정이 들어간다. 
+    
+    > https://xn--3e0bx5euxnjje69i70af08bea817g.xn--3e0b707e/jsp/resources/asInfo.jsp
+
+</br>
+</br>
+
+---
 ## Routing Path 결정 순서
 * 물리적 장치 (Routing Rule) / Longest Match Rule -> AD -> Metric
 
@@ -57,8 +145,4 @@
 </br>
 
 
-## ASN
-* Autonomous System Number
-* 하나의 네트워크 관리자에 의해 관리되는 라우터 집단(VLAN ID와 비슷한 개념인거 같다)
-* 보통 보면 서로 다른 네트워크끼리 연결할 때(VPN 등) 필요하다.
 
