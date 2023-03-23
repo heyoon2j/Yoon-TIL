@@ -13,7 +13,7 @@ Terragrunt에서 지원하는 내장 함수는 다음과 같다 (https://terragr
 ---
 ##
 * 
-
+* Virtual Private Gateway : AWS의 VPN용 Gateway
 
 ---
 ##

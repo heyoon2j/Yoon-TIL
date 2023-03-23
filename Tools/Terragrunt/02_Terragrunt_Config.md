@@ -141,7 +141,7 @@ terraform {
 
 ---
 ## generate Block
-Terragrunt working directory에 파일을 생성하는데 사용된바. terraform block에서 설정할 수 없는 구성들을 설정한다. generate block으로 생성하는 내용은 다음과 같다.
+Terragrunt working directory에 파일을 생성하는데 사용된다. terraform block에서 설정할 수 없는 구성들을 설정한다. generate block으로 생성하는 내용은 다음과 같다.
 1. Provider
 2. Backend
 * Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
