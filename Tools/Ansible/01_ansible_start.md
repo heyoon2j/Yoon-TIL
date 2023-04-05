@@ -223,9 +223,10 @@ roles/
     ```
     # Inventory Structure (inventory/...)
     .
-    ├── 01_test_op
-    ├── 02_test_op    
-    ├── 03_test_op
+    ├── 01-openstack.yml          # configure inventory plugin to get hosts from OpenStack cloud
+    ├──   02-dynamic-inventory.py   # add additional hosts with dynamic inventory script
+    ├──   03-on-prem                # add static hosts and groups
+    ├──   04-groups-of-groups       # add parent groups
     ├── group_vars
     │   └── all
     ├── hosts

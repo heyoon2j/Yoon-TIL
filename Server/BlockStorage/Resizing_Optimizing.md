@@ -42,7 +42,7 @@
 
 ## Optimizing 과정
 ![Optimizing](../img/Optimizing.png)
-> File을 i-node를 가지고 있고, i-node 안에는 Data Block 위치 정보가 저장되어 있다.
+> File은 i-node를 가지고 있고, i-node 안에는 Data Block 위치 정보가 저장되어 있다.
 
 1. File에 Write가 될 수 있으므로 해당 File을 점유
 2. 1번 Data Block을 다른 Block으로 복사

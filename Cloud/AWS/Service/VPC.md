@@ -140,7 +140,7 @@
 </br>
 
 ## AWS Direct Connect(DX)
-* 1 또는 10 Gbps의 전용 Private Network 연결을 제공. 최대 50Gbps
+* 1 ~ 100 Gbps의 전용 Private Network 연결을 제공.
 * VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
 * 서비스 이점
     1) 네트워크 전송 시 인터넷 대역폭을 두고 경쟁할 필요가 없다.

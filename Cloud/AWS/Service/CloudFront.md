@@ -42,10 +42,10 @@ CDN(Content Delivery Network) 서비스로 콘텐츠를 사용자에게 더 빨�
 
 ---
 ## CDN Architecture
-End Point에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: https://blog.leedoing.com/35)
+Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: https://blog.leedoing.com/35)
 * 기본 동작 : URL 기반으로 콘텐츠를 Origin 서버로부터 캐싱한다 (ex> /hello/index.html)
 > 1번은 요즘 추세는 아닌거 같다.
-1. Origin Server와 CDN으로 2개 가주가는 방법
+1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
     ![cdn_architecture_old](../img/cdn_architecture_old.png)
     * 콘텐츠에 CDN URL 표시
     * 보통 용량이 큰 특정 정적 콘텐츠 들고 가게 하기 위해서 사용하며, 코드 상에서 등록한 내용들만 CDN에서 캐싱
@@ -57,7 +57,6 @@ End Point에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: ht
     * 단점 :
         * End Point가 두 군데이기 때문에 보안 및 액세스 제어에 대해서 양쪽을 신경써야 한다.
         * 코드 상 정적 콘텐츠 위치를 CDN 위치로 지정해야 한다. CDN에 장애가 발생하면 대응 수단은 코드를 수정하여 재배포해야 한다(CDN 복구가 늦어지거나, 안되는 경우)
-
 2. CDN으로 통합 
     ![cdn_architecture_new](../img/cdn_architecture_new.png)
     * CDN이 가장 앞단으로, URL에 따라 해당하는 Origin Server에게 전달
@@ -70,6 +69,20 @@ End Point에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: ht
 </br>
 </br>
 
+---
+## Cachig
+### 속도 향상
+캐싱 속도를 향상시키는 방법은 다음과 같다.
+1. 각 지역 가까운 곳에 Origin을 둔다(S3 등 사용). 그 후에 CDN으로 트래픽이 들어오고 Cache Miss로 Origin을 찾아갈때 코드를(Lambda@Edge) 통해 가장 가까운 Origin으로 가도록 설정한다.
+2. ALB가 Origin인 경우, Global Accelater 기능 사용
+3. AWS Origin Shield 기능을 사용한다.
+</br>
+
+### 적중률 향상
+1. ...
+2. AWS Origin SHield 기능을 사용한다.
+</br>
+</br>
 
 ---
 ## 보안
@@ -172,11 +185,20 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
 * 콘텐츠 변경
     * 기존 파일의 이름과 다르게 변경하여 업데이트 : 변경된 내용으로 코드에서 링크를 수정해야 한다!
     * 기존 파일과 동일한 이름을 사용하여 업데이트 : 설정해두었던 TTL 설정이 만료될 때까지 기다린다(Default: 24h)
-    * 콘첸츠 무효화 : 엣지 캐시에서 파일이 만료되기 전에 파일을 제거할 수 있다. 이 경우는 아예 삭제하고 새로 가져오는 개념이므로 상관없는 파일에 대해서만 적용해야 한다!
+    * 콘첸츠 무효화 : 엣지 캐시에서 파일이 만료되기 전에 파일을 제거할 수 있다. 이 경우는 아예 삭제하고 새로 가져오는 개념이므로 상관있는 파일에 대해서만 적용해야 한다!
 </br>
 </br>
 
-
+---
+## 동적 데이터
+동적 데이터는 캐싱이 되지 않아야 한다. 캐싱되지 않도록 하는 방법은 전체 아키텍처에 따라 달라진다.
+1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
+    * 동적 데이터는 Origin Server에서 바로 가주가므로 CDN Caching에 대해 신경쓸 필요가 없다.
+2. CDN으로 통합 
+    1) 동적 데이터는 "Caching TTL = 0" 으로 설정
+    2) 
+</br>
+</br>
 
 ---
 ### Troubleshooting

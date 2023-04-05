@@ -77,10 +77,10 @@
 
 ## IOPS vs Throughput vs Latency
 ## 시스템 관점
-* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 읽기/쓰기 작업을 수행하는데 걸리는 작업 수(또는 트랜잭션이라고도 한다)
-* __Throughput(MB/s)__: 초당 읽거나 쓰는 비트 수 또는 전송 속도. IOPS 보다는 Throughput이 더 정확한 성능 측정 기준.
+* __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 읽기/쓰기 작업 수(또는 트랜잭션이라고도 한다)
+* __Throughput(MB/s)__: 처리량. 시간 단위 내에 송수신되는 데이터의 양.
 * __Latency(ms)__ : 지연 시간. 네트워크에서 하나의 데이터 패킷이 다른 지점에 도착하는 데 소요되는 시간.
-    > IOPS는 시스템에 대한 내용이고, Throughput은 네트워크에 대한 내용이다!
+    > IOPS는 시스템에 대한 내용이고, Throughput은 네트워크에 대한 내용이다! (Ref : https://performance.tistory.com/27)
     > 시스템 관점에서 Latency는 트랜잭션을 처리하는데 필요한 시간
 
 * Throughput 계산 방법

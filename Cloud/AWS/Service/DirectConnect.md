@@ -7,5 +7,5 @@ AWS와 On-premise 간의 전용 네트워크를 제공하는 서비스.
 * Direct Connect Gateway : AWS의 DX용 Gateway
 * Virtual Interface : AWS와 외부 네트워크 간의 통신을 위한 네트워크 인터페이스
     * AWS 측의 연결 정보 설정이라고 생각하면 된다.
-    * DX Gateway - Vritual Intterface <---> Connect
-    * VLAN / BGP ASN 설정 필요
+    * DX Gateway <---> Virtual Interface <---> Connect
+    * VLAN / BGP ASN 확인 필요
