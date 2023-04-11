@@ -21,6 +21,9 @@
 1. IP 주소 충돌 감지
 2. ARP Table 갱신 : 동일 서브넷에 존재하는 라우터의 ARP Talbe을 갱신(Refresh)하기 위해 사용.
 3. VRRR/HSRP 프로토콜에 사용
+</br>
+</br>
+
 
 ---
 ## ARP 구조
