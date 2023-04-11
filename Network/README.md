@@ -39,3 +39,5 @@
 * 모뎀: Digital Signal -> Analogue Signal / Analogue Signal -> Digital Signal로 변환시켜준다. 변환시키는 이유는 Digital Signal은 거리가 짧기 때문이다.
 * CIDR: Classless Inter-Domain Routing, Class 없는 Domain 간 Routing 기법으로 VLSM을 사용하여 표현
 * VLSM: Variable Length Subnet Masks, 가변길이 서브넷 마스크
+* Broadcast Domain : LAN 상에서 어떤 단말이 Broadcast Packet을 송출할 때, '해당 Packet을 수신할 수 있는 단말들의 집합'을 의미
+* Collision Domain : LAN에서 전송 매체를 공유하고 있는 여러 단말들이 서로 경쟁함으로써 충돌이 발생하는데, 이 충돌한 프레임이 전파되어 영향을 받게 되는 영역을 의미. 리피터와 허브는 충돌을 전파하지만, Switch, Router는 forwarding을 통해 충돌 영향이 없다. Collision Domain을 Switch와 Router는 분할할 수 있다

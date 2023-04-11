@@ -8,7 +8,7 @@
 
 ---
 ## Data Link Layer (2 Layer)
-* 물리적 주소(MAC 주소)를 기반으로 노드 대 노드(Point-to-Point)로 데이터 전송 형태를 결정하는 계층.
+* 물리적 주소(MAC 주소)를 기반으로 노드 대 노드(Point-to-Point) 통신을 제어하는 계층 (데이터 통신 제어)
 * 기기간 처리, Error Control(물리계층에서 발생하는 Error), Flow Control(Ex> 스케줄링).
 * 장비 : Switch, Hub
 * 프로토콜: Ethernet, PPP 등
@@ -16,7 +16,7 @@
 
 ---
 ## Network Layer (3 Layer)
-* 논리적 주소(IP주소)를 기반으로 출발지에서 목적지까지 가는 네트워크 경로를 제어하는 계층.
+* 논리적 주소(IP주소)를 기반으로 출발지에서 목적지까지 가는 네트워크 경로를 제어하는 계층(통신 경로 제어)
 * Path Selection, Routing을 하게 된다.
 * 장비 : Router
 * 프로토콜: IP, ICMP, ARP 등
@@ -25,7 +25,7 @@
 
 ---
 ## Transport Layer (4 Layer)
-* 종단 간의 통신(End to End)을 제어하는 계층(데이터 전송 관리)
+* 종단 간의 통신(End to End)을 제어하는 계층(데이터 통신 제어)
 * 데이터 전송의 신뢰성을 보장. 에러 제어, 혼잡 제어, 흐름 제어.
 * 프로토콜:  TCP, UDP 등
 * Source Port Number, Destination Port Number, Seq, Ack
@@ -33,8 +33,9 @@
 
 ---
 ## Session Layer (5 Layer)
-* 종단 간의 응용 프로세스가 통신을 관리하는 계층(데이터 교환 관리)
+* 종단 간의(응용 프로세스) 통신을 관리하는 계층
 * 프로세스 간에 연결을 맺거나 끊기, 연결을 유지하는 기능을 담당하고, 포트(Port) 연결이라고도 한다.
+* 
 * 프로토콜: SSH, TLS, RPC 등
 </br>
 
