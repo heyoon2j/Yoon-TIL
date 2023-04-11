@@ -22,7 +22,7 @@
 * __Domain registrar__
     * 도메인 등록 대행자.
     * 국제 인터넷 주소 관리기구(ICANN)가 인증한 특정 최상위 도메인(TLD) 등록을 처리하는 회사로, 리지스트리의 데이터베이스에 등록 데이터를 등록한다.
-    * 예를 들어 Amazon Registrar, Inc.는 .com, .net, .org 도메인의 등록 대해자이다. Amazon의 등록 대행 협력사인 Gandi는 .apartments, .boutique, .camera 등 수백 가지 TLD의 도메인 등록 대해자이다.
+    * 예를 들어 Amazon Registrar, Inc.는 .com, .net, .org 도메인의 등록 대행자이다. Amazon의 등록 대행 협력사인 Gandi는 .apartments, .boutique, .camera 등 수백 가지 TLD의 도메인 등록 대해자이다.
 * __Domain registry__
     * 도메인 레지스트리.
     * 특정 최상위 도메인을 가지고 도메인을 판매할 권리를 소유한 회사로, 등록된 도메인의 데이터베이스를 유지 관리하는 기관.
@@ -77,6 +77,10 @@
     * 예를 들어 example.com의 hosted zone에는 www.example.com의 트래픽은 192.168.0.40이라는 IP 주소로 라우팅하라는 레코드 정보가 저장되어 있다.
 * __name servers__
     * Domain Name System을 제공하는 서버.
+* __TLD Server__
+    * Top Level Domain 서버로 .com, .kr 등을 관리하는 도메인 최상위 서버
+* __Root Domain Server__
+    * TLD 서버로 recursive resolver하는 최상위 네임 서버
 * __private DNS__
     * Domain과 Sub Domain의 트래픽을 하나 이상의 Amazon VPC 내의 Amazon EC2 인스턴스로 라우팅하도록 해주는 DNS의 로컬 버전.
 * __reusable delegation set__
@@ -86,22 +90,46 @@
 
 ### DNS 동작 과정
 ![DNSFlow](../img/DNSFlow.png)
-1. Domain name이 입력되면 먼저 PC의 cache를 확인
+1. Domain name이 입력되면 먼저 Application(Browser, Apache 등)의 cache를 확인
+    ```
+    $ curl -v http://abc.2yj.com
+    ```
 2. ```/etc/hosts``` 파일에서 Domain 정보를 확인
 3. 설정한 DNS Resolver Server에서 Domain 확인
 4. 저장되어 있는 cache 정보가 없다면, Recusive Query를 통해 정보를 확인하게 된다. 먼저 Root name server에서 Domain 정보를 확인
 5. Root name server는 TLD name server 정보를 전달
 6. 전달 받은 TLD name server에서 Domain 정보 확인
 7. TLD name server는 Sub domain name server(Route 53 name server) 정보를 전달
+    ```
+    ; .com TLD name server
+    2yj IN  NS  ns1.test.com.
+        IN  NS  ns2.test.net.
+    ```
+    ```
+    $ORIGIN test.com.
+
+    @   IN  NS  ns1.test.com.
+
+    ns1 IN  A   10.0.0.2    (Public IP 가정)
+    ```
 8. 전달받은 Sub domain name server에서 Domain 정보 확인
-9. 실제 서비스를 제공하는 Server 정보를 전달 
-10. DNS Resolver Server는 서비스 Server의 정보를 다시 PC에 전달
-11. PC는 전달받은 Domain 정보를 이용하여 서비스 Server에 접근
+    ```
+    ; Sub domain name server (test.com)
+    ; Zone File (y2j.com)
+    $ORIGIN y2j.com.
+    @   IN  NS  ns1.test.com.
+        IN  NS  ns2.test.net.
+
+    abc IN  A   10.0.0.85
+    ``` 
+9.  실제 서비스를 제공하는 Server 정보를 전달 
+10. DNS Resolver Server는 서비스 Server의 정보를 다시 Application에 전달
+11. Application은 전달받은 Domain 정보를 이용하여 서비스 Server에 접근
 </br>
 </br>
 
 ## RFC 1034
-* 같은 도메인에 대해 CNAME RR은 다른 데이터는 존재하면 안된다 (MX, TXT와 같이 쓰일 수 없다!)
+* 같은 도메인에 대해 CNAME RR은 MX, TXT와 같이 쓰일 수 없다!
     * https://totaluptime.com/kb/cname-and-mx-for-the-same-host-name/
     * https://serverfault.com/questions/18000/dns-subdomains-that-require-both-an-mx-record-and-a-cname
 </br>
@@ -145,10 +173,11 @@ mail          IN  A     192.0.2.3             ; IPv4 address for mail.example.co
 mail2         IN  A     192.0.2.4             ; IPv4 address for mail2.example.com
 mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.com
 ```
-* 
+> Zone 파일을 수정할때마다 SOA의 Serial을 변경해줘야 한다!! (동기화때문에)
 </br>
 
 ### SOA Record
+관리자의 이메일 주소, 도메인이 마지막으로 업데이트된 시간, 새로 고침 사이에 서버가 대기해야 하는 시간 등 도메인 또는 영역에 대한 중요한 정보를 저장
 ```
 @     IN     SOA    {primary-name-server}     {hostmaster-email} (
                     {serial-number}
@@ -156,9 +185,22 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
                     {time-to-retry}
                     {time-to-expire}
                     {minimum-TTL} )
+
+@	    IN	SOA	ns1.example.com.	hostmaster.example.com. (
+		    	2023040900    ; serial                     
+		    	21600      ; refresh after 6 hours
+		    	3600       ; retry after 1 hour
+		    	1209600     ; expire after 2 week
+		    	86400 )    ; minimum TTL of 1 day
 ```
 * https://help.dyn.com/how-to-format-a-zone-file/
-* Primary name server : 
+* {primary-name-server} : 기본 네임 서버
+* {hostmaster-email} : 관리자 메일, @ 대신 .을 써야한다.
+* {serial-number} : SOA 레코드의 버전 번호. 변경되면 그에 따라 Secondary name server에게 업데이트 알림을 보낸다(notify). (일반적으로 YYYYMMDDnn, nn == 당일 수정 번호)
+* {time-to-refresh} : Secondary가 SOA 레코드가 업데이트 되었는지 확인하기까지 대기 시간 (== 갱신 주기)
+* {time-to-retry} : Primary가 응답하지 않을 시 Secondary가 업데이트를 다시 요청할 때까지 대기하는 시간
+* {time-to-expire} : Secondary가 계속해서 응답받지 못하면 해당 Zone에 대한 쿼리를 중지해야 되는데, 이때까지 걸리는 시간
+* {minimum-TTL} : Caching name server에서 설정되지 않은 도메인에 대해 에러 응답을 받았을 때 캐싱할 시간
 
 
 ### A Record
@@ -185,9 +227,16 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 ### MX Record
 * Example
     ```
+    @	    IN  MX  10  mail.example.com.
+            IN  MX  20  mail.example.net. 
+            IN  MX  30  mail2.example.com. 
+    mail    IN  A   192.168.254.7
+    mail2   IN  A   192.168.254.8
     ```
+    *
 
 ### NS Record
+해당 도메인에 대한 권한을 어떤 네임 서버가 관리하고 있는지 알려주는 레코드
 * Example
     ```
     ```
@@ -226,14 +275,15 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 * https://aws.amazon.com/ko/blogs/security/simplify-dns-management-in-a-multiaccount-environment-with-route-53-resolver/
 * VPC와 네트워크 간(On-premise, VPC, Route 53 Resolver) DNS Query 해석을 위해 사용.
 * 기본적으로 VPC를 생성하면 Route 53 Resolver는 자동으로 VPC용 DNS 서버(Amazon Route 53 Resolver)를 제공.
+> !! 사용자의 온프레미스 DNS 서버에서 VPC CIDR+ 2 주소로 프라이빗 DNS 쿼리를 전달하는 것은 지원되지 않으므로 불안정한 결과가 발생할 수 있습니다. 대신 Resolver 인바운드 엔드포인트를 사용할 것을 권장한다고 !!
 </br>
 
 ### 기능
-* Inbound Endpoint
+* Inbound Endpoint</br>
     ![ResolverInboundEndpoint](../img/ResolverInboundEndpoint.png)
     * 다른 네트워크 (On-premise, VPC 등) -> 다른 네트워크 Resolver -> VPN or Direct Connnect -> Inbound Endpoint -> 해당 VPC의 Route 53 Resolver
     * 네트워크의 DNS Resolver가 해당 Inbound Endpoint를 통해 DNS Query를 Route 53 Resolver에게 전달힐 수 있다.
-* Outbound Endpoint
+* Outbound Endpoint</br>
     ![ResolverOutboundEndpoint](../img/ResolverOutboundEndpoint.png)
     * VPC -> VPC Resolver -> Outbound Endpoint -> 다른 네트워크 (On-premise, VPC 등)의 Resolver
     * DNS Resolver가 해당 Outbound Endpoint를 통해 Outbound VPC DNS Resolver에게 전달
