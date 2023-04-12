@@ -16,7 +16,6 @@ SHOW INDEX FROM [table_name];
 
 # Show DB used current
 SELECT DATABASE();
-
 ```
 
 ## 사용자 권한

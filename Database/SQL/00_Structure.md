@@ -1,21 +1,27 @@
 # Structure
 
 ## Basic
+
+* DB Server는 크게 Memory/Disk 로 구분할 수 있다. Memory/Disk로 분리함으로써, Disk에 저장 시 에러가 발생해도 Log를 통해 Rollback이 가능해진다.
+* WAL(Write Ahead Log) : 가장 중요한 요소 중 하나로, 데이터 파일에 대한 모든 변경 사항은 WAL(InnoDB에서는 redo 로그를 의미)에 기록된다(Query이 기록됨)
+* 데이터 업데이트 순서는 다음과 같다.
+    1) User Thread(Query 처리하는 쓰레드)에서 Buffer Pool에 원하는 Data Page를 검색. 없는 경우 디스크의 Tablespace에 액세스하여 원하는 Page를 Buffer Pool에 캐싱한다.
+    2) Buffer Pool(memory)에서 업데이트 내용(수정한 Page)을 저장
+    3) Buffer Pool에 저장되어 있는 내용을 Log Buffer(memory)에 저장
+    4) Commit 시 or Log Buffer가 Full인 경우 or 일정 주기마다(1s) Log Buffer에 있는 내용을 Log File(disk, WAL)에 저장한다. 이 때 Checkpoint 발생한다(Check Point가 발생한다는 것은 DB 파일이 새로 써졌다는 의미)
+        > CDC는 이를 기준으로 Squence를 확인하여 실행한다(정확하지 않다!!!)
+    5) Checkpoint가 발생하면, 먼저 디스크로 flush할 때(테이블에 저장할 때) partial page writes(시스템 장애 등으로 덮씌워지는 경우)로 인한 충돌을 방지하기 위해 Background로 Dubblewrite_buffer에 저장한다.
+    6) 그 후에, 디스크에 저장한다.
+* RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
+</br>
+
+### Reference
 * https://stackoverflow.com/questions/56823591/mysql-innodb-differences-between-wal-double-write-buffer-log-buffer-redo-log
 * https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=parkjy76&logNo=220918956412
 * https://qiita.com/yoheiW@github/items/8a5326a516ec4452e774#%E6%9B%B4%E6%96%B0%E5%87%A6%E7%90%86
-* DB Server는 크게 Memory / Disk 로 구분할 수 있다. Memory / Disk로 분리함으로써, Disk에 저장시 에러가 발생해도 Log를 통해 Rollback이 가능해진다.
-* 업데이트 순서는 다음과 같다.
-    1) Buffer Pool(memory)에서 Query 처리 및 내용을 저장
-    2) Buffer Pool에 저장되어 있는 내용을 Log Buffer(memory)에 저장
-    3) Commit 시에 Log Buffer에 있는 내용을 Redo Log 파일(disk)에 저장한다.
-    4) 그 후 Commit Alarm이 발생하면 Buffer Pool에 있던 내용을 Dubblewrite_buffer -> table space(disk)에 저장한다.
-    5) 이 때, Check Point가 발생한다. Check Point가 발생한다는 것은 DB 파일이 새로 써졌다는 의미이다.
-        > CDC는 이를 기준으로 Squence를 확인하여 실행한다(정확하지 않다!!!)
-* RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
+* https://blog.ex-em.com/1700
 </br>
-</br>
-
+ 
 
 ## Transaction / REDO / UNDO
 * Database Transaction: ACID
@@ -29,7 +35,9 @@
 </br>
 
 
-## File
+## 저장 방식
+* File : 
+
 
 ## Binary Log vs Redo Log
 |        | Redo Log | BinLog |

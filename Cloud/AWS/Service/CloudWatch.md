@@ -56,8 +56,6 @@
 
 
 ## CloudWatch 개념
-* 요약 : 
-</br>
 
 ### __Namespace__
 * 네임스페이스

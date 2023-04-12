@@ -24,6 +24,7 @@
     SELECT * 
         FROM world.country;
     ```
+
   
 ### ALIAS
 * Column의 이름을 변경할 수 있다.

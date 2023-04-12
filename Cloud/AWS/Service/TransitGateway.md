@@ -31,10 +31,11 @@
 
 ---
 ## Routing Architecture
-* secure : north --> south 트래픽 구간 (인터넷 통신 구간으로 Firewall, WAF 등 존재) 
-* acl : east <--> west 트래픽 중 ACL 서버들의 트래픽 구간 (모든 트래픽 통과 구간으로 FIrewall, DBSafer 등 존재)
-* application : east <--> west 트래픽 중 Application 서버들의 트래픽 구간 (Application 서버들 존재)
-* spoke : south --> north 트래픽 구간 (다른 센터 통신 구간으로 Gateway 존재)
+* route-secure : north --> south 트래픽 구간 (인터넷 통신 구간으로 Firewall, WAF 등 존재) 
+* route-acl : east <--> west 트래픽 중 ACL 서버들의 트래픽 구간 (모든 트래픽 통과 구간으로 FIrewall, DBSafer 등 존재)
+* route-applications : east <--> west 트래픽 중 Application 서버들의 트래픽 구간 (Application 서버들 존재)
+* route-shared : east <--> west 트래픽 중 공용 Application 서버들의 트래픽 구간 (공용 Application 서버들 존재, dmz, common, shared)
+* route-spoke : south --> north 트래픽 구간 (다른 센터 통신 구간으로 Gateway 존재)
 </br>
 </br>
 
