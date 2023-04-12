@@ -7,7 +7,7 @@
 </br>
 
 * Broadcast Domain : LAN 상에서 어떤 단말이 Broadcast Packet을 송출할 때, '해당 Packet을 수신할 수 있는 단말들의 집합'을 의미
-* Collision Domain : LAN(Switch, Hub)에서 전송 매체를 공유하고 있는 여러 단말들이 통신할 때 서로 경쟁함으로써 충돌이 발생하는데, 이 충돌한 프레임이 전파되어 영향을 받게 되는 영역을 의미. 리피터와 허브는 충돌을 전파하지만, Switch, Router는 forwarding을 통해 충돌 영향이 없다. Collision Domain을 Switch와 Router는 분할할 수 있다
+* Collision Domain : LAN(Switch, Hub)에서 전송 매체를 공유하고 있는 여러 단말들이 통신할 때 서로 경쟁함으로써 충돌이 발생하는데, 이 충돌한 프레임이 전파되어 영향을 받게 되는 영역을 의미. 리피터와 허브는 충돌을 전파하지만, Switch, Router는 forwarding을 통해 충돌 영향이 없다. Collision Domain 개수가 다르다라는 의미는 동시에 통신할 수 있는 속도가 다르다는 의미이다(CSMA/CD)
 > ref : https://ja-gamma.tistory.com/entry/VLAN-%EA%B0%9C%EB%85%90-%EB%8F%99%EC%9E%91%EC%9B%90%EB%A6%AC-%EC%82%AC%EC%9A%A9%EC%9D%B4%EC%9C%A0
 
 ---

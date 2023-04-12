@@ -1,6 +1,7 @@
 # VXLAN (Virtual Extensible LAN)
 * Physical Network 위에 Virtual Network를 사용하기 위한 Overlay Network를 구현하는데 사용되는 Protocol 중 하나.
 * VXLAN은 Tunneling 기반으로 하는 기법이다. Virtual Network 안에서 발생한 Packet은 Encapsulation 되어 Physical Network을 통과하고 다시 Decapsulation되어 Virtual Network로 전달 된다.
+* Multicast 기반으로 통신한다.
 </br>
 
 
@@ -15,7 +16,7 @@
 * 수동적인 구성
     * Zone 별 VLAN Trunk 구성은 수동적이기 때문에 급변하는 Cloud 환경에서는 L2 구성은 불필요한 구성
     > Multicast 기반으로 구성함으로써 능동적인 구성이 가능
-    
+
 </br>
 </br>
 
@@ -29,7 +30,7 @@
 </br>
 
 * Broadcast Domain : LAN 상에서 어떤 단말이 Broadcast Packet을 송출할 때, '해당 Packet을 수신할 수 있는 단말들의 집합'을 의미
-* Collision Domain : LAN에서 전송 매체를 공유하고 있는 여러 단말들이 서로 경쟁함으로써 충돌이 발생하는데, 이 충돌한 프레임이 전파되어 영향을 받게 되는 영역을 의미. 리피터와 허브는 충돌을 전파하지만, Switch, Router는 forwarding을 통해 충돌 영향이 없다. Collision Domain을 Switch와 Router는 분할할 수 있다
+* Collision Domain : LAN(Switch, Hub)에서 전송 매체를 공유하고 있는 여러 단말들이 통신할 때 서로 경쟁함으로써 충돌이 발생하는데, 이 충돌한 프레임이 전파되어 영향을 받게 되는 영역을 의미. 리피터와 허브는 충돌을 전파하지만, Switch, Router는 forwarding을 통해 충돌 영향이 없다. Collision Domain을 통해 Switch와 Router는 분할할 수 있다
 
 
 ---
@@ -50,8 +51,6 @@
 > 그림에서는 vSwitch와 VTEP가 분리되어 그려져있지만, 실제로는 vSwitch 위에 VTEP가 포함되어 있다고 생각하면 된다.
 
 </br>
-</br>
-
 
 ### 통신과정
 > 정보를 가지고 유추한 내용이므로 틀린 내용이 많을 것이다! 이후 수정 예정
@@ -61,6 +60,7 @@
     * A VM 네트워크의 VTEP는 VLAN ID와 VLAN 정보를 저장(설정)하고, VLAN ID를 VXLAN VNI와 매핑한다.
     * VXLAN VNI로 Packet을 Encapsulation한다.
     > VLAN ID는 Hypervisor 내에서 VM 끼리의 통신
+
     > VXLAN VNI는 Network를 통한 Hypervisor 끼리의 통신
 3. A VTEP -> Network(Multicast) -> B VTEP
     * Encapsulation 된 Packet은 다른 VTEP들에게 전달된다.
@@ -73,16 +73,25 @@
 6. B VM <-> A VM
     * 이후에는 Unicast를 통해 통신한다.
 </br>
+
+
+### Why mapping VNI to VLAN ID?
+VXLAN(VNI)를 사용한다고 해서 VLAN을 사용하지 않는 것은 아니다. 
+* VXLAN으로 하나의 네트워크 구축할 때 같은 네트워크에 포함되는 범위는 "같은 Switch 내의 동일한 VLAN + 다른 Swhitch에 있는 동일 VNI, VLAN"이다. 그렇기 때문에 보통 VLAN ID와 VNI는 1:1 매핑을 한다(ex> 1:100001, 1:110001, 2:110002)
+* Ref: https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/357001-358000/357506.jpg
 </br>
 
 
-## VLAN vs VXLAN
+
+### VLAN vs VXLAN
 | List           | VLAN                | VXLAN                 |
 | -------------- | ------------------- | --------------------- |
-| Network Layer  | Layer 2             | Layer 3               |
+| Network Layer  | Layer 2             | Layer 2               |
 | ID bit         | 12bit / 최대 4096개 | 24bit / 최대 1600만개 |
 | Tunneling 방식 | Trunk               | Multicast             |
 |                |                     |                       |
+> Layer 3 네트워크도 같이 사용하고 있으나, 실질적 기술은 Layer 2 기반이다!
+
 </br>
 </br>
 
