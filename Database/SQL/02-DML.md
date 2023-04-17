@@ -168,7 +168,7 @@ SELECT continent, SUM(population) as population
 
 ## INSERT
 * Table에 데이터 추가
-    ```
+    ```sql
     INSERT INTO table_name(col1, col2, ...)
         VALUES (val1, val2, ...)
 
@@ -180,12 +180,25 @@ SELECT continent, SUM(population) as population
     ```
 
 * SELECT 문 결과를 INSERT
-    ```
+    ```sql
     INSERT INTO city2
     	SELECT Name, CountryCode, Population
     	FROM city
         WHERE Population >= 8000000;
     ```
+
+
+* 데이터 없을 때 추가, 있을 때는 업데이트
+    * INSERT INTO ~ ON CONFLICT [colume_name/ON CONSTRAINT constraint_name/WHERE predicate] [DO NOTHING/DO UPDATE SET column = value]
+    * DO NOTHING : 충돌날 경우, 아무것도 안하겠다는 의미
+    * DO UPDATE SET : 충돌날 경우, 해당 데이터로 업데이트
+    ```sql
+    insert into custom_perf (host_name, collect_date, cpu_avg, cpu_max, mem_avg, mem_max)
+        on conflict (host_name, collect_date)
+        do nothing
+    ```
+
+
 
 
 ## DELETE

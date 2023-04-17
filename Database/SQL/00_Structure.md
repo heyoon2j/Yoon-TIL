@@ -1,9 +1,9 @@
 # Structure
 
 ## Basic
-
 * DB Server는 크게 Memory/Disk 로 구분할 수 있다. Memory/Disk로 분리함으로써, Disk에 저장 시 에러가 발생해도 Log를 통해 Rollback이 가능해진다.
 * WAL(Write Ahead Log) : 가장 중요한 요소 중 하나로, 데이터 파일에 대한 모든 변경 사항은 WAL(InnoDB에서는 redo 로그를 의미)에 기록된다(Query이 기록됨)
+* Vacuum
 * 데이터 업데이트 순서는 다음과 같다.
     1) User Thread(Query 처리하는 쓰레드)에서 Buffer Pool에 원하는 Data Page를 검색. 없는 경우 디스크의 Tablespace에 액세스하여 원하는 Page를 Buffer Pool에 캐싱한다.
     2) Buffer Pool(memory)에서 업데이트 내용(수정한 Page)을 저장
@@ -25,7 +25,7 @@
 
 ## Transaction / REDO / UNDO
 * Database Transaction: ACID
-    * 한꺼번에 수행되어야 하는 일련의 연산들. 한꺼번에 완료가 되지 않으면 한꺼번에 취소되어야하는 원자성을 가지고 있다.
+    * 한꺼번에 수행되어야 하는 일련의 연산들. 한꺼번에 완료가 되지 않으면 한꺼번에 취소되어야하는 원자성을 가지고 있다. 독립성, 지속성, 일관성
     * 완료가 되면 __COMMIT__ 호출.
     * 취소가 되거나 문제가 발생하면 __ROLLBACK__ 호출.
 * 어떤 작업을 하든지 모두 REDO, UNDO에 기록되며 복구에 사용. 복구 시 차이가 나는데 __REDO는 사용자가 작업한 순서대로 다시 복구__ 되지만, __UNDO는 사용자가 작업한 순서 반대로 복구 진행__ 된다.

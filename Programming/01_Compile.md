@@ -69,8 +69,9 @@
 2. Method Area (== C/C++ : Data Area + Code Area)
     * 전역 변수와 static 변수가 저장된다.
     * 코드에서 사용되는 클래스(*.class)들을 클래스 별로 런타임 상수풀(runtime constant pool), 필드(field) 데이터, 메소드(method) 데이터, 메소드 코드, 생성자(constructor) 코드 등을 분류해서 저장된다.
-    > 정말 좋은 글 : https://velog.io/@syleemk/Java-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B5%AC%EC%A1%B0
-    > 메소드 영역이라고 하는 추측은 클래스 파일로 컴파일하게 되면 메소드 별로 바이트 코드를 생성하기 때문에.
+    > 정말 좋은 글 : https://velog.io/@syleemk/Java-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B5%AC%EC%A1%B0, 메소드 영역이라고 하는 추측은 클래스 파일로 컴파일하게 되면 메소드 별로 바이트 코드를 생성하기 때문에.
+
+    > C/C++ 기준으로 Data Area에는 전역, static 변수 / Code Area에는 실행되는 코드가 저장.
 3. Heap Area
     * new 명령어를 통해 생성한 인스턴스와 배열 등의 참조형 변수 정보가 저장되며, Method Area에 저장된 Area에 저장된 클래스들만으로 생성이 가능하다.
 4. PC Register Area (JVM Area)

@@ -145,6 +145,8 @@ SELECT *
     
 * DISTINCT() : 중복된 값을 제거.
 
+* EXTRACT() : 날짜/시간 데이터에서 특정날짜를 추출
+
 * DATE_FORMAT : 날짜 데이터에 대한 포멧을 변경
     * 공식 문서 : https://dev.mysql.com/doc/refman/5.7/en/date-and-time-functions.html
     ```

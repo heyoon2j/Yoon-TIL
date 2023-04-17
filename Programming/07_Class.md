@@ -233,7 +233,9 @@
 * 좋은 의견 중 하나 (https://hamait.tistory.com/635). 해당 글에서 확인하고 싶은 것은 크게 두가지이다.
     1) @classmethod와 @staticmethod에 대해 Memory 저장 및 처리하는 방식이 다른가? => Memory 위치에 따라 처리하는 로직이 다를 수 있으므로(처리 향상)
     2) 클래스로 함수 저장하는 것(@staticmethod)과 모듈로 함수 저장하는 것에 대한 Memory 저장 및 처리하는 방식이 다른가?
-* 이렇게 말했지만 cls를 쓰는 경우는 거의 드물다(ex> Factory Method 등) 
+* 이렇게 말했지만 cls를 쓰는 경우는 거의 드물다(ex> Factory Method 등)
+* Python이 방식이 아닌 C/C++인 경우로 생각하면 클래스 형태로 저장하기 때문에 @staticmethod를 쓰는게 맞아보인다. 상속개념 혼동 방지 등으로.
+* 하지만 글을 읽어보면 Python 기준으로 필요한 함수는 클래스 형태가 아닌 모듈에 유틸리티 함수들만 따로 모으는게 자연스러운 일이라고 하니 기준에 따라 사용하면 될거 같다(https://jinyoungchoi95.tistory.com/16)
 </br>
 
 
