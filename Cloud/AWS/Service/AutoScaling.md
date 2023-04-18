@@ -1,9 +1,25 @@
 # Auto Scaling
 * 설정에 따라 자동으로 EC2의 수량을 조절하는 서비스
 * Auto Scaling은 활성화된 Availabililty Zone에 대해 균등하게 분산한다 (__Availability Zone rebalancing__)
+* 구성 요소는 다음과 같다.
+    * 그룹 : 구성 템플릿, 조정 옵션이 적용되는 하나의 집합
+    * 구성 템플릿 : 인스턴스에 대한 설정
+    * 조정 옵션 : 어떤 조건에서 어떻게 Scaling할 것인지 설정
 </br>
 </br>
 
+---
+## Auto Scaling 설정
+설정지 잘 확인해야되는 부분은 다음과 같다.
+* 시작 템플릿 구성
+* 인스턴스 구매 옵션
+* Health Check
+
+
+
+
+
+---
 ## Life Cycle
 ![AutoScalingLifeCycle](../img/AutoScalingLifeCycle.png)
 1. Scale Out
