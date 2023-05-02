@@ -29,7 +29,16 @@
 * 그래서 __abc__ 모듈을 import해야 한다.
 * __@abstractmethod__ 어노테이션을 사용해야 한다.
 ```python
-from abc import *
+from abc import ABC
+class AbstractFoo(ABC):
+
+    @abstractmethod
+    def absMethod(self):
+        pass
+
+```
+```python
+from abc import ABCMeta
 
 class AbstractFoo(metaclass=ABCMeta):
 

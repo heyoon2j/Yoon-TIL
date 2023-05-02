@@ -27,7 +27,7 @@
 
 
 ## contains(list, value)
-* value가 list 안에 값 중 하나인제 체크
+* value가 list 안에 값 중 하나인지 체크
     ```
     contains(["STAGE", "PROD"], var.environment)
     ```

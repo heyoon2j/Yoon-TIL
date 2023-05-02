@@ -141,3 +141,4 @@ Terragrunt 구성은 ```terragrunt.hcl``` 파일에 정의된다.
 * code : Terraform으로 구현하지 못하는 내용에 대해서는 스크립트로 적용하기 코드
 * policy : IAM Policy 코드
 * modules : Terraform Module 코드
+* config.hcl : 프로젝트 Config 변수 파일

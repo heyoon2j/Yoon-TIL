@@ -1,6 +1,13 @@
-# Auto Scaling
+# Auto Scaling (AS)
 * 설정에 따라 자동으로 EC2의 수량을 조절하는 서비스
-* Auto Scaling은 활성화된 Availabililty Zone에 대해 균등하게 분산한다 (__Availability Zone rebalancing__)
+* Scale이란 컴퓨팅 성능을 변경하는 것을 의미한다. 성능을 어떤 식으로 변경하냐에 따라 아래와 같이 얘기한다.
+    * Scale Up : CPU, Memory 등의 컴퓨팅 능력을 높여 성능을 올리는 방법 (CPU를 4 Core --> 8 Core로 변경)
+    * Scale Down : CPU, Memory 등의 컴퓨팅 능력을 낮춰 성능을 낮추는 방법 (Memory를 1경 GiB --> 4 GiB로 변경)
+    * Scale Out : 컴퓨터의 수를 늘려, 처리를 여러 대가 처리하도록 함으로써 전체 컴퓨팅 성능을 향상시키는 방법
+    * Scale In : 컴퓨터의 수를 줄여, 기존보다 적은 수가 처리함으로써 전체 컴퓨팅 성능을 줄이는 방법
+* 사용 목적은 다음과 같다.
+    * 정책에 따른 인스턴스 수량 조절 (최소, 최대 수 관리, 증감 조건 등)
+    * Auto Scaling은 활성화된 Availabililty Zone에 대해 균등하게 분산한다(__Availability Zone rebalancing__)
 * 구성 요소는 다음과 같다.
     * 그룹 : 구성 템플릿, 조정 옵션이 적용되는 하나의 집합
     * 구성 템플릿 : 인스턴스에 대한 설정
@@ -9,11 +16,32 @@
 </br>
 
 ---
-## Auto Scaling 설정
-설정지 잘 확인해야되는 부분은 다음과 같다.
-* 시작 템플릿 구성
-* 인스턴스 구매 옵션
+## Auto Scaling 그룹 설정
+Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
 * Health Check
+    * AS는 Health Check를 통해 
+* Lifecycle
+    * Scaling을 위한 전체 Lifecycle이 존재하며, 각 Process를 이해해야 Auto Scaling을 잘 활용할 수 있다.
+    * Hooking은 UserData 또는 EventBride(Lambda) 등을 통해 사용 
+* 시작 템플릿 구성
+    * OS, 볼륨 및 인스턴스 옵션을 설정한다.
+    * 네트워크, 인스턴스 타입 및 구매 옵션은 시작 옵션에서 설정한다.
+* 인스턴스 시작 옵션
+    * 네트워크, 인스턴스 타입 및 구매 옵션 설정
+    * Health Check
+* 크기 조정 정책 구성
+    * 
+* 그 외
+    * 알림 추가
+    * 태그 추가
+</br>
+</br>
+
+
+---
+## Health Check
+
+
 
 
 
@@ -25,32 +53,73 @@
 1. Scale Out
     * Auto Scaling 그룹이 EC2 인스턴스를 시작하고 그룹에 연결하도록 지시한다. 과정은 다음과 같다.
     * Instance는 ```Pending```상태로 시작되며, Launch Template를 통해 각 인스턴스 구성
-    * 초기 EC2 인스턴스 Health Check("Running")가 통과되면, Auto Scaling Group에 연결되고 ```InService``` 상태가 된다. 이때 ELB가 연결된 경우, ELB도 Health Check를 하기 때문에 Unhealty로 판단할 수 있다. 그렇기 때문에 Grace Period를 설정하여 "InService" 상태가 된 후에 체크하도록 해야 한다.
-2. In Service
+    * Lifecycle Hook 동작
+    * 초기 EC2 인스턴스 Health Check("Running") 진행
+    * Health Check가 통과되면, Auto Scaling Group에 연결되고 ```InService``` 상태가 된다.
+    > 이때 ELB가 연결된 경우, ELB도 Health Check를 하기 때문에 Unhealty로 판단할 수 있다. 그렇기 때문에 Grace Period를 설정하여 "InService" 상태가 된 후에 체크하도록 해야 한다.
+1. In Service
     * ```InService``` 상태 중인 인스턴스는 다른 이벤트가 발생하기 전까지 상태를 유지한다.
     * Scale In 이벤트 발생
     * 대기 모드 시작 및 종료
     * 인스턴스 분리
     * Health Check 실패
-3. Scale In
+2. Scale In
     * Auto Scaling Group에서 EC2 인스턴스를 분리하고 종료하도록 지시
     * 인스턴스는 ```Terminated``` 상태로 들어가기 때문에 다시 시작할 수 없다.
 </br>
+</br>
+---
 
+## Lifecycle Hook
+* 인스턴스가 시작되거나 종료될 때 사용자 지정 작업을 수행할 수 있도록 Auto Scaling 그룹에 수명 주기 후크를 추가할 수 있습니다.
+* Hook 종류
+    * ```autoscaling:EC2_INSTANCE_LAUNCHING ```: Pending 상태에서 Hook 추가
+    * ```autoscaling:EC2_INSTANCE_TERMINATING```: Terminating 상태에서 Hook 추가
 
-## Instance Control
-### Attaching
-* 하나 이상의 EC2 인스턴스를 기존 Auto Scaling Group에 연결할 수 있다.
-
-### Detaching
-* Auto Scaling Group에서 인스턴스를 제거할 수 있으며, 이후에는 독립적으로 Instance를 관리할 수 있다.
-
-### Standby
-* 문제가 있거나 업데이트가 필요한 인스턴스의 경우, ```Standby``` 상태에서 해결하거나 변경한 다음에 다시 서비스할 수 있다.
-* ```Standby``` 상태의 인스턴스는 계속 Auto Scaling Group에서 관리하지만, 다시 시작할 때까지 애플리케이션이 활성화되지 않는다.
+* 사용되는 예시
+    1) 예기치 않은 장애가 발생할 경우, 시작을 포기하도록 시작 수명주기 후크를 구성.
+    2) 예기치 않은 장애가 발생할 경우, 종료 시 로그를 s3에 저장하도록 후크를 구성.
 </br>
 
+### Lifecycle Hook 과정
+1. Scale Out Evnet가 발생 -> 인스턴스 구성(Launch Template에 의해)
+2. Lifecycle Hook은 인스턴스를 ```Pending:Wait``` 상태로 만든 다음 지정 작업 수행(Lambda 등)
+   * ```complte-lifecycle-action``` CLI 명령어 또는 ```CompleteLifecycleAction``` 작업을 사용하여 Lifecycle 작업을 완료하거나 제한 시간이 끝날 때까지 인스턴스는 대기 상태로 유지된다(Default: 1 hour)
+3. 작업 또는 대기 시간이 종료되면, ```Pending:Proceed``` 상태가 되어 Auto Scaling Group이 시작 프로세스를 계속한다(EC2 Health Check 후 Attach)
+4. 인스턴스가 ```InService``` 상태에 들어가고 Health Check 유예기간이 끝나면, Auto Scaling이 인스턴스를 Health Check 한다.
+5. Scale In Event 발생 -> Load Balancer에서 등록 취소
+6. Lifecycle Hook은 인스턴스를 ```Terminating:Wait``` 상태로 만든 다음 지정 작업 수행
+7. 작업 또는 대기 시간이 종료되면, ```Terminating:Proceed``` 상태로 전환되며 인스턴스가 종료된다.
+> 작업이 완료되면 complete-lifecycle-action 명령어를 꼭 사용하자. 그래야 대기 시간이 없다!!!
+</br>
+
+### Lifecycle Hook 사용되는 경우
+* 해당 Lifecycle에 Lambda 등을 실행하게 할 경우
+* 기본적으로 ```User Data```를 사용하는 경우, Pending에 대한 Hook을 사용할 필요가 없어 보인다.
+1. Pending Lifecycle Hook
+    * Lambda를 이용하여 애플리케이션의 동작 또는 Traffic 수신이 정상적인지 확인하여, 실패할 때 알람 보내기 (미리 테스트하겠지만 중간에 오류가 발생할 수도 있으니 테스트해보는 것도 나쁘지 않은 거 같다)
+2. Terminating Lifecycle Hook
+    * 인스턴스가 종료되기 전에 Amazon EventBridge를 사용하여 알림을 보낸다.
+    * 인스턴스가 대기 상태에 있는 동안 AWS Lambda 또는 다른 인스턴스에 연결하여 인스턴스가 완전히 종료되기 전에 로그 또는 데이터를 다운로드한다.
+* 알람으로는 EventBride(권장) or SNS/SQS 사용
+* https://brunch.co.kr/@alden/65
+</br>
+</br>
+
+
+
+
+---
+## Instance Control
+* Attaching : 하나 이상의 EC2 인스턴스를 기존 Auto Scaling Group에 연결할 수 있다.
+* Detaching : Auto Scaling Group에서 인스턴스를 제거할 수 있으며, 이후에는 독립적으로 Instance를 관리할 수 있다.
+* Standby : 문제가 있거나 업데이트가 필요한 인스턴스의 경우, ```Standby``` 상태에서 해결하거나 변경한 다음에 다시 서비스할 수 있다. ```Standby``` 상태의 인스턴스는 계속 Auto Scaling Group에서 관리하지만, 다시 시작할 때까지 애플리케이션이 활성화되지 않는다.
+</br>
+</br>
+
+---
 ## Scale Control
+
 ## Manual Scaling
 * Console을 이용하여 Attach/Dettach
 </br>
@@ -87,42 +156,6 @@
 > Metric의 지표를 활용하는 경우 Target tracking 정책, 이외에는 Step Scaling 정책을 권장한다.
 
 > 필요한 경우 여러 개의 정책을 적용할 수 있다. 하지만 충돌 현상이 생길 수 있으므로 주의하는 것이 좋다. ref: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
-</br>
-</br>
-
-## Lifecycle Hook
-* 인스턴스가 시작되거나 종료될 때 사용자 지정 작업을 수행할 수 있도록 Auto Scaling 그룹에 수명 주기 후크를 추가할 수 있습니다.
-* Hook 종류
-    * ```autoscaling:EC2_INSTANCE_LAUNCHING ```: Pending 상태에서 Hook 추가
-    * ```autoscaling:EC2_INSTANCE_TERMINATING```: Terminating 상태에서 Hook 추가
-
-* 사용되는 예시
-    1) 예기치 않은 장애가 발생할 경우, 시작을 포기하도록 시작 수명주기 후크를 구성.
-    2) 예기치 않은 장애가 발생할 경우, 종료 시 로그를 s3에 저장하도록 후크를 구성.
-</br>
-
-### Lifecycle Hook 과정
-1. Scale Out Evnet가 발생 -> 인스턴스 구성(Launch Template에 의해)
-2. Lifecycle Hook은 인스턴스를 ```Pending:Wait``` 상태로 만든 다음 지정 작업 수행(Lambda 등)
-   * ```complte-lifecycle-action``` CLI 명령어 또는 ```CompleteLifecycleAction``` 작업을 사용하여 Lifecycle 작업을 완료하거나 제한 시간이 끝날 때까지 인스턴스는 대기 상태로 유지된다(Default: 1 hour)
-3. 작업 또는 대기 시간이 종료되면, ```Pending:Proceed``` 상태가 되어 Auto Scaling Group이 시작 프로세스를 계속한다(EC2 Health Check 후 Attach)
-4. 인스턴스가 ```InService``` 상태에 들어가고 Health Check 유예기간이 끝나면, Auto Scaling이 인스턴스를 Health Check 한다.
-5. Scale In Event 발생 -> Load Balancer에서 등록 취소
-6. Lifecycle Hook은 인스턴스를 ```Terminating:Wait``` 상태로 만든 다음 지정 작업 수행
-7. 작업 또는 대기 시간이 종료되면, ```Terminating:Proceed``` 상태로 전환되며 인스턴스가 종료된다.
-> 작업이 완료되면 complete-lifecycle-action 명령어를 꼭 사용하자. 그래야 대기 시간이 없다!!!
-</br>
-
-### Lifecycle Hook 사용되는 경우
-* 해당 Lifecycle에 Lambda 등을 실행하게 할 경우
-* 기본적으로 ```User Data```를 사용하는 경우, Pending에 대한 Hook을 사용할 필요가 없어 보인다.
-1. Pending Lifecycle Hook
-    * Lambda를 이용하여 애플리케이션의 동작 또는 Traffic 수신이 정상적인지 확인하여, 실패할 때 알람 보내기 (미리 테스트하겠지만 중간에 오류가 발생할 수도 있으니 테스트해보는 것도 나쁘지 않은 거 같다)
-2. Terminating Lifecycle Hook
-    * 인스턴스가 종료되기 전에 Amazon EventBridge를 사용하여 알림을 보낸다.
-    * 인스턴스가 대기 상태에 있는 동안 AWS Lambda 또는 다른 인스턴스에 연결하여 인스턴스가 완전히 종료되기 전에 로그 또는 데이터를 다운로드한다.
-* 알람으로는 EventBride(권장) or SNS/SQS 사용
-* https://brunch.co.kr/@alden/65
 </br>
 </br>
 

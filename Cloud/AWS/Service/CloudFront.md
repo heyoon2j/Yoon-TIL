@@ -80,7 +80,7 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 
 ### 적중률 향상
 1. ...
-2. AWS Origin SHield 기능을 사용한다.
+2. AWS Origin Shield 기능을 사용한다.
 </br>
 </br>
 
