@@ -4,10 +4,9 @@
 > Ansible 기능을 가졌다고 생각하면 된다.
 </br>
 
-
-
-## Automation
-
+---
+# Automation
+AWS 리소스 전체에 대한 자동화 
 </br>
 
 ## Component
@@ -42,7 +41,10 @@
 
 ## IAM Setting
 * Systems Manager Automation은 기본적으로 Lambda를 사용하여 동작하며, Automation을 위해서는 아래와 같은 Role/Policy가 필요하다.
-1. Systems Manager Automation Role  
+1. IAM User Role
+    1) ```AmazonSSMFullAccess``` 또는 유사한 Policy : Systems Manager를 사용할 IAM User/Group/Role에 추가
+    2) ```iam:PassRole``` Policy : Systems Manager Automation Role을 SSM Automation에 전달해야 하므로 필요. 허용할 Resource로 1번 SSM Automation Role ARN 추가. 
+2. Systems Manager Automation Role  
     1) ```AmazonSSMAutomationRole```
       * AWS 관리형 정책으로 SSM Automation이 기본적으로 동작하는데 필요한 정책들이 포함되어 있다. 
       * SSM에서 Lambda를 사용하는 경우, Lambda Naming은 __Automation__으로 시작한다. ARN 형식은 다음과 같다(```"arn:aws:lambda:*:*:function:Automation*"```)
@@ -50,11 +52,8 @@
     3) __다른 AWS 서비스를 호출하기 위한 Policy__
     4) ```iam:PassRole``` Policy : 자동화를 실행할 때, 역할을 다른 서비스 또는 Systems Manager 기능에 전달 (Instance Proflie 추가 등)
        * 정책에서 허용할 Resource로 생성한 SSM Role ARN 추가하여, 자기한테 적용된 Role을 전달할 수 있다.
-2. IAM User Role
-    1) ```AmazonSSMFullAccess``` 또는 유사한 Policy : Systems Manager를 사용할 IAM User/Group/Role에 추가
-    2) ```iam:PassRole``` Policy : Systems Manager Automation Role을 SSM Automation에 전달해야 하므로 필요. 허용할 Resource로 1번 SSM Automation Role ARN 추가. 
 > User(iam:PassRole) -> Systems Manager(iam:PassRole) -> AWS Resource (Lambda, EC2 등). IAM USER가 PassRole을 가지고 있어야 Resource가 해당 Role을 필요로 할 때 전달할 수 있다.
-3. EventBridge Rol므
+1. EventBridge Role
     * 신뢰관계 : events.amazonaws.com
     * ```iam:PassRole``` : 1번 SSm ROle ARN 추가
     * ```ssm:StartAutomationExecution``` : 사용할 자동화문서 실행 정책
@@ -87,9 +86,9 @@
 
         ```
 3. 모든 인스턴스
-  *  현재 AWS 계정 및 AWS 리전의 모든 관리형 인스턴스에 대해 자동화를 실행
+   *  현재 AWS 계정 및 AWS 리전의 모든 관리형 인스턴스에 대해 자동화를 실행
 4. Resource Group
-  * AWS Resource Group에서 지정한 Resource Group 사용
+   * AWS Resource Group에서 지정한 Resource Group 사용
 
 
 ## Automation actions reference
@@ -203,6 +202,61 @@ mainSteps:
 * `````` : 
 * `````` : 
 </br>
+
+
+
+---
+# Node Management
+AWS Computing Service(EC2/ECS) 관리에 대한 자동화
+</br>
+
+## Service
+서비스 종류는 다음과 같다.
+* Fleet Manager
+* Session Manager
+* Run Command
+* Patch Manager
+* etc
+
+
+### vs Ansible
+* Playbook : 구성, 배포 및 오케스트레이션 등이 포함된 파일
+* Module : Ansible이 정의해둔 실행 단위로 실행할 수 있는 라이브러리
+* Inventory : 관리할 대상 IP Address 목록
+* Role : 작업들에 대한 모듈화(모음)
+* Ansible Config : Ansible 환경변수 정의 파일
+* 비교 표
+    | SSM Node Management     | Ansible       |
+    | ------------------ | ------------- |
+    | Run Command/Patch Manager          | Playbook/Role |
+    | Action             | Module        |
+    | Resource Group/TAG | Inventory     |
+</br>
+</br>
+
+
+
+
+## IAM Setting
+1. IAM User Role
+
+    1) ```AmazonSSMFullAccess``` 또는 유사한 Policy : Systems Manager를 사용할 IAM User/Group/Role에 추가
+    2) ```iam:PassRole``` Policy : Systems Manager Automation Role을 SSM Automation에 전달해야 하므로 필요. 허용할 Resource로 1번 SSM Automation Role ARN 추가. 
+
+    * Session Manager 권한 제거
+
+2. SSM Node Manager Role
+    * EC2와 연결하기 위해서는 2가지 방법이 있다.
+    1) ```AmazonSSMManagedEC2InstanceDefaultPolicy```
+        * SSM Node Manger가 EC2에 접근하여 실행하기 위한 기본 정책들이 포함
+    2) CloudWatch 기록 권한
+        * Log를 기록하기 위한 정책 포함
+    3) Run Command 권한
+        * SendCommand 정책 필요
+    4) Patch Manager 권한
+
+
+
 
 
 

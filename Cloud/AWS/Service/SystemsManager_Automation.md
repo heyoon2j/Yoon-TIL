@@ -475,3 +475,75 @@ inputs:
 nextStep: TestPackage
 ...
 ```
+
+
+
+##
+
+AWS Systems Manager Run Command 
+* 신청해야 할 IAM Policy
+  * EventBridge ---> SSM
+  * SSM ---> EC2
+    1) EC2 관리
+       * AmazonSSMManagedEC2InstanceDefaultPolicy
+    2) EC2에 Run Command 수행
+        ```
+        {
+            "Version":"2012-10-17",
+            "Statement":[
+                {
+                "Effect":"Allow",
+                "Action":[
+                    "ssm:SendCommand"
+                ],
+                "Resource":[
+                    "arn:aws:ssm:*:*:document/*"
+                ]
+                },
+                {
+                "Effect":"Allow",
+                "Action":[
+                    "ssm:SendCommand"
+                ],
+                "Resource":[
+                    "arn:aws:ec2:*:*:instance/*"
+                ],
+                "Condition":{
+                    "StringLike":{
+                        "ssm:resourceTag/Finance":[
+                            "WebServers"
+                        ]
+                    }
+                }
+                }
+            ]
+        }
+        ```
+    3) SSM ---> CloudWhatch 
+        ```
+        {
+            "Effect": "Allow",
+            "Action": "logs:DescribeLogGroups",
+            "Resource": "*"
+        },
+        {
+            "Effect":"Allow",
+            "Action":[
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents"
+            ],
+            "Resource":"arn:aws:logs:*:*:log-group:/aws/ssm/*"
+        }
+        ```
+
+
+
+  * VPC Endpoint
+    * ssm
+    * ssmmessages
+    * ec2messages
+    * logs
+    * s3
+

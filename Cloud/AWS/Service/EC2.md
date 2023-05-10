@@ -35,15 +35,15 @@ Instance가 네트워크 통신을 할 수 있게 도와주는 디바이스이�
 </br>
 
 ### Scenario
-1. Public과 Private Traffic 모두 처리가 필요한 경우
-    * 각 Traffic을 서로 다른 네트워크 인터페이스로 처리
-    * eth0 == Primary network interface, Public Subnet
-    * eth1 == Secondary network interface, Private Subnet
-2. 네트워크 및 보안 어플라이언스 사용
-    * 1번과 비슷한 상황이다. 서로 다른
-    * 
-
-
+* Secondary IP를 사용하는 경우
+    * 같은 Subnet의 Traffice에 대해 서로 다른 IP로 처리하려는 경우에 사용
+    * https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/MultipleIP.html
+* Network interface를 2개 사용하는 경우
+    * 서로 다른 Subnet의 Traffic을 처리하려는 경우에 사용
+    * 내부적으로 Network Interface를 수동으로 설정하거나 프로그램에서 설정하지 않으면, Network Interface 변경 작업 등을 할 시 원하는 라우팅이 설정되지 않을 수 있다. 그렇기 때문에 보통 이를 지원하는 네트워크 및 보안 어플라이언스 구성시에만 주로 사용된다.
+    * 수동 설정 방법 : https://cloud.google.com/vpc/docs/create-use-multiple-interfaces?hl=ko#configuring_policy_routing
+</br>
+</br>
 
 
 

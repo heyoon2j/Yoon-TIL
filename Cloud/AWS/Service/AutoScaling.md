@@ -15,14 +15,17 @@
 </br>
 </br>
 
+
 ---
 ## Auto Scaling 그룹 설정
 Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
-* Health Check
-    * AS는 Health Check를 통해 
 * Lifecycle
     * Scaling을 위한 전체 Lifecycle이 존재하며, 각 Process를 이해해야 Auto Scaling을 잘 활용할 수 있다.
     * Hooking은 UserData 또는 EventBride(Lambda) 등을 통해 사용 
+* Health Check
+    * 모든 인스턴스는 Healthy 상태로 시작하며 해당 인스턴스가 비정상 상태라는 알림을 수신하지 않는 한 인스턴스는 정상 상태로 간주된다.
+    * 기본적으로 EC2 상태 검사를 통해 확인한다.
+    * LB 연결 시, LB으 Health Check도 포함된다.
 * 시작 템플릿 구성
     * OS, 볼륨 및 인스턴스 옵션을 설정한다.
     * 네트워크, 인스턴스 타입 및 구매 옵션은 시작 옵션에서 설정한다.
@@ -30,7 +33,9 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     * 네트워크, 인스턴스 타입 및 구매 옵션 설정
     * Health Check
 * 크기 조정 정책 구성
-    * 
+    1. Target tracking scaling
+    1. Step Scaling
+    2. Simple scaling
 * 그 외
     * 알림 추가
     * 태그 추가
@@ -38,59 +43,47 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
 </br>
 
 
----
-## Health Check
-
-
-
-
-
-
 
 ---
 ## Life Cycle
 ![AutoScalingLifeCycle](../img/AutoScalingLifeCycle.png)
-1. Scale Out
-    * Auto Scaling 그룹이 EC2 인스턴스를 시작하고 그룹에 연결하도록 지시한다. 과정은 다음과 같다.
-    * Instance는 ```Pending```상태로 시작되며, Launch Template를 통해 각 인스턴스 구성
-    * Lifecycle Hook 동작
-    * 초기 EC2 인스턴스 Health Check("Running") 진행
-    * Health Check가 통과되면, Auto Scaling Group에 연결되고 ```InService``` 상태가 된다.
-    > 이때 ELB가 연결된 경우, ELB도 Health Check를 하기 때문에 Unhealty로 판단할 수 있다. 그렇기 때문에 Grace Period를 설정하여 "InService" 상태가 된 후에 체크하도록 해야 한다.
-1. In Service
-    * ```InService``` 상태 중인 인스턴스는 다른 이벤트가 발생하기 전까지 상태를 유지한다.
-    * Scale In 이벤트 발생
-    * 대기 모드 시작 및 종료
-    * 인스턴스 분리
-    * Health Check 실패
-2. Scale In
-    * Auto Scaling Group에서 EC2 인스턴스를 분리하고 종료하도록 지시
-    * 인스턴스는 ```Terminated``` 상태로 들어가기 때문에 다시 시작할 수 없다.
+1. (After scaling action) : Cold Time 동안 다른 Scaling action을 진행하지 않고 대기 (Default: 300s)  
+2. (Pending) : Launch Template 사용하여 인스턴스 구성
+3. (Pending:Wait) : Lifecycle Hook 실행 후 종료되기 까지 대기
+    * ```complte-lifecycle-action``` CLI 명령어 또는 ```CompleteLifecycleAction``` 작업을 사용하여 Lifecycle 작업을 완료 신호를 주지 않으면 제한 시간이(HeartBeat Time) 끝날 때까지 인스턴스는 대기 상태로 유지됨 (Default: 1 hour)
+4. (Pending:Proceed) : LB에 등록 시작
+    * LB에 등록 시작 후 바로 InService로 넘어가는데, 초기화 및 UserData 실행 등으로 LB Health Check가 되기까지 시간이 걸리기 때문에 InService로 넘어가도 LB Health Check가 완료되어 있지 않을 수 있다. 이를 해결하기 위해 Grace Period를 설정해야 한다.!!!
+5. (InService)
+    * Auto Scaling Group에 등록
+    * Warm-up Time 동안 CloudWatch 지표에 등록하지 않음
+    * Grace Time 동안 LB의 Health Check를 AS에 포함시키지 않는다.
+    * > Warm-up Time >= Grace Time 이 좋아 보임. Health Check가 되는 순간부터 실질적으로 트래픽이 흘러가기 때문에 이후에 지표에 등록되는 것이 맞아 보인다.
+6. (Terminating) : 정책 또는 상황에 따라 종료되어야 할 Instance를 선정 및 AS에서 분리와 LB에서 등록 취소 진행(Deregistration Delay 포함)
+7. (Terminating:Wait) : Lifecycle Hook 실행 후 종료되기 까지 대기
+8. (Terminating:Proceed) : 인스턴스 종료
+
+* Health Check Control을 위한 시간
+    * 모든 인스턴스는 Healthy 상태로 시작하며 해당 인스턴스가 비정상 상태라는 알림을 수신하지 않는 한 인스턴스는 정상 상태로 간주된다.
+    * Grace Period : LB의 Health Check를 AS에 포함시키기 까지의 유예 기간. 도중에 Instance의 상태가 running이 아닌 경우에는 Instance가 종료된다.
+* Scaling Action Control을 위한 시간
+    * Warm-up Time : 새로 시작된 인스턴스가 InService 상태에 도달하게 되면, 즉시 CloudWatch 지표에서 계산이 된다. 이런 경우, 서버는 InService에 도달했다고해서 바로 서비스 요청을 처리하고 있는 것이 아닌데 지표에 영향을 주기 때문에 Dynamic Auto Scliang은 서버는 추가되었지만 각 각의 인스턴스 리소스는 임계값을 넘었기 때문에 리소스가 부족하다고 잘못 판단할 수 있다. 이를 방지하기 위해 지정된 워밍업 시간이 만료될 때까지 인스턴스는 Auto Scaling Group의 집계된 지표에 계산되지 않도록 한다. 이를 통해 리소스 사용량에 영향을 주지 않도록 하여 필요한 것보다 더 많은 인스턴스를 추가하지 않게 해야 한다.
+    * Cold Time : 다음 Scaling 활동이 시작되기 전에 휴지 기간이 완료될 때까지 기다린다. 이를 통해 추가적인 Scaling 작업이 반복되지 않게 도움을 준다.
 </br>
 </br>
 ---
 
 ## Lifecycle Hook
-* 인스턴스가 시작되거나 종료될 때 사용자 지정 작업을 수행할 수 있도록 Auto Scaling 그룹에 수명 주기 후크를 추가할 수 있습니다.
+인스턴스가 시작되거나 종료될 때 사용자 지정 작업을 수행할 수 있도록 Auto Scaling 그룹에 수명 주기 후크를 추가할 수 있다.
+> 가장 중요한 것은 Hook 사용시 완료 신호를 주는 것이다. 작업이 완료되면 complete-lifecycle-action 명령어를 꼭 사용하자. 신호가 없다면 설정 대기 시간까지 기다리게 된다!!!!!
 * Hook 종류
     * ```autoscaling:EC2_INSTANCE_LAUNCHING ```: Pending 상태에서 Hook 추가
     * ```autoscaling:EC2_INSTANCE_TERMINATING```: Terminating 상태에서 Hook 추가
-
+* Hook 사용 방법
+    1) EventBridge/Lambda/SSM : https://brunch.co.kr/@alden/65
+    2) Userdata
 * 사용되는 예시
     1) 예기치 않은 장애가 발생할 경우, 시작을 포기하도록 시작 수명주기 후크를 구성.
     2) 예기치 않은 장애가 발생할 경우, 종료 시 로그를 s3에 저장하도록 후크를 구성.
-</br>
-
-### Lifecycle Hook 과정
-1. Scale Out Evnet가 발생 -> 인스턴스 구성(Launch Template에 의해)
-2. Lifecycle Hook은 인스턴스를 ```Pending:Wait``` 상태로 만든 다음 지정 작업 수행(Lambda 등)
-   * ```complte-lifecycle-action``` CLI 명령어 또는 ```CompleteLifecycleAction``` 작업을 사용하여 Lifecycle 작업을 완료하거나 제한 시간이 끝날 때까지 인스턴스는 대기 상태로 유지된다(Default: 1 hour)
-3. 작업 또는 대기 시간이 종료되면, ```Pending:Proceed``` 상태가 되어 Auto Scaling Group이 시작 프로세스를 계속한다(EC2 Health Check 후 Attach)
-4. 인스턴스가 ```InService``` 상태에 들어가고 Health Check 유예기간이 끝나면, Auto Scaling이 인스턴스를 Health Check 한다.
-5. Scale In Event 발생 -> Load Balancer에서 등록 취소
-6. Lifecycle Hook은 인스턴스를 ```Terminating:Wait``` 상태로 만든 다음 지정 작업 수행
-7. 작업 또는 대기 시간이 종료되면, ```Terminating:Proceed``` 상태로 전환되며 인스턴스가 종료된다.
-> 작업이 완료되면 complete-lifecycle-action 명령어를 꼭 사용하자. 그래야 대기 시간이 없다!!!
 </br>
 
 ### Lifecycle Hook 사용되는 경우
@@ -107,6 +100,24 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
 </br>
 
 
+---
+## Health Check
+Health Check 유형은 다음과 같다.
+* Amazon EC2 상태 확인 및 예약된 이벤트 (오토 스케일링의 기본 상태 확인 유형)
+    * 인스턴스가 실행 중인지 확인
+    * 인스턴스를 손상시킬 수 있는 기본 하드웨어 또는 소프트웨어 문제 확인
+* Elastic Load Balancing 상태 확인
+    * 요청을 처리하는 데 인스턴스를 사용할 수 있는지 점검하기 위해 로드 밸런서가 인스턴스를 정상으로 보고하는지 확인
+    * 이 상태 확인 유형을 실행하려면 오토 스케일링에 대해 활성화해야 합니다.
+* VPC Lattice
+    * VPC Lattice
+    * (무슨 내용인지 아직 안읽음...!ㅎㅎ)
+    * 이 상태 확인 유형을 실행하려면 오토 스케일링에 대해 활성화해야 합니다.
+* 사용자 지정 상태 확인
+    * 사용자 지정 상태 확인에 따라 인스턴스 상태 문제를 나타낼 수 있는 다른 문제가 있는지 확인
+</br>
+</br>
+
 
 
 ---
@@ -117,15 +128,19 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
 </br>
 </br>
 
+
 ---
 ## Scale Control
-
-## Manual Scaling
-* Console을 이용하여 Attach/Dettach
+Scale 정책은 다음과 같다.
+1. Scaling 방식
+2. 용량 선택 방법
+3. Scale Out Policy
+4. Scale In Policy
 </br>
 
-## Dynamic Scaling
-* Auto Scling이 특정 CloudWatch 지표를 추적하도록 지시하고 연결된 CloudWatch 경보가 ALARM일 때 취해야 할 조치를 정의한다.
+### Scaling 방식
+* Manual Scaling : 수동, Console을 이용하여 Attach/Dettach
+* Dynamic Scaling : 자동, Auto Scling이 특정 CloudWatch 지표를 추적하도록 지시하고 연결된 CloudWatch 경보가 Alarm일 때 취해야 할 조치를 정의한다.
 </br>
 
 ### 용량 선택 방법
@@ -135,9 +150,7 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     * Auto Scaling Group의 최대 용량 및 최소 용량과 상관없이 가중치를 비교하여 할당. 할당 정책을 고수하는 방법이다.
 </br>
 
-### Policy Type
-* Warm-up Time : 새로 시작된 인스턴스가 지정된 워밍업 시간이 만료될 때까지 인스턴스는 Auto Scaling Group의 집계된 지표에 계산되지 않는다. 이를 통해 리소스 사용량에 영향을 주지 않도록 하여 필요한 것보다 더 많은 인스턴스를 추가하지 않는다.
-* Cold Time : 다음 Scaling 활동이 시작되기 전에 휴지 기간이 완료될 때까지 기다린다. 이를 통해 추가적인 Scaling 작업이 반복되지 않게 도움을 준다.
+### Scale Out Policy
 1. Target tracking scaling
     * 특정 Metric에 대한 값을 기반으로 Group의 Scaling 작업을 한다.
     * 기본에서 제공하는 Metric 말고도 사용자가 원하는 Metric으로 구성하여 설정할 수 있다.
@@ -145,22 +158,22 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     * Warm-up Time을 통해 확장 제어
     * ex> 자동으로 Scaling
 2. Step Scaling
-    * 경보 위반의 크기에 따라 달라지는 Scaling 작업.
+    * 경보 위반의 크기에 따라 달라지는 Scaling 작업 (CloudWatch Alarm 생성 필요)
     * Metric에 대한 Multiple Threshold 지정
     * Warm-up Time을 통해 확장 제어
     * ex> 임계값 A - CPU 사용률이 40%에서 50% 사이일 때 인스턴스 1개 추가 / 임계값 B - CPU 사용률이 50%에서 70% 사이일 때 2개의 인스턴스 추가
 3. Simple scaling
-    * Metric에 대한 Single Threshold 지정
+    * Metric에 대한 Single Threshold 지정 (CloudWatch Alarm 생성 필요)
     * Cold Time을 사용하여 Scaling 속도를 제어
     * ex> CPU 사용률이 40%에서 50% 사이일 때 인스턴스 1개 추가
+> Cold Time은 권장하지 않는 설정이며, 간단한 조정 정책을 사용할 때만 사용한다.
+
 > Metric의 지표를 활용하는 경우 Target tracking 정책, 이외에는 Step Scaling 정책을 권장한다.
 
 > 필요한 경우 여러 개의 정책을 적용할 수 있다. 하지만 충돌 현상이 생길 수 있으므로 주의하는 것이 좋다. ref: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
 </br>
-</br>
 
-
-## Termination Policy
+### Scale In Policy
 * Scale In Event 발생 시, 종료되는 인스턴스 제어하는 정책
 * Scale In Event에 대한 보호도 가능하다. 보호를 활성화하면 그 이후에 시작된 모든 새 인스턴스에 활성화가 된다.
 * 정책 종류
@@ -178,16 +191,17 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
 </br>
 
 
-## Capacity Rebalancing
+---
+## Others
+### Capacity Rebalancing
 * 스팟 인스턴스의 가용성에 영향을 미치는 변경 사항을 모니터링하고 자동으로 응답하도록 Auto Scaling을 구성할 수 있다.
 * Rebalancing은 실행 중인 인스턴스가 EC2에 의해 중단되기 전에 새 스팟 인스턴스로 플릿을 사전에 확장하여 워크로드 가용성을 유지하는데 도움을 준다.
 * 작동 방식
     1) EC2 Capacity Rebalancing 알림을 인식
     2) 중단될 스팟 인스턴스를 사전에 중단 위험이 높지 않은 새로운 스팟 인스턴스로 재조정한다.
 </br>
-</br>
 
-## Instance Refresh
+### Instance Refresh (배포 방법)
 * 한 번에 몇 개의 인스턴스를 수동으로 교체하는 대신 Instance refresh를 사용하여 Auto Scaling Group의 인스턴스를 업데이트할 수 있다.
 * 작동 방식
     1) 먼저 새 AMI 또는 User Data Script를 지정하는 새 Launch Template를 생성한다.
@@ -196,17 +210,13 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     4) 그런 다음 워밍업 및 인스턴스 Health Check가 완료되면 다른 인스턴스로 교체한다.
     5) Group의 특정 비율이 교체된 후 체크포인트에 도달하고, 체크포인트가 있을 때마다 Auto Scaling은 인스턴스 교체를 일시적으로 중지하고 알림을 보내고 지정된 시간 동안 기다린다.
 </br>
-</br>
 
-
-## Scheduled Scaling
+### Scheduled Scaling
 * Scaling을 예약할 수 있으며, 하루만 확장되거나 반복되는 일정에 따라 확장되는 작업을 예약할 수 있다.
 * cron 형식
-</br>
 </br>
 
 ## Warm Pool
 * Warm Pool은 미리 인스턴스를 프로비저닝하여 Scale out 시 바로 서비스할 수 있게 해준다.
 * Warm Pool을 사용할 시 인스턴스를 ```Running```과 ```Stopped``` 상태로 유지할 수 있는데, ```Stopped``` 상태로 유지하는 것이 비용을 최소화하는 방법이다. 해당 상태인 경우 인스턴스 비용을 제외한 볼륨과 EIP 등의 비용만 지불하면 된다.
 > 하지만 필요하지 않을 때는 비용이 발생하므로 부팅시간!!!으로 인해 애플리케이션이 크게 영향을 받지 않는다면 사용할 필요가 없다!!!
-
