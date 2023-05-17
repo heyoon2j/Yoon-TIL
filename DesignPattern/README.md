@@ -18,6 +18,7 @@
     * 생성 패턴 (Creational Patterns)
         * 객체의 생성 방식에 관련된 패턴
         * Abstract Factory, Factory Method, Singleton ...
+        * Main : Singleton / Abstract Factory, 
     * 구조 패턴 (Structual Patterns)
         * 클래스/객체를 조합한 구조를 가지는 패턴
         * Composite, Decorator ...
