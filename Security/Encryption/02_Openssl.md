@@ -1,8 +1,12 @@
-# openssl
+# Openssl
+
+---
+# 인증서 통신 과정
 
 
 
 
+---
 ## 인증서 생성 (Create Private Key)
 ```
 #openssl genrsa -[messageDigest_value] -out [outputFile_name] 2048

@@ -108,6 +108,16 @@ SELECT *
 
 ```sql
 -- Create Table
+create table custom_assets (
+    host_name VARCHAR()
+    account
+
+    
+    update_date DATE NOT NULL,
+    primary key (host_name)
+);
+
+
 CREATE TABLE custom_perf (
     host_name VARCHAR() NOT NULL,
     collect_date DATE NOT NULL,
@@ -117,6 +127,15 @@ CREATE TABLE custom_perf (
     mem_max DOUBLE() NOT NULL,
     primary key (host_name, collect_date)
 );
+
+
+
+-- Select
+select
+
+
+
+
 
 
 -- Insert
@@ -142,6 +161,8 @@ do nothing
 
 
 
+
+
 -- 배치로 저장할 때 (Start 00:05:00 / Before 1 Day)
 select h.name as host_name,
     to_char(to_timestamp(t.clock), 'YYYY-MM-DD') as collect_date,
@@ -160,9 +181,13 @@ group by h.name as host_name, to_char(to_timestamp(t.clock), 'YYYY-MM-DD')
 ;
 
 
-select current_date;
-select extract(epoch from CURRENT_DATE);
-select extract(epoch from CURRENT_DATE)::integer;
+
+
+--
+
+
+
+
 
 ```
 

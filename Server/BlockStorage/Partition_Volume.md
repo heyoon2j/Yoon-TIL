@@ -105,7 +105,7 @@
 		| Filed 이름 | 내용 | 비 고 |
 		|------------|------|------|
 		| Filesystem Device Name | 파일 시스템 장치 이름 / UUID |  |
-		| Mount Point | 연결할 디렉토리 지정 |  |
+		d| Mount Point | 연결할 디렉토리 지정 |  |
 		| Filesystem Type | 파일 시스템 종류 | ext2, ext3, ext4, nfs 등 |
 		| Mount Option | 파일 시스템 옵션을 지정 | 보통 default 설정 |
 		| Dump | 덤프 여부 설정 | 0: 덤프 설정 X </br> 1: 덤프 설정 O |
@@ -122,7 +122,7 @@
 			7) usrquota : 개별 계정 사용자별 Quota 설정 가능
 			8) grpquota : 그룹별 Quota 설정 가능
 	
-	* fstab Example
+	* fstab Example 
 	```
 	# blkid
 	$ blkid

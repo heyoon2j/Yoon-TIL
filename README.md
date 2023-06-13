@@ -1,6 +1,7 @@
 # Yoon-TIL
 Today I Learned
 
+---
 ## Study List (AS-IS)
 * Language
 	* Java
@@ -56,3 +57,34 @@ Today I Learned
 5. Monitoring
 	* CloudWatch
 	* 
+
+
+
+# OS
+
+
+
+Kernel
+Booting
+- Run Level
+- cloud init
+Process/Thread
+Disk
+Network
+Firewall
+Management
+- Scheduler
+- 
+
+
+# Server
+
+
+
+
+
+# Manage
+
+
+
+

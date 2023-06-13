@@ -15,3 +15,22 @@
 * [QuadTree](https://algospot.com/judge/problem/read/QUADTREE)
 * [FanMeeting](https://algospot.com/judge/problem/read/FANMEETING)
 
+
+
+
+----
+# 시간 복잡도
+# Big-O 표기법 ()
+가장 최악으로 걸리는 시간을 계산하는 방법. 최대 시간이므로 해당 시간보다 길 수 없다는 의미이다.
+
+O(1)        상수 시간 (Constant Time)
+
+O(logN)     로그 시간 (Log Time)
+
+O(N)        선형 시간 (Lin)
+
+O(NlogN)    로그 선형 시간
+
+O(N^2)      
+
+O(2^n)      지수 시간

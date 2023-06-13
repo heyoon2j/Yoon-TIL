@@ -6,7 +6,7 @@
 
 ---
 # Automation
-AWS 리소스 전체에 대한 자동화 
+AWS 리소스 전체에 대한 자동화
 </br>
 
 ## Component
@@ -52,12 +52,13 @@ AWS 리소스 전체에 대한 자동화
     3) __다른 AWS 서비스를 호출하기 위한 Policy__
     4) ```iam:PassRole``` Policy : 자동화를 실행할 때, 역할을 다른 서비스 또는 Systems Manager 기능에 전달 (Instance Proflie 추가 등)
        * 정책에서 허용할 Resource로 생성한 SSM Role ARN 추가하여, 자기한테 적용된 Role을 전달할 수 있다.
-> User(iam:PassRole) -> Systems Manager(iam:PassRole) -> AWS Resource (Lambda, EC2 등). IAM USER가 PassRole을 가지고 있어야 Resource가 해당 Role을 필요로 할 때 전달할 수 있다.
-1. EventBridge Role
+3. EventBridge Role
     * 신뢰관계 : events.amazonaws.com
     * ```iam:PassRole``` : 1번 SSm ROle ARN 추가
     * ```ssm:StartAutomationExecution``` : 사용할 자동화문서 실행 정책
+> User(iam:PassRole) -> Systems Manager(iam:PassRole) -> AWS Resource (Lambda, EC2 등). IAM USER가 PassRole을 가지고 있어야 Resource가 해당 Role을 필요로 할 때 전달할 수 있다.
 
+</br>
 
 ## Automation Resource Group
 * Automation runbook의 Parameter에 대하여 Target Group을 설정할 수 있다.

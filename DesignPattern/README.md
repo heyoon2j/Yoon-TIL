@@ -41,3 +41,8 @@
 3) Command Pattern
 4) Decorator Pattern
 5) Observer Pattern
+
+
+---
+
+## 공부할 Pattern

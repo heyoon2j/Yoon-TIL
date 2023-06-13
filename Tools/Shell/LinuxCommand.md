@@ -179,6 +179,22 @@
 * 파일로 부터 레코드를 선택하고, 선택된 레코드에 포함된 값을 조작하거나 데이터화하는 것을 목적으로 사용하는 프로그램.
 * 파싱하는 프로그램으로 생각하면 될거 같다.
 * https://recipes4dev.tistory.com/171
+```s
+# $ awk [OPTION...] 'pattern { action }' [ARGUMENT...]
+$ awk '{print}' ./file.txt          # 모든 레코드 출력
+$ awk '/p/' ./file.txt              # p를 포함하는 레코드 출력
+$ awk 'length($0) > 10 { print $3, $4, $5} ' ./file.txt     # 레코드 길이가 10 초과인 경우, 레코드의 3,4,5 필드 출력
+
+
+
+```
+
+
+* $0 : 레코드(row)
+* $n : 필드 (column)
+* 
+
+
 
 </br>
 </br>
@@ -213,3 +229,6 @@
 
 
 * https://help.claris.com/ko/pro-help/content/curl-options.html#:~:text=%EC%A7%80%EC%9B%90%EB%90%98%EB%8A%94%20cURL%20%EC%98%B5%EC%85%98%20cURL%20%28Client%20for%20URLs%29%EC%9D%80%20URL%EC%97%90%EC%84%9C,%EC%98%B5%EC%85%98%20%EC%A7%80%EC%A0%95%20%EC%97%90%20%EB%8C%80%ED%95%9C%20%ED%85%8D%EC%8A%A4%ED%8A%B8%20%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%80%20%EB%8B%A4%EC%9D%8C%EA%B3%BC%20%EA%B0%99%EC%8A%B5%EB%8B%88%EB%8B%A4.?msclkid=68ffc045baec11ec85eb3ddb6f27226b
+
+
+

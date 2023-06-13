@@ -84,6 +84,9 @@
 * "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true,false)
 * "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
     * X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
+    * append : Request Header XFF에 클라이언트 IP를 추가
+    * preserve : Request Header XFF 보존하고 다른 값을 추가하지 않음 (당연히 수정을 하지 못하니 클라이언트 IP를 ALB에서 추가하지 못한다)
+    * remove : 모든 X-Forwarded-For Header 삭제
 * "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 추가할지 여부 (기본 값: false / true,false)
 * "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true,false)
 * "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true,false)

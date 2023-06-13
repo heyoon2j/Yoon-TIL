@@ -50,6 +50,7 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
 4. Server 쪽에서 Application 연결이 종료되면 FIN 패킷을 보내고 LAST ACK 상태가 된다.
 5. FIN 패킷을 받은 Client는 TIME WAIT 상태가 되고 ACK 패킷을 Server에게 보낸다. ACK 패킷을 받은 Server는 CLOSED로 완전히 종료 상태가 된다.
 > Client에서 세션을 종료시킨 후, 뒤늦게 도착하는 패킷이 있다면 이 패킷은 Drop 되고 데이터는 유실된다. 이러한 현상에 대비하여 Client는 Server로부터 FIN을 수신하더라도 일정시간(디폴트 240초) 동안 세션을 남겨놓고 패킷을 기다리는 과정을 거치게 되는데 이 과정을 "TIME_WAIT"라고 합니다.
+
 </br>
 </br>
 
