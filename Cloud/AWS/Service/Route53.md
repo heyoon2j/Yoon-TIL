@@ -275,7 +275,8 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 * https://aws.amazon.com/ko/blogs/security/simplify-dns-management-in-a-multiaccount-environment-with-route-53-resolver/
 * VPC와 네트워크 간(On-premise, VPC, Route 53 Resolver) DNS Query 해석을 위해 사용.
 * 기본적으로 VPC를 생성하면 Route 53 Resolver는 자동으로 VPC용 DNS 서버(Amazon Route 53 Resolver)를 제공.
-> !! 사용자의 온프레미스 DNS 서버에서 VPC CIDR+ 2 주소로 프라이빗 DNS 쿼리를 전달하는 것은 지원되지 않으므로 불안정한 결과가 발생할 수 있습니다. 대신 Resolver 인바운드 엔드포인트를 사용할 것을 권장한다고 !!
+* VPC Subnet의 두번째 IP 서버에 Route53 Resolcer server가 있으며, Route53 Authoritative Name Server와 Private Link를 통해 통신한다
+> !! 사용자의 온프레미스 DNS 서버에서 VPC CIDR+ 2 주소로 프라이빗 DNS 쿼리를 전달하는 것은 지원되지 않으므로 불안정한 결과가 발생할 수 있습니다. 대신 Resolver 인바운드 엔드포인트를 사용할 것을 권장한다고!!
 </br>
 
 ### 기능

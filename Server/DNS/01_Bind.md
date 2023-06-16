@@ -1,5 +1,4 @@
 # Bind 설정
-* MX, TXT는 CNAME과 같이 쓰일 수 없다!
 </br> 
 
 
@@ -20,9 +19,35 @@
 * ```/etc/named.conf```에서 설정
 * Template
     ```
+    ======================================================
+    # cat /etc/named.conf
+    include "/etc/bind/named.conf.options";
+    include "/etc/bind/named.conf.logging";
+    include "/etc/named.rfc1912.zones"
+
+    ======================================================
+    # cat /etc/named.conf.options
     acl trusted { 172.16.17.0/24; 172.16.18.0/24; };
     acl untrusted { 192.168.10.0/23; };
 
+
+    options {
+        listen-on port 53 { any; };
+        listen-on-v6 port 53 { any; };
+
+        allow-query { trusted; };
+
+        recursion yes; 
+        allow-recursion { trusted; };
+
+        forwarders {
+            8.8.8.8;
+            8.8.4.4;
+        };
+    }
+
+    ======================================================
+    # cat /etc/named.conf.logging
     logging {
         category default {
             example_log;
@@ -35,20 +60,6 @@
             print-time yes;
         };
     };
-
-    options {
-        listen-on port 53 { any; };
-        listen-on-v6 port 53 { any; };
-
-        allow-query { trusted; };
-
-        recursion yes; 
-        allow-recursion { trusted; };
-    }
-
-
-    include "/etc/named.rfc1912.zones"
-
     ```
 </br>
 
@@ -104,19 +115,48 @@ logging {
 
 
 ### Options 설정
-```
-options {
-    listen-on port 53 { any; };         // IPv4 Listener
-    listen-on-v6 port 53 { any; };      // IPv6 Listener
+    ```
+    options {
+        listen-on port 53 { any; };         // IPv4 Listener
+        listen-on-v6 port 53 { any; };      // IPv6 Listener
 
-    allow-query { 172.16.30.0/24; };     // Query를 허용할 Target 설정
+        allow-query { 172.16.30.0/24; };     // Query를 허용할 Target 설정
 
-    recursion no;                       // Caching NS : yes, Authoritative NS : no (일반적으로 무조건 NO)
-    allow-recursion { none; }; // Recursion을 허용할 Target 설정 (Caching 서버로 사용할 경우에 사용)
-}
-```
+        recursion no;                       // Caching NS : yes, Authoritative NS : no (일반적으로 무조건 NO)
+        allow-recursion { none; }; // Recursion을 허용할 Target 설정 (Caching 서버로 사용할 경우에 사용)
+        # forward { 8.8.8.8; };
 
+        auth-nxdomain = no;                  // conform to RFC1035.
+        # nxdomain : 등록되어 있으나 IP주소가 지정되지 않은 도메인 이름 등 IP주소가 지정되어 있지 않은 모든 도메인 이름
 
+        # DNSSEC
+        #dnssec-enable yes;
+        #dnssec-validation yes;
+    }
+    ```
+
+* Caching 서버로 사용할 경우
+    ```
+    options {
+        listen-on port 53 { any; };         // IPv4 Listener
+        listen-on-v6 port 53 { any; };      // IPv6 Listener
+
+        allow-query { 172.16.30.0/24; };     // Query를 허용할 Target 설정
+
+        recursion yes;
+        allow-recursion { localhost; };
+        forward {
+            8.8.8.8;
+        };
+        forward only;                       // 이 서버가 모든 요청을 전달하고 자체적으로 요청을 해결하려고 시도하지 않아야 하므로 지시어를 "only"로 설정
+
+        auth-nxdomain = no;                  // conform to RFC1035
+
+        # DNSSEC
+        #dnssec-enable yes;
+        #dnssec-validation yes;
+    }
+    ```
 </br>
 </br>
 
@@ -135,6 +175,7 @@ zone "0.0.127.in-addr.arpa" {
      type primary;
      file "localhost.rev";
      notify no;
+     allow-transfer { none; };
 };
 
 
@@ -200,3 +241,5 @@ ftp     IN  CNAME   ftp.example.net.
 
 
 ### Load Balancing
+SRV아 함께 사용될 수 있을거 같다(확인 필요)
+</br>
