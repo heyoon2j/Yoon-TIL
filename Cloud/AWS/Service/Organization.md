@@ -49,11 +49,11 @@
 </br>
 
 
-
-# Single Sign-On (SSO)
+---
+# IAM Identity Center (Single Sign-On)
 * Choice 
 
-## SSO 구성
+## IAM Identity Center 구성
 ### Identity Source
 * 사용자 및 그룹을 관리할 서비스 정의. 서비스는 종류는 다음과 같다.
 1. AWS SSO (AWS Organization 연동)
@@ -77,12 +77,10 @@
     * SSO를 관리할 Identity Source 선택
 2. Create User and Group
     * ID Source에서 User 및 Group을 생성
-3. Allocate User/Group and Permission Set to Account
-    * Identity Source의 Account에 User/Group와 Permission Set 할당
-4. Manage Permission Set
+3. Manage Permission Set
     * Identity Source의 Account의 Permission Set 관리 (User 및 Goup에 적용할 권한)
+4. Allocate User/Group and Permission Set to Account
+    * Identity Source의 Account에 User/Group와 Permission Set 할당
 5. Access Portal
     * User 정보를 이용하여 Portal에 접속
-
-
-> Organization은 Account, SSO는 IAM User and Group으로 생각하면 된다. 그렇기 때문에 Organization에서 Account에 권한을 할당해야 SSO에서 User와 Group에게 사용 권한을 줄 수 있다.
+> Organization은 Account, IAM Identity Center는 IAM User and Group으로 생각하면 된다. 그렇기 때문에 Organization에서 Account에 서비스 제어 범위를 지정해야 SSO에서 User와 Group에게 사용 권한을 줄 수 있다.

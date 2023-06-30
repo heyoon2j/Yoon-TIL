@@ -47,6 +47,7 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 > 1번은 요즘 추세는 아닌거 같다.
 1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
     ![cdn_architecture_old](../img/cdn_architecture_old.png)
+    * 기본적으로 모든 접근은 Origin Server로 접근하고, 특정 콘텐츠 안에 CDN URL을 집어넣어 해당 데이터를 받아오기 위해 CDN으로 접근하는 방식
     * 콘텐츠에 CDN URL 표시
     * 보통 용량이 큰 특정 정적 콘텐츠 들고 가게 하기 위해서 사용하며, 코드 상에서 등록한 내용들만 CDN에서 캐싱
         ```html
@@ -59,7 +60,8 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
         * 코드 상 정적 콘텐츠 위치를 CDN 위치로 지정해야 한다. CDN에 장애가 발생하면 대응 수단은 코드를 수정하여 재배포해야 한다(CDN 복구가 늦어지거나, 안되는 경우)
 2. CDN으로 통합 
     ![cdn_architecture_new](../img/cdn_architecture_new.png)
-    * CDN이 가장 앞단으로, URL에 따라 해당하는 Origin Server에게 전달
+    * CDN이 가장 앞단으로, 정책(URL)에 따라 해당하는 Origin Server에 접근하는 방식
+    *식
     * 장점 :
         * 관리 포인트가 한 군데이기 때문에, 배포, 보안, 통신 장애 포인트 관리 등 관리하기에 편하다. 
         * 코드를 수정할 필요가 없다. CDN에 장애 발생 시 DNS를 수정하여 대응할 수 있다(CDN 복구가 늦어지거나, 안되는 경우)
@@ -79,10 +81,22 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 </br>
 
 ### 적중률 향상
-1. ...
-2. AWS Origin Shield 기능을 사용한다.
+1, 캐싱 데이터 시간 지정(TTL, max-age)
+2. 특정 값을 이용한 캐싱 (특정 쿠키, 특정 헤더 등)
+3. AWS Origin Shield 기능 사용
 </br>
 </br>
+
+### 동적 데이터
+동적 데이터는 캐싱이 되지 않아야 한다. 캐싱되지 않도록 하는 방법은 전체 아키텍처에 따라 달라진다.
+1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
+    * 동적 데이터는 Origin Server에서 바로 가주가므로 CDN Caching에 대해 신경쓸 필요가 없다.
+2. CDN으로 통합
+    1) 동적 데이터는 "Caching TTL = 0" 으로 설정
+    2) 
+</br>
+</br>
+
 
 ---
 ## 보안
@@ -145,12 +159,16 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
     * 프로토콜 / HTTP 포트 / HTTPS 포트 : CloudFront --> Origin 간의 통신 프로토콜
 2. Caching 정책 설정
     * Cache 정책 : 캐시 적중에 대한 정책
+        - TTL 설정
+        - Header / Cookie / Query 문자열 설정
     * Origin Request 정책 : 캐시 누락이 있을 때, CloudFront에서 Origin으로 보내는 정책
-    * 응답 정책 : 최종 사용자에게 응답 보낼 때 정책
+        - Header / Cookie / Query 문자열 설정
+    * Response Header 정책 : 최종 사용자에게 응답 보낼 때 정책
+        - Header / Cookie / Query 문자열 설정
     > Caching TTL 설정 시, Application에서 Cache-Control: max-age, Expires 등을 설정해 뒀다면 CloudFront TTL 설정이 지워질 수 있고, Browser에서는 Application 설정을 따라간다. 그렇기 때문에  Application 헤더 설정 확인이 필요하다.
 3. Caching Default 동작 설정 (User --> CloudFront 설정)
     * 경로 패턴
-    * View 설정 : 최종 사용자가 통신할 때 허용할 프로토콜 설정
+    * Viewer 설정 : 최종 사용자가 통신할 때 허용할 프로토콜 설정
         * 프로토콜 / HTTP Method / Access Control
     * Caching 정책 설정
     * 자동 객체 압축 사용 여부 : 엄청 큰 의미는 모르겠다. 올릴 때 보통 압축을 해두니 말이다...!
@@ -181,7 +199,7 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
 ## Deploy
 배포는 크게 두가지가 있다. CDN 설정 변경에 따른 배포와 기존 콘텐츠 변경에 따른 배포가 있다.
 * CDN 설정 변경
-    * 변경 내용이 즉시 전파되지 않고 차근차근 전파된다. 그렇기 때문에 기존 설정과 새로운 설정 중 어느 설정을 따라 배포하는지 판단할 수 없다.
+    * 변경 내용이 즉시 전파되지 않고 차근차근 전파된다. 그렇기 때문에 변경 구성이 완료될 때까지는 특정 엣지 로케이션에서 기존 설정과 새로운 설정 중 어느 설정을 따라 배포하는지 판단할 수 없다.
 * 콘텐츠 변경
     * 기존 파일의 이름과 다르게 변경하여 업데이트 : 변경된 내용으로 코드에서 링크를 수정해야 한다!
     * 기존 파일과 동일한 이름을 사용하여 업데이트 : 설정해두었던 TTL 설정이 만료될 때까지 기다린다(Default: 24h)
@@ -189,16 +207,6 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
 </br>
 </br>
 
----
-## 동적 데이터
-동적 데이터는 캐싱이 되지 않아야 한다. 캐싱되지 않도록 하는 방법은 전체 아키텍처에 따라 달라진다.
-1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
-    * 동적 데이터는 Origin Server에서 바로 가주가므로 CDN Caching에 대해 신경쓸 필요가 없다.
-2. CDN으로 통합 
-    1) 동적 데이터는 "Caching TTL = 0" 으로 설정
-    2) 
-</br>
-</br>
 
 ---
 ### Troubleshooting

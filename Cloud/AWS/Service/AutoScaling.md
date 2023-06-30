@@ -26,16 +26,13 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     * 모든 인스턴스는 Healthy 상태로 시작하며 해당 인스턴스가 비정상 상태라는 알림을 수신하지 않는 한 인스턴스는 정상 상태로 간주된다.
     * 기본적으로 EC2 상태 검사를 통해 확인한다.
     * LB 연결 시, LB으 Health Check도 포함된다.
-* 시작 템플릿 구성
-    * OS, 볼륨 및 인스턴스 옵션을 설정한다.
-    * 네트워크, 인스턴스 타입 및 구매 옵션은 시작 옵션에서 설정한다.
-* 인스턴스 시작 옵션
-    * 네트워크, 인스턴스 타입 및 구매 옵션 설정
-    * Health Check
-* 크기 조정 정책 구성
+* 인스턴스 템플릿 구성
+    * 시작 템플릿 구성 : OS, 볼륨 및 인스턴스 옵션을 설정한다.
+    * 인스턴스 시작 옵션 : 네트워크, 인스턴스 타입 및 구매 옵션 설정
+* Scaling 정책 구성
     1. Target tracking scaling
-    1. Step Scaling
-    2. Simple scaling
+    2. Step Scaling
+    3. Simple scaling
 * 그 외
     * 알림 추가
     * 태그 추가
@@ -49,7 +46,7 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
 ![AutoScalingLifeCycle](../img/AutoScalingLifeCycle.png)
 1. (After scaling action) : Cold Time 동안 다른 Scaling action을 진행하지 않고 대기 (Default: 300s)  
 2. (Pending) : Launch Template 사용하여 인스턴스 구성
-3. (Pending:Wait) : Lifecycle Hook 실행 후 종료되기 까지 대기
+3. (Pending:Wait) : Lifecycle Hook 실행 후 종료되기까지 대기
     * ```complte-lifecycle-action``` CLI 명령어 또는 ```CompleteLifecycleAction``` 작업을 사용하여 Lifecycle 작업을 완료 신호를 주지 않으면 제한 시간이(HeartBeat Time) 끝날 때까지 인스턴스는 대기 상태로 유지됨 (Default: 1 hour)
 4. (Pending:Proceed) : LB에 등록 시작
     * LB에 등록 시작 후 바로 InService로 넘어가는데, 초기화 및 UserData 실행 등으로 LB Health Check가 되기까지 시간이 걸리기 때문에 InService로 넘어가도 LB Health Check가 완료되어 있지 않을 수 있다. 이를 해결하기 위해 Grace Period를 설정해야 한다.!!!
@@ -141,6 +138,7 @@ Scale 정책은 다음과 같다.
 ### Scaling 방식
 * Manual Scaling : 수동, Console을 이용하여 Attach/Dettach
 * Dynamic Scaling : 자동, Auto Scling이 특정 CloudWatch 지표를 추적하도록 지시하고 연결된 CloudWatch 경보가 Alarm일 때 취해야 할 조치를 정의한다.
+* Scheduled Scaling : Scaling을 예약할 수 있으며, 하루만 확장되거나 반복되는 일정에 따라 확장되는 작업을 예약할 수 있다 (cron 형식)
 </br>
 
 ### 용량 선택 방법
@@ -176,7 +174,7 @@ Scale 정책은 다음과 같다.
 ### Scale In Policy
 * Scale In Event 발생 시, 종료되는 인스턴스 제어하는 정책
 * Scale In Event에 대한 보호도 가능하다. 보호를 활성화하면 그 이후에 시작된 모든 새 인스턴스에 활성화가 된다.
-* 정책 종류
+* 정책 종s류
     1) __Default__: 인스턴스가 가장 많은 가용 영역을 확인 후, 축소로부터 보호되지 않는 인스턴스를 선택
     2) __OldestInstance__: Group에서 가장 오래된 인스턴스 종료
     3) __NewestInstance__: Group에서 가장 최신 인스턴스 종료
@@ -211,11 +209,7 @@ Scale 정책은 다음과 같다.
     5) Group의 특정 비율이 교체된 후 체크포인트에 도달하고, 체크포인트가 있을 때마다 Auto Scaling은 인스턴스 교체를 일시적으로 중지하고 알림을 보내고 지정된 시간 동안 기다린다.
 </br>
 
-### Scheduled Scaling
-* Scaling을 예약할 수 있으며, 하루만 확장되거나 반복되는 일정에 따라 확장되는 작업을 예약할 수 있다.
-* cron 형식
-</br>
-
+---
 ## Warm Pool
 * Warm Pool은 미리 인스턴스를 프로비저닝하여 Scale out 시 바로 서비스할 수 있게 해준다.
 * Warm Pool을 사용할 시 인스턴스를 ```Running```과 ```Stopped``` 상태로 유지할 수 있는데, ```Stopped``` 상태로 유지하는 것이 비용을 최소화하는 방법이다. 해당 상태인 경우 인스턴스 비용을 제외한 볼륨과 EIP 등의 비용만 지불하면 된다.

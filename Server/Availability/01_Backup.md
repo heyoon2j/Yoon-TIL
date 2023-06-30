@@ -129,7 +129,7 @@ $ find . -depth -print | cpio -pdmv /data2
 
 ### Example
 * Full Backup
-    ```wnj
+    ```shell
     # Create Archive
     # tar -cvzfp [file_name] [target_path]
     $ tar -cvzfp test.tar.gz /data

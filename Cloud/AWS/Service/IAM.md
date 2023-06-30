@@ -83,6 +83,7 @@ __4. SAML (Security Assertion Markup Language)__
 </br>
 
 
+---
 ## Policies
 ```
 {
@@ -160,9 +161,35 @@ __4. SAML (Security Assertion Markup Language)__
     * 단일 사용자, 그룹, 역할에 직접 추가하는 정책.
     * 정책과 자격 증명이 1:1 관계를 유지할 때 사용.
 </br>
+
+### Permission Boundaries
+실제 권한을 주지는 않고, 권한에 대한 경계만을 제어한다.
+</br>
 </br>
 
 
+---
+## Policy evaluation logic
+![PolicyEvaluationHorizontal](../img/PolicyEvaluationHorizontal.png)
+* IAM 권한의 설계는 기본적으로 액세스를 거부하며, Allow 코드를 작성하지 않으면 모두 거부된다.
+* 우선순위는 다음과 같다.
+1. Deny evaluation (Explict Deny)
+  * 명시적 거부로 OU SCPs, 리소스 기반 정책, 자격 증명 기반 정책, IAM 권한 경계, 세션 정책에 Deny 코드가 명시적으로 작성되어 있으면 거부로 결정된다.
+2. Organizatioins SCPs
+  * Allow 코드가 없으면, 묵시적 거부로 결정된다.
+  * 2, 3, 4, 5의 경우도 동일하게 적용
+3. Resource-based policies
+   * Alow의 경우, 해당 자격 증명은 교집합이 아닌 합집합 형태로 4,5,6에 없어도 Allow가 된다!!
+4. Identity-based policies
+5. IAM permissions boundaries
+6. Session policies
+
+</br>
+
+
+
+
+---
 ## STS & Assume Role / Pass Role
 ### STS & Assume Role
 ![AssumRole](../img/AssumRole.png)
@@ -175,14 +202,14 @@ __4. SAML (Security Assertion Markup Language)__
 * Example
     ```
     {
-    	"Version": "2012-10-17",
-    	"Statement": [
-    		{
-    			"Effect": "Allow",
-    			"Action": "sts:AssumeRole",
-    			"Resource": "arn:aws:iam::Trusted_Account_ID:role/CVAppAssumeRole"
-    		}
-    	]
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": "sts:AssumeRole",
+          "Resource": "arn:aws:iam::Trusted_Account_ID:role/CVAppAssumeRole"
+        }
+      ]
     }
     # => 권한(Resource)을 위임 받을 수 있다.
 
@@ -218,7 +245,7 @@ __4. SAML (Security Assertion Markup Language)__
 
 ### IAM 생성 및 적용 과정
 1. STS Policy 생성 (Resource 기반 또는 특수한 경우에만 해당)
-*  권한 위임의 주체 또는 위임할 권한을 정한다(Assume Role).
+  * 권한 위임의 주체 또는 위임할 권한을 정한다(Assume Role).
 2. Policy 생성
    * 해당 Role이 사용할 수 있는 권한을 정한다.
 3. Role 생성
@@ -252,15 +279,14 @@ __4. SAML (Security Assertion Markup Language)__
 
 
 
-# AWS CloudTrail
+## AWS CloudTrail
 * AWS IAM 및 AWS STS API에 대한 모든 인증된 API 요청을 기록한다.
 </br>
 </br>
-</br>
 
 
 
-# AWS Organizations
+## AWS Organizations
 * AWS 리소스가 늘어나고 확장됨에 따라 환경을 중앙 집중식으로 관리하고 규제하는 서비스
 * 기능
     1) 새 AWS 계정 생성 및 리소스 할당
@@ -270,24 +296,6 @@ __4. SAML (Security Assertion Markup Language)__
 
 ## Cost (비용)
 * 추가 비용 없이 사용할 수 있다.
-
-
-## Policy evaluation logic
-![PolicyEvaluationHorizontal](../img/PolicyEvaluationHorizontal.png)
-* IAM 권한의 설계는 기본적으로 액세스를 거부하며, Allow 코드를 작성하지 않으면 모두 거부된다.
-* 우선순위는 다음과 같다.
-1. Deny evaluation (Explict Deny)
-  * 명시적 거부로 OU SCPs, 리소스 기반 정책, 자격 증명 기반 정책, IAM 권한 경계, 세션 정책에 Deny 코드가 명시적으로 작성되어 있으면 거부로 결정된다.
-2. Organizatioins SCPs
-  * Allow 코드가 없으면, 묵시적 거부로 결정된다.
-  * 2, 3, 4, 5의 경우도 동일하게 적용
-3. Resource-based policies
-4. Identity-based policies
-5. IAM permissions boundaries
-6. Session policies
-
-</br>
-
 
 
 

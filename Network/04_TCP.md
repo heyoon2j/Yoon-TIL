@@ -30,9 +30,10 @@
 
 ---
 ## 3-way handshaking
-![3_way_handshaking](../img/3way_handshaking.png)
+![3_way_handshaking](img/3way_handshaking.png)
 TCP 프로토콜을 이용해서 통신을 하는 프로세스가 데이터를 전송하기 전에 데이터 전송을 보장하기 위해 상대방 프로세스와 사전에 세션을 수립하는 과정 
-![3_way_handshaking_test](../img/3way_handshaking_test.png)
+
+![3_way_handshaking_test](img/3way_handshaking_test.png)
 1. Client가 접속을 위해 Serer 쪽에 SYN 패킷을 보낸다. SYN 패킷을 보낸 Client는 SYN/ACK 응답을 기다리는 SYN_SENT 상태가 된다.
 2. 연결 요청을 받은 Server는 응답(연결 수락)으로 SYN와 ACK 패킷을  Client에게 보내준다. SYN/ACK 패킷을 보낸 Server는 SYN_RECEIVED 상태가 된다.
 3. 연결 수락을 받은 Client는 Server에게 ACk 패킷을 보내고, 연결이 된 상태가 된다.
@@ -41,9 +42,10 @@ TCP 프로토콜을 이용해서 통신을 하는 프로세스가 데이터를 �
 
 ---
 ## 4-way handshaking
-![4_way_handshaking](../img/4way_handshaking.png)
+![4_way_handshaking](img/4way_handshaking.png)
 TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
-![4_way_handshaking_test](../img/4way_handshaking_test.png)
+
+![4_way_handshaking_test](img/4way_handshaking_test.png)
 1. Client는 연결 종료를 위한 FIN 패킷를 보낸다. 그리고 FIN WAIT 1 상태가 된다.
 2. Server는 FIN 패킷을 받게 되면 응답으로 ACK 신호를 보내고, 해당 Server의 Application에서 연결이 CLOSE 할 때까지 CLOSE WAIT 상태가 된다.
 3. ACK 패킷을 받은 Client는 FIN WAIT 2 상태가 되고, FIN 신호를 기다린다.
@@ -67,7 +69,7 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
     * Server 응답은 어떻게 되지?? 
     > 추측) LB가 Server로 FIN이나 RST을 보냄으로 통신을 종료시지 않았까 싶다. 아니라면 TIME_WAIT 기간 내라면, Server가 응답을 LB한테 전달하고, RST나 Connection Timeout으로 연결이 종료되지 않을까 싶다.
     
-    > LB가 Server로 FIN이나 RST을 보냄으로 통신을 종료시지 않았까 싶다. (현재 확인 결과 ALB는 양쪽에 FIN을 보낸다!) : https://medium.com/tenable-techblog/lessons-from-aws-nlb-timeouts-5028a8f65dda
+    > LB가 Server로 FIN이나 RST을 보냄으로 통신을 종료시지 않을까 싶다. (현재 확인 결과 ALB는 양쪽에 FIN을 보낸다!) : https://medium.com/tenable-techblog/lessons-from-aws-nlb-timeouts-5028a8f65dda
 2. ALB - Idle : 60s / Server - Timeout : 30s / Server의 응답 시간이 80s인 경우
     * Server에서 LB 측에 504 error 전달
     * LB에서 Client측에 504 error 전달

@@ -242,12 +242,12 @@
 
 
 # VPC Flow Log
-
+AWS VPC 흐름 로그 기록
 </br>
 </br>
 
 
 # CloudTrail
-
+AWS API 호출 로그 기록
 </br>
 </br>

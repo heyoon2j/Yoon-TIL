@@ -1,11 +1,10 @@
 # Switch
 
-
-
-
 ---
 ## L4 Switch
 기본적으로 L4 Switch는 Source NAT처리를 하지 않으나 네트워크 구성에 따라 처리가 필요할 수 있기 때문에, 전반적인 아키텍처와 통신 흐름을 알 필요가 있다 (https://aws-hyoh.tistory.com/entry/L4-%EC%8A%A4%EC%9C%84%EC%B9%98-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0-5)
+> 유의 사항은 기본적으로 IP Address는 경로를 위한 거고, MAC Address는 실제 통신하는 장비를 의미한다.
+</br>
 
 ## In-Line
 'Standing in Line' 이라고도 부르며, 네트워크 장비들을 일렬로 세운 구성이다.
@@ -29,7 +28,7 @@ L4 Switch를 L2, Server들과 직접 연결하지 않고, Backbone Switch를 통
 </br>
 
 ### Idle time 초과 동작
-* L4 : 자신만 세션을 종료시키며, 알지 못하는 Client는 동일한 Connection으로 트래픽을 보냈을 때 RST를 받게 된다. 'Reset On Port Fail' 옵션을 설정을 하게 되면 Client쪽에만 RST를 보낸다. Target 쪽에만 Zombie Session이 남는다. 설정을 하게 되면 L4 Switch에 부하가 발생하기 때문에 상황에 맞게 설정해야한다.
+* L4 : 자신만 세션을 종료시키며, 이를 알지 못하는 Client는 동일한 Connection으로 트래픽을 보냈을 때 RST를 받게 된다. 'Reset On Port Fail' 옵션을 설정을 하게 되면 Client쪽에만 RST를 보낸다. Target 쪽에만 Zombie Session이 남는다. 설정을 하게 되면 L4 Switch에 부하가 발생하기 때문에 상황에 맞게 설정해야한다.
 * L7 : Client와 Target에 FIN을 보내 세션 테이블을 종료 시킨다.
 * https://tech.kakao.com/2014/05/30/l4/
 * https://medium.com/tenable-techblog/lessons-from-aws-nlb-timeouts-5028a8f65dda

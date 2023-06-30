@@ -42,13 +42,13 @@
 * Static IP를 사용하려면 NLB를 사용해야 하며, 교차 영역 활성화를 하지 않으면 Static IP가 해당하는 가용 영역의 서버에만 트래픽을 전달한다.
     * Reference : https://stackoverflow.com/questions/60934851/in-aws-why-is-that-an-nlb-can-provide-static-ip-addresses-whereas-an-alb-cannot#:~:text=As%20per%20AWS%2C%20Network%20Load%20Balancer%20routes%20traffic,Also%2C%20NLB%20supports%20static%20%2F%20Elastic%20IP%20addresses.
     * https://stackoverflow.com/questions/3821333/amazon-ec2-elastic-load-balancer-does-its-ip-ever-change
-    > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이다.
+    > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이거나, 메인 서비스는 Layer 4 동작을 관리하지만 엔진 서비스는 Layer 7까지 처리할 수 있기 때문일거 같다.
 </br>
 </br>
 
 
 ## ELB 동작 과정
-1. __Load Balncer의 Listener가 Request(REQ)를 수신하고, REQ를 Listener Rules 의해 결정된 Taget Group에 전달__
+1. __Load Balancer의 Listener가 Request(REQ)를 수신하고, REQ를 Listener Rules 의해 결정된 Taget Group에 전달__
     1) LB Server 설정 
     2) Target Group Routing 기준 설정
 2. __Target Group은 REQ를 Instance, Container 또는 IP 주소, Lambda로 Routing__
@@ -72,7 +72,7 @@
 
 ### Only Application LB
 * "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
-    > 참고로 NLB는 TCP: / UDP: 120초
+    > 참고로 NLB는 TCP: 350초 / UDP: 120초
 * "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
     * defensive
         1) RFC 7230 규칙을 준수하는지 여부와 무관하게 애플리케이션이 알려진 안전한 요청을 수신하도록 허용
@@ -103,7 +103,7 @@
 </br>
 
 
-
+---
 ## Listener
 * REQ를 수신하고 Packet을 분석하여 Target Group으로 전달한다.
 * Packet 분석은 Listner Rule에 의해 결정된다.
@@ -240,6 +240,8 @@
 </br>
 
 
+
+---
 ## Target Group
 * Target에게 보내기 위해서 해당 Target이 정상적으로 동작하는지 Check하게 된다.
 </br>
@@ -273,16 +275,20 @@
 
 ### Health Check
 * 요청을 주기적으로 전송하여 상태를 확인한다.
-* Protocol
+* Protocol / Port
     * ALB: HTTP, HTTPS
     * NLB: TCP, TLS, UDP, TCP_UDP
+* Healthy threshold : Healthy 상태를 위한 Check 연속 성공 개수
+* Unhealthy threshold : : Unhealthy 상태를 위한 Check 실패 개수
+* Timeout : Health Check 요청에 대한 Timeout
+* Interval : Health Check 요청 간격
 </br>
 
 
 ### Stickiness
 * LB, APP Cookie는 ALB에서만, Source IP는 NLB에서만 사용 가능하다.
 * Source IP를 기준으로 Target을 결정한다.
-    > 2022년 가을인가에 변경됨. 원래는 2 tuple (Source IP, NLB Node IP)로 체크하였다. 그래서 이상한 동작을 하였다.
+    > 2022년 가을인가에 변경됨. 원래는 2 tuple (Source IP, NLB Node IP)로 체크하였다. 그래서 이상한 동작을 하였다. 현재는 Source IP 기준으로 갈린다. 단, Cross-zone이 활성화되어 있는 경우.
 * __사용하기 위해서는 Listener Rule에서 Stickness를 사용한다고 설정해놔야 한다.__
 * 고정 세션 해결 방법
     * https://kchanguk.tistory.com/146
@@ -314,7 +320,7 @@
 * NLB는 2가지 방법을 지원한다.
     1) preserve_client_ip : 같은 VPC에서만 사용 가능, LB 자체에서 Client IP를 전달
     > https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html
-    > 클라이언트 IP 보존 사용 시, Client가 NLB로 요청하는 경우 Source IP와 Target IP가 동일하게 되어 간현적인 연결 실패를 가져올 수 있다.
+    > 클라이언트 IP 보존 사용 시, Client가 NLB로 요청하는 경우 Source IP와 Target IP가 동일하게 되어 간현적인 연결 실패를 가져올 수 있다!!!!
     2) proxy_protocol_v2 : 다른 네트워크에서도 사용 가능, LB에서 Proxy Protocol을 사용해서 전달
     > "preserve_client_ip.enabled"를 true로 하면 무조건 다른 서버들에 대해 Client IP를 보내게 되므로 false로 지정하고 "proxy_protocol_v2.enabled"와 Server의 설정을 이용하도록 권장하는 것이 좋아 보인다(HAProxy Docs 읽어보면 비슷하게 설정하는 듯 보임)
 </br>

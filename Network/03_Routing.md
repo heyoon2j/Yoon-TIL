@@ -41,7 +41,7 @@
 
 ---
 ## __Routing Protocol__
-![Routing_protocol](../img/Routing_protocol.jpeg)
+![Routing_protocol](img/Routing_protocol.jpeg)
 크게 Routing을 하는데 Static Routing과 Dynamic Routing 방식이 존재하며, Dynamic Routing 방식을 위한 여러가지 Protocol이 있다. 
 </br>
 
