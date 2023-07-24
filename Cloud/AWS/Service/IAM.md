@@ -226,7 +226,7 @@ __4. SAML (Security Assertion Markup Language)__
               "rds.amazonaws.com"
             ]
           },
-          "Action": "sts:AssumeRole"
+          "Action": "sts:AssumeRole$$"
         }
       ]
     }

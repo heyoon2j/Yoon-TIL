@@ -88,19 +88,24 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
     * 이후에는 Unicast를 통해 통신한다.
 </br>
 
-
-### Why mapping VNI to VLAN ID?
-VXLAN(VNI)를 사용한다고 해서 VLAN을 사용하지 않는 것은 아니다. 
-* VXLAN으로 하나의 네트워크 구축할 때 같은 네트워크에 포함되는 범위는 "같은 Switch 내의 동일한 VLAN + 다른 Swhitch에 있는 동일 VNI, VLAN"이다. 그렇기 때문에 보통 VLAN ID와 VNI는 1:1 매핑을 한다(ex> 1:100001, 1:110001, 2:110002)
+---
+## Networking Mapping
+VXLAN을 관리하기 위해서는 Networking Mapping 방식에 대해서 자세하게 볼 필요가 있다.
+1. Why mapping VXLAN VNI to Multicasting Group
+    * VTEP 끼리 통신할 때 Multicasting 방식으로 통신한다.
+    * 하지만 Multicast Group의 갯수는 한정적이다(약 1000개). 그렇기 때문에 VXLAN VNI:Multicasting Group은 N:1 관계를 가진다.
+2. Why mapping VXLAN VNI to VLAN ID
+    * 기본적으로 Broadcast Domain은 VNI로 구분되어진다. 그렇기 때문에 같은 VLAN ID에 여러 개의 VNI가 매핑될 수 있다.
+    * 하지만 단순 L2 통신은 Switch를 통해서만 통신하기 때문에 VLAN ID는 필요하다.
 * Ref: https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/357001-358000/357506.jpg
 </br>
 
 
-
+---
 ### VLAN vs VXLAN
 | List           | VLAN                | VXLAN                 |
 | -------------- | ------------------- | --------------------- |
-| Network Layer  | Layer 2             | Layer 2               |
+| Network Layer  | Layer 2             | Layer 3               |
 | ID bit         | 12bit / 최대 4096개 | 24bit / 최대 1600만개 |
 | Tunneling 방식 | Trunk               | Multicast             |
 |                |                     |                       |

@@ -1,4 +1,4 @@
-$$# 10. Standard Library
+# 10. Standard Library
 
 
 
@@ -52,6 +52,16 @@ $$# 10. Standard Library
     print(divmod(5, 2))     # (2.5, 0)
     ```
 
+* pow(x, y[,z])
+    * 제곱근 계산 및 나머지 계산
+    ```python
+    pow(2, 3)       # 2**3 == 8
+    pow(100, -2)    # 100**(-2) == 0.0001
+    pow(100, (1/2)) # 100**(1/2) == 10.0
+
+    pow(2, 3, 3)    # (2**3) % 3 == 2
+    pow(10, 2, 5)  # 0
+    ```
 
 ---
 # Hash
