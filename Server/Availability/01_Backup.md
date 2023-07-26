@@ -209,8 +209,14 @@ $ find . -depth -print | cpio -pdmv /data2
 * https://myowntime.tistory.com/14
 * 디스크 단위 백업할 때 사용하거나, 블럭 단위 백업할 때 사용
 * option
-    * if : 
-    * of : 
+    * if : 표준입력 대신 지정한 파일을 입력으로 받는다.
+    * of : 표준출력 대신 지정한 파일에 출력한다.
+    * status : 상태 표시 / progress
+    * bs : Block Size
+    * count : Block Count
+    ```
+    $ dd if=/dev/nvme2n1 of=/dev/nvme3n1 bs=512 count=4096 status=progress
+    ```
 </br>
 
 ### Example
@@ -253,3 +259,5 @@ $ rsync -ahv -e 'ssh -p 40022' /test 10.10.10.10:/test
 
 ### Reference
 * https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=p_rain&logNo=220703521025
+
+
