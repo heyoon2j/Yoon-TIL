@@ -13,7 +13,7 @@
 
 * 왜 파티션 시작은 2048Sector 부터인가?
 	* 가장 큰 이유는 호환성 문제이다. File System Block 사이즈가 512 Byte에서 4096 Byte로 계산됨에 따라 
-	* Disk 사이즈 단위 : sector / 512,2048 or 4096 byte per 1 Sector
+	* Disk 사이즈 단위 : sector / 512, 2048 or 4096 byte per 1 Sector
 	* Memory 사이즈 단위 : Page / 512 to 8192 per 1 page
 	> 결국 디스크를 메모리에서 읽게 되는데 1, 34, 63 Sector에서 시작하게 되면 Block Size가 4096 byte인 경우, Page가 넘기게 된다. 그 외에도 RAID 구성 계산 등 호환을 위한 설정들을 계산하게 되면 2048 Sector(1MB)를 경계로 정렬하는 것을 권장하고 있다!!!
 
