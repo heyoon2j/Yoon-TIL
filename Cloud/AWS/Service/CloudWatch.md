@@ -192,6 +192,25 @@
 * 참조: https://techblog.woowahan.com/2669/
 </br>
 
+## Metric 확인 방법
+1. Console 확인
+2. Query 사용
+    ```
+    SELECT FUNCTION(metricName)
+    FROM namespace | SCHEMA(...)
+    [ WHERE labelKey OPERATOR labelValue [AND ... ] ]
+    [ GROUP BY labelKey [ , ... ] ]
+    [ ORDER BY FUNCTION() [ DESC | ASC ] ]
+    [ LIMIT number ]
+
+    SELECT AVG(CPUUtilization)
+        FROM 'AWS/RDS'
+        WHERE DBInstanceIdentifier=''
+        ORDER BY AVG() DESC
+    ```
+    * 
+    * https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage.html
+
 ## Custom Metric 사용
 1. 필요한 Resource에 대한 Custom Metric 생성
     * CLI, SDK 등 이용

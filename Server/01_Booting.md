@@ -10,7 +10,7 @@
     * 자체 진단 기능 실행 (POST, Power On Self Test)
     * CMOS, CPU, Memory, 주변장치 등 각종 장치의 이상 유무를 검사
 3. Boot Loader 실행 (Linux : GRUP)
-    1) MBR(Master Boot Record) 또는 VBR(Volume Boot Record) code 로드 & 실행 (Boot Loader)
+    1) MBR(Master Boot Record) 또는 VBR(Volume Boot Record) 로드 후 grup 실행 (이때 bios_grup 파티션이 있다면 해당 파티션으로 접근한다)
     2) /boot/grup에 접근하여 커널(vmlinuz)관련 파일을 메모리에 로드한다
 4. Loading Kernel
     1) 커널 파일 실행

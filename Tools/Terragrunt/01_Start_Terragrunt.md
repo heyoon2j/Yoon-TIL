@@ -11,6 +11,10 @@
     * CLI는 복잡성을 증가 시킨다.
 > Terragrunt라는 Tool을 사용하여 관리한다!!!
 
+</br>
+</br>
+
+---
 ## Terragrunt Execution 과정
 * 동작을 위한 기본 Step은 다음과 같다.
 1) Terragrunt Config 파일에 ```source```가 선언되어 있고 ```terragrunt <command>```를 실행
@@ -73,11 +77,12 @@ Terragrunt 구성은 ```terragrunt.hcl``` 파일에 정의된다.
 ├── code
 │   ├── tgw_routing.py
 │   └── vpc_routing.py
-├── policy
-│   ├── assumeRole_apigw.json
-│   ├── assumeRole_ec2.json
-│   ├── policy_bucket_policy.json
-│   └── policy_lambda_InvokeFunction.json
+├── data
+│   └── policy
+│       ├── assumeRole_apigw.json
+│       ├── assumeRole_ec2.json
+│       ├── policy_bucket_policy.json
+│       └── policy_lambda_InvokeFunction.json
 ├── modules
 │   ├── computing
 │   │   ├── alb
@@ -139,6 +144,6 @@ Terragrunt 구성은 ```terragrunt.hcl``` 파일에 정의된다.
 * remote_state.hcl : 상태 정보에 대한 원격 저장 위치 정보
 * terragrunt.hcl : Terragrunt 설정 정보
 * code : Terraform으로 구현하지 못하는 내용에 대해서는 스크립트로 적용하기 코드
-* policy : IAM Policy 코드
+* data : 구축에 필요한 파일 저장(ex> IAM Policy jsonp)
 * modules : Terraform Module 코드
 * config.hcl : 프로젝트 Config 변수 파일

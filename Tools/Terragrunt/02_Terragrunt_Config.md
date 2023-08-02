@@ -8,6 +8,8 @@ Terragrunt에서 제공하는 Block들을 이용하여 Terragrunt 사용을 위�
 6) include {}
 7) remote_state {} (여기서는 다루지 않는다. 자세한 내용은 03 Backedn_DRY.md에서)
 
+</br>
+
 
 ---
 ## terraform Block
@@ -15,16 +17,16 @@ Terraform과 상호작용하는 방식을 구성하는데 사용되고, 정의�
 1. Module Source 설정
    * Terraform Registry를 사용할때만 구문이 다르다(확인 필요)
 2. Working Directory에 저장할 파일 설정
+   * terragrunt.hcl이 실행되는 위치가 Working Directory가 된다.
 3. CLI Flag 설정
    * CLI 사용 시 Terraform Locking: ```-lock-timeout=20m```
-   * 
    * 입력 값을 위한 tfvar 파일 설정
-   * etc
+    * etc
 4. Hooking 설정
    * 기본적을 명령어 실행 전, 실행 후, 에러 발생에 대한 Hook 사용 가능
    * 특수한 Hook으로 terragrunt-read-config, init-from-module 이 있다.
    * 기본 Working Directory는 terragrunt.hcl가 존재하는 디렉토리이다!
-* Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
+   * Pseudo-code 다음과 같다(Example : https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#terraform)
     ```
     terraform {
         # Module 위치 설정

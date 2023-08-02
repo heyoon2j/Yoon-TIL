@@ -182,3 +182,21 @@ Python 정규표현식 모듈 : re
     ```
 
 
+---
+## datetime
+* datetime()
+    * 날짜 + 시간
+* date()
+    * 날짜
+* timedelta()
+    * datetime 모듈에 대한 계산
+```py
+from datetime import date, timedelta
+yesterday = date.today() - timedelta(days = 1)
+yesterday_2 = date.today() - timedelta(days = 2)
+
+datetime(yesterday.year, yesterday.month, yesterday.day, hour=0, minute=0, second=0, microsecond=0),
+datetime(yesterday_2.year, yesterday_2.month, yesterday_2.day, hour=23, minute=59, second=59, microsecond=999),
+```
+
+
