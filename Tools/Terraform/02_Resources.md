@@ -18,12 +18,14 @@
   ```
 </br>
 
+---
 ## Resource Type
 1. Providers
 2. Resource Arguments
 3. Documentation for Resource Types
 </br>
 
+---
 ## Meta-Arguments
 ## depends_on
 * 자동으로 유추할 수 없는 숨겨진 리소스 또는 모듈 종속성을 처리할 때 사용
@@ -199,4 +201,47 @@
   ```
 </br>
 
+---
+## Dynamic
+Resource 인자 값 중 {} 인데, 여러 개 값을 추가해야되는 경우 사용
+* Dynamic을 사용하지 않은 경우
+  ```tf
+  resource “aws_security_group” “test_sg” {
+    vpc_id = aws_vpc.vpc.id
+    ...
+
+    ingress {
+      protocol = “tcp”
+      from_port = 80
+      to_port = 80
+      cidr_blocks = [ “0.0.0.0/0” ]
+    }
+
+    ingress {
+      protocol = “tcp”
+      from_port = 443
+      to_port = 443
+      cidr_blocks = [ “0.0.0.0/0” ]
+    }
+  }
+  ```
+
+* Dynamic을 사용한 경우
+  ```
+
+  # Change
+  resource “aws_security_group” “test_sg” {
+    vpc_id = aws_vpc.vpc.id
+
+    dynamic "ingress" {
+      for_each  = var.ingress
+      content {
+        protocol = ingress.value.protocol
+        from_port = ingress.value.from_port
+        to_port = ingress.value.to_port
+        cidr_blocks = ingress.value.cidr_blocks   
+      }
+    }
+  }
+  ```
 
