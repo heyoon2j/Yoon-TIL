@@ -238,32 +238,11 @@ AWS Computing Service(EC2/ECS) 관리에 대한 자동화
 
 
 
-## IAM Setting
-1. IAM User Role
-
-    1) ```AmazonSSMFullAccess``` 또는 유사한 Policy : Systems Manager를 사용할 IAM User/Group/Role에 추가
-    2) ```iam:PassRole``` Policy : Systems Manager Automation Role을 SSM Automation에 전달해야 하므로 필요. 허용할 Resource로 1번 SSM Automation Role ARN 추가. 
-
-    * Session Manager 권한 제거
-
-2. SSM Node Manager Role
-    * EC2와 연결하기 위해서는 2가지 방법이 있다.
-    1) ```AmazonSSMManagedEC2InstanceDefaultPolicy```
-        * SSM Node Manger가 EC2에 접근하여 실행하기 위한 기본 정책들이 포함
-    2) CloudWatch 기록 권한
-        * Log를 기록하기 위한 정책 포함
-    3) Run Command 권한
-        * SendCommand 정책 필요
-    4) Patch Manager 권한
-
-
-
-
-
 
 ---
 ## Patch Management
 보안 관련 및 기타 유형의 업데이트 패치에 대한 프로세스를 자동화한다.
+</br>
 
 ## 사전 조건
 * SSM Agent Version : 2.0.834.0 이상
@@ -274,10 +253,9 @@ AWS Computing Service(EC2/ECS) 관리에 대한 자동화
     * CentOS 6.5~7.9, 8.0~8.5
     * CentOS Stream 8
     * Windows (R2 버전을 포함해 Windows Server 2008부터 Windows Server 2022)
-
+</br>
 
 ## 작동 방식
-
 1. 패치 기준 생성
     * 패키지 릴리즈 기준 지정 (ex> 일정 기간 기준으로 릴리즈된 패키지)
     * 승인/거부할 패키지 지정
@@ -285,10 +263,48 @@ AWS Computing Service(EC2/ECS) 관리에 대한 자동화
     * 
 2. 패치 그룹 추가 or 태그 추가
 3. 패치 적용 구성
-1. 패치 작업 모니터링
+4. 패치 작업 모니터링
     * 작업 상태
     * 패치 기준 준수 여부
-* 
+</br>
+</br>
 
+
+---
+## IAM Setting
+1. User Role
+    * SSM 서비스를 사용하기 위한 권한 필요 (기본 사항)
+        1) ```AmazonSSMFullAccess``` 또는 유사한 권한
+        2) ```iam:PassRole``` Policy
+        3) S3 버킷 액세스 권한 (VPC Endpoint를 사용하는 경우 필수)
+    * 기본 호스트 관리 구성 활성화 권한 (자동 관리가 필요할 시 사용)
+        1) 기본 호스트 관리 구성 설정 권한
+        2) ```iam:PassRole``` Policy : 기본 호스트 관리 구성 설정 시, 역할 전달 필요 (== 2번 Role)
+        > 기본 호스트 관리 구성을 활성해서 사용하는 경우 2번, 아닌 경우 3번 정책으로 구성하면 된다
+    * Maintenance Windows 권한
+        1) Maintenance Windows 사용을 위한 정책
+        2) ```iam:PassRole``` Policy : 유지 관리에 작업 등록 시, 권한 필요
+    * Parameter Store 권한
+        1) Parameter Store 등록을 위한 정책
+    * Automation 권한
+        1) Automation 사용을 위한 정책
+        2) ```iam:PassRole``` Policy : Automation Document 생성 시 필요
+2. SSM Fleet Manager 기본 호스트 관리 서비스를 통해 인스턴스를 관리할 경우 사용할 Role (Passive?)
+    * ```AmazonSSMManagedEC2InstanceDefaultPolicy ``` : SSM과의 통신을 위한 정책
+    * ```CloudWatchAgentServerPolicy``` : CloudWatch 모니터링을 위한 정책
+    * ```S3 Bucket Access 정책```
+3. 각 각의 EC2 Instance에서 SSM과 통신하여 관리되어질 경우 사용할 Role (Active?)
+    * ```AmazonSSMManagedInstanceCore``` : SSM과의 통신을 위한 정책
+    * ```CloudWatchAgentServerPolicy``` : CloudWatch 모니터링을 위한 정책
+4. SSM Role
+    1) Maintenance Windows 사용을 위한 정책
+        * Maintenance Windows에 작업을 등록하기 위한 기본 정책 (https://docs.aws.amazon.com/ko_kr/systems-manager/latest/userguide/sysman-maintenance-perm-console.html)
+    2) Parameter Store 액세스를 위한 정책
+        * 기본 호스트 관리 구성을 활성해서 사용하는 경우 2번, 아닌 경우 3번 역할에 정책 추가
+        * (특정) 파라미터 접근 권한
+        * KMS 복호화 권한
+    3) Run Command & Automation 권한
+        * 문서에서 접근하는 리소스에 대한 권한 필요
+    4) Patch Manager 권한
 
 

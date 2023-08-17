@@ -131,7 +131,20 @@ Amazon EC2 Instance를 위한 안정적이고 분리 가능한 블록 수준 스
 </br>
 </br>
 
+---
+## Performacne
+* IOPS
+    * 초당 디스크에 In/Out 작업을 수행할 수 있는 횟수
+* Throughput
+    * 같은 IOPS를 가지더라고 Block Size의 크기에 따라 초당 작업할 수 있는 크기는 달라진다. 그리고 해당 작업을 전달하는 과정에서 손실도 발생할 것이기 때문에 IOPS와 Throughput은 서로 다른다
+    * Throughput in MiB/s = IOPS performance × I/O size in KiB (내 추측 : - Latency )
+</br>
+</br>
 
+
+
+
+---
 ## Cost
 * 
 </br>
