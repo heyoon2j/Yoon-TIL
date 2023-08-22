@@ -103,13 +103,17 @@
     print('_'.join("def"))      # "d_e_f"
     ```
 
-* replace()
-    * 문자열 바꾸기
+* replace(old, new, count)
+    * 문자열 바꾼 후, 문자열 반환 (old ---> new, count : 바꿀 개수)
     ```python
     my_string = "BCBdbe"
     letter = "B"
     answer = my_string.replace(letter, '')
     print(answer)   # Cdbe
+
+    answer = my_string.replace(letter, '', 1)
+    print(answer)   # CBdbe
+
     ```
 
 * split()
@@ -163,7 +167,7 @@ Python 정규표현식 모듈 : re
     print(type(pattern))             # <class 're.Pattern'>
     ```
     
-* re.sub()
+* re.sub(regex, replacement, str)
     * 문자열 치환
     ```python
     # re.sub(정규표현식, 치환 문자, 문자열)

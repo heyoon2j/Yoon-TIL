@@ -9,6 +9,16 @@
 * 여러 기능 들이 뭉쳐져있는 하나의 .py 파일
 * 모듈은 파이썬 클래스, 함수나 스크립트 등을 담고 있는 파일
 </br>
+
+
+### Module 검색 경로
+* 인터프리터는 먼저 해당 모듈의 이름을 가지는 내장 모듈을 찾는다. 발견되지 않으면, 변수 sys.path 로 주어지는 디렉터리들에서 
+모듈 파일을 찾는다.
+* 변수 sys.path는 아래 위치들로 초기화된다.
+    * 입력 스크립트를 포함하는 디렉터리
+    * PYTHONPATH
+    * 설치 의존적인 기본값
+</br>
 </br>
 
 
@@ -16,6 +26,8 @@
 ## import
 * Ref : https://note.nkmk.me/en/python-import-usage/
 * Ref : https://docs.python.org/3/tutorial/modules.html#packages
+</br>
+
 ### import module
 ```python
 # import <module>
@@ -43,9 +55,9 @@ print(o())
 * import를 기준으로 이름을 추가하냐 안하냐 이다!
 * __all__이 모듈에 정의되어 있다면, *는 __all__에 정의된 값만 import한다
 </br>
+</br>
 
 
----
 ### import from package
 ```python
 """
@@ -104,7 +116,7 @@ __all__ = ['error']
 * 하위 경로에 있는 경우
     * 상대 경로를 이용
 * 상위 경로 or 다른 경로 있는 경우
-    * 상대 경로를 사용할기 위해서는 절대경로 path에 상위 경로에 대한 path를 추가해줘야 한다.
+    * 상위 경로를 사용하기 위해서는 절대경로 path에 상위 경로에 대한 path를 추가해줘야 한다.
     ```python
     import sys
     sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
@@ -112,50 +124,10 @@ __all__ = ['error']
 </br>
 </br>
 
+
+
+
 ---
-## 6.2. Script 실행
-* import가 된다고 실행이 되는 것이 아니다.
-* ```if __name__ == "__main__"```을 이용하여, 실행 코드가 main 파일일때만 실행하도록 만들 수 있다.
-    ```
-    # 모듈 실행
-    python fibo.py <arguments>
-    
-    # fibo.py
-    if __name__ == "__main__":
-        import sys
-        fib(int(sys.argv[1]))
-    ```
-
-
-## 모듈 검색 경로
-* 인터프리터는 먼저 해당 모듈의 이름을 가지는 내장 모듈을 찾는다. 발견되지 않으면, 변수 sys.path 로 주어지는 디렉터리들에서 
-모듈 파일을 찾는다.
-* 변수 sys.path는 아래 위치들로 초기화된다.
-    * 입력 스크립트를 포함하는 디렉터리
-    * PYTHONPATH
-    * 설치 의존적인 기본값
-
-
-## 컴파일된 파이썬 파일
-* 모듈 로딩을 빠르게 하기위해 사용된다.
-* ```__pycache__``` 디렉터리에 각 모듈의 컴파일된 버전을 module.version.pyc 라는 이름으로 캐싱한다. 
-version은 일반적으로 파이썬의 버전 번호를 포함한다.
-* Example
-    * CPython 배포 3.3 에서 spam.py
-    ```
-    __pycache__/spam.cpython-33.pyc
-    ```
-
-
-## dir() 함수
-* 내장 함수 dir()은 모듈이 정의하는 이름들을 찾는데 사용된다. 인자가 없으면, 현재 정의된 변수, 모듈 함수 등등의 이름들을 나열한다.
-* 문자열들의 정렬된 리스트를 돌려준다.
-    ```
-    import fibo
-    dir(fibo)       # ['__name__', 'fib', 'fib2']
-    ```
-
-
 ## Package (패키지)
 * 패키지는 점으로 구분된 모듈 이름을 써서 파이썬의 모듈 이름 공간을 구조화하는 방법
 * 예로 모듈 이름 A.B 는 A 라는 이름의 패키지에 있는 B 라는 이름의 서브 모듈을 가리킨다.
@@ -198,8 +170,12 @@ version은 일반적으로 파이썬의 버전 번호를 포함한다.
         from sound.effects.echo import echofilter
         ```
 
-## 6.7. 상대 경로를 이용한 패키지 참조
+### 절대 경로
 * 위에서 설명된 것은 패키지를 기준으로 절대 경로를 사용한다.
+* 모든 경로를 입력한다.
+
+
+### 상대 경로를 이용한 패키지 참조
 * import는 다음과 같이 상대 경로를 이용할 수 있다.
     * .은 현재 서브 패키지
     * ..은 상위 서브 패키지를 가리킨다.
@@ -209,11 +185,35 @@ version은 일반적으로 파이썬의 버전 번호를 포함한다.
     from ..filters import equalizer
     ```
 
-
-> 주의 필요!! Relative import를 포함한 python 모듈은 스크립트로 직접 실행할 수 없다. 안티 패턴이라고 한다!
+> 주의 필요!! Relative import를 포함한 python 모듈은 스크립트로 직접 실행할 수 없다. 안티 패턴이라고 한다! 다른 말로 표현하면, main되는 모듈에서는 상대 경로를 사용할 수 없다 (https://daco2020.tistory.com/62)
 
 > 그렇기 때문에 패키지안에서만 상대 경로(., ..)를 사용하고, 아닌 경우 절대 경로 사용
 
+</br>
+</br>
+
+
+
+
+---
+## 컴파일된 파이썬 파일
+* 모듈 로딩을 빠르게 하기위해 사용된다.
+* ```__pycache__``` 디렉터리에 각 모듈의 컴파일된 버전을 module.version.pyc 라는 이름으로 캐싱한다. 
+version은 일반적으로 파이썬의 버전 번호를 포함한다.
+* Example
+    * CPython 배포 3.3 에서 spam.py
+    ```
+    __pycache__/spam.cpython-33.pyc
+    ```
+
+
+## dir() 함수
+* 내장 함수 dir()은 모듈이 정의하는 이름들을 찾는데 사용된다. 인자가 없으면, 현재 정의된 변수, 모듈 함수 등등의 이름들을 나열한다.
+* 문자열들의 정렬된 리스트를 돌려준다.
+    ```
+    import fibo
+    dir(fibo)       # ['__name__', 'fib', 'fib2']
+    ```
 
 
 
