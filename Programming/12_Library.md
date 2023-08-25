@@ -24,7 +24,7 @@
 ---
 # Math
 * sum()
-    * q
+    * 
     ```
     # sum(iterable)
 
@@ -62,6 +62,24 @@
     pow(2, 3, 3)    # (2**3) % 3 == 2
     pow(10, 2, 5)  # 0
     ```
+
+* round(x, n)
+    * n 자리수까지 반올림
+    ```py
+    print(round(5.123456789022222))         # 5
+    print(round(5.123456789022222,5))       # 5.12346
+    ```
+
+* upper() / lower()
+    * 대문자 / 소문자 변경
+    ```py
+    print("abc".upper())            # ABC
+    print("ABC".lower())            # abc
+    ```
+
+
+
+
 
 ---
 # Hash
@@ -152,7 +170,12 @@
     print(text.strip(',123.p'))     # water
 
     ```
-        
+
+* join(str)
+    * 문자열 삽입
+    ```py
+    print("|",join("abcd"))         # a|b|c|d
+    ```        
 
 
 ---
