@@ -1,8 +1,51 @@
 
+```
+# Config
+
+
+
+kubectl config --kubeconfig=config-demo set-cluster development --server=https://1.2.3.4 --certificate-authority=fake-ca-file
+kubectl config --kubeconfig=config-demo set-cluster test --server=https://5.6.7.8 --insecure-skip-tls-verify
+
+
+```
+
+
+
+## 사용자/클러스터/컨텍스트 관리
+
+* 인증 관리
+    ```
+    $ kubectl config --kubeconfig=<file_path> set-credentials <user_name> [Options]
+
+    $ kubectl config --kubeconfig=config-demo set-credentials developer --client-certificate=fake-cert-file --client-key=fake-key-seefile
+    $ kubectl config --kubeconfig=config-demo set-credentials experimenter --username=exp --password=some-password
+    ```
+
+
+* 컨텍스트 관리
+    ```
+    $ kubectl config --kubeconfig=config-demo set-context dev-frontend --cluster=development --namespace=frontend --user=developer
+    $ kubectl config --kubeconfig=config-demo set-context dev-storage --cluster=development --namespace=storage --user=developer
+    $ kubectl config --kubeconfig=config-demo set-context exp-test --cluster=test --namespace=default --user=experimenter
+    ```
+
+
+
+* 사용자/클러스터/컨텍스트 삭제
+    ```
+    $ kubectl --kubeconfig=config-demo config unset users.<name>
+    $ kubectl --kubeconfig=config-demo config unset clusters.<name>
+    $ kubectl --kubeconfig=config-demo config unset contexts.<name>
+    ```
 
 
 
 
+---
+```
+
+```
 
 
 ```
@@ -17,7 +60,7 @@ kubectl get pods --all-namespace                # Print all Pod information
 
 
 
-kubectl create -f <YAML File>                   # Create Object
+
 
 
 
@@ -45,7 +88,7 @@ kubectl api-resource                            # Print resource list
 
 ```
 # Object
-
+# kubectl create -f <YAML File>                   # Create Object
 
 kubectl create deployment dpy-nginx --image=nginx
 
@@ -53,6 +96,12 @@ kubectl create -f ~/dpy-template.yaml
 
 
 kubectl apply -f ~/dpy-template.yaml
+
+
+## Label 
+## label 추가
+$ kubctl label <object> <obj_name> <key>=<value>
+
 
 
 ## History
@@ -107,3 +156,12 @@ $ kubectl delete services np-svc
 
 ```
 * xpose로도 생성 가능하나 NodePort를 지정할 수 없다. 임의로 포트가 지정됨 (30000 ~ 32767)
+
+
+
+```
+# API 
+
+$ kubectl api-resources -o wide                 # API Groups 확인
+
+```

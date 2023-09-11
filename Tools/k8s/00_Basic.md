@@ -3,6 +3,12 @@
     - Kubernetes는 원하는 상태(desired state)를 선언(declarative)하면 현재 상태(current state)와 비교하여 원하는 상태를 유지하려한다.
     - 상태를 유지하기 위해 Kubernetes는 계속해서 상태를 관찰한다(Observing)
     > k8s는 상태를 선연하다보니 명령어도 run이 아닌 create를 사용한다
+* Namespace
+    * Cluster에서 사용되는 리소스들을 구분해서 관리하는 그룹
+    * 환경을 분리할 수 있음
+    * default (기본), kube-system (k8s system), metallb-system 이 기본으로 등록되어 있음
+    * 리소스 이름은 각 네임스페이스 내에서 고유해야 한다. 다른 네임스페이스에서는 사용 가능하다.
+    * 네임스페이스는 서로 중첩될 수 없으며 각 Kubernetes 리소스는 하나의 네임스페이스에만 있을 수 있습니다.
 * Object
     - k8s는 상태를 관리하기 위해 대상을 Object로 정의한다.
     - Pod Object : Pod 정보 - Container/CNI/CSI
@@ -105,7 +111,13 @@ Application Pod들이 동작하는 Node
 * Namespace & Label
     - 하나의 Cluster 안에 여러 개의 Application이 등록되기 때문에 Namespace를 사용하여 논리적으로 구분한다.
     - 더 세부적인 설정은 Label을 통해서 관리할 수 있다. 
+* Static Pod
+    - API Server 상관없이 특정 디렉토리 안에 있는 YAML 정의서를 보고 직접 생성된 Pod를 의미
+    - 예시 : kube-apiserver, etcd
+    - Default 디렉토리 : ```/etc/kubernetes/manifest```
+    > 일반적으로 Core 컴포넌트가 이에 해당!
 </br>
+
 
 
 ### Network Plugin
