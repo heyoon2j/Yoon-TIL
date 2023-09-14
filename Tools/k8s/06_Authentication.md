@@ -10,6 +10,12 @@
 ---
 # Authentication
 모든 입력은 HTTP 요청이며, 하나 이상의 인증 모듈을 가지고 인증 체계를 구성할 수 있다.
+* 구성
+    - k8s/config : /etc/kubernetes/manifests/kube-apiserver.yaml
+        
+
+    - abcd
+
 * 특징
     1) k8s는 User 인증 정보를 저장하지 않고, 외부 시스템을 통해 인증(X.509 인증서, OIDC 등)을 사용 하다보니 내부 인증체계에 종속되는 부분이 거의 없다. 그렇다보니 인증 부분에 대한 확장성이 좋다.
     2) Group을 통해 권한을 동일하게 사용하게 할 수 있다
@@ -26,13 +32,17 @@
         * Secrets는 클러스터 내 프로세스가 Kubernetes API와 통신할 수 있도록 포드에 마운트시킴
         * 
 * 인증 모듈 종류
+* https://coffeewhale.com/kubernetes/authentication/http-auth/2020/05/03/auth02/
+* https://kubernetes.io/docs/reference/access-authn-authz/authentication/#configuration
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
     1. Client Certificates (X.509 인증서, TLS)
-    2. Tokens
-        - Plain Tokens
-        - Bootstrap Tokens (Bearer Type)
-        - Service Account Tokens
-    3. OIDC (OAuth2)
-    4. Webhook Tokens
+    2. Basic Auth
+    3. Tokens
+        - Plain Tokens : ```--basic-auth-file=/etc/kubernetes/pki/id_pw_auth```
+        - Bootstrap Tokens (Bearer Type) : ``` ```
+        - Service Account Tokens : ``` ```
+    4. OIDC (OAuth2)
+    5. Webhook Tokens
     > 일반적으로 "서비스 계정의 서비스 계정 토큰" 과 "사용자 계정을 위한 하나 이상의 다른 방법" 사용한다!
 * 그룹
     - system:masters : Full Access를 가진 Admin 그룹
@@ -50,6 +60,9 @@
 ## Client Certificates
 Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 있다 (X.509 등)
 </br>
+
+---
+
 
 
 ---
