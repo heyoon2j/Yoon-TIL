@@ -116,7 +116,7 @@
 * list.sort(reverse=True|False, key=myFunc) vs sorted(iterable)
     1) list.sort()
         * 기존에 있는 리스트를 정렬한다.
-            > 그렇기 때문에 sorted()보다  빠르다.
+            > 그렇기 때문에 sorted()보다 빠르다.
         * 반환 값은 None
         * https://www.w3schools.com/python/ref_list_sort.asp#:~:text=%20Python%20List%20sort%20%28%29%20Method%20%201,...%20%204%20More%20Examples.%20%20More%20
         ```python

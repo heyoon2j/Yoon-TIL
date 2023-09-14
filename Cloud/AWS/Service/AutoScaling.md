@@ -54,7 +54,7 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     * Auto Scaling Group에 등록
     * Warm-up Time 동안 CloudWatch 지표에 등록하지 않음
     * Grace Time 동안 LB의 Health Check를 AS에 포함시키지 않는다.
-    * > Warm-up Time >= Grace Time 이 좋아 보임. Health Check가 되는 순간부터 실질적으로 트래픽이 흘러가기 때문에 이후에 지표에 등록되는 것이 맞아 보인다.
+    * Cold Time > Warm-up Time >= Grace Time 이 좋아 보임. Health Check가 되는 순간부터 실질적으로 트래픽이 흘러가기 때문에 이후에 지표에 등록되는 것이 맞아 보인다.
 6. (Terminating) : 정책 또는 상황에 따라 종료되어야 할 Instance를 선정 및 AS에서 분리와 LB에서 등록 취소 진행(Deregistration Delay 포함)
 7. (Terminating:Wait) : Lifecycle Hook 실행 후 종료되기 까지 대기
 8. (Terminating:Proceed) : 인스턴스 종료
@@ -63,7 +63,7 @@ Auto Scaling 그룹 설정 시 다음 항목을 신경쓰면 된다.
     * 모든 인스턴스는 Healthy 상태로 시작하며 해당 인스턴스가 비정상 상태라는 알림을 수신하지 않는 한 인스턴스는 정상 상태로 간주된다.
     * Grace Period : LB의 Health Check를 AS에 포함시키기 까지의 유예 기간. 도중에 Instance의 상태가 running이 아닌 경우에는 Instance가 종료된다.
 * Scaling Action Control을 위한 시간
-    * Warm-up Time : 새로 시작된 인스턴스가 InService 상태에 도달하게 되면, 즉시 CloudWatch 지표에서 계산이 된다. 이런 경우, 서버는 InService에 도달했다고해서 바로 서비스 요청을 처리하고 있는 것이 아닌데 지표에 영향을 주기 때문에 Dynamic Auto Scliang은 서버는 추가되었지만 각 각의 인스턴스 리소스는 임계값을 넘었기 때문에 리소스가 부족하다고 잘못 판단할 수 있다. 이를 방지하기 위해 지정된 워밍업 시간이 만료될 때까지 인스턴스는 Auto Scaling Group의 집계된 지표에 계산되지 않도록 한다. 이를 통해 리소스 사용량에 영향을 주지 않도록 하여 필요한 것보다 더 많은 인스턴스를 추가하지 않게 해야 한다.
+    * Warm-up Time : 새로 시작된 인스턴스가 InService 상태에 도달하게 되면, 즉시 CloudWatch 지표에서 계산이 된다. 이런 경우, 서버는 InService에 도달했다고해서 바로 서비스 요청을 처리하고 있는 것이 아닌데 지표에 영향을 주기 때문에 Dynamic Auto Scliang은 서버는 추가되었지만 각 각의 인스턴스 리소스는 임계값을 넘었기 때문에 리소스가 부족하다고 잘못 판단할 수 있다. 이를 방지하기 위해 지정된 워밍업 시간이 만료될 때까지 인스턴스는 Auto Scaling Group의 집계된 지표에 계산되지 않도록 한다. 이를 통해 리소스 사용량에 영향을 주지 않도록 하여 필요한 것보다 더 많은 인스턴스를 추가하지 않게 해야 한다. 즉, 인스턴스가 InService 상태에 도달한 후 집계된 지표에 사용 데이터를 제공하기 전에 대기하는 시간을 의미
     * Cold Time : 다음 Scaling 활동이 시작되기 전에 휴지 기간이 완료될 때까지 기다린다. 이를 통해 추가적인 Scaling 작업이 반복되지 않게 도움을 준다.
 </br>
 </br>

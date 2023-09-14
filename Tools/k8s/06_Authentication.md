@@ -17,9 +17,9 @@
     - User Account : Cluster에 접근하는 관리자 및 사용자 (전역적이므로 Namespace에 걸처 고유해야 함)
         * 인증 정보 위치 : ```$HOME/.kube/config``` 파일에 저장
         * 저장 내용
-            1) clusters : 
-            2) users : 
-            3) context : 
+            1) clusters : 접근할 Cluster 주소 / 인증 정보
+            2) users : User 정보 / 인증 정보
+            3) context : clusters와 users 끼리 매핑
         > Kubernetes에는 user Account를 나타내는 Object가 없다. 그렇기 때문에 API 호출을 통해 일반 사용자를 추가할 수 없다. 그렇기 때문에 클러스터의 인증 기관(CA)에서 서명한 유효한 인증서를 하나의 User로 생각한다.
     - Service Account : 사용자가 아닌 시스템, Pod에서 실행되는 Process에 대응하여 식별자(ID) 제공 (Namespace 별로 구분됨)
         * Service Account는 Namespace에 연결된다. 그리고 SA는 Secrets로써 저장되고 자격 증명 세트에 연결된다.

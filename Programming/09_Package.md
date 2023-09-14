@@ -185,7 +185,7 @@ __all__ = ['error']
     from ..filters import equalizer
     ```
 
-> 주의 필요!! Relative import를 포함한 python 모듈은 스크립트로 직접 실행할 수 없다. 안티 패턴이라고 한다! 다른 말로 표현하면, main되는 모듈에서는 상대 경로를 사용할 수 없다 (https://daco2020.tistory.com/62)
+> 주의 필요!! Relative import를 포함한 python 모듈은 스크립트로 직접 실행할 수 없다. 안티 패턴이라고 한다! 다른 말로 표현하면, main되는 모듈에서는 상대 경로를 사용할 수 없다 (https://daco2020.tistory.com/62, https://velog.io/@anjaekk/python%EC%A0%88%EB%8C%80%EA%B2%BD%EB%A1%9C%EC%83%81%EB%8C%80%EA%B2%BD%EB%A1%9C-%EC%83%81%EB%8C%80%EA%B2%BD%EB%A1%9C-import-%EC%97%90%EB%9F%AC%EC%9D%B4%EC%9C%A0%EC%99%80-%ED%95%B4%EA%B2%B0)
 
 > 그렇기 때문에 패키지안에서만 상대 경로(., ..)를 사용하고, 아닌 경우 절대 경로 사용
 

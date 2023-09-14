@@ -23,6 +23,9 @@ L4 Switch를 L2, Server들과 직접 연결하지 않고, Backbone Switch를 통
 ## Direct Server Return (DSR)
 'One-Arm' 구성에서 Server가 Response에 대해 L4 Switch를 거치지 않고, Backbone Switch를 통해서 전달하는 구성(https://aws-hyoh.tistory.com/m/144)
 * Destination NAT 처리 해제, L4 Switch 경유 의무화 해제, Loopbak IP 설정과 GARP 사용 취소 설정 필요
+* 필요한 설정
+    - L4 Switch - Source IP/Port NAT : X / Destination IP/Port NAT : X / 3 way-handshake 경유 의무화 : 미실시
+    - Server - Loopback IP : O / Loopback IP GARP : X / Loopback IP ARP Response : X
 * 장점 : Response가 L4 Switch를 거치지 않기 때문에, 부하적인 측면이나 속도적인 측면이 향상된다.
 * 단점 : Response가 L4 Switch를 거치지 않기 때문에, 트러블 슈팅에 어려움이 있을 수 있다.
 </br>

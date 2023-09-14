@@ -46,3 +46,11 @@
 ---
 
 ## 공부할 Pattern
+
+
+https://m.hanbit.co.kr/channel/category/category_view.html?cms_code=CMS8616098823
+https://supermemi.tistory.com/178
+https://yeah.tistory.com/13
+https://wikidocs.net/168367
+https://bcp0109.tistory.com/367
+https://bcp0109.tistory.com/368

@@ -131,33 +131,7 @@ Kubernetes Cluster 통신을 위해서 Network Plugin을 선택하고 구성해�
 
 ### CoreDNS
 DNS Server로 Kubernetes Cluster에서 Domain을 이용해 통신하는데 사용한다.
-
-
-
-
 </br>
-
-
-
-
----
-
-
-
-
-
-
-
-
-
----
-## Resource
-Deployment, StatefulSet, DeamonSet, CronJob
-
-
-
-
-
 
 ## ETC
 Kubernetes를 잘 활용하기 위해 필요한 기술들은 다음과 같다.
@@ -165,6 +139,47 @@ Kubernetes를 잘 활용하기 위해 필요한 기술들은 다음과 같다.
 * Helm
 * Prometheus
 * Grafana
+</br>
+</br>
+
+
+---
+## 생성 순서
+Ref : https://velog.io/@lijahong/0%EB%B6%80%ED%84%B0-%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94-AWS-%EA%B3%B5%EB%B6%80-EKS-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0-EKS-%EA%B5%AC%EC%B6%95-IAM
+
+0. 사전 준비
+    * kubectl 설치 (Kubernetes Tool)
+    * jq 설치 (JSON 데이터 커맨드 Tool)
+
+1. Create EKS Cluster
+    * Create HA Control Plane
+    * IMA integration
+    * Certificate Management
+    * Setup LB
+    * 
+2. Provision worker nodes
+3. Launch add-ons
+4. Launch workloads
+
+
+컨테이너 이미지 저장소인 Amazon ECR(Elastic Container Registry)
+로드 분산을 위한 AWS ELB(Elastic Load Balancing)
+인증을 위한 AWS IAM
+격리된 Amazon VPC
+
+
+* Kubernetes 클러스터에 인증을 제공하기 위해 IAM을 사용하지만, 여전히 기본 Kubernetes 역할 기반 액세스 제어(RBAC)를 권한 부여에 사용합니다. 따라서 IAM은 유효한 IAM 엔터티의 인증에만 사용됩니다.
+* Amazon EKS 클러스터의 Kubernetes API와의 상호 작용에 대한 모든 권한은 기본 Kubernetes RBAC 시스템을 통해 관리됩니다
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -223,7 +238,8 @@ Fluentd 사용
 
 ## Authentication & Authorization (인증 & 인가)
 모든 사용자와 서비스는 Kubernetes 서비스를 사용하기 위해서는 API Server(Control Plane)에 인증 및 인가 작업을 받아야 한다.
-> EKS : AWS에서 IAM과 연동할 수 있게 개발하였다.
+* Kubernetes 클러스터에 인증을 제공하기 위해 IAM을 사용하지만, 여전히 기본 Kubernetes 역할 기반 액세스 제어(RBAC)를 권한 부여에 사용합니다. 따라서 IAM은 유효한 IAM 엔터티의 인증에만 사용됩니다. Amazon EKS 클러스터의 Kubernetes API와의 상호 작용에 대한 모든 권한은 기본 Kubernetes RBAC 시스템을 통해 관리된다.
+    > EKS : AWS에서 IAM과 연동할 수 있게 개발하였다.
 * 대상
     * User Account : Cluster에 접근하는 관리자 및 사용자
         * 전역적이므로 Namespace에 걸처 고유해야 함 

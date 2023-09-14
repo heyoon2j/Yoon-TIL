@@ -232,3 +232,38 @@ $ awk 'length($0) > 10 { print $3, $4, $5} ' ./file.txt     # 레코드 길이�
 
 
 
+## Redirection
+* 명령어 사용법
+    ```
+    $ <fd><redir> <file_name>
+    $ echo "test" 1> test.txt
+
+    $ <fd><redir> &<fd>
+    $ echo "test" 1>&2 
+
+    ``` 
+    * ```<``` : 입력
+    * ```>``` : 출력
+    * ```>>``` : 출력(Append)
+    * 파일 이름 대신 File description 번호를 쓰기 위해서는 &를 붙여야 한다!
+
+* 자주 사용되는 방법
+    ```
+    $ wc test.txt 2>&1                      # 에러 메세지도 터미널에 출력
+    $ wc test.txt 1> outfile 2> errorfile   # 출력 메세지는 outfile에, 에러 메세지는 errorfile에 출력
+
+    
+    ```
+
+
+* <<
+    ```
+    cat << EOF > test.txt
+    hello
+    test
+    EOF
+    ```
+    * 여러줄을 파일에 넣고 싶을 때 사용
+
+
+
