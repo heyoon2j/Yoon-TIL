@@ -99,6 +99,7 @@ Application Pod들이 동작하는 Node
     - 쿠버네티스 네트워킹 서비스를 용이하게 하기 위한 네트워크 프록시
     - Pod의 외부 통신을 위한 프로시
     - 운영 체제의 패킷 필터링 계층에 의존하거나 트래픽 자체를 전달하여 클러스터 내부 또는 외부의 네트워크 통신을 처리
+    - iptables, IPVS를 이용하여 방화벽 처리
 * Container Runtime Engine
     - 컨테이너 실행을 위해 각 Computing Node에는 런타임 엔진이 있다 (ex> Docker)
 </br>

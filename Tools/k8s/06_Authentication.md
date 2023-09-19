@@ -7,20 +7,20 @@
 * 용어 정리
     *  JWT : JSON Web Tokens, JSON 형태로 정보를 정의한 토큰
 
+
+
 ---
 # Authentication
+![K8s_Authentication](img/K8s_Authentication.jpg)
 모든 입력은 HTTP 요청이며, 하나 이상의 인증 모듈을 가지고 인증 체계를 구성할 수 있다.
 * 구성
     - k8s/config : /etc/kubernetes/manifests/kube-apiserver.yaml
-        
-
     - abcd
-
 * 특징
     1) k8s는 User 인증 정보를 저장하지 않고, 외부 시스템을 통해 인증(X.509 인증서, OIDC 등)을 사용 하다보니 내부 인증체계에 종속되는 부분이 거의 없다. 그렇다보니 인증 부분에 대한 확장성이 좋다.
     2) Group을 통해 권한을 동일하게 사용하게 할 수 있다
 * 인증 주체
-    - User Account : Cluster에 접근하는 관리자 및 사용자 (전역적이므로 Namespace에 걸처 고유해야 함)
+    - User Account : Cluster에 접근하는 관리자 및 사용자 (전역적이므로 모든 Namespace에 걸처 고유해야 함)
         * 인증 정보 위치 : ```$HOME/.kube/config``` 파일에 저장
         * 저장 내용
             1) clusters : 접근할 Cluster 주소 / 인증 정보
@@ -30,15 +30,11 @@
     - Service Account : 사용자가 아닌 시스템, Pod에서 실행되는 Process에 대응하여 식별자(ID) 제공 (Namespace 별로 구분됨)
         * Service Account는 Namespace에 연결된다. 그리고 SA는 Secrets로써 저장되고 자격 증명 세트에 연결된다.
         * Secrets는 클러스터 내 프로세스가 Kubernetes API와 통신할 수 있도록 포드에 마운트시킴
-        * 
 * 인증 모듈 종류
-* https://coffeewhale.com/kubernetes/authentication/http-auth/2020/05/03/auth02/
-* https://kubernetes.io/docs/reference/access-authn-authz/authentication/#configuration
-* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
     1. Client Certificates (X.509 인증서, TLS)
-    2. Basic Auth
+    2. Basic Auth : ```--basic-auth-file=/etc/kubernetes/pki/id_pw_auth```
     3. Tokens
-        - Plain Tokens : ```--basic-auth-file=/etc/kubernetes/pki/id_pw_auth```
+        - Plain Tokens
         - Bootstrap Tokens (Bearer Type) : ``` ```
         - Service Account Tokens : ``` ```
     4. OIDC (OAuth2)
@@ -54,14 +50,144 @@
 ### Ref
 * k8s 공식문서
 * https://coffeewhale.com/kubernetes/authentication/http-auth/2020/05/03/auth02/
+* https://ssup2.github.io/theory_analysis/AWS_EKS_%EC%9D%B8%EC%A6%9D/
 </br>
 
 ---
 ## Client Certificates
-Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 있다 (X.509 등)
+Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 있다(X.509 등).
+* 인증서 생성 (in Cluster)
+* 인증서 생성 (Manually)
+* 인증서 삭제
+* 인증서 갱신
 </br>
 
+### 인증서 생성 (in Cluster) 
+![K8s_Authentication_Cluster](img/K8s_Authentication_Cluster.jpg)
+* easyrsa, openssl, cfssl을 이용하여 Cluster용 인증서를 생성
+    ```
+    ca.key
+    ca.crt
+    client.key
+    client.csr
+    ```
+* CertificateSigningRequest 생성
+    ```sh
+    $ cat <<EOF | kubectl apply -f -
+    apiVersion: certificates.k8s.io/v1
+    kind: CertificateSigningRequest
+    metadata:
+        name: my-svc.my-namespace
+    spec:
+        request: $(cat ca.csr | base64 | tr -d '\n')
+        signerName: kubernetes.io/kube-apiserver-client
+        usages:
+        - digital signature
+        - key encipherment
+        - server auth
+    EOF
+    ```
+    - request : 인증서 (Encoding base64)
+    - signerName : 승인할 서명자 이름
+    - usages : 
+* CertificateSigningRequest 인증서 승인
+    ```sh
+    $ kubectl certificate approve my-svc.my-namespace
+    $ kubectl get csr/my-svc.my-namespace -o yaml
+    $ kubectl get csr my-svc.my-namespace -o jsonpath='{.status.certificate}'| base64 -d > client.crt
+    ```
+* Client Side : Config File Setting
+    ```
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4 --insecure-skip-tls-verify=true
+
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials qa-team --client-certificate=client.crt --client-key=client.key
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+
+    # Check
+    $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
+
+    $ kubectl get pod -n kube-system --client-certificate=client.crt --client-key=client.key
+    ```
+</br>
+</br>
+
+
+### 인증서 생성 (Manually)
+![K8s_Authentication_Custom](img/K8s_Authentication_Custom.jpg)
+* easyrsa, openssl, cfssl을 이용하여 Cluster용 인증서를 생성
+    ```
+    ca.key
+    ca.crt
+    server.key
+    server.crt
+    client.key
+    client.crt
+    ```
+* API Server Side : manifests 파일 수정
+    ```
+    $ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
+
+    --client-ca-file=/etc/kubernetes/pki/ca.crt
+    --tls-cert-file=/etc/kubernetes/pki/server.crt
+    --tls-private-key-file=/etc/kubernetes/pki/server.key
+    ```
+    - client-ca-file : Client의 인증서를 확인할 인증서 파일 (Client의 인증서가 공인인증을 받지 않은 경우, 인증받을 방법이 없기 때문에 필요하며, 여기서는 같은 Root CA 인증서 파일)
+    - tls-cert-file : Cluster에서 전달한 인증서 파일
+    - tls-private-key-file : Cluster에서 전달한 키 파일
+
+* Client Side : Config File Setting
+    ```
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4 --certificate-authority=ca.crt
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4 --insecure-skip-tls-verify=true
+
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials qa-team --client-certificate=client.crt --client-key=client.key
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+
+    # Check
+    $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
+
+    $ kubectl get pod -n kube-system --client-certificate=client.crt --client-key=client.key
+    ```
+    - insecure-skip-tls-verify : 인증서에 대하여 공인기관에 검증하는 과정을 건너뛴다
+    - certificate-authority-data : Cluster의 Certificate가 공인인증이 아닌 경우, Cluster 인증서를 인증해줄 인증서가 필요하다. 그래서 "insecure-skip-tls-verify: true"인 경우 해당 부분을 공백으로 설정. "false"인 경우, 접속하고자하는 k8s master node의 certificate-authority-data(Root Cert)를 넣어줘야 한다.
+    - certificate-authority : data가 아닌 경로를 넣어준다
+    - tls-server-name :
+    - client-certificate / client-key : Root Cert로부터 사인된 하위 인증서와 비밀 키 파일 경로
+</br>
+
+
+
+
+### 인증서 갱신
+
+
+
+
+
+
 ---
+## Basic Authentication
+* API Server Side
+    - manifests 파일 수정
+    ```
+    $ sudo /etc/bin/echo 'pw1@,test1,test1,system:masters' > /etc/kubernetes/pki/id_pw_auth
+    $ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
+
+    --basic-auth-file=/etc/kubernetes/pki/basic-auth
+
+    ```
+
+* Client Side
+    - Config file setting
+    ```
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials test-user --username=test1 --password=pw1@
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+
+
+    $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
+    $ kubectl get pod -n aws --username test1 --password pw1@
+    ```
 
 
 
@@ -75,6 +201,25 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 * 토큰 파일은 token, user_name, uid, 선택적 group_name 등 최소 3개의 열이 있는 csv 파일이다
     ```
     token,user,uid,"group1,group2,group3"
+    ```
+* API Server Side
+    - manifests 파일 수정
+    ```
+    $ sudo /etc/bin/echo 'plain-token-key,test1,test1,system:masters' > /etc/kubernetes/pki/plain_token_auth
+    $ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
+
+    --token-auth-file=/etc/kubernetes/pki/plain_token_auth
+    ```
+* Client Side
+    - Config file setting
+    ```
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials test-user --token plain-token-key
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+
+
+    $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
+    $ kubectl get pod -n aws --token plain-token-key
     ```
 </br>
 
@@ -95,15 +240,37 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 * 생성 방법은 다음과 같다.
     1. Create Service Account
         ```
-        $ kubectl create serviceaccount jenkins
+        $ kubectl create serviceaccount jenkins <-n namespace>
         ```
     2. Create an associated token
         ```
         $ kubectl create token jenkins
         ```
         * 이렇게 생성된 토근은 JWT(JSON Web Token)이다
-    3. 필요한 Object Spec에 설정
-> Service accounts authenticate with the username system:serviceaccount:(NAMESPACE):(SERVICEACCOUNT), and are assigned to the groups system:serviceaccounts and system:serviceaccounts:(NAMESPACE)
+    3. Secret 생성
+        ```
+        $ kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: Secret
+        metadata:
+        name: jenkins-secret
+        annotations:
+            kubernetes.io/service-account.name: jenkins
+        type: kubernetes.io/service-account-token
+        EOF
+
+        $ kubectl describe secrets/jenkins-secret
+        ```
+    4. Token 사용
+        ```
+        JWT_TOKEN=$(kubectl get secret default-token-xxx -ojson | jq -r .data.token | base64 -d)
+        echo $JWT_TOKEN
+
+        kubectl api-versions --token $JWT_TOKEN
+        ```
+    5. 필요한 Object Spec에 설정
+    > Service accounts authenticate with the username system:serviceaccount:(NAMESPACE):(SERVICEACCOUNT), and are assigned to the groups system:serviceaccounts and system:serviceaccounts:(NAMESPACE)
+
 </br>
 
 
@@ -112,14 +279,57 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 ## OIDC Tokens (OpenID Connect)
 사용자가 믿을 수 있는 Google, Facebook과 같은 곳에 인증을 맡기는 형태
 * 외부와 통신이 되어야 한다
+* API Server Side
+    - oidc-issuer-url : OIDC Provider Site URL (인증받을 사이트 주소)
+    - oidc-client-id : OIDC Provier에서 접속할 ID
+    - manifests 파일 수정
+    ```
+    $ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
+
+    --oidc-issuer-url=https://amazon.oidc.com
+    --oidc-client-id=<<CLIENT_ID>
+    --oidc-ca-file=/etc/kubernetes/pki/<<IDP_CA.crt>> 
+    ```
+
+* Client Side
+    - Config file setting
+    > ID Token도 인증서와 동일하며 수명이 짧기 때문에 그때마다 다시 받고 설정해야 한다..
+    ```
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4
+    $ kubectl config set-credentials oidc-user \
+        --auth-provider=oidc \
+        --auth-provider-arg=idp-issuer-url=( issuer url ) \
+        --auth-provider-arg=client-id=( your client id ) \
+        --auth-provider-arg=client-secret=( your client secret ) \
+        --auth-provider-arg=refresh-token=( your refresh token ) \
+        --auth-provider-arg=idp-certificate-authority=( path to your ca certificate ) \
+        --auth-provider-arg=id-token=( your id_token )
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+
+
+    $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws --user oidc-user
+    $ kubectl get pod -n aws --token <<ID_Token_Info>>
+    ```
+
+* Role binding
+    - username은 기본적으로 id_token의 ```iss#sub``` 이다
+    ```
+    kubectl create clusterrolebinding oidc-cluster-admin --clusterrole=cluster-admin --user='https://amazon.oidc.com/qwer1234zxcv-asdfzxcv-da#7e-4818-ae58-39add6bd7e6a'
+    ```
 </br>
 
 
 ## Webhook Tokens
-
-
+Kubernetes가 제공하는 것이 아닌 완전히 다른 외부 인증을 수행할 수 있다.
 </br>
 </br>
+
+## Proxy
+</br>
+</br>
+
+
+
 
 
 
@@ -145,6 +355,10 @@ k8s에서는 여러 인증 모드를 제공한다.
 
 
 
+### Ref
+* https://aws-diary.tistory.com/129
+* https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
+* 
 
 ## Node
 노드 인증은 kubelet에서 수행한 API 요청을 특별히 인증하는 특수 목적의 인증 모드
