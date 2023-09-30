@@ -15,16 +15,17 @@
 모든 입력은 HTTP 요청이며, 하나 이상의 인증 모듈을 가지고 인증 체계를 구성할 수 있다.
 * 구성
     - k8s/config : /etc/kubernetes/manifests/kube-apiserver.yaml
-    - abcd
+    - 
 * 특징
     1) k8s는 User 인증 정보를 저장하지 않고, 외부 시스템을 통해 인증(X.509 인증서, OIDC 등)을 사용 하다보니 내부 인증체계에 종속되는 부분이 거의 없다. 그렇다보니 인증 부분에 대한 확장성이 좋다.
     2) Group을 통해 권한을 동일하게 사용하게 할 수 있다
 * 인증 주체
+    - 
     - User Account : Cluster에 접근하는 관리자 및 사용자 (전역적이므로 모든 Namespace에 걸처 고유해야 함)
         * 인증 정보 위치 : ```$HOME/.kube/config``` 파일에 저장
         * 저장 내용
             1) clusters : 접근할 Cluster 주소 / 인증 정보
-            2) users : User 정보 / 인증 정보
+            2) credentials : User 정보 / 인증 정보
             3) context : clusters와 users 끼리 매핑
         > Kubernetes에는 user Account를 나타내는 Object가 없다. 그렇기 때문에 API 호출을 통해 일반 사용자를 추가할 수 없다. 그렇기 때문에 클러스터의 인증 기관(CA)에서 서명한 유효한 인증서를 하나의 User로 생각한다.
     - Service Account : 사용자가 아닌 시스템, Pod에서 실행되는 Process에 대응하여 식별자(ID) 제공 (Namespace 별로 구분됨)
@@ -65,11 +66,13 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 ### 인증서 생성 (in Cluster) 
 ![K8s_Authentication_Cluster](img/K8s_Authentication_Cluster.jpg)
 * easyrsa, openssl, cfssl을 이용하여 Cluster용 인증서를 생성
-    ```
-    ca.key
-    ca.crt
-    client.key
-    client.csr
+    ```sh
+    # ca.key
+    # ca.crt
+    # client.key
+    # client.csr
+
+    $ openssl req -new -key ca.key -subj "/O=tester/CN=test-user" -out ca.csr
     ```
 * CertificateSigningRequest 생성
     ```sh
@@ -84,12 +87,12 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
         usages:
         - digital signature
         - key encipherment
-        - server auth
+        - client auth
     EOF
     ```
-    - request : 인증서 (Encoding base64)
+    - request : 인증서 코드 (Encoding base64)
     - signerName : 승인할 서명자 이름
-    - usages : 
+    - usages : 인증서 용도
 * CertificateSigningRequest 인증서 승인
     ```sh
     $ kubectl certificate approve my-svc.my-namespace
@@ -98,10 +101,11 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
     ```
 * Client Side : Config File Setting
     ```
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4 --insecure-skip-tls-verify=true
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster test-cluster  --server=https://1.2.3.4 --insecure-skip-tls-verify=true
 
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials qa-team --client-certificate=client.crt --client-key=client.key
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials test-user --client-certificate=client.crt --client-key=client.key
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context test-context --cluster test-cluster --user=test-user
+    $ kubectl config --kubeconfig=$HOME/.kube/config use-context test-context
 
     # Check
     $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
@@ -137,11 +141,11 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 
 * Client Side : Config File Setting
     ```
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4 --certificate-authority=ca.crt
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4 --insecure-skip-tls-verify=true
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster test-cluster --server=https://1.2.3.4 --certificate-authority=ca.crt
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster test-cluster --server=https://1.2.3.4 --insecure-skip-tls-verify=true
 
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials qa-team --client-certificate=client.crt --client-key=client.key
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials test-user --client-certificate=client.crt --client-key=client.key
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context test-context --user=test-user
 
     # Check
     $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
@@ -180,9 +184,9 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 * Client Side
     - Config file setting
     ```
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster test-cluster --server=https://1.2.3.4
     $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials test-user --username=test1 --password=pw1@
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context test-context --user=test-user
 
 
     $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
@@ -213,9 +217,9 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
 * Client Side
     - Config file setting
     ```
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster test-cluster --server=https://1.2.3.4
     $ kubectl config --kubeconfig=$HOME/.kube/config set-credentials test-user --token plain-token-key
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context test-context --user=test-user
 
 
     $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
@@ -263,7 +267,7 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
         ```
     4. Token 사용
         ```
-        JWT_TOKEN=$(kubectl get secret default-token-xxx -ojson | jq -r .data.token | base64 -d)
+        JWT_TOKEN=$(kubectl get secret jenkins-secret -o json | jq -r .data.token | base64 -d)
         echo $JWT_TOKEN
 
         kubectl api-versions --token $JWT_TOKEN
@@ -295,7 +299,7 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
     - Config file setting
     > ID Token도 인증서와 동일하며 수명이 짧기 때문에 그때마다 다시 받고 설정해야 한다..
     ```
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster qa-team --server=https://1.2.3.4
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-cluster test-cluster --server=https://1.2.3.4
     $ kubectl config set-credentials oidc-user \
         --auth-provider=oidc \
         --auth-provider-arg=idp-issuer-url=( issuer url ) \
@@ -304,7 +308,7 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
         --auth-provider-arg=refresh-token=( your refresh token ) \
         --auth-provider-arg=idp-certificate-authority=( path to your ca certificate ) \
         --auth-provider-arg=id-token=( your id_token )
-    $ kubectl config --kubeconfig=$HOME/.kube/config set-context qa-team --user=test-user
+    $ kubectl config --kubeconfig=$HOME/.kube/config set-context test-context --cluster=test-cluster --user=test-user
 
 
     $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws --user oidc-user
@@ -358,7 +362,7 @@ k8s에서는 여러 인증 모드를 제공한다.
 ### Ref
 * https://aws-diary.tistory.com/129
 * https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
-* 
+</br>
 
 ## Node
 노드 인증은 kubelet에서 수행한 API 요청을 특별히 인증하는 특수 목적의 인증 모드

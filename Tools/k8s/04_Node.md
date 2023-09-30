@@ -3,13 +3,13 @@
 ---
 ## Pod 배치 전략 (Management)
 크게 Cluster 에서 설정할 수 있는 ```cordon / drain```, Node에서는 ```nodeName / nodeSelector / affinity / taint,toleration```이 있다.
-1. Node 자원 보호하기
+1. Node 자원 보호하기 (Node 선택 불가)
     * 해당 Node에 여러 문제가 발생할 수 있다. 이럴 때는 Node에 Pod가 생성하는 것이 좋지 않다.
     * 해당 Node에 Pod를 생성시키지 않기 위해서는 cordon 명령어를 사용한다. 명령어 사용시, 해당 Node에는 더이상 Scheduling이 적용되지 않는다(SchedulingDisabled)
         ```
         $ kubectl cordon <node_name>
         ```
-2. Node 유지보수하기
+2. Node 유지보수하기 (Node에서 Pod 옮기기)
     * 유지보수를 위해서 Node를 중지해야 되는 경우가 있을 수 있다.
     * 해당 Node에 있는 Pod를 다른 Node로 이동시키기 위해서는 drain 명령어를 사용한다. 명령어 사용시, 모든 Pod를 삭제하고 새로운 Node에 Pod를 생성한다.
         ```
@@ -19,12 +19,12 @@
         ```
         * DaemonSet은 특성상 drain으로 삭제가 되지 않는다.
     > cordon 과 drain의 차이는 해당 Node 안에 Pod가 존재하냐 안하냐의 차이다!!
-3. Pod에서 특정 Node 선택하여 배포하기 (Pod ---> Node)
+3. Pod를 특정 Node 선택하여 배포하기
     * nodeName : 동일한 이름을 가진 Node를 선택 
     * nodeSelector : 동일한 Label을 가진 Node를 선택
     * affinity : 더 디테일하게 Node를 선택 가능
     > nodeSelector vs affinity : 소규모이거나 간단하게 구분하는 경우 nodeSelector, 대규모에서는 affinity
-4. Node에서 특정 Pod 제외하고 배포하기 (Node ---> Pod)
+4. Node에서 특정 Pod 제외하고 배포하기
     * taint : Node에다가 적용, "taint key:value" 등록
     * toleration : Pod에다가 적용, "taint" 등록
     * Effect 종류
@@ -59,8 +59,6 @@ Pod를 Node에 배치할 때, 선호도에 맞춰서 배치할 수 있다.
 
 </br>
 </br>
-
-
 
 
 

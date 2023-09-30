@@ -1,4 +1,0 @@
-# Security
-
-
-Pod Security Policy

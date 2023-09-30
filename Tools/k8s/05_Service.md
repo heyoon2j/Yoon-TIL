@@ -9,7 +9,8 @@
     1) Ingress
     2) MetalLB
     3) HPA
-
+* 서비스를 생성하면 해당 DNS 엔트리가 생성된다.
+    - FQDN : ```<서비스-이름>.<네임스페이스-이름>.svc.cluster.local```
 
 ---
 ## ClusterIP
@@ -65,17 +66,19 @@ Load Balancer를 사용하려면 Load Balancer를 구현해 둔 외부 서비스
     * Ingress Conroller Pod/Deployment : Controller 생성
     * Ingress Object : 규칙 정의
     * NodePort or LoadBalancer Service : Service 생성
-
-여러 개의 Deployment가 있을 때, 그 수만큼 노드포트 서비스를 구동해야 하는 경우 Ingress를 사용한다. (결국 NodePort Group을 만들다고 생각하면 될꺼 같다. 그렇기 때문에 NodePort와 동일한 통신 구조를 가지고 있다)
-
+* 여러 개의 Deployment가 있을 때, 그 수만큼 노드포트 서비스를 구동해야 하는 경우 Ingress를 사용한다. (결국 NodePort Group을 만들다고 생각하면 될꺼 같다. 그렇기 때문에 NodePort와 동일한 통신 구조를 가지고 있다)
 * 고유한 주소 제공
 * 트래픽에 대한 L4/L7 Loadbalancer 제공
 * 보안 인증서 처리
-* 제공하는 Ingress Controller (타사 프로젝트 Controller가 있긴 하다)
+</br>
+
+### Ingress Controller
+Ingress 동작을 수행하기 위해서는 Controller 설치가 필요하다!
+* K8s에서 제공하는 Ingress Controller (타사 프로젝트 Controller가 있긴 하다)
     * AWS
     * GCE
     * nginx
-</br>
+* 여러의 Ingress Controller를 사용할 수 있으며, 원하는 Conroller를 IngressClass를 통해 선택하면 된다.
 </br>
 
 

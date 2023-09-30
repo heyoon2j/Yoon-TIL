@@ -18,7 +18,7 @@ Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태
     * 기본 Object만으로는 한계가 있어 이를 좀 더 효율적으로 작동하도록 조합하고 추가해 구현한 것이 Deployment이다. Pod Object + ReplicaSet Object + 추가 기능을 합쳐 놓은 형태이다.
 * DaemonSet
     * Deployment의 replicas가 Node 수만큼 정해져 있는 형태로, Node 하나당 Pod 한개를 생성하는 경우
-    * 보통 Node를 관리하는 Pod인 경우 (kube-proxy, calico, metalLB 등)
+    * 보통 Node를 관리하는 Pod인 경우 사용 (kube-proxy, calico, metalLB 등)
 * StatefulSet
     * 이전 상태를 기억하는 세트라는 의미. 생성되는 Pod가 고정된 이름, 볼륨, 설정등을 가지도록 할 수 있다 (순서 및 고유성 보장)
     * 좋은 구조가 아니기 때문에 요구 사항에 맞게 사용 (ex> Master-Slave 구조 : Redis, Zookeeper, Cassandra, MongoDB 등)
@@ -72,9 +72,10 @@ Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태
 </br>
 
 ### Scheduler 관련
+* Job
+    * 1회성으로 처리하고 종료하는 Application인 경우 사용  
 * CronJob
-    * 
-    * 
+    * 주기적으로 처리하고 종료하는 Application인 경우 사용
 </br>
 
 
@@ -101,9 +102,8 @@ Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태
 * EncryptionConfiguration
     - etcd에 저장 시 암호화
     - 암호화할 Object 지정 가능
-    - 
-
-
+</br>
+</br>
 
 
 
