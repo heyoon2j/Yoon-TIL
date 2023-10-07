@@ -112,7 +112,10 @@ Application Pod들이 동작하는 Node
 
 ---
 ### Pod
-여러 개의 Container들을 담고 있는 리소스
+하나 이상의 Container를 담고 있는 리소스
+* Container
+    - Application을 의미
+    - 일부 기능일 수도 있고, 완전 기능일 수도 있다. 그렇기 때문에 하나 이상의 Container가 모여 완전한 기능을 나타내는 Pod를 이룬다!
 * Namespace & Label
     - 하나의 Cluster 안에 여러 개의 Application이 등록되기 때문에 Namespace를 사용하여 논리적으로 구분한다.
     - 더 세부적인 설정은 Label을 통해서 관리할 수 있다. 

@@ -317,3 +317,43 @@ OpenID Connect(OIDC)
 | . | . | . |
 | . | . | . |
 Kubernetes | 
+
+
+
+## IAM Role binding
+### ServiceAccount
+ServiceAccount에 IAM Role을 바인딩하는 방법은 크게 3가지이다.
+1) IAM Identity Provider 생성
+2) IAM Policy/Role 생성
+    * 원하는 정책을 생성한다.
+    * 해당 정책을 가지고 역할을 생성한다. 이때 신뢰 정책에는 Identity Provider를 집업 넣는다.
+        ```sh
+        cat >trust-relationship.json <<EOF
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Federated": "arn:aws:iam::$account_id:oidc-provider/$oidc_provider"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                        "StringEquals": {
+                        "$oidc_provider:aud": "sts.amazonaws.com",
+                        "$oidc_provider:sub": "system:serviceaccount:$namespace:$service_account"
+                        }
+                    }
+                }
+            ]
+        }
+        EOF
+        
+        ```
+
+3) ServiceAccount에 Annotation 등록
+    ```sh
+    # Annotation : eks.amazonaws.com/role-arn=arn:aws:iam::$account_id:role/my-role 
+
+    $ kubectl annotate serviceaccount -n $namespace $service_account eks.amazonaws.com/role-arn=arn:aws:iam::$account_id:role/my-role
+    ```

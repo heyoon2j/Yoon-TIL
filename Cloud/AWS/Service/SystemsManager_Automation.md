@@ -50,10 +50,10 @@
     * Parameter에 허용된 값의 배열. 허용되지 않은 값을 입력하면 실행되지 않는다.
     ```
     DirectoryType:
-    type: String
-    description: "(Required) The directory type to launch."
-    default: AwsMad
-    allowedValues:
+      type: String
+      description: "(Required) The directory type to launch."
+      default: AwsMad
+      allowedValues:
       - AdConnector
       - AwsMad
       - SimpleAd
@@ -289,6 +289,7 @@ mainSteps:
 
 
 ## aws:branch
+기본적으로 IF-ELIF-ELSE 문처럼 작동
 </br>
 
 ## 연산자 사용

@@ -45,6 +45,7 @@ kubectl config --kubeconfig=config-demo set-cluster test --server=https://5.6.7.
     $ kubectl config --kubeconfig=config-demo set-context dev-storage --cluster=development --namespace=storage --user=developer
     $ kubectl config --kubeconfig=config-demo set-context exp-test --cluster=test --namespace=default --user=experimenter
 
+    $ kubectl config --kubeconfig=config-demo use-context exp-test
     ```
 
 
@@ -99,6 +100,17 @@ kubectl api-resource                            # Print resource list
 ```
 
 
+
+
+
+* Resource 관련
+    ```sh
+    # 네임스페이스에 속하는 리소스
+    kubectl api-resources --namespaced=true
+
+    # 네임스페이스에 속하지 않는 리소스
+    kubectl api-resources --namespaced=false
+    ```
 
 
 
