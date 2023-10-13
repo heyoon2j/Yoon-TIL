@@ -24,6 +24,7 @@
 </br>
 </br>
 
+
 ---
 ## Network Interface
 Instance가 네트워크 통신을 할 수 있게 도와주는 디바이스이다. Network interface는 다음과 같은 특성을 가지고 있다.
@@ -36,12 +37,21 @@ Instance가 네트워크 통신을 할 수 있게 도와주는 디바이스이�
 
 ### Scenario
 * Secondary IP를 사용하는 경우
-    * 같은 Subnet의 Traffice에 대해 서로 다른 IP로 처리하려는 경우에 사용
+    * 같은 Subnet의 Traffic에 대해 서로 다른 IP로 처리하려는 경우에 사용
+    * On-premise의 VIP라고 생각하면 될 거 같다. 그리고 HA 구성을 위해 VIP를 다른 IP가 가지도록 넘기려면 추가 설정이 필요하다(HAProxy, Pacemaker & Coresync)
+        | On-premise | AWS |  |
+        |------------|-----|---|
+        | VIP | Secondary IP | Secondary IP는 VPC에서 VIP를 나타내기 위해 만든거 같다 | 
+        | HAProxy | Load Balancer |  |
+        | Pacemaker & Coresync | Target Group |  |
+
+        - https://faun.pub/how-to-setup-highly-available-pacemaker-corosync-cluster-with-haproxy-load-balancer-d64873d8df62  
     * https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/MultipleIP.html
 * Network interface를 2개 사용하는 경우
     * 서로 다른 Subnet의 Traffic을 처리하려는 경우에 사용
     * 내부적으로 Network Interface를 수동으로 설정하거나 프로그램에서 설정하지 않으면, Network Interface 변경 작업 등을 할 시 원하는 라우팅이 설정되지 않을 수 있다. 그렇기 때문에 보통 이를 지원하는 네트워크 및 보안 어플라이언스 구성시에만 주로 사용된다.
     * 수동 설정 방법 : https://cloud.google.com/vpc/docs/create-use-multiple-interfaces?hl=ko#configuring_policy_routing
+> 같은 Subnet에서 2개의 Network interface를 사용하려면 
 </br>
 </br>
 

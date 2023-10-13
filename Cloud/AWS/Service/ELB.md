@@ -4,9 +4,14 @@
     1) Target Group에 대한 Health Check
     2) Listener Rule에 따라 Traffic Routing
     3) Algorithm에 의해 Traffic 부하 분산
+* On-premise vs AWS
+    | On-premise | AWS |  |
+    |------------|-----|---|
+    | VIP | Secondary IP | Secondary IP는 VPC에서 VIP를 나타내기 위해 만든거 같다 | 
+    | HAProxy | Load Balancer |  |
+    | Pacemaker & Coresync | Target Group |  |
 </br>
-
-
+ 
 ## ELB 종류
 1. __ALB (Application Load Balancer)__
     * 7 Layer Application 계층에서 Routing 결정(HTTP/HTTPS)

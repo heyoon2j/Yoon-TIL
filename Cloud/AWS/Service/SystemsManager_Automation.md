@@ -86,6 +86,46 @@
 
 ### ```outputs``` (option)
 * 다른 Step에서 사용할 수 있는 데이터
+```yaml
+mainSteps:
+  - name: getImageId
+    action: aws:executeAwsApi
+    inputs:
+      Service: ec2
+      Api: DescribeImages
+      Filters:  
+      - Name: "name"
+        Values: 
+        - "{{ ImageName }}"
+    outputs:
+    - Name: ImageId
+      Selector: "$.Images[0].ImageId"
+      Type: "String"
+  - name: launchOneInstance
+    action: aws:executeAwsApi
+    inputs:
+      Service: ec2
+      Api: RunInstances
+      ImageId: "{{ getImageId.ImageId }}"
+      MaxCount: 1
+      MinCount: 1
+    outputs:
+    - Name: InstanceId
+      Selector: "$.Instances[0].InstanceId"
+      Type: "String"
+```
+* ```"{{ parameter }}"``` : 파라미터 값 사용
+* ```"{{ stepName.output }}"``` : 다른 Step의 Output 값 사용
+    * 기본적으로 Output Value
+* ```{{automation:EXECUTION_ID}}``` : 자동화 실행서에 대한 변
+* ```Selector : $.<>.<>.<>"``` : aws:executeAwsApi의 경우 사용 가능
+    * Python Boto3의 Response 값
+    * AWS는 기본적으로 Python boto3 으로 구성되어 있다.
+* ```PropertySelector``` : aws:assertAwsResourceProperty 및 aws:waitForAwsResourceProperty의 경우 사용 가능
+* `````` : 
+* `````` : 
+</br>
+
 </br>
 
 ### ```files``` (option)
