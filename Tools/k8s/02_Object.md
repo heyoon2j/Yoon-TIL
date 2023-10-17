@@ -69,6 +69,15 @@ Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태
 * Service
     * Pod는 Cluster 내에서 유동적으로 움직이기 때문에 접속 정보가 고정일 수 없다. 따라서 Pod의 통신을 안정적으로 유지하기 위해 Service 사용
     * Service는 새로 Pod가 생성될 때 부여되는 새로운 IP를 기존에 제공하던 기능과 연결시켜 줌
+    * Service 종류
+        1) ClusterIP
+        2) NodePort
+        3) 
+* SessionAffinity
+    - Stickness 설정 Object
+* Ingress
+* IngressClass
+* IngressClassParams
 </br>
 
 ### Scheduler 관련
