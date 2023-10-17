@@ -1,23 +1,29 @@
 # Structure
 
 ## Basic
-* DB Server는 크게 Memory/Disk 로 구분할 수 있다. Memory/Disk로 분리함으로써, Disk에 저장 시 에러가 발생해도 Log를 통해 Rollback이 가능해진다.
-* WAL(Write Ahead Logging) : 가장 중요한 원칙 중 하나로, 트랜잭션이 발생하기 전에 데이터 파일에 대한 모든 변경 사항은 WAL(InnoDB에서는 redo 로그를 의미)에 의해 기록된다(Query가 기록됨). 트랜잭션이 발생하기 전에 로그를 미리 저장하기 때문에 Rollback이 가능해진다.
-* Vacuum
-* Select문 순서
-    1) User Thread(Query 처리하는 쓰레드)에서 Buffer Pool에 원하는 Data Page를 검색. 없는 경우 디스크의 Tablespace에 액세스하여 원하는 Page를 Buffer Pool에 캐싱한다.
-    2) 캐싱한 이후 정보를 반환한다.
-* 데이터 업데이트 순서는 다음과 같다.
-    1) User Thread(Query 처리하는 쓰레드)에서 Buffer Pool에 원하는 Data Page를 검색. 없는 경우 디스크의 Tablespace에 액세스하여 원하는 Page를 Buffer Pool에 캐싱한다.
-    2) Buffer Pool(memory)에서 업데이트 내용(수정한 Page)을 저장
-    3) Buffer Pool에 저장되어 있는 내용을 Log Buffer(memory)에 저장 + 
-    4) Commit 동작 시 or Log Buffer가 Full인 경우 or 일정 주기마다(1s) Log Buffer에 있는 내용을 Log File(disk, WAL)에 저장한다. 이 때 Checkpoint 발생한다(Check Point가 발생한다는 것은 DB 파일이 새로 써졌다는 의미)
-        > CDC는 이를 기준으로 Squence를 확인하여 실행한다(정확하지 않다!!!)
-    5) Checkpoint가 발생하면, 먼저 디스크로 flush할 때(테이블에 저장할 때) partial page writes(시스템 장애 등으로 덮씌워지는 경우)로 인한 충돌을 방지하기 위해 Background로 Dubblewrite_buffer에 저장한다.
-    6) 그 후에, 디스크에 저장한다.
-* RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
-</br>
+- DB Server는 크게 Memory/Disk 로 구분할 수 있다. Memory/Disk로 분리함으로써, Disk에 저장 시 에러가 발생해도 Log를 통해 Rollback이 가능해진다.
+- WAL(Write Ahead Logging) : 가장 중요한 원칙 중 하나로, 트랜잭션이 발생하기 전에 데이터 파일에 대한 모든 변경 사항은 WAL(InnoDB에서는 redo 로그를 의미)에 의해 기록된다(Query가 기록됨). 트랜잭션이 발생하기 전에 로그를 미리 저장하기 때문에 Rollback이 가능해진다.
+- Vacuum : 
+- Data Buffer Cache : DB 의 최소 입출력 단위인 Block 이 상주하는 곳으로, 쿼리 수행시에 필요한 Data block 이 위치하는 메모리 영역.
+- Log Buffer : 쿼리 수행시 변경사항 (DML) 에 의해 Data 의 변경이 발생한 내역을 Log 로 남겨 저장하는 메모리의 영역.
+- Checkpoint : Buffer Cache에서만 변경되었다가, Disk에 기록될 때 발생. Buffer Cache에 저장된 모든 데이터는 Disk에 반영한다. 
+    - Log File이 다 차서 다른 Log File로 변경되는 경우
+    - 
+- Commit : Checkpoint 이전에 발생할 수 있는 에러에 대비하여 Recovery 를 제공하는것.
+           즉, Data 변경사항에 대하여 redo log 를 남기는 행위이며, checkpoint 는 Data buffer cache 의 변경된
+           (dirty buffer) block 을 data file 에 기록하는 것.
 
+- InnoDB : 독보적인 스토리지 엔진. MVCC를 지원하여 높은 동시성 처리가 가능함.
+- MVCC : Multi Version Concurrency Control. 버퍼 풀, 언두 로그를 이용해 격리 수준에 따른 읽기 기능 제공. 이에 따라 No-Locking Consistent Read가 가능.
+- Dirty Page : 리눅스에서 Read/Write 작업에 대해 무조건 Disk에 접근하는 것이 아닌 메모리에 있는 pagecache 영역에 접근하여 작업을 진행한다. Read 작업인 경우, pagecahce 작업 후 데이터가 없으면 Disk 접근. Write 작업인 경우, pagecache 접근하여 Disk에서 읽어들였던 값을 변경하게 된다. 하지만 이렇게 되면 해당 page는 변경이 되어서 실제 Disk와 내용이 달라지게 되는데, 달라진 page를 Dirty Page라고 한다(https://brunch.co.kr/@alden/32)
+
+https://creampuffy.tistory.com/168
+https://overcome-the-limits.tistory.com/664?category=1006727
+
+
+
+
+</br>
 ### Reference
 * https://stackoverflow.com/questions/56823591/mysql-innodb-differences-between-wal-double-write-buffer-log-buffer-redo-log
 * https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=parkjy76&logNo=220918956412
@@ -34,12 +40,8 @@
 * 어떤 작업을 하든지 모두 REDO, UNDO에 기록되며 복구에 사용. 복구 시 차이가 나는데 __REDO는 사용자가 작업한 순서대로 다시 복구__ 하지만, __UNDO는 사용자가 작업한 순서 반대로 복구 진행__ 된다.
 * Undo 복구 : 트랜잭션이 진행되기 전 상태의 데이터로 되돌리는 것
     - 트랜잭션이 비정상 종료가 되어 중간까지의 내용만 Disk에 Write되었을 때
-    - WAL
 * Redo 복구 : 트랜잭션이 진행된 후 상태의 데이터로 되돌리는 것 (이미 Commit된 내용을 재반영하는 작업)
     - Memory에만 Write되고, Disk에는 Write되지 않았을 때
-    - WAL
-
-
 * __ROLLBACK__ 시, __UNDO__ 를 이용하여 ROllBACK 진행.
 * __UNDO Log__ 는 __REDO Log__ 를 통해 복구 가능 (트랜잭션 이후 데이터를 가지고 있기 때문에 복구 가능한거 같다, Last -1 데이터로 복구 같은 방식으로(추측)).
 </br>
@@ -54,15 +56,11 @@ Database의 모든 작업을 기록한다.
     2. 물리적 전이 로깅 (Physical transition logging) : 트랜잭션 실행 이전 데이터와 이후 데이터의 XOR 차이점을 로그에 기록하다 ((추측) 차이가 나는 부분은 표시가 되어 있지 않을까 싶고, 하나의 파일로 저장할거 같다)
     3. 논리적 전이 로깅 (Logical transition logging) : 트랜잭션이 어떤 일을 했는지 기록하는 방식 (논리적 : a = 0; a = a + 1; / 물리적 : 이전값 - a = 0, 이후 값 - a = 1). 한마디로 Query 문을 저장한다.
 
-##
-
-SGA : 공유 메모리
-LRU(Least Recently Used) : 캐싱 방식은 LRU(Least Recently Used) 알고리즘 형태로 적재. 가장 오랫동안 참조되지 않은 페이지를 교체하는 방식
-
-
 
 
 ## 저장 방식
+SGA : 공유 메모리
+LRU(Least Recently Used) : 캐싱 방식은 LRU(Least Recently Used) 알고리즘 형태로 적재. 가장 오랫동안 참조되지 않은 페이지를 교체하는 방식
 * File : 
 
 
@@ -106,11 +104,35 @@ LRU(Least Recently Used) : 캐싱 방식은 LRU(Least Recently Used) 알고리�
 * https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=cambo95&logNo=100106067950
 
 
+
+
+
+
+
+
 ---
 ## Structure
 ![https://dev.mysql.com/doc/refman/8.0/en/innodb-architecture.html](../img/mysql_architecture.png)
-
 기본 엔진 구성은 Process, Memory, Disk로 구성되어 있다.
+* Select문 순서
+    1) Transaction 시작
+    2) Select query 실행
+    3) User Thread(Query 처리하는 쓰레드)에서 Buffer Pool에 원하는 Data Page를 검색. 없는 경우 디스크의 Tablespace에 액세스하여 원하는 Page를 Buffer Pool에 캐싱한다.
+    4) 캐싱한 이후 정보를 반환한다.
+* 데이터 업데이트 순서는 다음과 같다.
+    1) Transaction 시작
+    2) Update query 실행. Undo Log에는 변경 전 값과 PK값이 저장된다.
+    3) User Thread(Query 처리하는 쓰레드)에서 Buffer Pool에 원하는 Data Page를 검색. 없는 경우 디스크의 Tablespace에 액세스하여 원하는 Page를 Data Lock을 걸고(== pinned), Buffer Pool에 캐싱한다. 그리고 인덱스가 있으면 인덱스 값을 Change Buffer에 가지고 온다.
+    4) Buffer Pool(memory)에 있는 값을 가지고 Update 진행.
+        - 값 변경으로 인한 Dirty Page 생성
+    5) Buffer Pool에 업데이트된 내용을 Log Buffer(memory)에 저장.
+    6) Commit 동작 시 or Log Buffer가 Full인 경우 or 일정 주기마다 Log Buffer에 있는 내용을 Log File(disk)에 저장한다.
+    7) 그리고 일정 주기마다 또는 Log File이 Full인 경우 Checkpoint가 발생한다.
+        > CDC는 이를 기준으로 Squence를 확인하여 실행한다(정확하지 않다!!!)
+    8) Checkpoint가 발생하면, 안에 들어있던 내용들을 기준으로 Buffer Pool에 있는 Dirty Page를 Tablespace와 동기화시킨다. 디스크로 flush하는 순간(테이블에 저장할 때) partial page writes(시스템 장애 등으로 덮씌워지는 경우)로 인한 충돌을 방지하기 위해 Background로 Dubblewrite_buffer에 저장하고, Tablespace에 저장한다.
+    9) Buffer Pool에 있는 내용은 삭제된다.
+> RW와 다르게 RO는 Redo Log 작업이 필요가 없기 때문에 같은 성능인 경우 Read에 대해 더 빠를 수 있다.
+
 
 
 ## Process
@@ -127,7 +149,7 @@ Storage Engine Memory의 가장 큰 이유는 Disk I/O를 최소화하기 위해
 * Log Buffer (WAL Buffers) : Update 시에 변경되는 내용을 버퍼에 저장한다. 이후에 버퍼를 비우면서 디스크에 있는 로그 파일에 저장한다.
 
 
-https://omty.tistory.com/59
+
 
 
 ## Disk
@@ -141,18 +163,6 @@ https://omty.tistory.com/59
 * Undo Tablespace
 * Temporary Tablespace
 
+https://omty.tistory.com/59
+https://ssup2.github.io/theory_analysis/MySQL_Buffer_Pool_Redo_Log_Log_Buffer/
 
-
-## 과정
-
-
-* InnoDB : 독보적인 스토리지 엔진. MVCC를 지원하여 높은 동시성 처리가 가능함.
-* MVCC : Multi Version Concurrency Control. 버퍼 풀, 언두 로그를 이용해 격리 수준에 따른 읽기 기능 제공. 이에 따라 No-Locking Consistent Read가 가능.
-
-* Buffer Pool : InnoDB 스토리지 엔진 중 가장 핵심적인 부분. 쓰기 작업을 지연하고 일괄 처리해 디스크 작업 횟수를 줄인다.
-* 
-
-
-
-https://creampuffy.tistory.com/168
-https://overcome-the-limits.tistory.com/664?category=1006727
