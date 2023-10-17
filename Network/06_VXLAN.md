@@ -73,11 +73,11 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
 2. A VTEP
     * A VM 네트워크의 VTEP는 VLAN ID와 VLAN 정보를 저장(설정)하고, VLAN ID를 VXLAN VNI와 매핑한다.
     * VXLAN VNI로 Packet을 Encapsulation한다.
-    > VLAN ID는 Hypervisor 내에서 VM 끼리의 통신
+    > VLAN ID는 (Hypervisor 내인지? 전체인지 모르겠음...) VM 끼리의 통신 (Network 관리)
 
-    > VXLAN VNI는 Network를 통한 Hypervisor 끼리의 통신
+    > VXLAN VNI는 Network를 통한 Hypervisor 끼리의 통신 (어느 Hypervisor를 선택해야 되는지 Routing 관리)
 3. A VTEP -> Network(Multicast) -> B VTEP
-    * Encapsulation 된 Packet은 다른 VTEP들에게 전달된다.
+    * Encapsulation 된 Packet은 다른 VTEP들에게 전달된다(같은 Multicast Group으로 묶여있는 VTEP와 통신)
     * 해당 Packet들의 정보로 Table이 생성된다.
 4. B VTEP
     * Encapsulation 된 Packet을 Decapsulation 하여, 다시 ARP Packet으로 변환한다.
@@ -93,11 +93,12 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
 VXLAN을 관리하기 위해서는 Networking Mapping 방식에 대해서 자세하게 볼 필요가 있다.
 1. Why mapping VXLAN VNI to Multicasting Group
     * VTEP 끼리 통신할 때 Multicasting 방식으로 통신한다.
-    * 하지만 Multicast Group의 갯수는 한정적이다(약 1000개). 그렇기 때문에 VXLAN VNI:Multicasting Group은 N:1 관계를 가진다.
+    * 하지만 Multicast Group의 갯수는 한정적이다(약 1000개). 그리고 같은 Group에 속해 있을지라도 내부적으로 VLAN이 여러개로 구성되어 있을 수 있다. 그렇기 때문에 VXLAN VNI:Multicasting Group은 N:1 관계를 가진다.
 2. Why mapping VXLAN VNI to VLAN ID
     * 기본적으로 Broadcast Domain은 VNI로 구분되어진다. 그렇기 때문에 같은 VLAN ID에 여러 개의 VNI가 매핑될 수 있다.
     * 하지만 단순 L2 통신은 Switch를 통해서만 통신하기 때문에 VLAN ID는 필요하다.
 * Ref: https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/357001-358000/357506.jpg
+> VXLAN VNI는 Ethernet(eth) 어떤 서버로 보내야 될지 결정하는 ID이고 VLAN은 네트워크에 해당하는 영역이다.
 </br>
 
 
