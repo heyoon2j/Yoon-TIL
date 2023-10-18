@@ -17,13 +17,10 @@
 - MVCC : Multi Version Concurrency Control. 버퍼 풀, 언두 로그를 이용해 격리 수준에 따른 읽기 기능 제공. 이에 따라 No-Locking Consistent Read가 가능.
 - Dirty Page : 리눅스에서 Read/Write 작업에 대해 무조건 Disk에 접근하는 것이 아닌 메모리에 있는 pagecache 영역에 접근하여 작업을 진행한다. Read 작업인 경우, pagecahce 작업 후 데이터가 없으면 Disk 접근. Write 작업인 경우, pagecache 접근하여 Disk에서 읽어들였던 값을 변경하게 된다. 하지만 이렇게 되면 해당 page는 변경이 되어서 실제 Disk와 내용이 달라지게 되는데, 달라진 page를 Dirty Page라고 한다(https://brunch.co.kr/@alden/32)
 
-https://creampuffy.tistory.com/168
-https://overcome-the-limits.tistory.com/664?category=1006727
-
-
 
 
 </br>
+
 ### Reference
 * https://stackoverflow.com/questions/56823591/mysql-innodb-differences-between-wal-double-write-buffer-log-buffer-redo-log
 * https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=parkjy76&logNo=220918956412
@@ -163,6 +160,15 @@ Storage Engine Memory의 가장 큰 이유는 Disk I/O를 최소화하기 위해
 * Undo Tablespace
 * Temporary Tablespace
 
+
 https://omty.tistory.com/59
 https://ssup2.github.io/theory_analysis/MySQL_Buffer_Pool_Redo_Log_Log_Buffer/
+https://blog.naver.com/lyh1620/220794460510
+http://www.cs.emory.edu/~cheung/Courses/377/Syllabus/10-Transactions/undo-log.html
+https://creampuffy.tistory.com/168
+https://jeong-pro.tistory.com/239
+https://overcome-the-limits.tistory.com/664?category=1006727
+
+https://velog.io/@pk3669/Mysql-Redo-Undo-Log
+https://peterica.tistory.com/389
 
