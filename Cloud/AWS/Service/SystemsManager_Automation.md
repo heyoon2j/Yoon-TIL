@@ -311,7 +311,7 @@ mainSteps:
       DesiredValues:
       - running
   outputs:
-  - "launchOneInstance.InstanceId"
+  - "{{ launchOneInstance.InstanceId }}"
 ...
 ```
 * ```"{{ parameter }}"``` : 파라미터 값 사용
@@ -581,10 +581,20 @@ AWS Systems Manager Run Command
 
 
 
-  * VPC Endpoint
+  * 필요 VPC Endpoint
     * ssm
     * ssmmessages
     * ec2messages
     * logs
     * s3
 
+
+---
+## 여러 리전 및 계정에서 실행 (Running utomations - Multiple accounts/Regions)
+![SystemManager_Architecture_MultiAccount](../img/SystemManager_Architecture_MultiAccount.png)
+
+1) User/Role(Manage Role)이 StartAutomationDocumnet 실행
+2) User/Role(Manage Role)이 iam:PassRole를  AssumeRole(Manage Role)을 Document에 부여
+3) (Cross-region 실행이므로) AssumeRole(Manage Role)이 sts:AssumeRole로 Execution Role(Target Role)을 위임받아 Document를 다른 계정에서 실행
+4) Execution Role(Target Role)은 iam:PassRole로 AutomationAssumeRole(Target Role)을 Document에 부여
+5) AutomationAssumeRole(Target Role)이 Document 동작 수행
