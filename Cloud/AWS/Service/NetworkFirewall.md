@@ -23,12 +23,24 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
 
 ---
 ## Firewall Policy
-* Stream exception policy : Network 연결이 midstream에서 끊어질 때 정책 설정 (방화벽 또는 외부 요인으로 인해)
-* Stateless rule groups : 상태 비저장 규칙 그룹. 우선 순위가 존재
-* Stateless default actions : 상태 비저장 기본 동작. Stateless rule group과 일치하지 않는 패킷을 처리하는 방법 설정. 기본적으로 다른 프로토콜의 패킷을 Drop 한다.
-* Stateful engine options : 상태 저장 엔진 옵션 지정
-* Stateful rule groups : 상태 저장 규칙 그룹. 우선 순위 존재
-* Stateful default actions : 상태 저장 기본 동작. Stateful rule group과 일치하지 않는 패킷을 처리하는 방법 설정.
+구성 요소는 다음과 같다.
+* Policy : Policy 정책
+    ```
+    # Policy
+        * Stream exception policy
+        * Stateless policy
+            - Default : Stateless default actions
+            - Others : Stateless rule groups
+        * Stateful policy (+ Set stateful engine options)
+            - Default : Stateful default actions
+            - Others : Stateful rule groups
+    ```
+    - Stream exception policy : Network 연결이 midstream에서 끊어질 때 정책 설정 (외부 요인 등으로 인해)
+    - Stateless rule groups : 상태 비저장 규칙 그룹. 우선 순위가 존재
+    - Stateless default actions : 상태 비저장 기본 동작. Stateless rule group과 일치하지 않는 패킷을 처리하는 방법 설정. 기본적으로 다른 프로토콜의 패킷을 Drop 한다.
+    - Stateful default actions : 상태 저장 기본 동작. Stateful rule group과 일치하지 않는 패킷을 처리하는 방법 설정.
+    - Stateful rule groups : 상태 저장 규칙 그룹. 우선 순위 존재
+    - Stateful engine options : 상태 저장 엔진 옵션 지정
 * Customer-managed key (Optional) : Network Firewall 리소스에 대하여 암호화화
 * Policy variables (Optional) : You can configure one or more IPv4 or IPv6 addresses in CIDR notation to override the default value of Suricata HOME_NET. If your firewall is deployed using a centralized deployment model, you might want to override HOME_NET with the CIDRs of your home network. Otherwise, Network Firewall uses the CIDR of your inspection VPC..
 * TLS inspection configuration (Optional) : TLS 검사 구성. Stateful rule에 따라 검사 시에 SSL/TLS 트래픽의 암호화 해독 및 재암호화를 활성화하는 설정
@@ -89,8 +101,11 @@ Firewall의 Stateful rule engine에 의해 로그가 제공 (로그 유형과 �
     1. S3
     2. CloudWatch Logs
     3. Kinesis Data Firehose
+* IAM 권한
+    - 로깅 대상에 따른 IAM 권한이 필요
 
-
+### CloudTrail 통합
+* Network Firewall에서 활동이 발생하면 이벤트를 CloudTrail에 기록할 수 있다. 추적을 생성해야 한다!!! (많은 기록이 남으므로 비용이? 계산이 필요할거 같다)
 
 ---
 ## 방화벽 동작 
