@@ -49,28 +49,57 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
 
 ### Stream exception policy
 - Drop : 기본 값. 종료를 실패하면 후속 트래픽을 삭제한다.
-- Continue : 
+- Continue : (잘모르겠습니다...???)
 - Reject : 종료를 실패하면 후속 트래픽을 삭제한다. 그리고 Client 측에서 바로 알 수 있도록 Reject Packet을 보낸다.
-
-### Stateless default action
-* Pass : 모든 검사를 중단하고 패킷이 이동하도록 허용
-* Drop : 모든 검사를 중단하고 패킷을 차단
-* Forward to stateful rules : 상태 비저장 검사를 중단하고, 상태 저장 규칙 엔진으로 전달
-* 사용자 지정 작업 가능
+</br>
 
 
-### Stateful default action
-Action에도 우선순위가 있다. 동일한 조건인 경우 Pass > Drop > Reject > Alert 순으로 처리한다.
-* Pass : 모든 검사를 중단하고 패킷이 이동하도록 허용
-* Drop
-    - Drop all : 모든 검사를 중단하고 패킷을 차단
-    - Drop established : 설정된 연결에 있는 패킷만 차단
-* Reject : 모든 검사를 중단하고 패킷을 차단. 그리고 Reset Packet 전달
-* Alert : 모든 
-    - Alert all : 모든 패킷에 대한 메시지를 기록
-    - Alert established : 설정된 연결이 있는 패킷에 대해서만 메시지를 기록
+### Stateless action
+* Fragmented packets
+    - 
+* Evaluation order
+    - 우선순위에 의해서 결정 / 이 값은 고유해야 하며 양의 정수 /
+* Action
+    - Pass : 모든 검사를 중단하고 패킷이 이동하도록 허용
+    - Drop : 모든 검사를 중단하고 패킷을 차단
+    - Forward to stateful rules : 상태 비저장 검사를 중단하고, 상태 저장 규칙 엔진으로 전달
+    - 사용자 지정 작업 가능 (언제 사용하는거지??)
+* Match rule
+    - Protocol : ALL / TCP / UDP / 그 외 등등
+    - Source IP
+    - Source port range
+    - Destination IP
+    - Destination port range
+    - Optional TCP flags 
 
 
+
+### Stateful action
+Suricata(Opensource) Stateful rule 엔진 6.0.9(23.11.05 현재 기준)을 지원한다. 그렇기 때문에 일부 기능을 제외하고 호환되어 사용되어 진다.
+
+GRE(일반 라우팅 캡슐화)와 같은 터널링 프로토콜에 대한 내부 패킷 검사를 지원한다. 터널링된 트래픽을 차단하려는 경우 터널 계층 자체 또는 내부 패킷에 대한 규칙을 작성해야 한다.
+
+* Rule type
+    1) Standard rules : 
+    2) Suricata compatible strings: 
+    3) Domain list : 
+* Evaluation order
+    - Top Level : StatefulRuleOptions 이라는 Rule을 기본적으로 최상위 우선 순위로 가지고 있다!!!
+    - Strict order : 정의된 순서대로 결정
+    - Action order : Suricata에서 정의한 Action 우선순위에 의해 결정
+        > 동일한 조건인 경우 Pass > Drop > Reject > Alert 순으로 처리. 모든 Action을 확인해야 되므로 계속되는 평가가 필요!!
+* Standard rules and Suricata compatible strings acion
+    - Pass : 모든 검사를 중단하고 패킷이 이동하도록 허용
+    - Drop
+        - Drop all : 모든 검사를 중단하고 패킷을 차단
+        - Drop established : 연결이 된 패킷에 대해서 차단(즉, 연결이 안되면 굳이 차단을 하지 않는다는 의미)
+    - Reject : 모든 검사를 중단하고 패킷을 차단. 그리고 Reset Packet 전달
+    - Alert : 모든 
+        - Alert all : 모든 패킷에 대한 메시지를 기록
+        - Alert established : 연걸이 된 패킷에 대해서 메시지를 기록
+* Domain list
+    - Allow : 모든 검사를 중단하고, 도메인 이름 목록에 지정된 프로토콜과 일치하는 모든 트래픽에 대하여 허용
+    - Deny : 모든 검사를 중단하고, 도메인 이름 목록에 지정된 프로토콜과 일치하는 트래픽에 대하여 거부
 
 
 ### Rule Group
@@ -184,10 +213,8 @@ TLS 검사 구성. Stateful rule에 따라 검사 시에 SSL/TLS 트래픽의 �
 
 
 ---
-## 보안 어플라이언스
-
-
-## 비대칭 Routing에 대한 고려 사항
+## 보안 어플라이언스 고려 사항
+### 비대칭 Routing에 대한 고려 사항
 보통 보안 어플라이언스는 상태저장을 하는데, 송수신할 때 Proxy, Gateway, Routing 등으로 인해 변화되는 IP 대처를 못하는 경우가 많이 발생하다!!
 
 Gateway는 여러 가용 영역에 Endpoint를 두고 있다. 그렇기 때문에 통신과정에서 1번 가용 영역으로 트래픽을 전달해도 2번 가용 영역의 Endpoint로부터 트래픽을 전달받을 수 있다. 이 때 보안 어플라이언스는 IP가 달라짐으로써 인식을 못하여 트래픽을 버리는 경우가 생긴다.
@@ -198,11 +225,17 @@ Gateway는 여러 가용 영역에 Endpoint를 두고 있다. 그렇기 때문�
 * TGW Applicance Mode
     - TGW가 연결되어 있는 VPC내 Source/Target Server는 자기 자신과 같은 가용 영역에 있는 Attachment로 트래픽을 전달한다. 그러다보니 Source가 1번 가용 영역, Target이 2번 가용 영역인 경우, Source가 1번으로 트래픽을 전달해도 2번 가용 영역의 Attachment로부터 응답을 받게 된다 (1az Source ---> 1az Attach ---> 1az Attch ---> 2az Destination)
     - https://docs.aws.amazon.com/prescriptive-guidance/latest/inline-traffic-inspection-third-party-appliances/transit-gateway-asymmetric-routing.html
-* a
-* b
-* c
 
 
+
+### Rule 고려 사항
+* Stateless Rule
+    - 규칙에서 불필요한 TCP Flag 검사를 제거한다. TCP Flag 검사하 필요한 경우, 변경 사항이 올바른지 확인이 필요하다(ex> 3-way handshake)
+    - 비대칭 정책에 대한 규칙 확인 및 추가/삭제 필요
+* Stateful Rule
+    - Action order를 적용하는 경우, 프로토콜은 대상이 아니므로 상위, 하위 중 어떤 프로토콜을 먼저 체크해야될지 정해야 한다(Check flow rule keyword)
+    - 
+네트워크 방화벽은 방화벽 기능에 부정적인 영향을 미칠 수 있는 규칙에 대해 상태 비저장 규칙 그룹을 분석할 수 있습니다. 예를 들어, 네트워크 방화벽은 트래픽을 비대칭적으로 라우팅하는 규칙을 식별할 수 있으며, 이는 트래픽을 적절하게 처리하는 서비스의 기능에 영향을 줄 수 있습니다. 분석 중에 서비스는 분석 결과 목록에 식별된 규칙을 포함합니다
 
 
 ## Quotas
