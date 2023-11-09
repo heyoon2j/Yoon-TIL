@@ -27,13 +27,24 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
 * Policy : Policy 정책
     ```
     # Policy
-        * Stream exception policy
+        * policy_variables
         * Stateless policy
             - Default : Stateless default actions
             - Others : Stateless rule groups
-        * Stateful policy (+ Set stateful engine options)
+        * Stateful policy
             - Default : Stateful default actions
             - Others : Stateful rule groups
+        * Stream exception policy (Set stateful engine options)
+
+
+    ## Default (PaloAlto 기준)
+        * Stateless policy
+            - Default : aws:forward_to_sfe
+            - Others : aws:forward_to_sfe
+        * Stateful policy
+            - Default : Stateful default actions
+            - Others : Stateful rule groups
+        * Stream exception policy (Set stateful engine options)
     ```
     - Stream exception policy : Network 연결이 midstream에서 끊어질 때 정책 설정 (외부 요인 등으로 인해)
     - Stateless rule groups : 상태 비저장 규칙 그룹. 우선 순위가 존재
@@ -41,22 +52,16 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
     - Stateful default actions : 상태 저장 기본 동작. Stateful rule group과 일치하지 않는 패킷을 처리하는 방법 설정.
     - Stateful rule groups : 상태 저장 규칙 그룹. 우선 순위 존재
     - Stateful engine options : 상태 저장 엔진 옵션 지정
-* Customer-managed key (Optional) : Network Firewall 리소스에 대하여 암호화화
-* Policy variables (Optional) : You can configure one or more IPv4 or IPv6 addresses in CIDR notation to override the default value of Suricata HOME_NET. If your firewall is deployed using a centralized deployment model, you might want to override HOME_NET with the CIDRs of your home network. Otherwise, Network Firewall uses the CIDR of your inspection VPC..
+* Customer-managed key (Optional) : Network Firewall 리소스에 대하여 암호화
+* Policy variables (Optional) : Default value of Suricata HOME_NET. If your firewall is deployed using a centralized deployment model, you might want to override HOME_NET with the CIDRs of your home network. Otherwise, Network Firewall uses the CIDR of your inspection VPC.
 * TLS inspection configuration (Optional) : TLS 검사 구성. Stateful rule에 따라 검사 시에 SSL/TLS 트래픽의 암호화 해독 및 재암호화를 활성화하는 설정
     > 단 추가 비용이 발생한다!!!
-</br>
-
-### Stream exception policy
-- Drop : 기본 값. 종료를 실패하면 후속 트래픽을 삭제한다.
-- Continue : (잘모르겠습니다...???)
-- Reject : 종료를 실패하면 후속 트래픽을 삭제한다. 그리고 Client 측에서 바로 알 수 있도록 Reject Packet을 보낸다.
 </br>
 
 
 ### Stateless action
 * Fragmented packets
-    - 
+    - UDP 패킷에 대해 어떻게 처리할지 결정할 수 있다
 * Evaluation order
     - 우선순위에 의해서 결정 / 이 값은 고유해야 하며 양의 정수 /
 * Action
@@ -80,9 +85,9 @@ Suricata(Opensource) Stateful rule 엔진 6.0.9(23.11.05 현재 기준)을 지�
 GRE(일반 라우팅 캡슐화)와 같은 터널링 프로토콜에 대한 내부 패킷 검사를 지원한다. 터널링된 트래픽을 차단하려는 경우 터널 계층 자체 또는 내부 패킷에 대한 규칙을 작성해야 한다.
 
 * Rule type
-    1) Standard rules : 
+    1) Standard rules : Protocol / Source IP / SourcePort / Destination IP / Destination Port
     2) Suricata compatible strings: 
-    3) Domain list : 
+    3) Domain list : Domain (HTTP/HTTPS Protocol 사용)
 * Evaluation order
     - Top Level : StatefulRuleOptions 이라는 Rule을 기본적으로 최상위 우선 순위로 가지고 있다!!!
     - Strict order : 정의된 순서대로 결정
@@ -102,17 +107,10 @@ GRE(일반 라우팅 캡슐화)와 같은 터널링 프로토콜에 대한 내�
     - Deny : 모든 검사를 중단하고, 도메인 이름 목록에 지정된 프로토콜과 일치하는 트래픽에 대하여 거부
 
 
-### Rule Group
-네트워크 트래픽을 필터링하는 규칙들의 모음
-* Stateless Rule Group
-* Stateful Rule Group
-    - 5-tuple : Protocol / Source IP / SourcePort / Destination IP / Destination Port
-    - Domain list : Domain (HTTP/HTTPS Protocol 사용)
-    - Suricata compatible IPS rules : 
-> Rule Group에 대한 정책 갯수는 한정적이며 추후 변경 불가능하기 때문에 초기 설정이 중요!!
-
-> 사용자 지정 외에 관리형 규칙이 존재하므로 적절히 섞을 필요가 있다.
-
+### Stream exception policy
+- Drop : 기본 값. 종료를 실패하면 후속 트래픽을 삭제한다.
+- Continue : (잘모르겠습니다...???)
+- Reject : 종료를 실패하면 후속 트래픽을 삭제한다. 그리고 Client 측에서 바로 알 수 있도록 Reject Packet을 보낸다.
 </br>
 </br>
 
@@ -167,7 +165,7 @@ Firewall의 Stateful rule engine에 의해 로그가 제공 (로그 유형과 �
 
 		- Stateless default action :
 		- Stateful default action :
-3. 		-
+3. 		- 
 4. Create Network Firewall
 2.
 3.
