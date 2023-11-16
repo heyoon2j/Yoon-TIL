@@ -13,6 +13,7 @@
         * ```bool```: true or false
         * ```list(<TYPE>)```: ["us-west-1a", "us-west-1c"]
         * ```map(<TYPE>)```: {"name" = "abc", "age" = "32"}
+        * ```set(<TYPE>)```: ("name")
         * ```object({<ATTR NAME> = <TYPE>, ... })```: list(object({ internal = number, external = number, protocol = string }))
         * ```tuple([<TYPE>, ...])```
     * ```description```: 변수에 대한 설명

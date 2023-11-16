@@ -24,6 +24,12 @@ fi
 
 # 반복문
 
+
+
+
+
+
+
 ``` 
 
 * https://twpower.github.io/131-simple-shell-script-syntax
@@ -101,7 +107,7 @@ fi
     ```    
 6. 조건문
     * ```if [];then elif [];then else fi``` 사용
-7. 큰따옴표 vs 작따옴표
+7. 큰따옴표 vs 작따옴표ii
     * "" : $ 등의 특수문자 사용 가능
     * '' : $ 등의 특수문자 사용 불가능하며, 내용 모두를 문자열로 취급
     > 주의해야 한다!!!

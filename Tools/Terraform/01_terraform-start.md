@@ -1,40 +1,24 @@
 # Terraform Start
 
-## Install
-1) Download Terraform
-    * https://www.terraform.io/downloads.html
-    * 해당 OS에 맞는 버전 설치
-    ```shell script
-    wget https://releases.hashicorp.com/terraform/0.13.3/terraform_0.13.3_linux_amd64.zip
-    unzip terraform_0.13.3_linux_amd64.zip
-    mv terraform /usr/bin/terraform && sudo chmod +x
-    vi ~/.profile
-       export PATH="$PATH:/usr/bin/terraform"
-    ```
-    * Can customize Path
-
-2) Version Check
-    ```shell script
-    terraform --version
-    ```
-
 ## Basic
 1. **Provider**
     * Terraform과 외부 서비스를 연결해주는 기능을 하는 모듈
     * AWS, Azure, GCP와 같은 Public Cloud 뿐만 아니라, MySQL, Docker와 같은 로컬 서비스 등을 지원
     * 서비스 종류는 공식 문서에서 확인 가능
         * https://www.terraform.io/docs/providers/index.html#inner
-    
 2. **HCL**
     * Hashicorp Configuration Language 약어
     * Terraform에서 사용하는 설정 언어
     * HCL 파일의 확장자는 .tf를 사용
-
-3. **Plan**
+3. __Init__
+    - Provider Plugin을 자동으로 찾아서 다운로드하고 설치
+    - Backend 설정 확인
+    - 모듈 확인 후 복사
+4. **Plan**
     * Terraform Project Directory 아래의 모든 .tf 파일의 내용을 실제로 적용 가능한지 확인하는 작업.
     * **terraform plan** 명령어를 제공하며, 해당 명령어가 실행 시 어떤 리소스가 생성, 수정, 삭제될지를 보여준다.
     
-4. **Apply**
+5. **Apply**
     * Terraform Project Directory 아래의 모든 .tf 파일의 내용대로 리소스를 생성, 수정, 삭제하는 일을 적용이라 한다.
     * **terraform apply** 명령어를 제공한다.
 
@@ -58,10 +42,13 @@
 
 ## Terraform File
 * ```.terraform```
-    * 인프라를 프로비저닝 하는데 사용되는 모듈과 플러그인 등이 포함되어 있다.
+    - 인프라를 프로비저닝 하는데 사용되는 모듈과 플러그인 등이 포함되어 있다.
 * ```terraform.tfstate``` 및 ```terraform.tfstate.backup```
-    * Terraform 상태를 포함하며, Terraform의 구성과 프로비저닝된 인프라 간의 관계를 추적할 수 있다.
-    * 기본적으로 .terraform Directory에 저장된다.
+    - Terraform 상태를 포함하며, Terraform의 구성과 프로비저닝된 인프라 간의 관계를 추적할 수 있다.
+    - 기본적으로 .terraform Directory에 저장된다.
+* ```.terraformrc```(Linux) 및 ```terraform.rc / terraform.rc.txt```(Windows)
+    - Terraform CLI 구성 파일
+    - CLI 동작에 대한 설정을 구성할 수 있다!
 </br>
 </br>
 
@@ -129,8 +116,7 @@
             aws_secret_access_key = <SECRET_KEY>
             aws_access_key_id = <KEY_ID>
             ```
-
-3) Terraform Project Initialization
+4) Terraform Project Initialization
     * 이제 Provider를 기준으로 Project를 초기화시켜준다.
     * **terraform init** 명령어 사용
 

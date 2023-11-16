@@ -86,4 +86,32 @@
   * Provdier 선택하는 방법은 ```<provider name>.<alias>```를 이용하여 선택
   * Provder가 하나인 경우, Module은 암시적으로 상속을 받는다. 여러 개인 경우, 명시적 상속을 선언해야 한다.
 
+</br>
+
+### Plugin Caching
+
+
+
+
+
+---
+## Installation Provider (Airgab)
+기본적인 Public Registry(registry.terraform.io)에 있는 Provider를 설치하는 것이 아닌 폐쇄망에서 설치할 시에 해당 방법을 사용한다.
+
+```
+provider_installation {
+  filesystem_mirror {
+    path    = "/usr/share/terraform/providers"
+    include = ["example.com/test/*"]
+  }
+  direct {
+    exclude = ["example.com/test/vpc"]
+  }
+}
+
+```
+* 설치하는 주소가 "example.com/\*/\*"인 경우, mirror site 주소는 "/usr/share/terraform/providers" 이다.
+* exclude와 같이 사용된다면, 우선순위는 exclude > include이기 때문에 "example.com/test/vpc"를 제외한 "example.com/test/*"에 접근할 수 있다.
+
+
 
