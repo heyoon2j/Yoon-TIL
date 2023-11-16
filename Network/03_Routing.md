@@ -65,6 +65,10 @@ Routing Protocol에 의해서 자동으로 설정되고 관리된다. 해당하�
 2. EGP(Exterior Gateway Protocol)
     * 다른 조직 간에 사용. 대규모 Routing할 때 사용
     * Path Vector : BGPv4
+3. BGP(Border Gateway Protocol)
+    - I-BGP와 E-BGP로 나뉜다.
+    * I-BGP : 같은 AS에 대해서만 BGP 통신을 주고 받는다.
+    * E-BGP : 다른 AS에 대해서만 BGP 통신을 주고 받는다.
 </br>
 
 ### __Connected 경로__
@@ -86,10 +90,23 @@ Routing Update 정보에 Subnet Mask를 포함하는 Protocol
 
 ---
 ## ASN
+Autonomous System Number: 일관된 라우팅 정책을 가지고 있는 IP 접두사 그룹(AS)을 나타내는 번호 (172.16.30.0/24 == 100번, 172.16.20.0/24 == 90번)
+
 네트워크가 방대해짐에 따라 전체 네트워크를 가지기도, 관리하기도 불가능해졌다. 그에 따라 네트워크 관리 범위를 계층적으로 분리하고 단위 별로 라우팅 정보를 관리하기 위해 AS가 도입되었다.
-* Autonomous System Number: 일관된 라우팅 정책을 가지고 있는 IP 접두사 그룹(AS)을 나타내는 번호 (172.16.30.0/24 == 100번, 172.16.20.0/24 == 90번)
+
+> 같은 ASN인 경우, 같은 네트워크라고 인식하고 충돌을 방지하기 위해 해당 라우팅 정보를 받더라도 수락하지 않는다!!
+
+Public IP 대역이 있는 것 처럼 Public AS가 있으며, 이는 이미 공객적으로 사용하고 있는 번호들이기 때문에, 기본적으로 Private AS 번호를 사용해야 한다.
+
 * 보통 보면 서로 다른 네트워크끼리 연결할 때(VPN 등) 정보가 필요하다.
+
 * 다른 네트워크는 ASN으로 해당 네트워크의 IP 목록과 라우팅 정책을 식별한다.
+* AS Range
+    - 0 : 예약
+    - 1 ~ 64,495 : Public, 공인
+    - 64,496 ~ 64,511 : 예약
+    - 64,512 ~ 65,534 : Private, 사설
+    - 65,535 : 예약
 * 통신 과정
     * AS가 도입됨에 따라 라우터는 기본적으로 AS 내에 있는 라우터 도달 정보만 가지고 있는다.
     * 외부 AS와 통신이 필요한 경우 ASBR(Autonomous System Boundary Router)을 이용하여 자신과 인접한 다른 AS에 대한 정보를 가진다.
@@ -97,6 +114,8 @@ Routing Update 정보에 Subnet Mask를 포함하는 Protocol
     
     > 필요시에 연결 설정을 통해서 원하는 AS만 BGP를 통해 라우팅 정보를 받게 되는데, BGP를 설정할 때 ASN 설정이 들어간다. 
     
+    >  (정리) 라우팅 프로토콜을 통해 라우팅 정보를 전달 받으려면 기본적으로 같은 ASN을 가진 라우터들만 가능하다. 인접하지만 다른 ASN을 가지고 있는 라우터는 라우팅 정보를 가지고 올 수 없는데, 라우팅 정보를 가지고 오기 위해서는 VPN 장비와 같은 특정 장치가 필요하다!! 
+
     > https://xn--3e0bx5euxnjje69i70af08bea817g.xn--3e0b707e/jsp/resources/asInfo.jsp
 
 </br>
