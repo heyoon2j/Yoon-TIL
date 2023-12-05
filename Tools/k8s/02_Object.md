@@ -72,11 +72,11 @@ Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태
     * Service 종류
         1) ClusterIP
         2) NodePort
-        3) 
+        3) LoadBalancer
 * SessionAffinity
     - Stickness 설정 Object
 * Ingress
-* IngressClass
+* IngressClass : IngressController + Configuration
 * IngressClassParams
 </br>
 

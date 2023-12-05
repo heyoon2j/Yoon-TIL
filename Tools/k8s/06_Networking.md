@@ -1,6 +1,5 @@
 # Networking
 
-
 * endpoint : Service가 패킷을 전달하고자 하는 Pod 집합의 진입점을 Endpoint라고 한다. 해당 Endpoint에는 단일 DNS가 부여된다.
 
 

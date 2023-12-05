@@ -36,7 +36,7 @@ Cluster 내에서만 유효한 Cluster IP를 제공한다. 그렇기 때문에 P
 ---
 ## LoadBalancer
 Load Balancer를 사용하려면 Load Balancer를 구현해 둔 외부 서비스 업체의 도움을 받아야 한다!
-* 기본적으로 NodePor가 생성
+* 기본적으로 NodePort가 생성
 * 
 
 

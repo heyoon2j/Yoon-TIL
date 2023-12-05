@@ -14,7 +14,7 @@
     * 해당 Node에 있는 Pod를 다른 Node로 이동시키기 위해서는 drain 명령어를 사용한다. 명령어 사용시, 모든 Pod를 삭제하고 새로운 Node에 Pod를 생성한다.
         ```
         $ kubectl drain <node_name>
-        $ kubectl drain <node_name> --ignore-daemonsets       # DamonSet은 기본 drain으로 삭제
+        $ kubectl drain <node_name> --ignore-daemonsets       # DaemonSet은 기본 drain으로 삭제
         
         ```
         * DaemonSet은 특성상 drain으로 삭제가 되지 않는다.
@@ -31,7 +31,7 @@
         1) NoSchedule : Toleration가 일치하지 않은 Node에는 배포하지 못한다 (새로운 Pod에만 적용됨). 즉, 일치해야 배포된다
         2) NoExecute : 실행중인 Pod 중에 Toleration이 해당되면, 다른 Node로 옮기고 새로운 Pod를 Node에 배포하지 못하게 한다.
         3) PreferNoSchedule : 가급적이면 해당 Node에 배포하지 않는다는 의미이다.
-    > Affinity로 Taint도 구성 가능하다! 
+    > Affinity로 Taint도 구성 가능하다! 반대로도 가능하다.
 5. 
 6. Pod Priority (우선순위)
 
