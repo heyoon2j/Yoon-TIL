@@ -239,6 +239,10 @@ docker-entrypoint.d  etc  tmp  usr  var
 
 
 #### Reference
+https://www.44bits.io/ko/post/how-docker-image-work#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%9D%98-%EB%A0%88%EC%9D%B4%EC%96%B4-%EA%B3%84%EC%B8%B5-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0
+
+https://docs.docker.com/storage/storagedriver/overlayfs-driver/#how-the-overlay2-driver-works
+
 https://tech.kakaoenterprise.com/171
 
 https://kingdo.club/2022/02/21/understand-layerid-diffid-chainid-cache-id/

@@ -37,6 +37,16 @@
     ```
     $ docker push centos
     ```
+* Delete Image
+    ```sh
+    $ docker rmi centos:latest
+    ```
+
+* 변경 사항 확인
+    ```sh
+    # docekr diff <container_id>
+    $ docker diff ab123cde
+    ```
 </br>
 
 
@@ -61,21 +71,38 @@
 
 * Run process
     ```sh
-    # docekr run [optional] <image:tag> --name <name>
+    # docekr run [optional] <image:tag> [command] [args] --name <name>
 
     # Run background
     $ docker run -d centos:latest
 
     # Run 
     $ docker run -it centos:latest bash --name testCentos
+    
+    # 일회성 실행. 종료시 관련 리소스 전체 삭제
+    $ docker run --rm -it centos:latest bash
     ```
     * 
 
 * Restart porcess
     ```sh
-    # docker restart 
+    # docker restart <container_id>
     ```
 
 </br>
 
+---
+## Volume
+* Create volume
+    ```sh
+    $ docker create volume <vol_name>
+    ```
 
+* Attach volume
+    ```sh
+    # Using docker volume
+    $ docker run -itd -v <vol_name>:<containter_path> <image:tag>
+
+    # Using host directory
+    $ docker run -itd -v <host_path>:<containter_path> <image:tag>
+    ```
