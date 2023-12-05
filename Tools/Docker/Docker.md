@@ -1,4 +1,56 @@
-# Docker File
+# Docker
+기존 Hypervisor(Virtual Machine 라고도 한다)는 Hardware를 분리시키기 위한 Software인데, Container는 프로세스의 실행 환경을 격리하기 위한 Software 이다.
+
+Hypervisor(Hosted Type)가 다양한 플랫폼(OS)에서 동작하도록 만들어진 것처럼 Container도 다양한 플랫폼(OS)에서 동작하는 것을 목표로 한다.
+
+Container는 Linux에서 지원하는 다양한 커널 기능을 사용해 구성되어 진다. 예시로 Linux Namespace를 통해 별도의 환경(File System, Network 등)을 준비하고, Linux cgroups를 통해 자원을 제어한다.
+
+---
+## Docker Workflow
+![Docker_workflow](img/Docker_workflow.png)
+1) User들은 CLI/UI 등을 통해 명령을 Docker Engine에게 전달한다.
+2) Docker Engine은 Containerd(Container Runtime)에게 컨테이너 라이프 사이클 관리 요청한다.
+3) Containerd는 컨테이너를 생성/삭제/중지 등을 수행한다.
+
+
+---
+## Install
+설치 방법은 다음과 같다.
+
+```sh
+# Install package
+$ yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# CHeck version
+$ docker -v 
+```
+* Package 종류
+    - docker-ce : Docker engine (Community Edition). 컨테이너 작업 및 관리를 위한 프로그램으로 dockerfile을 읽고, 컨테이너 런타임이 지시를 한다.
+    - docker-ce-cli : Dcoekr command line interface, Docker Client.
+    - containerd.io : Container runtime. 컨테이너를 생명주기를 관리한다. 컨테이너 생성/삭제/중지 및 네트워킹 활성, 스토리지 탑재 등을 한다.
+    - docker-buildx-plugin : 멀티 플랫폼에서 Docker 이미지를 빌드하기 위한 도구 (ARM64, AMD64 등의 플랫폿 호환용)
+    - docker-compose-plugin : Docker 구성을 더 편리하게 할 수 있는 도구
+
+
+---
+
+## Docker File Structure
+```sh
+$ ls -al /var/lib/docker/
+buildkit/   containers/ image/      network/    overlay2/   plugins/    runtimes/   swarm/      tmp/        trust/      volumes/
+```
+- buildkit : 
+- containers : 
+- image : 
+- network : 
+- overlay2 : 
+- volumes : 
+- plugins : 
+- runtimes : 
+- swarm : 
+- tmp : 
+- trust :       
+
 
 
 ```
