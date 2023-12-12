@@ -196,6 +196,14 @@ __all__ = ['error']
 
 
 ---
+## Packaging (패키징)
+
+* Reference
+    - https://ryanking13.github.io/2021/07/11/python-packaging.html
+    - 
+
+
+
 ## 컴파일된 파이썬 파일
 * 모듈 로딩을 빠르게 하기위해 사용된다.
 * ```__pycache__``` 디렉터리에 각 모듈의 컴파일된 버전을 module.version.pyc 라는 이름으로 캐싱한다. 
