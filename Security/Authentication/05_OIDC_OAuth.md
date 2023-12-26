@@ -7,6 +7,17 @@
 * OAuth : Authorization
 * OIDC Flow
     ![OIDC_Flow](../img/OIDC_Flow.jpg)
+    1) 서비스 사용을 위해 A 웹사이트를 접속한다. 사용자 인증을 카카오(OP)를 통해 받도록 Redirection 한다.
+    2) A 웹사이트는 카카오에게 자신을 대신하여 인증을 해달라고 요청한다.
+    3) 카카오는 로그인 페이지를 사용자에게 전달한다.
+    4) 사용자는 카카오에 인증 정보를 전달해 처리한다.
+    5) 카카오는 사용자에게 Authorization Code를 발급한다.
+    6) 사용자는 Authorization Code를 A 웹사이트에 전달한다.
+    7) A 웹사이트는 Authorization Code가 정상적인지 카카오에게 확인한다.
+    8) Code를 확인하고, 토큰을 발급해준다.
+    9) 이후 토큰을 사용하여 사용자는 서비스를 사용한다. 
+</br>
+</br>
 
 
 ## OpenID Provider(IDP)

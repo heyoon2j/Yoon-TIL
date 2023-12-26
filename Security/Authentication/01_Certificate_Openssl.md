@@ -64,17 +64,18 @@ $  yum install –y openssl mod_ssl
 
 
 ### 2. 인증 요청서 생성
-```
+```sh
+# $ openssl req -new -key ca.key -subj "/CN=www.test.com" -out ca.csr
 $ openssl req -new -key ca.key -out ca.csr
 
 $ openssl req -in ca.csr -pubkey
 ```
-1) Country Name : 국가코드, KR
-2) State or Province Name : 시/도 이름, Seoul
-3) Locality Name : 구/군, Jong-ro
-4) Organization Name : 회사명
-5) Organizational Unit Name: 부서명
-6) Common Name : 도메인명, www.cloud.com
+1) Country Name(C) : 국가코드, KR
+2) State or Province Name(ST) : 시/도 이름, Seoul
+3) Locality Name(L) : 구/군, Jong-ro
+4) Organization Name(O) : 회사명
+5) Organizational Unit Name(OU): 부서명
+6) Common Name(CN) : 도메인명, www.cloud.com
 7) Email Address : 이메일 주소, Administrator@cloud.com
 > csr에 공개키가 포함되어 있다!!!!
 
