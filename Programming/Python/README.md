@@ -55,7 +55,11 @@
     export PYTHON_HOME=/usr/local/bin/python3/
     export PATH=$PATH:$PYTHON_HOME
     ```
+</br>
+</br
+>
 
+---
 ## pip
 * Pip Installs Packages의 약자. Python Package를 설치 및 관리한다.
 * pip.exe의 위치는 ```<python_dir>/script```에 위치
