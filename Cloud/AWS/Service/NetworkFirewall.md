@@ -60,6 +60,8 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
 
 
 ### Stateless action
+* Pull packets
+    - TCP 패킷에 대해 어떻게 처리할지 결정할 수 있다 
 * Fragmented packets
     - UDP 패킷에 대해 어떻게 처리할지 결정할 수 있다
 * Evaluation order
@@ -172,16 +174,11 @@ Firewall의 Stateful rule engine에 의해 로그가 제공 (로그 유형과 �
 4.
 5.
 
-##
-네트워크 방화벽은 방화벽 끝점당 최대 100Gbps의 네트워크 트래픽을 지원합니다.
-더 많은 트래픽 대역폭이 필요한 경우 리소스를 서브넷으로 분할하고 각 서브넷에 네트워크 방화벽 방화벽을 생성할 수 있습니다.
-
-
-
-
-* 알아둬야할 사항
-	* 정책 및 구성 요소 변경 시
-	- Firewall Policy 변경 적용 및 구성 요소 변경 시, 일부 위치에만 먼저 적용이 될 수 있어 잠시 동안 불일치가 발생할 수 있다 (몇 초 내에 적용됨)
+## 알아둬야 할 사항
+- 네트워크 방화벽은 방화벽 끝점당 최대 100Gbps의 네트워크 트래픽을 지원합니다.
+- 더 많은 트래픽 대역폭이 필요한 경우 리소스를 서브넷으로 분할하고 각 서브넷에 네트워크 방화벽 방화벽을 생성할 수 있습니다.
+* 정책 및 구성 요소 변경 시
+    - Firewall Policy 변경 적용 및 구성 요소 변경 시, 일부 위치에만 먼저 적용이 될 수 있어 잠시 동안 불일치가 발생할 수 있다 (몇 초 내에 적용됨)
 	- Stateful rule에 대한 변경 사항은 새로운 트래픽 흐름에만 적용되고, Stateless rule을 포함한 기타 방화벽 변경 사항은 모든 네트워크 패킷에 적용된다.
 
 
@@ -245,3 +242,92 @@ Gateway는 여러 가용 영역에 Endpoint를 두고 있다. 그렇기 때문�
 | Maximum number of stateless rule groups || |
 | Maximum number of TLS inspection configurations | 20 | |
 | Maximum number of ACM certificates per TLS inspection configuration |	10 |  |
+
+
+
+
+---
+## Suricata
+Network Firewall OpenSource 중 하나이다.
+
+## Rule
+```sh
+# Action / Protocol / Source IP / Source Port -> Destination IP / Destination Port / Option
+```
+```sh
+# Example : HTTP Domain
+pass http $HOME_NET any -> $EXTERNAL_NET any (http.host; dotprefix; content:".amazon.com"; endswith; msg:"matching HTTP allowlisted FQDNs"; priority:1; flow:to_server, established; sid:1; rev:1;)
+pass http $HOME_NET any -> $EXTERNAL_NET any (http.host; content:"example.com"; startswith; endswith; msg:"matching HTTP allowlisted FQDNs"; priority:1; flow:to_server, established; sid:2; rev:1;)
+drop http $HOME_NET any -> $EXTERNAL_NET any (http.header_names; content:"|0d 0a|"; startswith; msg:"not matching any HTTP allowlisted FQDNs"; priority:1; flow:to_server, established; sid:3; rev:1;)
+```
+```sh
+# Example : HTTPS(TLS) Domain
+pass tls $HOME_NET any -> $EXTERNAL_NET any (tls.sni; dotprefix; content:".amazon.com"; nocase; endswith; msg:"matching TLS allowlisted FQDNs"; priority:1; flow:to_server, established; sid:1; rev:1;)
+pass tls $HOME_NET any -> $EXTERNAL_NET any (tls.sni; content:"example.com"; startswith; nocase; endswith; msg:"matching TLS allowlisted FQDNs"; priority:1; flow:to_server, established; sid:2; rev:1;)
+drop tls $HOME_NET any -> $EXTERNAL_NET any (msg:"not matching any TLS allowlisted FQDNs"; priority:1; flow:to_server, established; sid:3; rev:1;)
+```
+
+* Action
+    - alert : 경고 발생 및 로그 기록
+    - pass : 패킷 통과
+    - drop : 패킷 차단 및 로그 기록
+    - reject : 패킷 차단 및 로그 기록 (TCP : RST 응답 / UDP : ICMP Unreachable 응답)
+    - rejectsrc : reject와 동일
+    - rejectdst : 오류 응답(RST/ICMP Unreachable)을 Destination 측에 전달
+    - rejectboth : 양측에 오류 응답 전달
+* Protocol
+    - tcp
+    - udp
+    - icmp
+    - ip
+    - others (OSI 7 Layer protocol)
+* Source IP / Destination IP
+    - 172.16.30.54/32
+    - [172.16.30.0/24, 172.16.31.0/24]  : 172.16.30.0/24, 172.16.31.0/24 포함
+    - ![172.16.30.0/24, 172.16.31.0/24] : 172.16.30.0/24, 172.16.31.0/24 제외
+    - [172.16.30.0/24, !172.16.31.0/24] : 172.16.30.0/24 포함, 172.16.31.0/24 제외
+    - $HOME_NET : Suricata 환경 변수
+    - $EXTERNAL_NET : Suricata 환경 변수
+    - $VARIABLES : 사용자 변수 설정 가능
+* Port
+    - 80
+    - [80, 81, 82] : 80 ~ 82
+    - [80:82] : 80 ~ 82
+    - [1024:] : 1024 ~ 
+    - !80 : 80 제외
+    - [90:100, !93] : 90 ~ 92, 94 ~ 100
+    - [1:100, ![10:50]] : 1 ~ 9, 51 ~ 100
+* Direction
+    - ```->```  : 한쪽 방향
+    - ```<>```  : 양방향
+* Option (Metadata)
+    - msg : 해당 규칙이나 경고에 대한 메세지
+    - sid : Signature ID
+    - rew : Revision, 해당 sid 수정한 횟수로, sid와 같이 쓰인다
+    - gid : sid 들을 그룹핑할 때 사용
+    - classtype : 
+    - priority : 우선순위 (1~255)
+* Option (Payload)
+    - content : 
+    - nocase : 대소문자 구분 X
+    - depth : 지정한 바이트까지 확인
+    - offset : 지정한 바이트부터 탐지
+    - distance
+    - within
+* Option (Flow - TCP/UDP)
+    - to_server, from_client : Client ---> Server 트래픽에 대한 패킷 확인
+    - to_client, from_server : Server ---> Client 트래픽에 대한 패킷 확인
+    - established : 세션이 연결된 상태에 대하여 패킷 확인
+    - statless : 세션 연결 유무 상관없이 패킷 확인
+* Option (Flow - HTTP)
+    - 
+</br>
+</br>
+
+## Log
+```
+suricata 
+rev : revision : 개정 횟수
+severity : 엄격 레벨
+signature_id : sid / 각 Rule에 대한
+```

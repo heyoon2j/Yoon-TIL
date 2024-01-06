@@ -48,6 +48,7 @@
     * Reference : https://stackoverflow.com/questions/60934851/in-aws-why-is-that-an-nlb-can-provide-static-ip-addresses-whereas-an-alb-cannot#:~:text=As%20per%20AWS%2C%20Network%20Load%20Balancer%20routes%20traffic,Also%2C%20NLB%20supports%20static%20%2F%20Elastic%20IP%20addresses.
     * https://stackoverflow.com/questions/3821333/amazon-ec2-elastic-load-balancer-does-its-ip-ever-change
     > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이거나, 메인 서비스는 Layer 4 동작을 관리하지만 엔진 서비스는 Layer 7까지 처리할 수 있기 때문일거 같다.
+
 </br>
 </br>
 
@@ -73,7 +74,7 @@
 * "access_logs.s3.bucket" : 액세스 로그를 저장할 S3 버킷 이름
 * "access_logs.s3.prefix" : S3 버킷에 저장할 때, Prefix
 * "ipv6.deny_all_igw_traffic" : IGW의 액세스를 방지. internet-facing인 경우 false, internal인 경우 true로 설정
-
+</br>
 
 ### Only Application LB
 * "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
@@ -86,17 +87,21 @@
     * strictest : RFC 7230 규칙을 준수하는 요청만 확인
     * monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
 * "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
-* "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true,false)
+* "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true or false)
 * "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
     * X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
     * append : Request Header XFF에 클라이언트 IP를 추가
     * preserve : Request Header XFF 보존하고 다른 값을 추가하지 않음 (당연히 수정을 하지 못하니 클라이언트 IP를 ALB에서 추가하지 못한다)
     * remove : 모든 X-Forwarded-For Header 삭제
-* "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 추가할지 여부 (기본 값: false / true,false)
-* "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true,false)
-* "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true,false)
+* "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 보존할지 여부 (기본 값: false / true,false)
+* "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true, false)
+* "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true, false)
     * WAF를 사용하지 않으면 true로 할 필요가 없다.
-
+* "routing.http.preserve_host_header.enabled" : HTTP 요청에 Host 헤더를 보존하고 변경 없이 대상에 전송해야 하는지 여부 (기본 값: false / true, false)
+    - HTTP 또는 HTTPS 상태 확인 요청의 경우 Host Header에는 Target의 IP Address와 상태 확인 Port가 아닌 로드 밸런서 노드의 IP Address와 Listener Port가 포함됩니다.
+    > Load Balancer Node의 IP와 Port가 Host Header로 전달된다. 그렇기 때문에 기존 On-premise 동작과 다르게 동작한다!! 하지만 On-premise이든 Cloud 이든 특별한 상황(Host Header를 그대로 사용하고 싶을 때)이 아닌 이상 기본적으로 사용하지 않는다("preserve = false") 
+    
+</br>
 
 ### Network LB and Gateway LB
 * "load_balancing.cross_zone.enabled" : 교차 영역 로드 밸런싱이 활성화되었는지 여부 (기본 값: false / true,false)
@@ -104,6 +109,7 @@
     * Application LB는 항상 적용됨
     * 밸런싱 비율 = 100 / 교차 영역에 대한 모든 인스턴스 수
     > NLB는 기본적으로 온프레미스도 포함되어 있기 때문에 false로 설정되어 있는거 같다.
+
 </br>
 </br>
 

@@ -12,7 +12,8 @@ AWS와 On-premise 간의 전용 네트워크를 제공하는 서비스.
     > KINX 등 제공 업체에게 설정한 VLAN, BGP 전달
 * Direct Connect Gateway : AWS의 DX용 Gateway
     - 기본적으로 Virtual Interface는 하나의 VPC와 연결이 가능하다.
-    - 여ㅇ 개의 VPC 또는 여러 개의 TGW와 통신하기 위해서는 Gateway와 연결해야 한다.
+    - 여러 개의 VPC와 통신하기 위해서는 Gateway와 연결해야 한다.
+</br>
 
 
 ## Connection 과정
