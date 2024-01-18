@@ -1,5 +1,7 @@
 # Direct Connect
 AWS와 On-premise 간의 전용 네트워크를 제공하는 서비스.
+
+* 연결 아키텍처 참조 : https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/connectivity-models.html
 </br>
 
 ## 구성 요소

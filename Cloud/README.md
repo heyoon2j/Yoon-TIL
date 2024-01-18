@@ -76,6 +76,8 @@
 
 
 ## IOPS vs Throughput vs Latency
+Throughput은 기본적인 모든 시스템, 장비의 처리 능력(성능)을 의미한다. 볼륨의 처리 능력은 IOPS이다. 하지만 시스템마다 장비마다 표시를 다르게 하다보니 혼동을 가지고 왔다.
+
 ## 시스템 관점
 * __IOPS(Input/Output Per Second)__: 시스템이 처음부터 끝까지 초당 읽기/쓰기 작업 수(또는 트랜잭션이라고도 한다)
 * __Throughput(MB/s)__: 처리량. 시간 단위 내에 송수신되는 데이터의 양.
@@ -97,6 +99,8 @@
      Throughput
     ```
 * Reference: https://www.router-switch.com/faq/storage-iops-vs-throughput.html
+
+> IOPS가 높다고 Throughput이 높지 않을 수 있다. 네트워크 및 스토리지 성능이 충족한다는 가정하에 IOPS가 작더라도 IOPS를 만족하면서 사이즈가 큰 데이터를 처리를 하고 있고, 다른 한쪽은 IOPS는 큰데 사이즈가 작은데이터를 여러개 처리한다고하면 IOPS가 작더라도 처리량은 크게 나올 수 있다. 그래서 이 성능을 잘 맞춰야 한다.
 
 
 

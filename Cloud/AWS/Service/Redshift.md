@@ -2,17 +2,35 @@
 * AWS 관리형 데이터 하우스 서비스
 
 
-
-
-
-
-
 ## Node Type
 1. RA3
-
+    - 최신 버전
 2. DC2
+    - 레거시 버전
 
 
+
+## 가용성 & FailOver
+### Cluster 재배치
+- 클러스터의 노드들을 다른 가용 영역으로 옮긴다.
+* 유의 사항
+    - RA3 Type만 가능
+    - 최대 
+</br>
+
+### Multi AZ
+- 2개의 가용 영역에 노드들을 배치하고, 하나의 가용 영역에서 장애 발생 시 다른 가용 영역로 옮기게 된다.
+* 제약 사항
+    - 가용 영역당 Node 개수는 최소 2개이다. 즉, 최소 4개의 Node가 생성된다.
+    - Multi AZ를 하기 위해서는 최소 3개의 가용 영역이 필요하다.
+
+</br>
+</br>
+
+
+## 동시성 확장 (Concurrency scaling)
+- Query 처리에 대한 동시성 확장이 가능
+- 
 
 
 
@@ -26,18 +44,8 @@
     * 새로운 Cluster를 생성하고, 모든 행을 Cluseter에 저장한다. 그 후에 노드에 매핑하여 분포 설정에 따라 분할한다.
     * Cluster의 Enpoint가 바뀌는거 같다.
 </br>
+</ㅠㄱ>
 
-
-
-ami-0e0f72498373d693d
-t2.medium
-<powershell>
-net user Administrator “koreanre12!”
-$port = 2073
-Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-TCP' -name "PortNumber" -Value $port
-New-NetFirewallRule -DisplayName 'RDPPORTLatest' -Direction Inbound -Action Allow -Protocol TCP -LocalPort $port
-Restart-Service termservice -Force
-</powershell>
 
 
 
@@ -48,6 +56,28 @@ Restart-Service termservice -Force
 3. e
 4. r
 
+
+
+## 
+1. 동시접속 사용자수가 15개가 임계치
+이 부분은 WLM과 연계하여 말씀 드려야 되는데요,
+Redshift 에서는  전체 사용자 정의 대기열(슈퍼 유저 대기열 제외)의 최대 동시성 레벨이 최대 50개입니다.
+즉 MAX 50개 의 동시 Query가 수행 가능하며 15개는 WLM에서 default로 관리되는 부분입니다.
+이 경우 15개 이상의 Query가 수행되면 대기하게 됩니다.
+숫자를 늘여서 동시 Query 숫자가 많아질 경우 전체적으로 느려질수 있습니다.
+
+[참고 URL]
+https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_workload_mngmt_classification.html
+
+2. 동시성 확장 (Concurrency Scaling)을 사용하면 사실상 무제한의 동시 사용자 및 동시 쿼리를 일관되게 빠른 쿼리 성능
+1.에서 Query가 많이 수행되고 있으면 Resource가 부족하게 되어 Query가 전체적으로 느리게 수행될수 있는데 이때 Node를 자동으로 확장(Concurrency Scaling)하여 수행속도를 향상시킬수 있습니다.
+Workload Management Configuration에서 설정후 사용가능하며 비용이 추가로 발생할 수 있습니다.
+24시간마다 1시간 누적이 되어 최대 30시간(?) 까지 무료로 사용이 가능할것으로로 인지하고 있습니다.
+
+[참고 URL]
+https://aws.amazon.com/ko/blogs/korea/new-concurrency-scaling-for-amazon-redshift-peak-performance-at-all-times/
+
+실전에서는 1,2를 잘 조정하여 성능 & 비용측면에서 접근해야 합니다.
 
 
 
