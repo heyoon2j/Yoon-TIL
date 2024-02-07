@@ -10,13 +10,13 @@ AWS CloudFront, AWS API Gateway, AWS Application Load Balacner에 전달되는 H
 ---
 ## Web ACL
 1. 대상 종류는 다음과 같다.
-    * AWS CloudFront
-    * AWS API Gateway
-    * AWS Application Load Balancer
-    * AWS AppSync GraphQL API
-    * AWS Cognito user pool
-    * AWS App Runner service
-    * AWS Verified Access instance
+    - AWS CloudFront
+    - AWS API Gateway
+    - AWS Application Load Balancer
+    - AWS AppSync GraphQL API
+    - AWS Cognito user pool
+    - AWS App Runner service
+    - AWS Verified Access instance
 2. 기본 정책은 다음과 같으며, 자체 규칙 또는 규칙 그룹을 통해 정책을 추가한다.
     * 기본 정책
         - 허용 : 대부분의 사용자가 접근하도록 허용 (BlackList)
@@ -147,7 +147,18 @@ https://sessin.github.io/awswafhol/pre/module2.html
 
 
 ---
-### AWS Shield & AWS Firewall Manager
+### AWS Shield
 * AWS Shield : DDoS 공격 방어 서비스. 네트워크 및 전송 계층(Layer 3, 4)과 애플리케이션 계층(Layer 7)에서 AWS 리소스에 대한 DDoS(Distributed Denial of Service) 공격으로부터 보호
-* AWS Firewall Manager : Multiple accounts에 대하여 AWS WAF, AWS Shield Advanced, Amazon VPC 보안 그룹, AWS Network Firewall 및 Amazon Route 53 Resolver DNS Firewall을 비롯한 다양한 리소스들을 유지 및 관리하는 서비스
-* 
+
+* AWS Shied Advanced : 
+
+</br>
+</br>
+
+
+
+
+### AWS Firewall Manager
+* AWS Firewall Manager : Multiple accounts에 대하여 AWS WAF, AWS Shield Advanced, Amazon VPC 보안 그룹, AWS Network Firewall 및 Amazon Route 53 Resolver DNS Firewall을 비롯한 다양한 리소스들을 유지 및 관리하는 서비스 
+</br>
+</br>

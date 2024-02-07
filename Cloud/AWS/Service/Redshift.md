@@ -2,12 +2,27 @@
 * AWS 관리형 데이터 하우스 서비스
 
 
-## Node Type
-1. RA3
-    - 최신 버전
-2. DC2
-    - 레거시 버전
 
+
+### 이슈 사항
+1. "유지 관리 기간"
+    - 설정되어 있는 시간에 AWS 측에서 업데이트가 있는 경우 강제로 업데이트가 진행되며, 실행중인 쿼리가 강제 종료된다.
+    - 유지관리에 대해 45일 연장이 가능하지만, 45일 뒤에는 추가 연장이 불가하다.
+</br>
+
+
+
+## Node Type
+1. RA3 (최신 버전 : S3를 스토리지로 사용)
+    - S3를 사용하다보니 S3를 스토리지로 사용하고 있는 Redshift나 S3에 대한 Datashare 기능이 존재 및 백업 복구가 가능
+    - 
+2. DC2 (레거시 버전 : 볼륨 스토리지 사용)
+    - 
+
+
+---
+## Network
+* Enhanced VPC : 기본은 Public으로 접근하게 되는데, 해당 옵션을 활성화하면 VPC 네트워크를 통해 접근할 수 있다.
 
 
 ## 가용성 & FailOver
@@ -15,7 +30,7 @@
 - 클러스터의 노드들을 다른 가용 영역으로 옮긴다.
 * 유의 사항
     - RA3 Type만 가능
-    - 최대 
+    - 평균 15분
 </br>
 
 ### Multi AZ
@@ -81,9 +96,7 @@ https://aws.amazon.com/ko/blogs/korea/new-concurrency-scaling-for-amazon-redshif
 
 
 
-
-
-
+---
 
 
 ## Study
@@ -310,3 +323,24 @@ SYS_LOAD_HISTORY
 SYS_LOAD_ERROR_DETAIL
 SYS_UNLOAD_HISTORY
 SYS_SERVERLESS_USAGE
+
+
+
+---
+# Redshift Serveless
+
+
+* 제약 사항
+    1) 최소 3개의 가용 영역(AZ) 사용 필요
+    2) 
+
+
+### 이슈 사항
+1. Storage가 Seoul Region/Account에 포함되어 있는 서비스인지 여부
+2. 진입점에 보안적 이슈 사항
+    - 진입접 (접속 방법 / 권한 등)
+    - 감사 로그 기록 방법
+3. 레퍼런스 참고
+4. 최대 쿼리 실행 시간 제한 : 최대 1일 (86,399s)
+
+

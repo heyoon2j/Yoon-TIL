@@ -98,14 +98,26 @@
 ## Migration 과정
 1. 전략 빌드
     - 어떤 방법을 사용할지 도구 채택 (Migration Tool)
-        1) 스키마 복제 (소스 객체, 테이블, 인덱스, 뷰, 트리거 및 기타 시스템 객체를 대상 데이터 정의 언어(DDL) 형식으로 변환)
-        2) 사용자 권한 및 설정 복제
-        3) 데이터 복제
-    - DB 간의 데이터 타입 비교 및 변환 방법
-        1) 지원되지 않는 타입
-        2) 정밀도 차이
-        3) 마이그레이션 도구에 따른 데이터 변환 방법 (ex> AWS DMS: bool 타입 --> varchar(5) 기본 변환)
+        1) 사용자 권한
+            - 기본 : Superuser 권한
+            - Only Load Dtaa : SELECT 권한
+        2) 스키마 복제 방법 (소스 객체, 테이블, 인덱스, 뷰, 트리거 및 기타 시스템 객체를 대상 데이터 정의 언어(DDL) 형식으로 변환)
+            - AWS SCT (Schema Conversion Tool)
+            - 수동 복제
+        3) 데이터 복제 방법
+            - AWS DMS (Data Migartioin Service)
+            - 수동 복제
+    - 제약 사항 확인
+        * 도구 채택에 따른 제약 사항 
+        * DB 간의 데이터 타입 비교 및 변환 방법
+            1) 지원되지 않는 타입
+            2) 정밀도 차이
+            3) 마이그레이션 도구에 따른 데이터 변환 방법 (ex> AWS DMS: bool 타입 --> varchar(5) 기본 변환)
     - 검증 방법
+        1) Source와 Target의 전체 Row Count 비교
+        2) 1,000개 단위로 Row를 Sampling하고 Source와 Target에 대한 Row Diff x 만족할 때 까지 반복
+        3) 서비스의 Connection을 Target 데이터베이스로 변경한 후 Unit 테스트 진행
+        4) 전체 QA 및 통합 테스트 진행
 2. Source Scheme --> Target Scheme 변환 작업 (Scheme Migration)
     - AWS SCT Installer 설치 : https://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.SCT.html
     - 생성 방법 : https://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.SCT.html
@@ -115,18 +127,29 @@
         > IOPS의 영향을 받기 때문에 gp2 type이 사용된다!
     - Multi AZ (Active - Standby) : No Multi AZ
 4. Database 작업 (Source DB)
-    - DB 계정 및 권한 생성 (for Load & CDC)
-     	1) 마이그레이션 용 계정 (Master 계정을 사용하지 않는 경우)
-     	2) rds_superuser 역할 (Master 계정을 사용하지 않는 경우)
-     	3) rds_replication 역할 (Master 계정을 사용하지 않는 경우)
+    - DB 계정 및 권한 생성 (for Load & CDC / Master 계정을 사용하지 않는 경우)
+     	1) 마이그레이션 용 계정 생성
+     	2) rds_superuser 역할 할당 : 완전 Admin은 아니고 AWS에서 제공할 수 있는 최고 권한일거 같다.
+     	3) rds_replication 역할 할당 :  논리적 슬롯을 관리하고 논리적 슬롯을 사용하여 데이터를 스트리밍할 수 있는 권한
     - DDL Capture를 위한 아티펙트 생성 (Master 계정은 자동으로 생성)
        	1) Table 생성
        	2) Function 생성
        	3) Trigger 생성
     - DB 설정 (Parameter/Config)
-5. Database 작업 (Target DB)
+        1) rds.logical_replication_slots = 1 : 활성화
+        2) wal_level = logical
+        3) max_reaplication_slots > 1 : Task 갯수만큼 생성 / 추후 삭제 필요
+        4) max_wal_senders > 1 : Task 갯수만큼 생성 / 동시 작업 개수
+        5) wal_sender_timeout > 10,000ms (10s) && < 5m : 복제 작업이 수행되지 않으면 삭제
+        6) max_worker_processes > max_logical_replication_workers + autovacuum_max_workers + max_parallel_workers : max_worker_processes 는 성능에 영향을 크게 주므로 모니터링이 필수
+        7) max_slot_wal_keep_size : 기본 값이 아닌 값으로 설정하는 것이 , 복제 슬롯의 restart_lsn이 현재 LSN보다 
+5. Database 작업 (Target DB) : 테이블 단위로 복사 진행되며 한번에 하나씩 각 테이블을 로드!
     - DB 계정 및 권한 생성 (for Load & CDC)
-    - 
+    - Trigger 비활성화
+        1) 수동으로 바활성화
+        2) session_replication_role = replica 변경
+        - Foreign Key 비활성화
+
 
 6. Endpoint 생성 (마이그레이션 도구에 따른 설정) 
     - Endpoint Option 적용
@@ -134,12 +157,27 @@
     - Migration Type 지정
     - 
 8. Task 수행
-9.  (CDC 수행 시), CDC 적용 (트랜잭션 적용 or 일괄 적용)
-10. 자동으로 변환되지 않는 모든 개체를 수동으로 변환
-    - 지원되지 않는 데이터 형식
-    - 정밀도를 가진 데이터 형식
-    - (CDC 기준) 테이블에 프라이머리 키가 없는 경우, 미리 쓰기 로그(WAL)에 데이터베이스 행의 이전 이미지가 포함되지 않기 때문에 DMS는 테이블을 업데이트할 수 없다.
-11. Database 아티펙트 제거 및 확인
+9. (CDC 수행 시), CDC 적용 (트랜잭션 적용 or 일괄 적용)
+
+
+10. 제약 사항 처리 (테이블 및 프라이머리 키 생성을 포함하여 기본 스키마 마이그레이션을 지원 / 그 외는 수동처리)
+    * 보조 인덱스, 외래 키, 사용자 계정 수동으로 생성
+    * 
+    * 자동으로 변환되지 않는 모든 개체를 수동으로 변환
+        - 지원되지 않는 데이터 형식
+        - 정밀도를 가진 데이터 형식
+        - (CDC 기준) 테이블에 프라이머리 키가 없는 경우, 미리 쓰기 로그(WAL)에 데이터베이스 행의 이전 이미지가 포함되지 않기 때문에 DMS는 테이블을 업데이트할 수 없다.
+    * 
+    * AWS DMS는 통합 기능으로 생성된 고유 인덱스가 있는 테이블에 대한 복제를 지원
+    * 테이블에서 시퀀스를 사용하는 경우 NEXTVAL 소스 데이터베이스에서 복제를 중지한 후 대상 데이터베이스의 각 시퀀스에 대한 값을 업데이트합니다. AWS DMS는 소스 데이터베이스에서 데이터를 복사하지만 진행 중인 복제 중에는 시퀀스를 대상으로 마이그레이션하지 않습니다.
+11. 성능 개선을 위한 처리
+    - 소스의 리소스 가용성
+    - 가용 네트워크 처리량
+    - 복제 서버의 리소스 용량
+    - 대상이 변경 사항을 수집하는 능력
+    - 소스 데이터의 형식 및 분포
+    - 마이그레이션할 객체의 수
+12. Database 아티펙트 제거 및 확인
     ```
     drop event trigger awsdms_intercept_ddl;
 
@@ -147,7 +185,7 @@
     drop table {AmazonRDSMigration}.awsdms_ddl_audit
     drop schema {AmazonRDSMigration}
     ```
-12. 데이터 검증
+13. 데이터 검증
 
 
 
