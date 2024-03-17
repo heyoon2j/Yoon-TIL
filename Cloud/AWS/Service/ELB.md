@@ -77,30 +77,38 @@
 </br>
 
 ### Only Application LB
-* "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
+* TLS 버전 및 암호 헤더
+    - Client <---> ALB 간의 TLS 통신을 사용하는 경우에만 사용 (TLS를 아는 방법이 없으니)
+    - "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true or false)
+* HTTP/2 활성화
+    - "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true, false)
+* WAF 실패 열림
+    - WAF를 사용하지 않으면 true로 할 필요가 없다.
+    - "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true, false)
+* 유휴 시간
+    - "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
     > 참고로 NLB는 TCP: 350초 / UDP: 120초
-* "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
-    * defensive
+* HTTP Desync 모드
+    - "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
+    - defensive
         1) RFC 7230 규칙을 준수하는지 여부와 무관하게 애플리케이션이 알려진 안전한 요청을 수신하도록 허용
         2) RFC 규칙을 준수하지 않는 요청과 알려진 보안 위협에 해당하는 요청을 차단
         3) 모호한 요청에 대해서는 HTTP 유지 한도와 무관하게 클라이언트 및 업스트림 연결을 모두 종료 (모호한 요청이란 RFC 7230 규칙을 준수하지 않고 프록시 또는 웹 서버마다 해석이 달라져서 Desync를 초래할 수 있는 요청)
-    * strictest : RFC 7230 규칙을 준수하는 요청만 확인
-    * monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
-* "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
-* "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true or false)
-* "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
-    * X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
-    * append : Request Header XFF에 클라이언트 IP를 추가
-    * preserve : Request Header XFF 보존하고 다른 값을 추가하지 않음 (당연히 수정을 하지 못하니 클라이언트 IP를 ALB에서 추가하지 못한다)
-    * remove : 모든 X-Forwarded-For Header 삭제
-* "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 보존할지 여부 (기본 값: false / true,false)
-* "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true, false)
-* "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true, false)
-    * WAF를 사용하지 않으면 true로 할 필요가 없다.
-* "routing.http.preserve_host_header.enabled" : HTTP 요청에 Host 헤더를 보존하고 변경 없이 대상에 전송해야 하는지 여부 (기본 값: false / true, false)
+    - strictest : RFC 7230 규칙을 준수하는 요청만 확인
+    - monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
+* HTTP Header
+    - "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
+* X-Forwarded-For 헤더
+    - "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
+    - "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 보존할지 여부 (기본 값: false / true,false)
+    - X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
+    1) append : Request Header XFF에 클라이언트 IP를 추가
+    2) preserve : Request Header XFF 보존하고 다른 값을 추가하지 않음 (당연히 수정을 하지 못하니 클라이언트 IP를 ALB에서 추가하지 못한다)
+    3) remove : 모든 X-Forwarded-For Header 삭제
+* Host Header
+    - "routing.http.preserve_host_header.enabled" : HTTP 요청에 Host 헤더를 보존하고 변경 없이 대상에 전송해야 하는지 여부 (기본 값: false / true, false)
     - HTTP 또는 HTTPS 상태 확인 요청의 경우 Host Header에는 Target의 IP Address와 상태 확인 Port가 아닌 로드 밸런서 노드의 IP Address와 Listener Port가 포함됩니다.
-    > Load Balancer Node의 IP와 Port가 Host Header로 전달된다. 그렇기 때문에 기존 On-premise 동작과 다르게 동작한다!! 하지만 On-premise이든 Cloud 이든 특별한 상황(Host Header를 그대로 사용하고 싶을 때)이 아닌 이상 기본적으로 사용하지 않는다("preserve = false") 
-    
+        > Load Balancer Node의 IP와 Port가 Host Header로 전달된다. 그렇기 때문에 기존 On-premise 동작과 다르게 동작한다!! 하지만 On-premise이든 Cloud 이든 특별한 상황(Host Header를 그대로 사용하고 싶을 때)이 아닌 이상 기본적으로 사용하지 않는다("preserve = false"). 그렇지 않으면 잘못된 부분이나, Host Header의 포트를 변경하지 않고 보내게 된다.
 </br>
 
 ### Network LB and Gateway LB
@@ -334,21 +342,35 @@
     > 클라이언트 IP 보존 사용 시, Client가 NLB로 요청하는 경우 Source IP와 Target IP가 동일하게 되어 간현적인 연결 실패를 가져올 수 있다!!!!
     2) proxy_protocol_v2 : 다른 네트워크에서도 사용 가능, LB에서 Proxy Protocol을 사용해서 전달
     > "preserve_client_ip.enabled"를 true로 하면 무조건 다른 서버들에 대해 Client IP를 보내게 되므로 false로 지정하고 "proxy_protocol_v2.enabled"와 Server의 설정을 이용하도록 권장하는 것이 좋아 보인다(HAProxy Docs 읽어보면 비슷하게 설정하는 듯 보임)
+
+</br>
 </br>
 
 
+---
 ## Target Group Attribute
 ### All LB
-* "stickiness.enabled" : 고정 세션을 활성화할지 여부를 나타냅니다.
-* "stickiness.type" : 고정의 유형. 가능한 값은 source_ip, lb_cookie, app_cookie.
-* "deregistration_delay.timeout_seconds" : Elastic Load Balancing이 대상의 등록 취소 상태를 draining에서 unused로 변경하기 전에 대기하는 시간입니다. 범위는 0~3600초입니다. 기본 값은 300초입니다.
-* "deregistration_delay.connection_termination.enabled" : 등록 취소 시간 제한이 끝날 때 로드 밸런서가 연결을 종료하는지 여부를 나타냅니다. 값은 true 또는 false입니다. 기본값은 false입니다.
+* 고정 세션
+    - "stickiness.enabled" : 고정 세션을 활성화할지 여부를 나타냅니다.
+    - "stickiness.type" : 고정의 유형
+        1) source_ip
+        2) lb_cookie
+        3) app_cookie
+* Draining 설정
+    - "deregistration_delay.timeout_seconds" : Elastic Load Balancing이 대상의 등록 취소 상태를 draining에서 unused로 변경하기 전에 대기하는 시간입니다. 범위는 0~3600초입니다. 기본 값은 300초입니다 (해당 기간부터는 연결을 할 수 없다!)
+    - "deregistration_delay.connection_termination.enabled" : 등록 취소 시간 제한이 끝날 때 로드 밸런서가 연결을 종료하는지 여부를 나타냅니다. 값은 true 또는 false입니다. 기본값은 false입니다 (true 시, Draining 기간에 연결되어 있던 Client에 종료 시그널 전달)
+    > 타겟 그룹 제거 ---> 바로 제거하지 않고 일정 기간 유지한다(Draining). 이유는 기존에 통신하고 있는 Client가 있을 수 있기 때문에 기존 연결은 유지하고, 새로운 연결은 전달하지 않는다(대기 상태) ---> Draining 기간이 만료 (unused 상태)
+* 
+* 교차 영역 로드 밸런싱
+    - 
 </br>
 
 
 ### Application LB
-
-
+* Load Balancing Algorithm
+    - Round Robin: 순차적으로 균등하게 라우팅 (느린 시작 옵션과 함께 쓰일 수 있음, Only)
+    - 최소 미해결 : 진행 중인 요청 수가 가장 적은 대상으로 라우팅 
+    - 가중치 랜덤 : 무작위로 라우팅
 </br>
 
 
@@ -359,6 +381,8 @@
     * IP 유형 대상 그룹(TCP, TLS): 비활성화됨
 * "proxy_protocol_v2.enabled" : 프록시 프로토콜 버전 2의 활성화 여부를 나타냅니다. 기본적으로 프록시 프로토콜은 비활성화되어 있습니다.
     * 해당 속성은 IP 유형 대상 그룹(TCP, TLS)인 경우에만 생각하면 된다.
+* Target 비정상 시, 연결 종료
+    - 
 </br>
 </br>
 

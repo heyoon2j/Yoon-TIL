@@ -11,13 +11,58 @@
 </br>
 
 
+---
+## Architecture
+* Leader Node : 
+* Compute Node : 
+* Node Slice : 각 Compute Node의 메모리 및 디스크 공간을 할당 받고, 분산키(Distribution key)에 따라 데이터가 분할된다.
+    - 분산 스타일 (AUTO / EVEN / KEY / ALL)
+    - Block Storage(SSD Disk) + S3 Storage : SSD는 로컬 Cache로 사용된다. 그리고 기본적인 동작은 SSD에 저장하고 공간이 다 차면 S3로 데이터를 옮기다 (SSD = Local Cache + Temporary Storage 로 추측)
 
-## Node Type
+
+
+
+### Node Type
 1. RA3 (최신 버전 : S3를 스토리지로 사용)
     - S3를 사용하다보니 S3를 스토리지로 사용하고 있는 Redshift나 S3에 대한 Datashare 기능이 존재 및 백업 복구가 가능
     - 
+
+
 2. DC2 (레거시 버전 : 볼륨 스토리지 사용)
     - 
+
+
+
+* Single Node 인 경우, 하나의 Node가 Leader Node/Computing Node 모든 역할을 수행한다.
+* Multi Node 인 경우, 설정한 Node 갯수만큼 Computing Node를 가지게 되고, 추가적으로 Leader Node가 추가된다(Number of Node + 1 Leader Node(Provided by AWS)). 추가된 Laeder Node에 대해서는 비용을 받지 않는다!
+
+
+
+
+### Resize
+- 탄력적 크기 조정 (Node 개수 변경)
+    1) 스냅샷 생성
+    2) 새 클러스터를 생성하지 않고, Node만 추가/삭제
+    3) 메타데이터 마이그레이션 (일부 쿼리 중지 발생)
+    4) 백그라운드에서 분산 스타일에 맞춰 재배포 진행
+        > 일부 쿼리 중지 O, Read/Write
+
+- 탄력적 크기 조정(Node Type 변경)
+    1) 스냅샷 생성
+    2) 새 클러스터 프로비저닝
+    3) 데이터를 백그라운드에서 분산 스타일에 맞춰 재배포 진행
+    4) 작업 완료 후, 새 클러스터로 엔드포인트 변경. 기존 클러스터는 종료
+        > 원본 클러스터 중지 X, Only Read
+
+- 클래식 크기 조정 (Node 개수만 변경 / Node Type 변경)
+    1) 스냅샷 생성
+    2) 새 클러스터 프로비저닝
+    3) 원본 클러스터 재시작(중지 발생)
+    4) 데이터를 백그라운드에서 분산 스타일에 맞춰 재배포 진행
+        > 원본 클러스터 중지 O, Read/Write(RA3) or Only Read(DC2)
+
+</br>
+</br>
 
 
 ---

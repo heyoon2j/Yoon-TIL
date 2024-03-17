@@ -45,7 +45,7 @@ CDN(Content Delivery Network) 서비스로 콘텐츠를 사용자에게 더 빨�
 Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: https://blog.leedoing.com/35)
 * 기본 동작 : URL 기반으로 콘텐츠를 Origin 서버로부터 캐싱한다 (ex> /hello/index.html)
 > 1번은 요즘 추세는 아닌거 같다.
-1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
+1. Endpoint를 "Origin Server와 CDN" 2개로 가주가는 방법
     ![cdn_architecture_old](../img/cdn_architecture_old.png)
     * 기본적으로 모든 접근은 Origin Server로 접근하고, 특정 콘텐츠 안에 CDN URL을 집어넣어 해당 데이터를 받아오기 위해 CDN으로 접근하는 방식
     * 콘텐츠에 CDN URL 표시
@@ -61,7 +61,6 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 2. CDN으로 통합 
     ![cdn_architecture_new](../img/cdn_architecture_new.png)
     * CDN이 가장 앞단으로, 정책(URL)에 따라 해당하는 Origin Server에 접근하는 방식
-    *식
     * 장점 :
         * 관리 포인트가 한 군데이기 때문에, 배포, 보안, 통신 장애 포인트 관리 등 관리하기에 편하다. 
         * 코드를 수정할 필요가 없다. CDN에 장애 발생 시 DNS를 수정하여 대응할 수 있다(CDN 복구가 늦어지거나, 안되는 경우)
@@ -81,7 +80,7 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 </br>
 
 ### 적중률 향상
-1, 캐싱 데이터 시간 지정(TTL, max-age)
+1. 캐싱 데이터 시간 지정(TTL, max-age)
 2. 특정 값을 이용한 캐싱 (특정 쿠키, 특정 헤더 등)
 3. AWS Origin Shield 기능 사용
 </br>
@@ -89,7 +88,7 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 
 ### 동적 데이터
 동적 데이터는 캐싱이 되지 않아야 한다. 캐싱되지 않도록 하는 방법은 전체 아키텍처에 따라 달라진다.
-1. Endpoint를 Origin Server와 CDN 2개로 가주가는 방법
+1. Endpoint를 "Origin Server와 CDN" 2개로 가주가는 방법
     * 동적 데이터는 Origin Server에서 바로 가주가므로 CDN Caching에 대해 신경쓸 필요가 없다.
 2. CDN으로 통합
     1) 동적 데이터는 "Caching TTL = 0" 으로 설정
