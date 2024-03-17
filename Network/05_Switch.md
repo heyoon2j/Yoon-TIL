@@ -28,6 +28,8 @@ L4 Switch를 L2, Server들과 직접 연결하지 않고, Backbone Switch를 통
     - Server - Loopback IP : O / Loopback IP GARP : X / Loopback IP ARP Response : X
 * 장점 : Response가 L4 Switch를 거치지 않기 때문에, 부하적인 측면이나 속도적인 측면이 향상된다.
 * 단점 : Response가 L4 Switch를 거치지 않기 때문에, 트러블 슈팅에 어려움이 있을 수 있다.
+> Loopback IP : 네트워크 인터페이스를 통해 나가는 것이 아닌 내부적으로 처리하도록 하는 IP 또는 자기 자신을 나타내는 IP이기도 하다. 보통 172.0.0.1로 설정되어 있다.
+
 </br>
 
 ### Idle time 초과 동작

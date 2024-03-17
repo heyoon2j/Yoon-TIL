@@ -94,7 +94,7 @@ Autonomous System Number: 일관된 라우팅 정책을 가지고 있는 IP 접�
 
 네트워크가 방대해짐에 따라 전체 네트워크를 가지기도, 관리하기도 불가능해졌다. 그에 따라 네트워크 관리 범위를 계층적으로 분리하고 단위 별로 라우팅 정보를 관리하기 위해 AS가 도입되었다.
 
-> 같은 ASN인 경우, 같은 네트워크라고 인식하고 충돌을 방지하기 위해 해당 라우팅 정보를 받더라도 수락하지 않는다!!
+> EBGP의 경우, 같은 ASN 끼리는 같은 네트워크라고 인식하고 충돌을 방지하기 위해 해당 라우팅 정보를 받더라도 수락하지 않는다!!
 
 Public IP 대역이 있는 것 처럼 Public AS가 있으며, 이는 이미 공객적으로 사용하고 있는 번호들이기 때문에, 기본적으로 Private AS 번호를 사용해야 한다.
 
@@ -130,7 +130,7 @@ Public IP 대역이 있는 것 처럼 Public AS가 있으며, 이는 이미 공�
 * 물리적 장치에서 Virual 등 설정으로 우선순위를 결정할 수 있다.
 </br>
 
-### Longest Match Rule
+### Prefix length (Longest Match Rule)
 * IP 패킷의 목적지 IP 주소가 라우팅 테이블에 있는 수많은 목적지 IP 주소 중 일치하는 부분이 가장 긴 곳으로 라우팅하는 규칙
 * Example
     ```
@@ -180,4 +180,38 @@ Public IP 대역이 있는 것 처럼 Public AS가 있으며, 이는 이미 공�
 </br>
 
 
+
+
+---
+## BGP Routing
+1. Weight
+2. Local Preference
+3. Originate
+4. AS path length
+5. Origin code
+6. MED
+7. eBGP path over iBGP path
+8. Shortest IGP path to BGP next hop
+9. Oldest path
+10. Router ID
+11. Neighbor IP address
+
+```
+# show ip bgp
+
+Network     Next Hop    Metric  LocPrf  Weight  Path
+1.1.2.0/24  1.1.3.2     0       100     0       200 300 650010
+```
+
+### AS_PATH (Path)
+지나처 온 AS 경로를 순차적으로 기록한다. 그래서 길이가 가장 작은 길이를 가진 AS_PATH가 우선순위를 가진다.
+
+> Why are there several times repeated AS number? 반복되는 이유는 AS_PATH의 길이에 따라 우선순위가 달라지기 때문에 장비에서 연결에 따라 일부로 반복되게 설정한다.
+
+</br>
+
+### MED (Metric)
+더 낮은 값을 가진 Metric이 우선순위를 가진다. 기본 값으 0이며 설정이 가능하다.
+
+</br>
 
