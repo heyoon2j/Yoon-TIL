@@ -2,6 +2,14 @@
 * AWS 관리형 데이터 하우스 서비스
 
 
+## 고려 사항
+- OLTP / OLAP
+- Connection Count
+- Idle Time
+- SSL
+- 병렬 처리 (Concurrency)
+- 잠금 (Locking)
+
 
 
 ### 이슈 사항
@@ -13,30 +21,49 @@
 
 ---
 ## Architecture
-* Leader Node : 
-* Compute Node : 
+![Redshift_Architecture](../img/Redshift_Architecture.jpg)
+* Leader Node : Client와 Compute Node 중간에서 모든 통신을 관리한다(SQL 병렬 처리 및 ML 최적화 조정)
+    - 클러스터 메타데이터: 테이블, 스키마, 분산 스타일, 사용자 및 권한과 같은 데이터베이스 객체에 대한 정보
+    - 시스템 설정 및 구성: 클러스터 설정 및 구성에 대한 정보 (예를 들어, 파라미터 그룹 설정 등)
+    - 쿼리 실행 계획 및 이력: 실행된 쿼리의 이력, 실행 계획, 성능 통계 및 모니터링 정보
+    - 워크로드 관리 정보: 클러스터에서 실행 중인 워크로드와 관련된 정보가 저장 (예를 들어, 사용자 및 그룹의 리소스 사용량, 우선 순위 등이 여기에 해당)
+    > 단일 노드 구성 시, Leader Node와 Compute Node 기능이 하나의 Node에서 공유된다. 
+* Compute Node : Leader Node로 부터 받은 실행 내용을 받아 처리한다(SQL 연산 처리)
+    - 테이블 데이터: 클러스터에 로드된 모든 테이블의 실제 데이터가 Compute 노드에 저장되며, 이 데이터는 컬럼 기반으로 저장되며, 각 컬럼에 대한 압축 및 분산 저장이 적용
+    - 정렬 키 및 분배 키: 테이블의 정렬 및 분배 키 정보가 Compute 노드에 저장
+    - 쿼리 실행 결과 및 임시 데이터: 쿼리 실행 중 생성되는 임시 결과 및 작업에 사용되는 임시 데이터가 Compute 노드에 저장 (예를 들어, 정렬 작업이나 조인 작업 중에 생성되는 임시 파일 등)
+    - 레코드 잠금 및 트랜잭션 정보: 트랜잭션 처리를 위한 레코드 잠금 및 관련 정보가 Compute 노드에 저장됩니다
+    > 다중 노드 구성 시, Leader Node가 추가되며 비용은 지불되지 않는다.
 * Node Slice : 각 Compute Node의 메모리 및 디스크 공간을 할당 받고, 분산키(Distribution key)에 따라 데이터가 분할된다.
-    - 분산 스타일 (AUTO / EVEN / KEY / ALL)
-    - Block Storage(SSD Disk) + S3 Storage : SSD는 로컬 Cache로 사용된다. 그리고 기본적인 동작은 SSD에 저장하고 공간이 다 차면 S3로 데이터를 옮기다 (SSD = Local Cache + Temporary Storage 로 추측)
-
-
+    - 분산 스타일 : 기본적으로 Colume을 기반으로 테이블 분산
+        1) AUTO : 테이블 데이터의 크기를 기반으로 최적의 배포 스타일을 할당 (작을 때: ALL / 클 때: KEY or EVEN)
+        2) EVEN : 라운드 로빈에 의해 분산 (JOIN을 안하는 경우 적합)
+        3) KEY : Colume 값에 의해 분산
+        4) ALL : 전체 테이블의 복사본이 모든 노드로 분산 => 보통 작은 테이블에 한해서만 사용
+        > "같은 노드에 데이터가 있어야 하는 JOIN 사용", "모든 노드에 테이블 분산" 등 상황에 따라 데이터 재분산이 일어나기도 한다!
+* RAM (Redshift Managed Storage)
+    - Noe 유형에 따라 다르다!
+    - RA3 Type인 경우, 데이터는 S3에 저장되며, S3는 Object Storage이기 때문에 속도 저하가 올 수 있으므로 고속 볼륨 스토리지(SSD)에 데이터를 Caching (SSD = Local Cache + Temporary Storage 로 추측)
+    - DC2 Type인 경우, 각 Compute Node에 있는 볼륨 스토리지(SSD)에 데이터를 저장
+* 동작 과정
+    1) Client로 부터 Query를 받는다.
+    2) Qeuery을 결과를 얻는데 필요한 단계를 실행시키기 위해 메타데이터 정보(테이블 분산 정보 등)를 분석하여 실행 계획을 작성
+    3) 실행 계획에 따라 코드를 컴파일하여 각 Compute Noe에 배포하고, 데이터 구간을 각 Compute Node에 할당 (병렬 처리)
+    4) 할당받은 데이터를 처리한 후, 최종 집계를 위해 중간 결과를 Leader Node에게 전달
+    5) Leader Node는 각 Compute Node에게서 전달받은 결과를 가지고 최종 집계 진행
+    6) Client에게 결과 전달
+</br>
 
 
 ### Node Type
-1. RA3 (최신 버전 : S3를 스토리지로 사용)
-    - S3를 사용하다보니 S3를 스토리지로 사용하고 있는 Redshift나 S3에 대한 Datashare 기능이 존재 및 백업 복구가 가능
-    - 
-
-
-2. DC2 (레거시 버전 : 볼륨 스토리지 사용)
-    - 
-
-
-
 * Single Node 인 경우, 하나의 Node가 Leader Node/Computing Node 모든 역할을 수행한다.
 * Multi Node 인 경우, 설정한 Node 갯수만큼 Computing Node를 가지게 되고, 추가적으로 Leader Node가 추가된다(Number of Node + 1 Leader Node(Provided by AWS)). 추가된 Laeder Node에 대해서는 비용을 받지 않는다!
-
-
+1. RA3 (최신 버전 : SSD + RAM(S3)를 스토리지로 사용)
+    - Node의 SSD는 캐싱 데이터가 저장되며, 실제 데이터는 RAM에 저장하고 있다. 캐싱하고 있으나 실제 데이터가 S3에 올라가 있으므로 DC2보다 성능적으로 느릴 수 있다.
+    - S3를 사용하다보니 S3를 스토리지로 사용하고 있는 Redshift나 S3에 대한 Datashare 기능이 존재 및 백업 복구가 가능
+2. DC2 (레거시 버전 : SSD 볼륨 스토리지 사용)
+    - Node의 SSD에 모든 데이터를 저장하고 있다. RA3 처럼 공유 스토리지를 사용하고 있지 않기 때문에 확장성이 다소 떨어진다.
+</br>
 
 
 ### Resize
@@ -61,6 +88,14 @@
     4) 데이터를 백그라운드에서 분산 스타일에 맞춰 재배포 진행
         > 원본 클러스터 중지 O, Read/Write(RA3) or Only Read(DC2)
 
+> 탄력적 크기 조정(Node Type 변경)은 어떻게 동작하는지 모르겠다.. 그냥 최대한 안쓰는 방식으로
+ 
+1) Snapshot 생성
+2) New Cluster 생성
+3) 일시 중지
+4) L
+
+
 </br>
 </br>
 
@@ -69,7 +104,11 @@
 ## Network
 * Enhanced VPC : 기본은 Public으로 접근하게 되는데, 해당 옵션을 활성화하면 VPC 네트워크를 통해 접근할 수 있다.
 
+</br>
+</br>
 
+
+---
 ## 가용성 & FailOver
 ### Cluster 재배치
 - 클러스터의 노드들을 다른 가용 영역으로 옮긴다.
@@ -88,34 +127,37 @@
 </br>
 
 
+---
 ## 동시성 확장 (Concurrency scaling)
 - Query 처리에 대한 동시성 확장이 가능
-- 
+ 
+
+
+---
+## Performance
+* Lock : Table 단위 Lock 사용 (일반적으로는 Row 단위 Lock 사용)
+AccessExclusiveLock: 이 잠금은 특정 테이블에 대한 읽기 및 쓰기 액세스 권한을 독점적으로 보유하는 것을 의미합니다. 다른 세션에서 동시에 해당 테이블을 수정하거나 읽을 수 없습니다.
+
+RowShareLock: 이 잠금은 특정 행(로우)에 대한 읽기 액세스를 다른 트랜잭션과 공유하는 것을 허용합니다. 다른 세션은 동시에 동일한 행을 읽을 수 있지만 쓰기 작업은 허용되지 않습니다.
+
+RowExclusiveLock: 이 잠금은 특정 행에 대한 독점적인 읽기 및 쓰기 액세스를 보유합니다. 다른 세션에서는 동시에 해당 행을 수정할 수 없습니다.
+
+ShareUpdateExclusiveLock: 이 잠금은 특정 테이블에 대한 읽기 액세스를 다른 세션과 공유하면서 특정 행을 업데이트하기 위한 독점적인 권한을 보유합니다.
+
+ShareLock: 이 잠금은 특정 테이블에 대한 읽기 액세스를 다른 세션과 공유하는 것을 허용합니다. 다른 세션은 동시에 동일한 테이블을 읽을 수 있지만 쓰기 작업은 허용되지 않습니다.
+* 
 
 
 
-### Resizing
-* https://aws.amazon.com/ko/premiumsupport/knowledge-center/redshift-elastic-resize/
-* 슬라이스 매핑을 사용하여 Cluster 크기를 조정
-1. 탄력적 크기 조정 (Elastic resize change)
-    * Cluster는 유지한 채, Node만 추가한다. 그렇기 때문에 Cluster의 Endpoint가 변경되지 않는다.
-    * 전체 데이터 슬라이스를 슬라이스 매핑된 노드에 복제된다.
-2. 클래식 크기 조정 (Classic resize change)
-    * 새로운 Cluster를 생성하고, 모든 행을 Cluseter에 저장한다. 그 후에 노드에 매핑하여 분포 설정에 따라 분할한다.
-    * Cluster의 Enpoint가 바뀌는거 같다.
-</br>
-</ㅠㄱ>
 
 
-
-
+---
 ## 구축 방법
 * 
 1. q
 2. w
 3. e
 4. r
-
 
 
 ## 
@@ -141,6 +183,35 @@ https://aws.amazon.com/ko/blogs/korea/new-concurrency-scaling-for-amazon-redshif
 
 
 
+### 참조
+* https://blog.kyobodts.co.kr/2022/06/09/aws-redshift%eb%9e%80/
+
+
+
+
+
+
+---
+# Redshift Serveless
+* 제약 사항
+    1) 최소 3개의 가용 영역(AZ) 사용 필요
+    2) 
+
+
+### 이슈 사항
+1. Storage가 Seoul Region/Account에 포함되어 있는 서비스인지 여부
+2. 진입점에 보안적 이슈 사항
+    - 진입접 (접속 방법 / 권한 등)
+    - 감사 로그 기록 방법
+3. 레퍼런스 참고
+4. 최대 쿼리 실행 시간 제한 : 최대 1일 (86,399s)
+
+
+
+
+
+
+---
 ---
 
 
@@ -150,25 +221,6 @@ https://aws.amazon.com/ko/blogs/korea/new-concurrency-scaling-for-amazon-redshif
 * 통합이 필요, Hadoop 등을 사용하게 되면 해당 언어를 배워야 하지만 SQL 문으로 관리할 수 있다.
 * Data Lake + Warehouse = Data Lake House Architecture
 
-
-## Architecture
-* Leader Node
-    * SQL endpoint, metadata 저장소
-    * SQL 병렬 처리 및 ML 최적화 조정
-    * 2개 이상의 Compute Node 사용시 Reader Node는 무료
-* Compute Node (연산 노드 == Reader Node)
-    * 로컬, 컬럼형 스토리지
-    * SQL 연산 처리
-    * S3로부터 데이터 Load, Unload, Backup, Restore
-    * 
-
-* RAM (Redshift Managed Storage)
-    * Noe 유형에 따라 다르다. 다른 유형인 경우(DC2), 각 Compute Node 쪽에 저장소가 있음
-    * S3에 저장이되며, S3는 Object Storage라서 속도 저하가 올 수 있으므로 고속 SSD Caching이 있음
-
-* VPC
-    * Leader Node 만 Customer VPC 네트워크 안에 있다. 그래서 Leader Node에만 접근이 가능하다.
-    * 내부적으로 Leader, Compute Node는 Internal VPC에서 동작을 한다.
 
 
 ## Data Modeling
@@ -368,24 +420,5 @@ SYS_LOAD_HISTORY
 SYS_LOAD_ERROR_DETAIL
 SYS_UNLOAD_HISTORY
 SYS_SERVERLESS_USAGE
-
-
-
----
-# Redshift Serveless
-
-
-* 제약 사항
-    1) 최소 3개의 가용 영역(AZ) 사용 필요
-    2) 
-
-
-### 이슈 사항
-1. Storage가 Seoul Region/Account에 포함되어 있는 서비스인지 여부
-2. 진입점에 보안적 이슈 사항
-    - 진입접 (접속 방법 / 권한 등)
-    - 감사 로그 기록 방법
-3. 레퍼런스 참고
-4. 최대 쿼리 실행 시간 제한 : 최대 1일 (86,399s)
 
 
