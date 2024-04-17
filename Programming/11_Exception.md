@@ -15,7 +15,6 @@
     * Exception 클래스를 상속하고 있으면, Checked Exception
     * Compiler에서 예외 발생 -> try ~ catch를 작성하지 않으면 아예 Build조차 할 수 없다.
     
-    
 * **Unchecked Exception**
     * RuntimeException 클래스를 상속하고 있으며 Unchecked Exception
     * try ~ catch를 작성하지 않아도 Build/Run이 가능

@@ -8,7 +8,7 @@
     * 스코프 (Scope)
     * 타입 (DataType) / 03에서 확인 가능
 </br>
-
+</br>
 
 
 ## 변수 (Variable)
@@ -84,6 +84,11 @@
 
     # JAVA
     public static final int CONST_FI = 3.14;
+
+
+    # PYTHON
+    PI = 3.14
+
     ```
 > Python은 const, final 명령어가 없다. 여러 방법이 존재 : https://velog.io/@pm1100tm/Python-%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%97%90%EC%84%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%83%81%EC%88%98%EB%A5%BC-%EC%A0%95%EC%9D%98%ED%95%98%EA%B3%A0-%EC%82%AC%EC%9A%A9%ED%95%A0%EA%B9%8C
 
@@ -149,6 +154,7 @@
 </br>
 </br>
 
+---
 ## Scope
 * 변수의 정의되는 위치 또는 명령어에 따라 해당 변수를 사용할 수 있는 범위가 지정된다.
 * Storage Binding과 연관이 되어, 어느 시점에 메모리에 올라가
@@ -261,12 +267,3 @@ testClass.testFunc()        # 25 \ 30
 </br>
 </br>
 
-
-
-
-###############################
-
-
-
-</br>
-</br>

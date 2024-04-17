@@ -127,12 +127,30 @@ Python은 인터페이스가 없다. 대신 Protocol이 있으며 '비공식 인
 ```python
 from typing import Protocol
 
+# Protocol 정의하기
+class Printable(Protocol):
+    def print(self) -> None:
+        ...
 
-class TestProtocol(Protocol):
-    def 
+# Protocol을 준수하는 클래스 작성하기
+class Book:
+    def __init__(self, title: str, author: str):
+        self.title = title
+        self.author = author
+    
+    def print(self) -> None:
+        print(f"Title: {self.title}, Author: {self.author}")
 
+# Protocol을 사용하는 함수 작성하기
+def print_anything(obj: Printable) -> None:
+    obj.print()
+
+# Protocol을 준수하는 객체 생성하기
+book = Book("Python Programming", "John Doe")
+
+# Protocol을 사용하는 함수 호출하기
+print_anything(book)  # 출력: Title: Python Programming, Author: John Doe
 ```
-
 
 
 

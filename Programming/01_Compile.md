@@ -7,7 +7,7 @@
 * 기본 과정
     1) 헤더 파일(.h) 작성, 함수 및 클래스 선언
     2) 소스 파일(.c) 작성, 헤더 파일에서 선언한 함수의 기능 코드 작성
-    3) 컴파일러를 통해 Object 파일 생성
+    3) 컴파일러를 통해 Object 파일 생성 (기계어로 번역된 파일ㅇ)
     4) 링커를 통해 Object 파일들을 링크하여, 실행 파일을 생성
     5) 해당 장치에서 실행 파일을 실행
 * __전처리기(Preprocessor)__ : 각 소스 파일에서 지시자를 찾는다. 지시자는 # 으로 시작해서 줄 바꿈으로 끝나는 코드이다. 전처리기는 컴파일러가 실행되기 직전에 단순히 텍스트를 조작하는 치환 역할을 하기도 하고, 디버깅에도 도움을 주며 헤더 파일의 중복 포함도 방지해주는 기능을 가진다.
@@ -44,7 +44,7 @@
             * Stack Overflow 체크
             * Code가 JVM이 명시한 내용과 일치한지
             * Memory에 허가되지 않은 접근이 존재한지
-        3) Execution Engin에 의해서 Byte Code File을 __Binary Code__ 로 변환 및 실행
+        3) Execution Engine에 의해서 Byte Code File을 __Binary Code__ 로 변환 및 실행
 
 ### Class Loader
 * 생성된 Byte Code File(*.class)들을 엮어서 JVM으로 로드하고, Runtime Data Area에 적재한다(자바 애플리케이션이 실행 중일 때 해당 작업을 수행)

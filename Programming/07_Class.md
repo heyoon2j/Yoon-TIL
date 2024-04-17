@@ -161,7 +161,7 @@
             return a + b;
         }
         """
-        !!! Error Code, 매개변수 타입과 갯수가 add(int a, int b)와 동일하므로
+        !!! 아래 코드는 Error Code이다. 매개변수 타입과 갯수가 add(int a, int b)와 동일하므로
         double add(int c, int d) {
             return (double)(c + d)
         }
@@ -169,7 +169,7 @@
     }
     ```
     * Python은 변수 타입이 정해져있지 않기 때문에, 타입을 생각할 필요가 없다. 갯수를 줄이는 방법은 ```None``` Type을 사용한다.
-    * 현업에서는 multipledispatch 패키지를 활용하여 Overriding 구현한다. 파이썬은 오버라이딩을 지원하지 않는다.
+    * 현업에서는 multipledispatch 패키지를 활용하여 Overriding 구현한다.
 * Example(Constructor Overloading)
     ```python
     class Animal:
@@ -183,7 +183,6 @@
     # Animal Class 상속받는다.
     class Cat(Animal):
         """Sub Class"""
-
         # 생성자 오버로딩
         def __init__(self, name = None, age = None, existsOwner = None):
             super().__init__(name, age)
@@ -239,7 +238,6 @@
 </br>
 
 
-
 ```python
 class Date :
     word = 'date : '
@@ -265,22 +263,25 @@ b = Date.now()
 b.show()
 ```
 
+</br>
+</br>
 
 
-
+---
 ## 다중 상속
 
 
 
+---
 ## 제어자 (Modifiers)
 * 클래스, 변수, 메서드에 부가 기능을 부여하는 키워드
 
 
 ### 접근 제어자 (Access Modifiers)
 * 접근할 수 있는 범위를 정하는 제어자
-    * public : 전체에서 사용 가능
-    * protected : 같은 Package 또는 다른 Package에 속한 자식 클래스에서 사용 가능
-    * private : Class 안에서만 사용 가능
+    - public : 전체에서 사용 가능
+    - protected : 같은 Package 또는 다른 Package에 속한 자식 클래스에서 사용 가능
+    - private : Class 안에서만 사용 가능
 * https://yoonix.tistory.com/217?category=838902
     ```python
     class Test:
