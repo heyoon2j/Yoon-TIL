@@ -273,6 +273,7 @@
 
 {
     "agent": {
+        "region": "ap-northeast-2",
         "run_as_user": "root"
     },
     "logs": {
@@ -354,6 +355,7 @@
     }
     //,
 	// "metrics": {
+    //  "namespace" : 
 	// 	"metrics_collected": {
 	// 		"collectd": {
 	// 			"metrics_aggregation_interval": 60
@@ -389,3 +391,14 @@ AWS VPC 흐름 로그 기록
 AWS API 호출 로그 기록
 </br>
 </br>
+
+
+
+---
+
+
+
+Application을 위한 모니터링 
+- Collectd : 
+- StatsD : 
+    * https://aws.amazon.com/ko/blogs/devops/new-how-to-better-monitor-your-custom-application-metrics-using-amazon-cloudwatch-agent/

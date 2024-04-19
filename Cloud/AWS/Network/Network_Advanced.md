@@ -17,9 +17,9 @@
 * 
 
 
-
 ---
 ## Network Performance and Optimization
+![Network_Throughput](img/Network_Throughput.jpg)
 * Bandwidth : 초당 전송 가능한 비트
 * Latency : 첫 패킷이 두 지점간의 통신하는데 걸리는 시간
 * Jitter : Variation in inter-packet delays. 패킷 간의 지연 시간
@@ -48,6 +48,8 @@
     - Check 방법 : ```$ sudo ip link chow eth0```
     > MTU 이상의 크기를 가진 패킷을 전송하게 되면, 패킷을 MTU 이하의 조각으로 분할하는 것을 단편화패킷을 나눠 보내도록 되돌려 보낸다(단편화). 이를 재조합하기 위해서는 CPU/Memory가 사용되기 때문에 Overhead가 발생
 
+</br>
+
 
 ### 패킷 전송 과정
 1) 네트워크 장비는 처리할 수 있는 최대 패킷 크기가 정해져 있다. => (MTU)
@@ -61,7 +63,6 @@
     > BPS < PPS 인 경우, 작은 데이터가 전송되었다는 의미
 
 </br>
-</br>
 
 ### Optimization
 - Over 1M PPS(1초당 1 백만개 이상의 패킷을 전송)를 의미. 
@@ -72,17 +73,11 @@
     2) Network I/O Credit Type 선택
     3) EBS Optimized Instance(전용선) : EBS is not a physical drive. Network drive. EBS와의 통신으로 전용 네트워크를 사용함을써 다른 네트워크와 경쟁하지 않음
     4) 배치 그룹 : EC2 인스턴스끼리 서로 가까운 곳에 둠으로써 네트워크 홉 수 등을 줄임
-2. Operating system level
-    * Enhanded Networking
-        1) DPDK (Intel Data Plane Development Kit) library 사용 : Kernel Library로, 원래는 Kernel이 중간에서 네트워크 관련 코드/요청에 대한 Translation이 이루어지지만, 해당 라이브러리를 통해 Translation 없이 다이렉트로 네트워크 장비에 요청함으로써 Overhead를 줄여 OS 내부 패킷 처리 향상시킨다.
-            - Kernel bypass
-            - Packet Processing 제어
-            - 작은 CPU Overhead
-3. Virtualization level
+2. Virtualization level
     * Enhanded Networking
         1) SR-IOV with PCI passthrough : 향상된 Physical NIC(Server)Virtualization(Hypervisor) 방법
 
-            ![SR-IOV_PCI : https://learn.microsoft.com/ko-kr/windows-hardware/drivers/network/single-root-i-o-virtualization--sr-iov--interface](../AWS/img/SR-IOV_PCI.png)
+            ![SR-IOV_PCI : https://learn.microsoft.com/ko-kr/windows-hardware/drivers/network/single-root-i-o-virtualization--sr-iov--interface](img/SR-IOV_PCI.png)
             - SR-IOV : Single Root I/O virtualization. 개별 서버의 I/O 자원을 가상화하여 I/O를 향상 시킨 가상화 인터페이스 또는 어댑터.
             - PCI pass through : Peripheral Component Interconnect. 여기서는 네트워크 인터페이스를 연결하는 인터페이스를 의미한다고 생각하면 된다.
             - SR-IOV 어댑터를 통해 물리적 PCIe(PF: Physical Function)를 여러 개의 가상화 PCIe(VF: Virtual Function)로 분할할 수 있다.
@@ -91,56 +86,69 @@
             - 사용 방법은 다음과 같다(드라이버 확인 방법 : ```ethtool -i eth0```)
                 - Intel ixgbevf : 10 Gbps
                 - Elastic Network Adatpter(ENA) : 100 Gbps / P4d는 400 Gbps
-        2) EFA (AWS Service)
+        2) EFA (AWS Service) 
+3. Operating system level
+    * Enhanded Networking
+        1) DPDK (Intel Data Plane Development Kit) library 사용 : Kernel Library로, 원래는 Kernel이 중간에서 네트워크 관련 코드/요청에 대한 Translation이 이루어지지만, 해당 라이브러리를 통해 Translation 없이 다이렉트로 네트워크 장비에 요청함으로써 Overhead를 줄여 OS 내부 패킷 처리 향상시킨다.
+            ![DPDK](img/DPDK.JPG)
+            - Kernel bypass
+            - Packet Processing 제어
+            - 작은 CPU Overhead
 4. Software level (Others)
    1) 보안 프로토콜(HTTPS, SSH 등) 미사용 : 보안 프로토콜을 사용하면 패킷을 한번 더 감싸기 때문에 Latency가 발생
 
 </br>
 
 ### Bandwidth limits
-
 1. AWS Network Service Internal (with region)
     - VPC : No limits
     - Internet Gateway : No limits
     - VPC Peering : No limits
 2. AWS Network Service External
     - VPN : 1.25 Gbps
-    - DX : 1 Gbps / 10 Gbps / 100 Gbps
+    - DX : 1 Gbps / 10 Gbps / 100 Gbps (포트를 여러개 둠으로써 1 ~ 300 Gbps 선택 가능)
 3. Instance
-    - NAT Gateway : 45 Gbps 
+    - NAT Gateway : 3 ~ 45 Gbps 
     - EC2 : 기본적으로 인스턴스 타입마다 제공되는 Bandwidth가 다름. 다른 리전이거나 Internet Gateway를 통과하거나 DX를 통과하는 경우, 32 vCPU 이상 사용하는 EC2 기준으로 제공된 인스턴스 타입 Bandwidth의 50% 까지만 사용 가능. 32 vCPU 미만인 경우 5 Gbps.
         1) One flow limit with Intel 82599 VF interface : 5 Gbps
         2) One flow limit With ENA not in placement : 5 Gbps 
         3) One flow limit with ENA in placement : 10 Gbps
 
 
+### Delay가 발생하는 이유
+* Hardware
+    - Network Device 성능 이슈
+    - 
+* Software
+    - 패킷 처리 과정에서 추가되는 처리 요소 (HTTPS, SSH 등 암호화/복호화 등)
+    - 
 
-* Delay가 발생하는 이유
-    - 두 네트워크 사이의 
+</br>
+</br>
 
 
 
-
-
+---
 ---
 ## Service
 ### VPC
 * Architecture
 * Feature
-* 
+</br>
 
-
-
-
-
-
-
-
+ 
 ### VPC Network
 * VPC
     - 5개의 IPv4 CIDR Block + 1 IPv6 CIDR Block을 가질 수 있음
     - RFC 1918에 의해 같은 대역대만 추가 가능 (172.16.0.0/24를 가지고 있으면 172.16.0.0/12 범위 내에서 만 추가할 수 있다)
     - RFC 1918에서 정의한 CIDR 범위를 넘기면 안됨 (10.0.0.0/8, 172.16.0.0/12, 196.168.0.0/16)
+* Subnet
+    - 0~255 = 256개
+    - 10.0.0.0 : 네트워크 ID
+    - 10.0.0.1 : 라우터, 게이트웨이 주소
+    - 10.0.0.2 : DNS 주소
+    - 10.0.0.3 : 차후 사용을 위해 AWS에서 예약
+    - 10.0.0.255 : Broadcast
 * IPv6
     - 128 bit = 8 block * 16 bit / 16진수 사용
     - Public IP만 사용 가능!
@@ -149,16 +157,14 @@
 * DHCP Option Set
     - 기본 DHCP Option Set은 수정이 불가!!!!!!!
     - Domain name server, Domain name, NetBIOS 타입 등의 설정을 정의
-    - DHCP Option Set 변경 후, Refres가 되어야 한다. 보통 몇시간 후에 자동 Refresh되나 수동으로도 가능 (명령어 : $ sudo dhclient -r eth0)
+    - DHCP Option Set 변경 후, Refresh가 되어야 한다. 보통 몇시간 후에 자동 Refresh 되나 수동으로도 가능 (명령어 : $ sudo dhclient -r eth0)
     - Route53 Hostzone을 사용하기 위해서는 enableDnsSupport & enableDnsHostname  모두 활성화 필요
 * DNS Resolver Server
     - (VPC Base + 2)'s IP
-    - 169.254.169.253 : DNS Resolver Server IP의 가상 IP
+    - 169.254.169.253 : DNS Resolver Server IP의 가상 IP (Link-Local)
     - 해당 DNS Resolver Server는 Route53으로 쿼리를 보낸다.
     - 오직 VPC내에서만 접근 가능.
-    - Route53은 RDS 등의 AWS 서비스에 대해 활성화된 AZ의 리소스에 대해 자동으로 IP Refresh한다
-
-
+    > Route53은 RDS 등의 AWS 서비스에 대해 활성화된 AZ의 리소스에 대해 자동으로 IP Refresh 한다
 
 * InternetGateway
     - 
@@ -173,7 +179,6 @@
     - Application : 7 Layer. HTTP / HTTPS
     - Network : 4 Layer. TCP / UDP
     - Gateway : 3 Layer. IP
-
 * ENI
     - MAC Address를 가지고 있다.
     - Dual-home : 하나의 서버에 네트워크가 다른 ENI를 붙인다.
@@ -182,13 +187,44 @@
     - 기본적으로 Public IP는 변경이 된다. 이를 해결하기 위해 EIP를 사용한다
     - BYOIP : Bring Your own IP. 기존에 쓰고 있던 IP들을 가지고 올 수 있다! 대신 차단도니 IP와 같은 이상한 이력이 있으면 안된다. 이를 위해 우리는 ROA(Root Origin Authorization)
 * Security Group
-    - 
 * Network ACL
-    - 
+
+</br>
+</br>
+
+
+---
+---
+## Monitoring
+* VPC Flow Logs
+    - VPC Flow Logs vs VPC Traffic Mirroring : Flow Logs는 네트워크 흐름만 확인하는 용도이고, Traffic Mirroring은 잠재적인 네트워크 & 보안을 위해 분석하기 위한 용도 (Log Depth가 서로 다름)
+    - 저장 장소 : S3 / CloudWatch Logs / Kinesis Firehose
+* VPC Traffic Mirroring
+    - ENI로 들어오는 트래픽을 설정한 대상(ENI or NLB)에게로 트래픽을 전달
+    - VXLAN 프로토콜을 사용하여 트래픽을 전달
+* Reachability Analyzer
+    - Source ---> Destination 통신 가능 여부 확인
+    - hop-by-hop에 대한 세부 정보 확인 (Hop 정보(라우팅 등) 보안 정책 등)
+    - 테스트 및 트러블슈팅
+* Network Access Analyzer
+    - 입력한 Source Resource ---> Destination Resource 경로에 대하여 네트워크 & 보안 거버넌스 분석 (Resource를 인터넷으로 지정하면 인터넷으로 나갈 수 있는 모든 경로를 체크한다)
+    - Resource를 확인되지 않은 네트워크 경로를 발견하기 위한 용도
+* Tool
+    - Wireshark / tcpdump : Packet Capture
+    - traceroute : Check routing hop
+    - telnet : Check for TCP/UDP traffic
+    - nslookup : Resolve the hostnames
+    - ping : Check for ICPM traffic
+    - netstat : Connection
 
 
 
+* Kinesis Data Firehose
+    - S3 / Redshift / OpenSearch / API Gateway 등으로부터 로그를 가지고 온다.
 
+
+
+---
 ---
 ### Internal Network
 * VPC Endpoint
@@ -203,9 +239,6 @@
     - Only TCP
     - 단, NLB, GWLB에만 연결할 수 있다.
     - 수천개의 연결이 가능하며, 높은 보안성을 가지고 있다.
-
-
-### Other Network
 * VPC Peering : 
     - VPC <---> VPC 간의 1:1 관계이고, 전이적 관계를 지원한지 않음
     - VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연결을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
@@ -226,7 +259,7 @@
             - TGW를 사용하는 경우, Global Accelerator(Edge Location)와 함께 쓰일 수 있다!!
         4) DX
         5) Connect Attachement(SD-WAN/third-party network device) nbvh
-                    - Attachment Mechanism
+                - Attachment Mechanism
                 * Underlying transport mechanism : 네트워크에 붙이는 방식(기본)
                 * Generic Routing Encapsulation Tunnel (GRE Tunnel) : Appliance 장비 네트워크 인터페이스에 GRE 터널링을 만들어 직접 연결하는 방식
                     1) Connect attachment (연결) / Connect Peer (연결 내부 터널링)
@@ -244,17 +277,47 @@
     - Routing Domain : 
 Full mash
 
+</br>
+</br>
 
-
-* CGW : Customer Gateway
-* VGW : Virtual Gateway
-* Site-to-Site VPN : VPN Service
-* Client VPN : Router/Switch가 아닌 Client에 직접 붙게하는 서비스
+### External Network
+* CGW (Customer Gateway)
+* VGW (Virtual Gateway)
+    - VPC : 다른 네트워크 == 1 : N 관계
+    - 외부 네트워크 통신용 게이트웨이
+    - Routing 
+        ![VGW_Routing](img/VGW_Routing.png)
+        - 해당 장비에 대해서 모든 Routing이 BGP에 의해 설정
+        - VPC 통신, 전용선, VPN의 Hub 역할도 가능
+    - 서로 다른 ASN에 대해서만 가능 (EBGP 특성)
+* VPN
+    - Site-to-Site VPN : VPN Service
+    - Client VPN : Router/Switch가 아닌 Client에 직접 붙게하는 서비스
 * Direct Connect
-    - 기본 IPSec VPN 지원 MACsec은 설정으로 가능 (switch or router가 지원해야함)
-    - MACsec 보안(IEEE 802.1AE) : Layer 2 보안 (ref : https://aws.amazon.com/ko/blogs/networking-and-content-delivery/adding-macsec-security-to-aws-direct-connect-connections/)
-    - IPsec VPN : Layer 3 보안
-
+    - Direct Connection (전용선)
+        ![DX_Connection](img/DX_Connection.png)
+        - 기본 IPSec VPN 지원 MACsec은 설정으로 가능 (On-prem 장비 switch or router가 지원해야함)
+        - MACsec 보안(IEEE 802.1AE) : Layer 2 보안 (ref : https://aws.amazon.com/ko/blogs/networking-and-content-delivery/adding-macsec-security-to-aws-direct-connect-connections/)
+        - IPsec VPN : Layer 3 보안
+        - Connection Type
+            1) Hosted : Connection을 여러 고객이 공유하는 방식으로 VLAN을 통해 트래픽을 분리
+                - Connection : VIF == 1 : 1 관계 (이미 제공업체에서 Connection을 VLAN으로 분리를 했기 때문에)
+                - VIF 구성시, 제공업체에서 설정되어 있는 VLAN ID를 받아서 구성
+            2) Dedicated : 전용적으로 사용하는 Connection
+                - Connection : VIF == 1 : N 관계
+        - VIF : Connection을 VLAN으로 분리시킨 가상 인터페이스
+    - DX Gateway (DXGW)
+        - VIF : 다른 네트워크 == N : M 관계
+        - 전용선용 게이트웨이
+    > 고찰 : DX Location Router는 Inter VLNA Routing을 지원하지 않는다. DX Gateway도 마찬가지다. 이유는 Direct Connect 서비스 자체가 라우팅을 위한 목적이 아닌 연결에 목적을 두고 있기 때문이다!!!
+    - Active / Passive (이중화)
+        ![DX_Connection_AP](img/DX_Connection_AP.png)
+        - 이중화를 위하여 여러 VIF를 Gateway에 연결시키는 경우, 기본적으로 Gateway들은 동일한 정보를 전달받기 때문에 "Customer Data Center Gateway"의 설정에 따라 Active/Passive가 결정된다.
+        - 설정값
+            1) 로컬 기본 설정 BGP 커뮤니티
+            2) AS_PATH 속성값 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</br>
+</br>
 
 
 
@@ -267,37 +330,11 @@ Full mash
 * Global Accelator : 
     - Public IP를 기본적으로 가지고 있다. 그렇기 때문에 서버는 InternetGateway가 필요없으나 인터넷 통신이 흐르고 있다는 의미에서 InternetGateway를 추가한다.
 
-
-### Monitoring
-* VPC Flow Logs
-    - VPC Flow Logs vs VPC Traffic Mirroring : Flow Logs는 확인하는 용도이고, Traffic Mirroring은 잠재적인 네트워크 & 보안을 위해 분석하기 위한 용도
-    - 저장 장소 : S3 / CloudWatch Logs / Kinesis Firehose
-* VPC Traffic Mirroring
-    - ENI로 들어오는 트래픽을 설정한 대상(ENI or NLB)에게로 트래픽을 전달
-    - VXLAN 프로토콜을 사용하여 트래픽을 전달
-* Reachability Analyzer
-    - Source ---> Destination 통신 가능 여부 확인
-    - hop-by-hop에 대한 세부 정보 확인 (Hop 정보, 보안 정책 등)
-    - 테스트 및 트러블슈팅
-* Network Access Analyzer
-    - Source ---> Destination 모든 경로에 대하여 네트워크 & 보안 분석
-    - 확인되지 않은 네트워크 경로를 발견하기 위한 용도
+</br>
+</br>
 
 
-
-* Tool
-    - Wireshark / tcpdump : Packet Capture
-    - traceroute : Check routing hop
-    - telnet : Check for TCP/UDP traffic
-    - nslookup : Resolve the hostnames
-    - ping : Check for ICPM traffic
-
-
-
-* Kinesis Data Firehose
-    - S3 / Redshift / OpenSearch / API Gateway 등으로부터 로그를 가지고 온다.
-
-
+---
 ---
 ## Security 
 * WAF : Web Application Firewall

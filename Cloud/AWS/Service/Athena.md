@@ -38,7 +38,7 @@
     - 필요 권한
         - "glue:CreateTable"
         - "glue:DeleteTable"
-        "glue:UpdateTable"
+        - "glue:UpdateTable"
 2. Data 추가/확인
     - 지정한 Storage Location에 접근하여 데이터 저장 및 확인 가능
     - Insert Query 문을 통해서도 넣을 수 있다. 
@@ -56,7 +56,6 @@ Table에도 transaction table과 non-transaction table 2가지가 있다.
 
 
 ### Iceberg Table
-![IceBergArchitecutre](../img/IceBergArchitecutre.JPG)
 오픈소스 형태의 테이블 포맷 방식
 * 특징
     - Merge-On-Read 형태로 파일 관리
@@ -64,7 +63,9 @@ Table에도 transaction table과 non-transaction table 2가지가 있다.
     - 'metadata' 안에는 'manifest' 파일이 있고, 트랜잭션 로그를 사용하여 데이터의 변경 내역 정보가 저장되어 있다.
     - 
 * 주의사항 : 실제 파일(Object)가 삭제되지 않는다.
-![]()
+</br>
+
+![IceBergArchitecutre](../img/IceBergArchitecutre.JPG)
 * Data Access Flow
     1. "Data Catalog - Table Metadata"에 저장되어 있는 metadata pointer(metadata_location)가 가리키는 "Metadata file"에 접근
     2. "Metadata file"은 실제 데이터 위치를 가지고 있는 "menifest file"을 관리하는 "menifest list"에 접근
