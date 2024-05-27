@@ -42,7 +42,9 @@
 ---
 ## __Routing Protocol__
 ![Routing_protocol](img/Routing_protocol.jpeg)
-크게 Routing을 하는데 Static Routing과 Dynamic Routing 방식이 존재하며, Dynamic Routing 방식을 위한 여러가지 Protocol이 있다. 
+크게 Routing을 하는데 Static Routing과 Dynamic Routing 방식이 존재하며, Dynamic Routing 방식을 위한 여러가지 Protocol이 있다.
+
+- Tip.라우팅 테이블 갯수는 제한이 있기 때문에, 무조건 BGP를 쓰는게 좋은 것은 아니다.
 </br>
 
 ### __Static Routing (정적 라우팅)__
@@ -183,11 +185,17 @@ Public IP 대역이 있는 것 처럼 Public AS가 있으며, 이는 이미 공�
 
 
 ---
+## BGP
+Border Gateway Protocol. AS 또는 peer간에 경로를 서로 교환하는 방식을 가진 프로토콜로 크게 iBGP와 eBGP 2가지가 있다.
+* eBGP : 서로 다른 AS 끼리의 BGP
+* iBGP : 같은 AS 안에서의 BGP
+
+
 ## BGP Routing
 1. Weight
-2. Local Preference
+2. Local Preference (LOCAL_PREF)
 3. Originate
-4. AS path length
+4. AS path length (AS_PATH)
 5. Origin code
 6. MED
 7. eBGP path over iBGP path
@@ -203,15 +211,41 @@ Network     Next Hop    Metric  LocPrf  Weight  Path
 1.1.2.0/24  1.1.3.2     0       100     0       200 300 650010
 ```
 
+> 보통 조합을 Active/Passive를 위해서 같은 AS내에서 설정은 LOCA_PREF로 외부는 AS_PATH 또는 MED를 사용하여 설정한다!
+
+
+### Local Preference (LOCAL_PREF)
+지역적 선호도, AS를 떠날 때 최적의 경로를 찾는데 사용. 속성값이 높을수록 우선 순위를 가지며 같은 AS 내에서만 동작한다.
+- iBGP (eBGP에는 영향을 주지 않음)
+- 자기가 AS를 떠날때 어떻게 할지 결정. 즉, 자기 라우팅에 설정!
+* ex> AS:100 --> AS:500 으로 가는 경로가 여러 개인 경우
+    1) AS:100 --> AS:200 --> AS:500
+    2) AS:100 --> AS:300 --> AS:500
+    - AS:100 내부에서 어디로 보내야할지 선택하며, eBGP가 아니므로 다른 AS 네트워크에 정보를 전달하지 않음 
+
+
 ### AS_PATH (Path)
-지나처 온 AS 경로를 순차적으로 기록한다. 그래서 길이가 가장 작은 길이를 가진 AS_PATH가 우선순위를 가진다.
+Hop의 갯수. 지나처 온 AS 경로를 순차적으로 기록한다. 그래서 길이가 가장 작은 길이를 가진 AS_PATH가 우선순위를 가진다.
+- eBGP
 
-> Why are there several times repeated AS number? 반복되는 이유는 AS_PATH의 길이에 따라 우선순위가 달라지기 때문에 장비에서 연결에 따라 일부로 반복되게 설정한다.
-
-</br>
-
-### MED (Metric)
-더 낮은 값을 가진 Metric이 우선순위를 가진다. 기본 값으 0이며 설정이 가능하다.
+> Why are there several times repeated AS number? 반복되는 이유는 AS_PATH의 길이에 따라 우선순위가 달라지기 때문에 장비에서 연결에 따라 일부로 반복되게 설정하여, 해당 위치로의 라우팅이 비효율적인것을 알려준다.
 
 </br>
 
+### MED (Multi-Exit Discriminator)
+Metric, 트래픽이 다른 AS로 진입할 때 최적의 경로를 찾는데 사용. 속성값이 낮을수록 우선 순위를 가진다.
+- eBGP
+- 다른 쪽 AS 라우터에 
+* ex> AS:100 ---> AS:500으로 가는 경로가 여러 개인 경우
+    1) AS:100 --> AS:500 (10.40.1.20 - 10.40.0.0/16)
+    2) AS:100 --> AS:500 (10.40.0.20 - 10.40.0.0/16)
+    - AS:500 내에 두개의 IP 중에 어디로 보내야할지 선택
+
+> Local Preference vs MED 차이는 다른 AS로 넘어갈때 LOCAL_PREF는 전체적인 경로를 기준으로 본다면(A -> B -> C), LOCAL_PREF에서 결정된 경로에서 각 다음 네트워크를 넘어갈때 경로를 기준으로 본다(A1 -> B, A2 -> B, B -> C1, B -> C2 등).
+
+</br>
+
+
+
+## BGP Community
+BGP에 대한 특정 정책을 만들기 위한 설정(필터링, 우선순위 조정 등)

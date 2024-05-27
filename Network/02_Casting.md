@@ -30,6 +30,7 @@
     * Multicast Group 당 하나의 Multicast Packet을 생성한다. 이를 위해 보낼 대상에 대한 Group 관리가 필요하다.
     * __UDP__ 를 사용하여 전송하므로 신뢰성을 보장받지 못한다.
     * Router에서 Multicast를 지원해야 한다.
+    * IGMP 사용
 * Process
 * Transmission (전파 대상)
     * ```One-to-Many (Group)```
@@ -38,6 +39,8 @@
 * Traffic (트래픽)
     * Group을 지정함으로써 트래픽이 통제된다.
     * 트래픽이 통제가 되기 때문에 빠르다.
+* Example
+    - 미디어, OTT 등
 </br>
 
 
