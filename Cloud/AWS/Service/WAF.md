@@ -44,7 +44,8 @@ AWS CloudFront, AWS API Gateway, AWS Application Load Balacner에 전달되는 H
         RuleGroupB RuleB2
         ```
 4.본문 크기 제한
-    * Web ACL의 기본 본문 검사 크기 제한은 16KB (최대 64KB까지 늘릴 수 있음)
+    * Region Web ACL의 경우, 8KB 제한
+    * CloudFront Web ACL의 기본 본문 검사 크기 제한은 16KB (최대 64KB까지 늘릴 수 있음)
 </br>
 </br>
 
@@ -66,7 +67,7 @@ HTTP(S) 웹 요청을 검사하는 기준과 일치할 때 수행할 작업을 �
         * 조건에 일치하는 요청을 찾는다
         * 논리문 사용 가능 (AND, OR, NOT)
     * Rate-based rule
-        * 너무 빠른 속도로 수신되는 수신 요청 및 속도 제한 요청을 계산
+        - 너무 빠른 속도로 수신되는 수신 요청 및 속도 제한 요청을 계산 (예를 들면 1초에 수천 건의 요청이 들어오는 경우 제한을 건다)
             > 나중에 공부, DDOS 방어 등도 가능해보임
 * Inspect (검사 가능 항목은 다음과 같다)
     - HTTP method
@@ -149,7 +150,8 @@ https://sessin.github.io/awswafhol/pre/module2.html
 ---
 ### AWS Shield
 * AWS Shield : DDoS 공격 방어 서비스. 네트워크 및 전송 계층(Layer 3, 4)과 애플리케이션 계층(Layer 7)에서 AWS 리소스에 대한 DDoS(Distributed Denial of Service) 공격으로부터 보호
-
+    - 기본적으로 Standard는 모든 AWS 계정에 무료로 지원되고 있다.
+    - 
 * AWS Shied Advanced : 
 
 </br>

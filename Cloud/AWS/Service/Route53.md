@@ -19,14 +19,14 @@
 * __Domain name__
     * 사용자가 웹 사이트 또는 웹 애플리케이션에 액세스하기 위해 웹 브라우저의 주소 표시줄에 입력하는 이름.
     * example.com과 같은 이름.
-* __Domain registrar__
-    * 도메인 등록 대행자.
-    * 국제 인터넷 주소 관리기구(ICANN)가 인증한 특정 최상위 도메인(TLD) 등록을 처리하는 회사로, 리지스트리의 데이터베이스에 등록 데이터를 등록한다.
-    * 예를 들어 Amazon Registrar, Inc.는 .com, .net, .org 도메인의 등록 대행자이다. Amazon의 등록 대행 협력사인 Gandi는 .apartments, .boutique, .camera 등 수백 가지 TLD의 도메인 등록 대해자이다.
 * __Domain registry__
     * 도메인 레지스트리.
     * 특정 최상위 도메인을 가지고 도메인을 판매할 권리를 소유한 회사로, 등록된 도메인의 데이터베이스를 유지 관리하는 기관.
     * 등록된 도메인이 인터넷 상에서 접속될 수 있도록 최상위 도메인(TLD)의 도메인 네임 서버(DNS)를 운용하고 있다.
+* __Domain registrar__
+    * 도메인 등록 대행자.
+    * 국제 인터넷 주소 관리기구(ICANN)가 인증한 특정 최상위 도메인(TLD) 등록을 처리하는 회사로, 레지스트리의 데이터베이스에 등록 데이터를 등록한다.
+    * 예를 들어 Amazon Registrar, Inc.는 .com, .net, .org 도메인의 등록 대행자이다. Amazon의 등록 대행 협력사인 Gandi는 .apartments, .boutique, .camera 등 수백 가지 TLD의 도메인 등록 대해자이다.
 * __Domain reseller__
     * 도메인 대리점.
     * Registrar를 경유하여 도메인 등록 업무를 대행하는 업자로 Route 53이 해당한다.
@@ -40,6 +40,9 @@
             * 예를 들면 .bike라는 TLD를 가진 도메인은 모터사이클 또는 자전거 업체나 조직의 웹 사이트와 연관된 경우가 많다.
         2) __지리적 최상위 도메인__
             * 해당 TLD는 국가나 도시같은 지리적 영역과 연관된다.
+ * __Domain SLD__
+    - Second Level Domain
+    - amazon.com, google.com ... 
 </br>
 
 ### Domain 등록 과정
@@ -134,6 +137,22 @@
     * https://serverfault.com/questions/18000/dns-subdomains-that-require-both-an-mx-record-and-a-cname
 </br>
 
+---
+## 전략
+* 낮은 TTL ---> 높은 TTL로 변경 / DNS는 동적으로 움직임
+* 마이그레이션
+    1) DNS 설정 확인
+    2) TTL을 15분까지 줄인다.
+    3) 기존 TTL이 만료되고, 15분으로 변경된 캐시가 전파되도록 2일 정도 기다린다.
+    4) 설정들을 새로운 DNS로 옮긴다.
+    5) 
+
+
+
+
+
+---
+
 ## DNS Record Type
 | Type  | Type id. | Description                           | Function                                                                                                                                                               |
 | ----- | -------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -220,12 +239,13 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
     ```
 
 ### CNAME Record
+상위 도메인에는 CNAME을 사용할 수 없다! (ex> test.com - A 레코드만 가능, 그래서 Alias를 사용함ㄷㄷ)
 * Example
     ```
     ```
 
 ### MX Record
-* Example
+* Examplㄷ
     ```
     @	    IN  MX  10  mail.example.com.
             IN  MX  20  mail.example.net. 
@@ -337,15 +357,17 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 </br>
 
 
-## Routing option
+## Routing option (Policy)
+
 1. __Simple Routing Policy__
     * 도메인에 대해 특정 기능을 수행하는 하나의 리소스만 있는 경우에 사용
     * 단일 리소스로 라우팅
 2. __Weighted Routing Policy__
     * 사용자가 지정하는 비율에 따라 여러 리소스로 트래픽을 라우팅하려는 경우
-    * 주로 A/B 배포 전략과 같은 테스트에서 사용될거 같다.
+    * 주로 A/B 배포 전략과 같은 테스트에서 사용된다.
 3. __Latency Routing Policy__
     * AWS Region에 트래픽을 라우팅하고 왕복 시간이 짧은 Region을 사용하여 최상의 지연 시간을 제공하는 Region으로 라우팅하려는 경우
+    - 지리적인 위치가 아닌 지연 시간이 가장 짧은 곳이기 때문에 지리적 위치와는 조금 다르다. (> 물론 일반적으로 가장 짧은 곳은 자기 지역이긴하겠지만!)
 4. __Failover Routing Policy__
     * Active-Pasive 장애 조치를 구성하려는 경우 사용
 5. __Geolocation Routing Policy__
@@ -353,8 +375,8 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
     * 사용자의 위치에 기반하여 트래픽을 라우팅하려는 경우에 사용
 6. __Geoproximity Routing Policy__
     * Traffic Flow Only
-    * 지리 근접 라우팅 정책
-    * 리소스의 위치를 기반으로 트래픽을 라우팅하고 필요에 따라 한 위치의 리소스에서 다른 위치의 리소스로 트랙픽을 보내려는 경우에 사용
+    * 지리 근접 라우팅 정음
+    * 리소스의 위치를 기반으로 트래픽을 라우팅하고 필요에 따라 한 위치의 리소스에서 다른 위치의 리소스로 트랙픽을 보내려는 경우에 사용 (내가 지리적 우선순위를 변경해줄 수 있음)
 7. __Multivalue Answer Routing Policy__
     * 다중값 응답 라우팅 정책
     * Route53이 무작위적으로 선택된 최대 8개의 정상 레코드로 DNS 쿼리를 응답하게 하려는 경우
@@ -381,3 +403,11 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 * Domain name 관리
     * TLD 별 요금이 다르다.
 * Traffic Flow
+
+
+
+## DNSSEC
+DNS Security Extensions
+* DNS 무결성 확보
+* Public Hosted Zone에서만 사용 가능
+* 

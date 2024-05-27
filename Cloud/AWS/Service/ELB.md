@@ -15,6 +15,7 @@
 ## ELB 종류
 1. __ALB (Application Load Balancer)__
     * 7 Layer Application 계층에서 Routing 결정(HTTP/HTTPS)
+    * 최소 /27 서브넷 크기 및 8개의 IP가 필요 (최대 100개 IP 사용)
     * Host name, Path, Query 문자열 매개변수, HTTP Header, HTTP Method, Source IP 또는 Port Number를 기반으로 분석하여 Rouoting 결정
     * 사용 가능 Protocol: HTTP/1.1, HTTP/2, HTTPS, gRPC
     * Redirection 또는 고정 응답을 반환하도록 구성 가능
@@ -30,7 +31,7 @@
     * 지정한 TCP 프로토콜과 포트 번호를 사용하여 Routing
     * 동적 호스트 매핑 지원
     * Static IP 사용
-3. __GLB (Gateway Load Balancer)__
+3. __GWLB (Gateway Load Balancer)__
     * 3 Layer Network 계층에서 작동
     * 방화벽, 침임 탐지 및 방지 시스템, 심층 패킷 검사 시스템과 같은 가상 어플라이언스를 배포, 확장 및 관리할 수 있다.
 4. __CLB (Classic Load Balancer)__
@@ -276,6 +277,8 @@
 
 ### NLB Routing Algorithm
 * Roud Robin만 제공한다.
+* Flow Hash : Hash Algorithm에 의해 분산처리 (5-tuple)
+* 
 </br>
 
 
@@ -318,7 +321,7 @@
     * 후속 요청에 AWSALB 쿠키를 포함해야 한다.
 2. __App Cookie__
     * Client 대상 고정에 대한 사용자 고유의 기준을 설정할 수 있는 유연성을 제공
-    * Session Cookie 정보를 Target이 Custom application cookie를  생성해 가지고 있고, ALB에는 Target이 생성한 Custom application cookie를 캡처해 Application Cookie 생성하여 가지고 있게 된다.
+    * Session Cookie 정보를 Target이 Custom application cookie를 생성해 가지고 있고, ALB에는 Target이 생성한 Custom application cookie를 캡처해 Application Cookie 생성하여 가지고 있게 된다.
     * Application Cookie는 Custom application cookie의 속성을 복사하지 않는다.
     * Target은 고정을 활성화하기 위해서 ALB에 구성된 쿠키와 일치하는 사용자 지정 애플리케이션 쿠키를 설정해야 한다.
 3. __Source IP__

@@ -11,7 +11,8 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
 * Subnet : Firewall Endpoint에 사용될 서브넷. 각 가용 영역에 대해 최대 하나의 서브넷만 지정가능
 	> 다른 서브넷의 라우팅은 해당 Endpoint로만 가도록 설정해야 되기 때문에, 같은 서브넷에 있는 Application은 필터링 적용이 안될 수 있다.
 * Firewall Policy : Firewall과 연결된 방화벽 정책 (방화벽에 대한 보호 동작 및 모니터링을 제공)
-    - Rule Group으로 정책들을 묶고, Rule Group을 Policy 적용한다.
+    - 각 특성에 해당하는 정책 Rule을 하나의 그룹으로 묶고(Rule Group), 원하는 Rule Group들을 선택하여 하나의 Policy 생성한다.
+* Rule Group : Stateless 또는 Stateful 규칙들의 모음
 * Routing : 모든 통신이 Firewall Endpoint로 통신하도록 라우팅
 	- IGW/VGW Edge association
 	- TGW Appliance Mode
@@ -46,9 +47,9 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
             - Others : Stateful rule groups
         * Stream exception policy (Set stateful engine options)
     ```
-    - Stream exception policy : Network 연결이 midstream에서 끊어질 때 정책 설정 (외부 요인 등으로 인해)
-    - Stateless rule groups : 상태 비저장 규칙 그룹. 우선 순위가 존재
+    - Stream exception policy : Network 연결이 midstream에서 끊어질 때 정책 설정 (외부 요인 등으로 인해) / midstream : Connection 중에 끊어질때를 의미
     - Stateless default actions : 상태 비저장 기본 동작. Stateless rule group과 일치하지 않는 패킷을 처리하는 방법 설정. 기본적으로 다른 프로토콜의 패킷을 Drop 한다.
+    - Stateless rule groups : 상태 비저장 규칙 그룹. 우선 순위가 존재
     - Stateful default actions : 상태 저장 기본 동작. Stateful rule group과 일치하지 않는 패킷을 처리하는 방법 설정.
     - Stateful rule groups : 상태 저장 규칙 그룹. 우선 순위 존재
     - Stateful engine options : 상태 저장 엔진 옵션 지정
@@ -56,16 +57,44 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
 * Policy variables (Optional) : Default value of Suricata HOME_NET. If your firewall is deployed using a centralized deployment model, you might want to override HOME_NET with the CIDRs of your home network. Otherwise, Network Firewall uses the CIDR of your inspection VPC.
 * TLS inspection configuration (Optional) : TLS 검사 구성. Stateful rule에 따라 검사 시에 SSL/TLS 트래픽의 암호화 해독 및 재암호화를 활성화하는 설정
     > 단 추가 비용이 발생한다!!!
+
+```
+# It's mine
+
+
+0) Stream exception policy : Drop (default) / Reject
+1) Stateless Rule 생성
+    - Default action  : 삭제
+    - ICMP와 같은 특정 포트 또는 트래픽에 대해서만 해당 Rule로 생성 (아니면 로그가 필요없는 경우)
+    - 이 외의 트래픽은 모두 Stateful Rule로 보냄
+2) Stateful Rule 생성
+    - Default action : 
+        - Drop : Drop Established
+        - Alter : None
+    - Order : Strict order
+    - TCP 관련 트래픽은 해당 Rule로 생성
+    - 이 외의 트래픽은 모두 Drop
+3) Logging
+    - Flow log : 허용
+    - Alert log : 허용
+```
+
+</br>
+
+### Stream exception policy
+Connection이 중간에 중단되는 경우에 처리하는 방식 설정 (서버 중지 등으로 연결이 중단될 수 있다!)
+- Drop : 기본 값. 종료를 실패하면 후속 트래픽을 삭제한다.
+- Continue : (잘모르겠습니다...???)
+- Reject : 종료를 실패하면 후속 트래픽을 삭제한다. 그리고 Client 측에서 바로 알 수 있도록 Reject Packet을 보낸다. 이렇게 되면 Client는 새로운 세션을 맺으려고 다시 새 연결을 만들텐데 좋은 방식인지 모르겠다.
+</br>
 </br>
 
 
 ### Stateless action
-* Pull packets
-    - TCP 패킷에 대해 어떻게 처리할지 결정할 수 있다 
-* Fragmented packets
-    - UDP 패킷에 대해 어떻게 처리할지 결정할 수 있다
+* Fragment Packet
+    - 조각화된 TCP/UDP 패킷에 대해서 어떻게 처리할지 결정
 * Evaluation order
-    - 우선순위에 의해서 결정 / 이 값은 고유해야 하며 양의 정수 /
+    - 정의한 우선 순위대로 결정 (이 값은 고유해야 하며 양의 정수)
 * Action
     - Pass : 모든 검사를 중단하고 패킷이 이동하도록 허용
     - Drop : 모든 검사를 중단하고 패킷을 차단
@@ -78,7 +107,7 @@ VPC 경계를 기준으로 Network Traffic을 Filterfing을 하는 서비스로 
     - Destination IP
     - Destination port range
     - Optional TCP flags 
-
+> 기본적으로 UDP는 비연결지향이기 때문에 Stateless에서 처리하는 것이 좋지 않을까?
 
 
 ### Stateful action
@@ -86,9 +115,16 @@ Suricata(Opensource) Stateful rule 엔진 6.0.9(23.11.05 현재 기준)을 지�
 
 GRE(일반 라우팅 캡슐화)와 같은 터널링 프로토콜에 대한 내부 패킷 검사를 지원한다. 터널링된 트래픽을 차단하려는 경우 터널 계층 자체 또는 내부 패킷에 대한 규칙을 작성해야 한다.
 
+* Default Action (해당 동작시 어떻게 처리할 것인지 설정)
+    - Drop : 
+        - Drop all : 모든 검사를 중단하고 패킷을 차단
+        - Drop established : 연결이 된 패킷에 대해서 차단(즉, 연결이 안되면 굳이 차단을 하지 않는다는 의미) - Default
+    - Alert 동작 : 모든 
+        - Alert all : 모든 패킷에 대한 메시지를 기록
+        - Alert established : 연걸이 된 패킷에 대해서 메시지를 기록
 * Rule type
     1) Standard rules : Protocol / Source IP / SourcePort / Destination IP / Destination Port
-    2) Suricata compatible strings: 
+    2) Suricata compatible strings: Suricata Dock 참조
     3) Domain list : Domain (HTTP/HTTPS Protocol 사용)
 * Evaluation order
     - Top Level : StatefulRuleOptions 이라는 Rule을 기본적으로 최상위 우선 순위로 가지고 있다!!!
@@ -97,24 +133,14 @@ GRE(일반 라우팅 캡슐화)와 같은 터널링 프로토콜에 대한 내�
         > 동일한 조건인 경우 Pass > Drop > Reject > Alert 순으로 처리. 모든 Action을 확인해야 되므로 계속되는 평가가 필요!!
 * Standard rules and Suricata compatible strings acion
     - Pass : 모든 검사를 중단하고 패킷이 이동하도록 허용
-    - Drop
-        - Drop all : 모든 검사를 중단하고 패킷을 차단
-        - Drop established : 연결이 된 패킷에 대해서 차단(즉, 연결이 안되면 굳이 차단을 하지 않는다는 의미)
+    - Drop : 패킷을 차단
     - Reject : 모든 검사를 중단하고 패킷을 차단. 그리고 Reset Packet 전달
-    - Alert : 모든 
-        - Alert all : 모든 패킷에 대한 메시지를 기록
-        - Alert established : 연걸이 된 패킷에 대해서 메시지를 기록
+    - Alert : 패킷에 대한 메시지를 기록
 * Domain list
     - Allow : 모든 검사를 중단하고, 도메인 이름 목록에 지정된 프로토콜과 일치하는 모든 트래픽에 대하여 허용
     - Deny : 모든 검사를 중단하고, 도메인 이름 목록에 지정된 프로토콜과 일치하는 트래픽에 대하여 거부
 </br>
 
-### Stream exception policy
-- Drop : 기본 값. 종료를 실패하면 후속 트래픽을 삭제한다.
-- Continue : (잘모르겠습니다...???)
-- Reject : 종료를 실패하면 후속 트래픽을 삭제한다. 그리고 Client 측에서 바로 알 수 있도록 Reject Packet을 보낸다.
-</br>
-</br>
 
 
 ---
@@ -123,9 +149,9 @@ Firewall의 Stateful rule engine에 의해 로그가 제공 (로그 유형과 �
 > 상태 저장 규칙 엔진을 통과하는 네트워크 트래픽에 대한 흐름 로깅을 활성화할 수 있다. 그렇기 때문에 상태 비저장 규칙 작업 및 상태 비저장 기본 작업을 통해 상태 저장 엔진에 트래픽을 전달해야 상태 비저장 규칙에 대한 로그를 확인할 수 있다!
 * 로그 유형
     1. Flow Log : 표준 네트워크 트래픽 흐름 로그
-        - 특정 표준 상태 비저장 규칙 그룹에 대한 네트워크 흐름을 캡처????
+        - 정확하게는 상태 비저장 엔진이 상태 저장 엔진으로 전달하는 모든 네트워크 트래픽에 대한 로그
     2. Alert Log : 경고를 보내는 작업이 있는 상태 저장 규칙과 일치하는 트래픽을 보고
-        - 경고를 보내는 작업 : Drop, Alert, Reject
+        - 경고를 보내는 작업 : Drop, Alert 동작
 * 로깅 대상
     1. S3
     2. CloudWatch Logs
@@ -136,8 +162,11 @@ Firewall의 Stateful rule engine에 의해 로그가 제공 (로그 유형과 �
 ### CloudTrail 통합
 * Network Firewall에서 활동이 발생하면 이벤트를 CloudTrail에 기록할 수 있다. 추적을 생성해야 한다!!! (많은 기록이 남으므로 비용이? 계산이 필요할거 같다)
 
+</br>
+</br>
+
 ---
-## 방화벽 동작 
+## 방화벽 동작
 ![NetworkFirewall_Workflow](../img/NetworkFirewall_Workflow.png)
 1. Firewall Endpoint로 트래픽 진입 (Incoming / Outcoming 트래픽)
 2. Firewall Policy에 따라 필터링 작업
@@ -169,10 +198,7 @@ Firewall의 Stateful rule engine에 의해 로그가 제공 (로그 유형과 �
 		- Stateful default action :
 3. 		- 
 4. Create Network Firewall
-2.
-3.
-4.
-5.
+
 
 ## 알아둬야 할 사항
 - 네트워크 방화벽은 방화벽 끝점당 최대 100Gbps의 네트워크 트래픽을 지원합니다.

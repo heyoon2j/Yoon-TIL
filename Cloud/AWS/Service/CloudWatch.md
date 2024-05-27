@@ -86,6 +86,8 @@
     Dimensions: Server=Prod, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:32:00Z, Value: 95
     Dimensions: Server=Beta, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:33:00Z, Value: 97
     ```
+* append_dimensions : 측정 시 항목에 추가할 Dimessions (== DB Colume)
+* aggregation_dimensions : 집계시 사용할 Dimessions (== DB where A and B)
 </br>
 
 
