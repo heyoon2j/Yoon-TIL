@@ -309,7 +309,9 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
     * VPC -> VPC Resolver -> Outbound Endpoint -> 다른 네트워크 (On-premise, VPC 등)의 Resolver
     * DNS Resolver가 해당 Outbound Endpoint를 통해 Outbound VPC DNS Resolver에게 전달
 * Rule
-    * VPC에 매핑되어 있는 2번에 있는 Route 53 Resolver Server에 적용되는 규칙
+    * VPC에 설정되어 있는 2번에 있는 Route 53 Resolver Server에 적용되는 규칙
+    - 전달 규칙 : 특정 도메인에 대해서는 특정 IP로 쿼리를 전달한다
+    - 시스템 규칙 : 특정 도메인에 대해서는 시스템 Route53을 사용한다
 
 > Inbound VPC는 연결할 Route 53 Resolver(Hostzones)을 관리할 수 있다. Outbount VPC는 다른 네트워크의 Resolver에 대한 VPC들을 관리할 수 있다.
 

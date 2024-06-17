@@ -340,7 +340,7 @@
 ### Preserve Source IP
 * HTTP/HTTPS는 XFF가 있기 때문에 따로 설정이 없고, TCP/UDP는 따로 존재하지 않기 때문에 설정이 존재한다.
 * NLB는 2가지 방법을 지원한다.
-    1) preserve_client_ip : 같은 VPC에서만 사용 가능, LB 자체에서 Client IP를 전달
+    1) preserve_client_ip : Target이 같은 VPC에 있는 서버에 대해서만 사용 가능, LB 자체에서 Client IP를 전달
     > https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html
     > 클라이언트 IP 보존 사용 시, Client가 NLB로 요청하는 경우 Source IP와 Target IP가 동일하게 되어 간현적인 연결 실패를 가져올 수 있다!!!!
     2) proxy_protocol_v2 : 다른 네트워크에서도 사용 가능, LB에서 Proxy Protocol을 사용해서 전달

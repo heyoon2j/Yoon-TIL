@@ -1,20 +1,5 @@
 # Network
 
-## 틀린거/못푼거 정리
-* #1
-* #3
-* #4
-* #6
-* #7
-* #8
-* 
-
-
-> 색인 문제 : #10
-
-## 자주 나오는 항목
-* URL : Host가 아닌 Path 기반을 의미
-* 
 
 
 ---
@@ -25,7 +10,7 @@
 * Jitter : Variation in inter-packet delays. 패킷 간의 지연 시간
 * Throughput(bps) : 초당 전송한 비트. 전송한 패킷량, Latency, Packet loss 등이 있기 때문에 Bandwidth와 동일하게 나오지 않는다!
 * PPS : Packet Per Second, 네트워크 장비의 초당 패킷 처리량. 컴퓨팅 리소스 파워, Throughput도 영향을 준다(여기서 Packet은 Frame 단위를 의미하여 최소 84 byte 크기를 처리할 수 있다)
-    - PPS가 있는 이유는 네트워크 장비는 비트가 아닌 패킷 단위로 처리하며, 패킷당 처리할 수 있는 비트 기준으로 Throughput만으로 처리량을 판단하면 매 순간 보내는 패킷의 실제 비트 수에 따라 처리 성능이 다르게 보일 수 있기 때문이다.
+    - PPS가 있는 이유는 네트워크 장비는 실질적으로 비트가 아닌 패킷 단위로 처리하며, 패킷당 처리할 수 있는 비트 기준으로만으로 Throughput(처리량)을 판단하면 매 순간 보내는 패킷의 실제 비트 수에 따라 처리 성능이 다르게 보일 수 있기 때문이다.
     - PPS 계산법 (84 bit 기준으로 계산 시)
         ```
         1 Packet == 최소 84 byte == 최소 672 bit 
@@ -56,37 +41,39 @@
     > 대상 장비의 MTU보다 패킷이 크면 패킷 단편화(Packet Fragmentation) 발생.
 2) 그리고 각 장비는 통신을 위해 Encapsulation, Decapsulation 등 패킷을 처리한다. => (PPS)
 3) 이때 패킷의 크기는 통신마다 다르기 때문에 Bit 수가 다를 수 있다. => (Throughput)
-    > 기본적으로 패킷의 비트 수가 일정하면 BPS와 PPS는 그래프가 동일하게 나온다.
+    > 기본적으로 패킷의 비트 수가 일정하면 BPS와 PPS의 그래프는 거의 비슷한 곡선을 가지게 된다.
 
-    > BPS > PPS 인 경우, 큰 데이터가 전송되었다는 의미
+    > BPS > PPS 인 경우, 데이터가 큰 파일 다운로드 또는 업로드 등이 행해졌다는 의미로 볼 수 있다. 패킷 최대 사이즈로(MTU) 보내게 되면 패킷 수에 비해 비트 사이즈가 커지기 때문에 BPS와 PPS의 그래프가 서로 달라진다. 
 
-    > BPS < PPS 인 경우, 작은 데이터가 전송되었다는 의미
+    > BPS < PPS 인 경우, 데이터가 작은 GET 요청이나 pingcheck 패킷 등이  전송되었다는 의미로 볼 수 있다. 많은 요청에 대한 응답으로 많은 패킷을 전송하지만 실질적인 데이터는 작기 때문에 BPS와 PPS의 그래프가 서로 달라진다.
 
-</br>
+</kr>
 
 ### Optimization
 - Over 1M PPS(1초당 1 백만개 이상의 패킷을 전송)를 의미. 
 - High Network Bandwidth and Throughput, Low Laytency
 - High I/O performance and Low CPU Utilization
 1. Network Device(HW) level
-    1) using Jumbo Frame
-    2) Network I/O Credit Type 선택
-    3) EBS Optimized Instance(전용선) : EBS is not a physical drive. Network drive. EBS와의 통신으로 전용 네트워크를 사용함을써 다른 네트워크와 경쟁하지 않음
-    4) 배치 그룹 : EC2 인스턴스끼리 서로 가까운 곳에 둠으로써 네트워크 홉 수 등을 줄임
+    1) (기능) Using Jumbo Frame at network device.
+    2) (기능) Network I/O Credit Type 선택
+    3) (전용선) EBS Optimized Instance : EBS is not a physical drive but Network drive. EBS와의 통신으로 전용 네트워크를 사용함을써 다른 네트워크와 경쟁하지 않음
+    4) (거리) 배치 그룹 : EC2 인스턴스끼리 서로 가까운 곳에 둠으로써 네트워크 홉 수 등을 줄임
 2. Virtualization level
     * Enhanded Networking
         1) SR-IOV with PCI passthrough : 향상된 Physical NIC(Server)Virtualization(Hypervisor) 방법
 
             ![SR-IOV_PCI : https://learn.microsoft.com/ko-kr/windows-hardware/drivers/network/single-root-i-o-virtualization--sr-iov--interface](img/SR-IOV_PCI.png)
-            - SR-IOV : Single Root I/O virtualization. 개별 서버의 I/O 자원을 가상화하여 I/O를 향상 시킨 가상화 인터페이스 또는 어댑터.
-            - PCI pass through : Peripheral Component Interconnect. 여기서는 네트워크 인터페이스를 연결하는 인터페이스를 의미한다고 생각하면 된다.
+            - SR-IOV : Single Root I/O virtualization. 개별 서버의 I/O 자원(물리적 네트워크 인터페이스 카드)을 여러 가상 네트워크 인터페이스로 나누어 각 가상 머신에게 할당해 주는 기술.
+            - PCI Passthrough : Peripheral Component Interconnect. 물리저 하드웨어 장치를 직업 VM에 연결하는 기술.여기서는 네트워크 인터페이스를 연결하는 인터페이스를 의미한다고 생각하면 된다.
             - SR-IOV 어댑터를 통해 물리적 PCIe(PF: Physical Function)를 여러 개의 가상화 PCIe(VF: Virtual Function)로 분할할 수 있다.
-                > Virtualization Layer가 따로 있는 것이 아닌 Network Interface 내부 안에 들어가게 된다. 이를 통해 패킷 프로세싱 Overhead를 줄여 Latency를 줄인다.
+                > Virtualization Layer(Hypervisor)을 거쳐 통신을 처리하는 것이 아닌 PCI Passthrough을 통해 가상화 네트워크 인터페이스 분배(SR-IOV)할 수 있는 물리적 네트워크 장비와 직접 연결되어 통신을 처리한다. 이를 통해 기존 Hypervisor를 통한 패킷 프로세싱 Overhead를 줄여 Latency를 줄인다.
             - VM은 기본적으로 통신을 하기 위해 가상화 레이어를 거쳐 물리적 통신을 하게 되는데 이 과정을 간소화시켜준다.
             - 사용 방법은 다음과 같다(드라이버 확인 방법 : ```ethtool -i eth0```)
                 - Intel ixgbevf : 10 Gbps
                 - Elastic Network Adatpter(ENA) : 100 Gbps / P4d는 400 Gbps
-        2) EFA (AWS Service) 
+        2) AWS EFA (Elastic Fabric Adapter) : 고성능 처리에 사용. HPC 및 ML
+            - OS Bypass를 통해 SW가 HW에 직접적으로 연결
+        > AWS EFA 기능은 SR-IOV와 달리 하나의 물리적 인터페이스가 하나의 서버와 연결되며, 가상화 멀티 테넌시 기능을 위한 것은 아니다.
 3. Operating system level
     * Enhanded Networking
         1) DPDK (Intel Data Plane Development Kit) library 사용 : Kernel Library로, 원래는 Kernel이 중간에서 네트워크 관련 코드/요청에 대한 Translation이 이루어지지만, 해당 라이브러리를 통해 Translation 없이 다이렉트로 네트워크 장비에 요청함으로써 Overhead를 줄여 OS 내부 패킷 처리 향상시킨다.
@@ -131,6 +118,31 @@
 ---
 ---
 ## Service
+![]()
+VPC : region 내 
+IGW : Region 내
+- IGW
+- Egress-IGW
+NAT
+- NAT GW
+- NAT Instance
+Endpoint
+- Gateway
+- Interface
+- Private link
+Peering
+Site-to-Site VPN
+TGW
+DX
+DX GW
+Route53
+
+해당 서비스들의 네트워크 범위를 나눠줘 (ex> vpc, region, global)
+
+
+
+
+
 ### VPC
 * Architecture
 * Feature
@@ -146,19 +158,22 @@
     - 0~255 = 256개
     - 10.0.0.0 : 네트워크 ID
     - 10.0.0.1 : 라우터, 게이트웨이 주소
-    - 10.0.0.2 : DNS 주소
+    - 10.0.0.2 : DNS 주소 (실질적으로는 VPC CIDR + 2를 가리키고 있다)
     - 10.0.0.3 : 차후 사용을 위해 AWS에서 예약
-    - 10.0.0.255 : Broadcast
+    - 10.0.0.255 : Broadcast Subnet 설정시 선택하는 AZ는 해당 서브넷에 해당하는 리소스는 해당 데이터 센터에 생성하라는 의미이다. 
+    > 기본적으로 VPC는 Overlay 네트워크로 VM 간의 통신에 사용된다. 그런즉, VPC에서 가리켜지는 네트워크 외에 물리적 또는 다른 네트워크 영역들이 존재한다. Underlay Network는 제공해주는 업체만 알고 있다.
+
+    > "VPC CIDR + 2"는 특정 AZ에 있는 것처럼 보일뿐, 내부적으로 가용성이 적용되어 있는 DNS 서비스로 추측된다. 예시로 "VPC CIDR + 2"가 Underlay Network에 존재하는 DNS 서비스를 가리키는 Overlay 네트워크의 LB(진입점) 생각하면 이해하기 쉬운거 같다. 그렇기 때문에 "VPC CIDR + 2"가 해당하는 AZ가 장애가 발생하더라도 Route53 Resolver는 정상적으로 동작하게 된다.  
 * IPv6
     - 128 bit = 8 block * 16 bit / 16진수 사용
     - Public IP만 사용 가능!
     - Amazon DNS에서 제공하지 않음
     - NAT Gateway는 지원 / NAT Instance는 지원 X
 * DHCP Option Set
-    - 기본 DHCP Option Set은 수정이 불가!!!!!!!
+    - 기본 DHCP Option Set은 수정이 불가!!!!!!! (모든 DHCP Option Set이 수정 불가)
     - Domain name server, Domain name, NetBIOS 타입 등의 설정을 정의
     - DHCP Option Set 변경 후, Refresh가 되어야 한다. 보통 몇시간 후에 자동 Refresh 되나 수동으로도 가능 (명령어 : $ sudo dhclient -r eth0)
-    - Route53 Hostzone을 사용하기 위해서는 enableDnsSupport & enableDnsHostname  모두 활성화 필요
+    - Route53 Hostzone을 사용하기 위해서는 enableDnsSupport & enableDnsHostname 모두 활성화 필요
 * DNS Resolver Server
     - (VPC Base + 2)'s IP
     - 169.254.169.253 : DNS Resolver Server IP의 가상 IP (Link-Local)
@@ -170,6 +185,7 @@
     - 
 * Egress-only Internet gateway :
     - 송신만 가능
+    - IPv6
 * NAT Gateway
     - IPv4/IPv6 모두 지원
     - Public Subnet에만 생성 가능
@@ -194,7 +210,7 @@
 ![VPC_Internal_Routing](img/VPC_Internal_Routing.JPG)
 * 기본적으로 VPC에 연결된 Gateway끼리는 서로 통신이 불가하다. 즉, Gateway -> Gateway 바로 통신이 불가! 
 * 
-    > 아마도 VPC Router 연결했다는 의미가 서로 라우팅이 된다는 의미는 아닐 것이다. 단순 VPC와의 연결을 의미하며 라우팅 설정도 VPC의 트래픽에 대한 것이기 때문에 Gateway끼리는 통신이 불가해 보인다. 다른 의견으로는 Gateway 자체가 다른 네트워크로 가는 것이기 때문에 분리시켜 놓는 것이 안정적일 수도 있기 때문으로 보인다.
+    > VPC attachment는 단순 VPC와의 연결 설정을 의미하며 라우팅 설정도 VPC 내부가 Source인 트래픽에 대한 것이기 때문에 Gateway끼리는 통신이 당연히 불가능하다. 다른 의견으로는 Gateway 자체가 다른 네트워크로 가는 것이기 때문에 분리시켜 놓는 것이 안정적일 수도 있기 때문으로 보인다.
 
 </br>
 </br>
@@ -205,17 +221,34 @@
 ## Monitoring
 * VPC Flow Logs
     - VPC Flow Logs vs VPC Traffic Mirroring : Flow Logs는 네트워크 흐름만 확인하는 용도이고, Traffic Mirroring은 잠재적인 네트워크 & 보안을 위해 분석하기 위한 용도 (Log Depth가 서로 다름)
-    - 저장 장소 : S3 / CloudWatch Logs / Kinesis Firehose
+    - 로그 설정 가능 리소스 : VPC, Subnet
+    - 저장 장소 : S3 / CloudWatch Logs / Kinesis Firehose + OpenSearch
 * VPC Traffic Mirroring
-    - ENI로 들어오는 트래픽을 설정한 대상(ENI or NLB)에게로 트래픽을 전달
+    - ENI로 들어오는 트래픽을 설정한 대상(ENI or NLT or GWLB)에게로 트래픽을 전달
     - VXLAN 프로토콜을 사용하여 트래픽을 전달
-* Reachability Analyzer
+    - ENI / NLB /GWLB
+* VPC Reachability Analyzer
+    - Region내 통신 분석
     - Source ---> Destination 통신 가능 여부 확인
     - hop-by-hop에 대한 세부 정보 확인 (Hop 정보(라우팅 등) 보안 정책 등)
+    - 자동실행 설정 가능
     - 테스트 및 트러블슈팅
+    - 대상 목록
+        - Instance
+        - ENI
+        - IGW
+        - TGW
+        - TGW Attachment
+        - VPC Endpoint
+        - VPC Peering
+        - VGW
+* AWS Network Manager Route Analyzer
+    - 글로벌 통신 라우팅 분석
+    - TWG 라우팅 변경 확인 및 알람 가능
 * Network Access Analyzer
     - 입력한 Source Resource ---> Destination Resource 경로에 대하여 네트워크 & 보안 거버넌스 분석 (Resource를 인터넷으로 지정하면 인터넷으로 나갈 수 있는 모든 경로를 체크한다)
     - Resource를 확인되지 않은 네트워크 경로를 발견하기 위한 용도
+
 * Tool
     - Wireshark / tcpdump : Packet Capture
     - traceroute : Check routing hop
@@ -284,7 +317,8 @@
     - VPN ECMP support (Tunneling)
         ![VPN_ECMP](img/VPN_ECMP.JPG)
         * ECMP 동작 가능. VPN의 Aggregation Throughput을 최대로 사용할 수 있다.
-        * ECMP가 없고 Active/Active 형태로 쓰고 싶다면 그림과 같은(192.168.128.0/25. 즉, 서로 다르게 사용할때 가능) 추가 설정이 필요하다. 각 VPN 터널은 동일한 BGP를 보내게 되는데, 이때 비대칭 라우팅이 발생할 수 있다!!
+        * 각 VPN 터널은 동일한 BGP를 보내게 되는데, 이때 비대칭 라우팅이 발생할 수 있다!! ---> 이를 위해 고객 게이트웨이의 가상 터널 인터페이스에서 비대칭 라우팅이 활성화
+        * ECMP가 없고 Active/Active 형태로 쓰고 싶다면 그림과 같은(192.168.128.0/25. 즉, 대역을 서로 다르게 사용할때 가능) 추가 설정이 필요하다.
     - MTU
     - AZ consideratioin
         1) AZ affinity : 기본적으로 트래픽을 보낸 ENI의 AZ로 트래픽을 송신하는 것을 유지하려 한다(선호).
@@ -331,7 +365,7 @@
         2) Client VPN : Router/Switch가 아닌 Client에 직접 붙게하는 서비스
     - NAT-Traversal
         - Customer VPN 장비가 NAT 뒤에 있는 경우 NAT에서 해당 통신에 대한 다르게 처리가 필요하다. 이때 사용되는 기술
-        - 기본적으로 UDP:500을 통해서 VPN 정보를 공유하는데, NAT 뒤에 있는 경우, UDP:4500 포트도 필요
+        - 기본적으로 UDP:500을 통해서 VPN 정보를 공유하는데, NAT 뒤에 있는 경우, UDP:4500 포트를 사용해 IPsec 패킷을 캡슐화하여 트래픽을 처리한다.
     - Tunnel 비대칭 라우팅 (Active/Active) : On-prem 장비에서 비대칭 라우팅을 지원하지 않는 경우, 해당 부분에 대한 설정이 필요 (CIDR 분리, MED를 통해 한쪽으로만 통신, Active/Passive로 변경)
     - DPD(Dead peer detection) : 해당 VPN Connection이 죽었는지 확인하는 방식
         - R-U-THERE message check (Idle timeout, 체크 횟수 등)
@@ -341,7 +375,9 @@
         ![DX_Connection](img/DX_Connection.png)
         - 보안 : IPSec VPN 지원 가능. MACsec도 지원하나 생성 시에 설정 가능
             1) MACsec 보안(IEEE 802.1AE) : Layer 2 보안 (On-prem 장비 switch or router가 지원해야함 / ref : https://aws.amazon.com/ko/blogs/networking-and-content-delivery/adding-macsec-security-to-aws-direct-connect-connections/)
-            2) IPsec VPN : Layer 3 보안 (VPN 통신 연결 시, Public VIF만 지원)
+            2) IPsec VPN : Layer 3 보안 (VPN 통신 연결 시, Public VIF, Transit VIF 지원)
+            - MACSec은 DX Location <---> On-prem 간의 암호화
+            - IPSec은 AWS <---> Public VIF / DX Location 간의 암호화
         - Connection Type
             1) Hosted : Connection을 여러 고객이 공유하는 방식으로 VLAN을 통해 트래픽을 분리
                 - Connection : VIF == 1 : 1 관계 (이미 제공업체에서 Connection을 VLAN으로 분리를 했기 때문에)
@@ -391,7 +427,7 @@
         - 연결 제한
             1) VGW : 20개
             2) TGW : 
-        - SiteLink : On-prem끼리 DXGW를 통해서 서로 통신하게 할 수 있음! (DX Connection끼리 통신할 수 있음)
+        - SiteLink : On-prem끼리 하나의 DXGW를 통해서 서로 통신하게 할 수 있음! (DX Connection끼리 통신할 수 있음)
     > 고찰 : DX Location Router는 DX Connetion끼리의 통신이나 Inter VLAN을 지원하지 않는다. DX Gateway도 마찬가지다. 이유는 Direct Connect 서비스 자체가 라우팅을 위한 목적이 아닌 연결에 목적을 두고 있기 때문이다!!!
     - Active / Passive (이중화)
         ![DX_Connection_AP](img/DX_Connection_AP.png)
@@ -452,7 +488,6 @@
         1) DNS Query Logging : Public Hosted Zone에서 발생한 쿼리에 대한 로그
         2) Resolver Query Logging : Private Hosted Zone. VPC 내에서 만들어지는 모든 쿼리에 대한 로그
     - Shuffle sharding (셔플 샤딩)
-        - 
         - 서로 다른 고객의 샤딩(워커의 묶음)을 섞어서 배치함으로써, 한 고객이 서비스가 공격/장애 등으로 해당 워커들에 장애가 발생하더라도, 다른 워커들에게 영향을 미치지 않는다. 그리고 같은 워커를 공유하고 있던 다른 고객의 서비스 입장에서도 다른 워커에서 정상적으로 동작 중이기 때문에 정상적으로 서비스가 가능하다.
         - https://aws.amazon.com/ko/builders-library/workload-isolation-using-shuffle-sharding/
     - Anycast Striping
@@ -551,22 +586,30 @@
     > 인증서 자동 업데이트 필요!
 * AWS Private CA : 내부용 인증서 관리
 * DNSSEC validation : DNS 인증서 관리
-
-
+* AWS Inspector : 평가 대상(EC2 Instance, ECS Container, AMI, S3)을 계속 모니터링하면서 애플리케이션의 보안 및 규정 준수 요구사항을 평가
+    - OS 취약점
+    - 소프트웨어 취약점
+    - 네트워크 취약점
+* AWS GuardDuty
 
 </br>
 
 ### Detective service
 * CloudWatch
+    - CloudWatch Logs + 로그 지표 필터 + EventBridge + 
 * CloudTrail
     - 90일치가 저장
     - CloudWatch or S3
 * VPC Flow logs : VPC 플로우 로그 기록
+    - VPC / Subnet 구분 가능
 * Route53 resolver query logs : VPC 내 Route 53 resolver 로그를 기록
 * GuardDuty : 로그를 분석하여 잠재적 악의 활동을 탐지
+    - VPC Flow logs
+    - CLoudTrail Event Logs
+    - DNS Query Logs
+    - EventBrdige + SNS == Alarm
 * Traffic Mirroring : 트래픽을 다른 ENI로 전달
  
-
 
 ---
 ## Management & Goverment
@@ -592,15 +635,12 @@
 * VPC Sharing
     - 같은 조직 내에서만 가능
     - AWS RAM 사용하여 공유
-* Private NAT Gateway
-    - VGW / TWG 로 연결되어 있어야 한다.
-    - 
+
 
 * AWS Workspaces : VDI 서비스
 * AWS Appstream networking
 * AWS WaveLength : 5G Edge Network
     - ML, AR,VR, Real-time Gaming
-
 
 
 
@@ -707,76 +747,206 @@
 * 1번 : 현재 Kubernetes용 NLB는 SSL종료를 
 * 2번 : ALB Rule
 * 3번 : ...?
+
 * 11번 : DNS
-* 13번 : 
-* 14번 :
-* 20번 : 
-* 21
-* 24
+* 13번 : BGP 접두사 광고 개수
+* 14번 : DNS
+* 17번 : Global Accelerator
+
+* 21 : Traffic Filltering
+* 23 : GWLB
+
+
+* 24 : Private NAT Gateway
+* 25 : 
+
+
 * 27
 * 28
 * 30
+* 31
+
 * 32
+* 34
+
 * 36
 * 37
+* 38
+
+
+
 * 39
+
+
 * 42
 * 
 
 
 
 
-
-## ALB
-- 보안 정책
-    - TLS : 일반적인 네트워크 암호화 통신
-    - FIPS : 미국 연방 정부의 정보 처리 시스템을 위한 보안 표준
-    - FS Security Policy (순방향 보안 정책) : 세션 키 보안
-- 
-
-
-
-
-## TGW
-- Network Manager를 사용하여 TGW에서 발생하는 이벤트를 CloudWatch로 전달 가능
-- Connect Attachment 
-    - SD-WAN 연결
-    - GRE & BGP
-    - 
-- Multicast : IGMP 지원 / TCP가 아닌 UDP 통신
-
-
-## DX
-- Connection은 생성후 포트 속도 변경 불가능 X
-- LAG 생성 후 VIF 
-- VIF Prefix 개수
-    - Public : 1000
-    - Private : 100
-    - Transit : 100
-- 
-
-
-
-
-## VPC
-- NAT Gateway는 Log 설정이 없다
-- Egress-Only Internget Gateway : IPv6 아웃바운드 트래픽만 허용하고 싶을때 사용
-- BYOIP Pool은 Cloud-init을 통해서만 연결 가능..
-
-
-## ACM
-- EC2에는 ACM의 인증서를 적용할 방법이 없다.
-
-
-
-## IPv6
-- TGW IPv6 지원
-- DX Transit VIF는 IPv6 활성화 업데이트 가능
-- Site-To-Site VPN은 IPv4, IPv6 모두 지원 불가. 하나 VPN에서 IPv4 또는 IPv6 중에 선택해야 한다!
-    - Transit Gateway에 대해서만 IPv6 지원 가능
-    - VPN은 IPv6 지원 불가
-
-
 ## Peering
 - 동일한 AZ인 경우 Peering은 무료로 제공된다
 - 그렇기 때문에 VPC 통신 중에 가장 저렴하다!!!
+
+
+## 라우팅 우선순위
+- 정적
+    - 로컬
+    - 그 외
+- 동적
+    - DX
+    - VPN
+
+
+## BGP 개수
+- VPC : 100
+- TGW : 5000
+- DX : 100
+
+## 라우팅 테이블 개수
+- VPC : 50 ~ 100
+- TGW : 10000 ~ 20000
+- DX : 100
+
+
+
+
+## Private NAT Gateway
+- VGW / TWG 로 연결되어 있어야 한다.
+- 고유 IP 존재
+
+
+
+## EC2
+- 시작 템플릿에서 BYOIP 선택 불가능
+
+
+
+## 키워드 공부
+* 암호화
+- Client <---> Backend 암호화 유지 : NLB / TCP / Backend에서 인증서 처리 (ACM 사용 불가)
+- IPSec : Site-to-SIte VPN 
+- MACSec : 
+    - 새로운 Connection / LAG 생성 필요
+    - 연결 키 (CAK)와 연결 키 이름(CKN)을 연결
+
+
+
+---
+* DDoS
+- AWS Shield
+- 
+
+
+---
+* Traffic 검사
+- WAF : 
+    - AWS CloudFront
+    - AWS API Gateway
+    - AWS Application Load Balancer
+    - AWS AppSync GraphQL API
+    - AWS Cognito user pool
+    - AWS App Runner service
+    - AWS Verified Access instance
+- GWLB
+
+---
+* 로드밸런서
+- 경로(Path), 호스트 기반 라우팅 : ALB
+- 사용자 IP 유지 : ALB - X-Forward-For / NLB - Client IP 보존
+- 
+
+
+---
+* 전세계
+- TCP, IP 기반 : Global Accelerator
+- HTTP/HTTPS, 캐싱/보안 : Cloud Front
+
+
+---
+* 중앙 공유 서비스
+- PrivateLink : Only TCP / NLB, GWLB 연결 가능
+- 
+
+
+---
+* IPv6
+- DX Transit VIF의 피어링에 IPv6 추가 가능. 그 외의 설정에 대해서는 전부 새로 생성해야 한다
+
+
+===========================================
+
+---
+* NAT Gateway
+- 액세스 로그 설정은 없다!!!! 아무 설정이 없어, 그냥 가는 거야
+- Security Group을 가지고 있지 않는다. 오직 NACL로만 가능
+- IPv4/IPv6 모두 지원
+- Public Subnet에만 생성 가능
+- 350s Idle-timeout이 있으므로, 인스턴스에서 350초 미만의 값으로 TCP keepalive를 활성화
+
+
+
+
+---
+* Global Accelerator
+- 기본적으로 클라이언트 IP를 보존하므로, 인터넷에 대한 모든 IP를 Open, 아닌 경우 GA의 Endpoint 적용
+- Target : ALB / NLB / EC2 Instance / EIP
+- 
+
+
+
+---
+* DX
+- Connection은 생성후 포트 속도 변경 불가능 X. 그 외 모든 설정은 전부 새로 생성
+- SLA 99.9%를 위해서는 2개의 DX Location 사용 필요
+- VIF
+    - Prefix 개수 : Public 1000 / Private 100 / Transit : 100
+- LAG
+    - VIF 신규 생성 필요
+    - 
+
+
+
+
+
+
+
+
+
+- DX IPSec VPN
+    - Private VIF는 실질적으로 IPSec VPN이 아니다! NONONO
+    - VGW - Site-to-Site VPN - Public VIF(DX Connect) - CGW
+    - TGW - Site-to-Site VPN - Public VIF(DX Connect) - CGW
+    - TGW - Site-to-Site VPN - DXGW - Transit VIF(DX Connect) - CGW
+
+- Security
+    - Route53 Resolver DNS Firewall : DNS Firewall VPC 설정 - Fail Open
+
+
+
+- SSL
+    - Client <-> 종단 간 암호화 : NLB
+    - EC2에 대한 인증서는 ACM을 통해 생성 불가
+
+
+- VPC Endpoint
+    - 통합시, Private DNS 비활성화 필요
+    - Route53 Private Hosted Zone 생성 필요
+
+
+
+
+- Bandwidth limits
+1. AWS Network Service Internal (with region)
+    - VPC : No limits
+    - Internet Gateway : No limits
+    - VPC Peering : No limits
+2. AWS Network Service External
+    - VPN (per Tunnel) : 1.25 Gbps
+    - DX : 1 Gbps / 10 Gbps / 100 Gbps (포트를 여러개 둠으로써 1 ~ 300 Gbps 선택 가능)
+3. Instance
+    - NAT Gateway : 3 ~ 45 Gbps 
+    - EC2 : 기본적으로 인스턴스 타입마다 제공되는 Bandwidth가 다름. 다른 리전이거나 Internet Gateway를 통과하거나 DX를 통과하는 경우, 32 vCPU 이상 사용하는 EC2 기준으로 제공된 인스턴스 타입 Bandwidth의 50% 까지만 사용 가능. 32 vCPU 미만인 경우 5 Gbps.
+        1) One flow limit with Intel 82599 VF interface : 5 Gbps
+        2) One flow limit With ENA not in placement : 5 Gbps 
+        3) One flow limit with ENA in placement : 10 Gbps

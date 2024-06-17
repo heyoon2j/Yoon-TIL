@@ -25,4 +25,4 @@ RSA : 공개키 암호화 알고리즘 (Public Key / Private Key)
 4) Server는 Private Key를 사용하여 전달받은 데이터를 복호화하여 대칭키를 획득
 5) 해당 대칭키를 이용해 서로 TLS/SSL 통신
 
-> Root 인증기관에서 인증을 보통 못받는 경우에는 자체 사인을 하는 이유도 그렇고,  
+> Root 인증기관에서 인증을 보통 못받는 경우에는 자체 사인, Root 인증서에, Key를  
