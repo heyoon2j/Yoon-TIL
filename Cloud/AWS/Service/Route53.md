@@ -3,15 +3,42 @@
 </br>
 
 ## Route53 기능
-1. __Domain 등록__
+Route53은 RDS의 AWS 서비스에 대해 활성화된 AZ의 리소스에 대해 자동으로 IP Refresh 한다.
+
+Route53 Hostzone을 사용하기 위해서는 enableDnsSupport & enableDnsHostname  모두 활성화 필요
+
+* __Domain 등록__
     * 도메인을 구입 후, Route53에 도메인을 등록시킨다.
     * 등록이 끝나면, AWS는 도메인 등옥 대행자에게 사용자의 정보를 전송한다.
     * 등록 대행자는 사용자 정보를 도메인의 등록 기관으로 전송. 등록 기관은 .com과 같은 하나 이상의 최상위 도메인의 도메인 등록을 판매하는 회사이다.
     * 등록 기관은 자체 데이터베이스에 사용자의 도메인에 관한 정보를 저장하고 일부 정보는 퍼블릭 WHOIS 데이터베이스에도 저장한다.
-2. __Traffic Routing__
+* __Traffic Routing__
     * 인터넷 트래픽을 도메인의 리소스로 라우팅
-3. __Health Check__
+* __Health Check__
     * Region 간의 Load Balancing을 하지 않는 이상, 잘 사용되지 않을 거 같다.
+    1) 총 256개의 Child Health Check가 가능
+    2) Route53은 VPC 외부에서 Health Check를 하며, VPC 내부에서 Check하기 위해서는 CloudWatch Alarm을 통해 설정해야 한다.
+* DNSSEC
+    - DNS 데이터 무결성을 확보하기 위해 사용
+    - Public Hosted Zone에서만 사용
+    - 암호화 인증에 필요한 KSK, ZSK가 필요
+        - ZSK : 실제 데이터를 서명하는데 사용
+        - KSK : ZSK를 서명하는데 사용
+    - 키는 us-east-1 리전에 비대칭 KMS키를 사용하여 KSK or ZSK를 생성하여 사용
+* Route53 Resolver DNS Firewall
+    - Black List & White List
+    - Fail 설정 방법
+        1) Fail-open : Firewall이 비정상일 시, Route53 쿼리에 대하여 정상 동작 (Allow)
+        2) Fail-close : Firewall이 비정상일 시, Route53 쿼리에 대하여 차단 (Block)
+* Logging
+    1) DNS Query Logging : Public Hosted Zone에서 발생한 쿼리에 대한 로그
+    2) Resolver Query Logging : Private Hosted Zone. VPC 내에서 만들어지는 모든 쿼리에 대한 로그
+* Shuffle sharding (셔플 샤딩)
+    - 서로 다른 고객의 샤딩(워커의 묶음)을 섞어서 배치함으로써, 한 고객이 서비스가 공격/장애 등으로 해당 워커들에 장애가 발생하더라도, 다른 워커들에게 영향을 미치지 않는다. 그리고 같은 워커를 공유하고 있던 다른 고객의 서비스 입장에서도 다른 워커에서 정상적으로 동작 중이기 때문에 정상적으로 서비스가 가능하다.
+    - https://aws.amazon.com/ko/builders-library/workload-isolation-using-shuffle-sharding/
+* Anycast Striping
+    - DNS 서비스를 여러 지역에 있는 Edge Location에서 처리하도록 Anycast로 설정한다. 이에 따라 네트워크 지연을 최소화하며, 장애가 발생하더라도 가장 가까운 위치의 Edge Location으로 전환됨으로써 신뢰성과 가용성을 높일 수 있다.
+
 </br>
 
 
@@ -407,9 +434,13 @@ mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.c
 * Traffic Flow
 
 
+---
+## Route53 기능
+
 
 ## DNSSEC
 DNS Security Extensions
 * DNS 무결성 확보
 * Public Hosted Zone에서만 사용 가능
 * 
+

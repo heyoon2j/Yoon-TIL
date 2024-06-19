@@ -176,6 +176,7 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
 4. 함수 연결
     * 트리거 설정
     * 빠른 실행은 CloudFront Function (비용 저렴), 그 외에는 Lamdbda@Edge 사용 (No free tier)
+    * 통신 순서 : (CloudFront Function) - Edge Location - (Lambda@Edge) - Origin
     1) CloudFront Function
         - 위치 : Edge Location 에서 동작
         - 언어 : JavaScript
