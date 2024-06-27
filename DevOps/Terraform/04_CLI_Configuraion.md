@@ -32,4 +32,24 @@ Terraform CLI 구성 파일인 ```~/.terraformrc```(Linux) 및 ```terraform.rc /
             exclude = ["github.io/*"]
         }
     }
+
+    ```
+    - Example
+    ```
+    # /Users/tester/provider/registry.terraform.io/hashicorp/aws/
+    # /Users/tester/.terraform.d/plugin-cache/registry.terraform.io/hashicorp/aws/
+
+    plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
+
+    disable_checkpoint = true
+
+    provider_installation {
+        filesystem_mirror {
+            path    = "/Users/tester/provider"
+            include = ["registry.terraform.io/hashicorp/*"]
+        }
+        direct {
+            exclude = ["github.io/aws/*"]
+        }
+    }    
     ```

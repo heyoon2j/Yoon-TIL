@@ -13,33 +13,40 @@
     * connection plugin or module들에서 사용되어진다.
     * 명령어: ```$ python -m pip install --user paramiko```
 
-
+---
 ## Basic
 * Anible의 기본 언어는 YAML 언어이다.
 * Ansible은 크게 2개의 Component를 가진다.
-*  Controller Node: Ansible 설치된 모든 시스템. Windows machine은 Control Node가 될 수 없다.
-* Managed Node: Ansible로 관리되는 장치. "hosts"라고도 한다.
-* Inventory: Managed node들의 IP address 목록을 정의하는 파일, "hostfile"이라고 말한다. Managed node들의 IP address나 그룹화 등의 정보가 저장된다.
-* Role: 핵심 구성 요소로 Service 전반적인 코드를 Playbook에서 충분히 재사용하도록 모듈화할 수 있다. 즉, 하나의 기능 동작을 의미한다.
-* Playbook: Anisble 구성, 배포 및 오케스트레이션이 포함된 파일. 해당 파일을 작성함으로 OS 구성에서 응용 프로그램 배포와 모니터링까지 시스템의 상태를 순차적으로 정의할 수 있다.
-* Module: Ansible에서 정의해둔 실행 단위로 실행할 수 있는 라이브러리를 의미.
-* Ansible Config: Ansible 환경변수 정의 파일.
+	- Controller Node: Ansible 설치된 모든 시스템. Windows machine은 Control Node가 될 수 없다.
+    - Managed Node: Ansible로 관리되는 장치. "hosts"라고도 한다.
+* 구성 요소
+    - Ansible Config: Ansible 환경변수 정의 파일.
+	- Inventory: Managed node들의 IP address 목록을 정의하는 파일, "hostfile"이라고 말한다. Managed node들의 IP address나 그룹화 등의 정보가 저장된다.
+	- Module: Ansible에서 정의해둔 실행 단위로 실행할 수 있는 라이브러리를 의미.
+	- Role: 핵심 구성 요소로 Service 전반적인 코드를 Playbook에서 충분히 재사용하도록 모듈화할 수 있다. 즉, 하나의 기능, 동작을 의미한다.
+	- Playbook: Anisble 구성, 배포 및 오케스트레이션이 포함된 파일. 해당 파일을 작성함으로 OS 구성에서 응용 프로그램 배포와 모니터링까지 시스템의 상태를 순차적으로 정의할 수 있다. 즉, 어떤 Role을 사용하여 동작시킬지, 어떤 Inventory를 사용하여 대상을 선택할지 정한다!
+</br>
+</br>
 
 
-
+---
 ## Ansible Task 처리 과정
 ![TaskProcess](img/TaskProcess.png)
-* Ansible은 Task 실행 시, 하나의 Module을 처리할 때마다 독립된 Process를 실행시켜 처리한다.
+* Ansible은 Task 실행 시, 하나의 Module을 처리할 때마다 독립된 Process를 실행시켜 처리한다!
 * 동일한 command를 처리해도 PID가 다른 것을 볼 수 있다.
-* 그렇기 때문에, 하나의 Terminal에서 처리해야 되는 경우 주의해야 한다.
+> 그렇기 때문에, 하나의 Terminal에서 처리해야 되는 경우 주의해야 한다.
+
+### Ansible 명령어
+* 
 
 
-## Anisble 그 외 명령외
+### Anisble 그 외 명령외
 * ```ansible-doc <command>```: <command> 모듈에 대한 문서를 확인할 수 있다.
 
-
+---
 ## Ansible Directory Structure
 ```
+ansible.cfg				# Anible Config File
 
 inventories/
    production/
@@ -97,8 +104,7 @@ roles/
 ```
 
 
-
-
+---
 ## Use Ansible
 ## Ansible Config 파일 설정
 * https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-roles-path
@@ -125,19 +131,99 @@ roles/
     ```
 > 가장 많이 사용되는 Config 파일 위치는 현재 디렉토리에 있는 Config이다.
 
+</br>
+
 ## 1. user 생성 및 sudo 권한 부여
 * 기본적으로 root로 권한으로 모든걸 수행하는 것은 바람직하지 않다.
-* Conrol Node의 User name이 Managed Node에도 동일하게 존재해야 한다.
-* 그리고 기본적을 ssh 접속을 하기 때문에, key도 공유해야 한다. 
+* Control Node의 User name이 Managed Node에도 동일하게 존재해야 한다.
+* 그리고 기본적을 ssh 접속을 하기 때문에, key도 공유해야 한다.
 * Example
     ```
-    # Control, Managed node 모두 동일한 유저가 이써야 한다.
-    $ useradd -c AnsibleUser -u 5000 -U -s /bin/bash -p 0000000!! ansible
+    # Control, Managed node 모두 동일한 유저가 있어야 한다.
+    $ useradd -c "user for ansible" -E -1 -s /bin/bash -u 5000 -p 0000000!! ansible
     $ echo "ansible ALL(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    
+	```
+	- c : Comment
+	- E : 만료 활성화 (비활성화 : -1)
+	- M : 만료기간 설정 (무제한: 99999)
+<br>
+
+
+## 2. Inventory 파일 생성
+* 어떤 Managed Node를 관리할지 Inventory 파일에 작성한다.
+* 기본적으로 ```/etc/ansible/hosts``` 파일에 정의한다.
+* https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
+* Example
     ```
+    # Inventory Structure (inventory/...)
+    .
+    ├── 01-openstack.yml          # configure inventory plugin to get hosts from OpenStack cloud
+    ├── 02-dynamic-inventory.py   # add additional hosts with dynamic inventory script
+    ├── 03-on-prem                # add static hosts and groups
+    ├── 04-groups-of-groups       # add parent groups
+    ├── group_vars
+    │   └── all
+    ├── hosts
+    └── host_vars    
+    ```
+    * Ansible은 파일 이름에 따라 ASCII 순서로 병합한다. 파일에 접두사를 추가하여 로드 순서를 제어할 수 있다.
+
+    ```
+    # hosts file
+    all:
+      hosts:
+        172.16.30.91
+      children:
+        webservers:
+          hosts:
+            dev:
+              ansible_host: 172.16.30.92
+              ansible_port: 40022
+            prd:
+              ansible_host: 172.16.30.93
+              ansible_port: 40022
+          vars:
+            ntp_server: ntp.atlanta.example.com
+            proxy: proxy.atlanta.example.com
+        wasservers:
+          hosts:
+            172.16.30.94
+            172.16.30.95
+    ```
+    * "all:"은 모든 Hosts를 의미한다.
+    * "children:"은 부모/자식 그룹을 만들 수 있다.
+    * 하위 그룹의 구성원인 모든 호스트는 자동으로 상위 그룹의 구성원이 됩니다.
+    * 그룹은 여러 부모와 자식을 가질 수 있다.
+    * 호스트는 여러 그룹에 있을 수도 있지만 런타임에는 호스트 인스턴스가 하나만 있게 된다(Ansible은 여러 그룹의 데이터를 병합하기 때문에)
+    * 중복된 Host name을 가질 수 없다.
 
 
-## 2. Role 만들기
+    ```
+    # group_vars/<group_name>
+    # group_vars/<group_name>/*
+    # group_vars/webserver
+    # group_vars/webserver/cluster_settings
+    # group_vars/webserver/db_settings
+    
+    ansible_connection: local
+    absible_become: True
+    ansible_become_method: sudo
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_user: ec2-user
+    ```
+    ```
+    # host_vars/<host_name>
+    # 
+    ---
+    ansible_host: 12.12.12.12
+    ```
+    * 기본적으로 all은 모든 그룹을 의미한다.
+    * host_vars: host variables, 하나의 host에 대한 변수. 해당 Dir의 File들은 host 명으로 naming 한다.
+    * group_vars: group variables, group에 대한 변수. 해당 Dir의 첫 File 또는 Dir는 group 명으로 naming을 한다. 
+    > 하위 그룹의 변수는 상위 그룹의 변수보다 높은 우선 순위(재정의)를 갖는다.
+
+## 3. Role 만들기
 * 역할 스크립트는 https://galaxy.ansible.com/과 같은 커뮤티니 사이트에서 지원을 받을 수 있다.
 * ```ansible-galaxy``` 명령어를 사용해 커뮤니티에서 지원하는 역할을 임포트할 수 있다.
 * task는 각 프로세스가 생성되어 실행된다. 그렇기 때문에 ```source``` 명령어가 필요한 경우, 하나의 프로세스에서 실행시켜야 한다.
@@ -215,88 +301,34 @@ roles/
 
 
 
-## 3. Inventory 파일 생성
-* 어떤 Managed Node를 관리할지 Inventory 파일에 작성한다.
-* 기본적으로 ```/etc/ansible/hosts``` 파일에 정의한다.
-* https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
-* Example
-    ```
-    # Inventory Structure (inventory/...)
-    .
-    ├── 01-openstack.yml          # configure inventory plugin to get hosts from OpenStack cloud
-    ├──   02-dynamic-inventory.py   # add additional hosts with dynamic inventory script
-    ├──   03-on-prem                # add static hosts and groups
-    ├──   04-groups-of-groups       # add parent groups
-    ├── group_vars
-    │   └── all
-    ├── hosts
-    └── host_vars    
-    ```
-    * Ansible은 파일 이름에 따라 ASCII 순서로 병합한다. 파일에 접두사를 추가하여 로드 순서를 제어할 수 있다.
-
-    ```
-    # hosts file
-    all:
-      hosts:
-        172.16.30.91
-      children:
-        webservers:
-          hosts:
-            dev:
-              ansible_host: 172.16.30.92
-              ansible_port: 40022
-            prd:
-              ansible_host: 172.16.30.93
-              ansible_port: 40022
-          vars:
-            ntp_server: ntp.atlanta.example.com
-            proxy: proxy.atlanta.example.com
-        wasservers:
-          hosts:
-            172.16.30.94
-            172.16.30.95
-    ```
-    * "all:"은 모든 Hosts를 의미한다.
-    * "children:"은 부모/자식 그룹을 만들 수 있다.
-    * 하위 그룹의 구성원인 모든 호스트는 자동으로 상위 그룹의 구성원이 됩니다.
-    * 그룹은 여러 부모와 자식을 가질 수 있다.
-    * 호스트는 여러 그룹에 있을 수도 있지만 런타임에는 호스트 인스턴스가 하나만 있게 된다(Ansible은 여러 그룹의 데이터를 병합하기 때문에)
-    * 중복된 Host name을 가질 수 없다.
-
-
-    ```
-    # group_vars/<group_name>
-    # group_vars/<group_name>/*
-    # group_vars/webserver
-    # group_vars/webserver/cluster_settings
-    # group_vars/webserver/db_settings
-    
-    ansible_connection: local
-    absible_become: True
-    ansible_become_method: sudo
-    ansible_python_interpreter: /usr/bin/python3
-    ansible_user: ec2-user
-    ```
-    ```
-    # host_vars/<host_name>
-    # 
-    ---
-    ansible_host: 12.12.12.12
-    ```
-    * 기본적으로 all은 모든 그룹을 의미한다.
-    * host_vars: host variables, 하나의 host에 대한 변수. 해당 Dir의 File들은 host 명으로 naming 한다.
-    * group_vars: group variables, group에 대한 변수. 해당 Dir의 첫 File 또는 Dir는 group 명으로 naming을 한다. 
-    > 하위 그룹의 변수는 상위 그룹의 변수보다 높은 우선 순위(재정의)를 갖는다.
 
 ## 4. Playbook 작성
 * 실행할 명령 등이 포함된 Role과 Host 정보가 들어있는 Inventory를 이용하여 Playbook을 작성한다.
 * Example
     ```
     ---
-    - hosts: all
-      become: yes
-      roles:
-        - helloworld
+	- name: 전체 서버 설정
+	  hosts: all
+	  become: true
+	  roles:
+	    - common
+
+	- name: 웹 서버 설정
+	  hosts: webservers
+	  become: true
+	  roles:
+		- role: webserver
+		  tags: webserver
+		- role: security
+		  tags: security
+
+	- name: 데이터베이스 서버 설정
+	  hosts: dbservers
+	  become: true
+	  roles:
+	    - dbserver
+		- role: backup
+		  tags: backup
     ```
     * Playbook Keyword는 다음과 같다.
     1. hosts: Target hosts List
@@ -310,6 +342,12 @@ roles/
 ## 5. Playbook 실행
 * 명령어: ```ansible-playbook <playbook.yml> -i <inventory> --private-key <key>``
     * --check: 실행 시 어떤 것이 변경되는지 확인할 수 있다. 처음에는 해당 옵션을 통해 확인 후 적용하는 것이 좋다(dry-run mode라고 한다)
+
+```sh
+ansible-playbook site.yaml --limit all --tags hello
+```
+- limint : Host 제한
+- tags : 태그 제한
 
 
 
