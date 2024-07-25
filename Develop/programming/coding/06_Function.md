@@ -217,12 +217,12 @@ print(hash(obj1) == hash(obj2))     # True
 * __call__: 객체를 함수처럼 호출할 때 호출되는 메서드로, 클래스 인스턴스를 호출 가능하게 만듭니다.
     ```py
     class Test:
-    def __init__(self, value=0):
-        print('init 메서드 호출됨')
-        self.value = value
-    def __call__(self, x):
-        print('call 메서드 호출됨')
-        return self.value + x
+        def __init__(self, value=0):
+            print('init 메서드 호출됨')
+            self.value = value
+        def __call__(self, x):
+            print('call 메서드 호출됨')
+            return self.value + x
  
     T = Test(5)  # 출력: init 메서드 호출됨
     print(T(10))  # 출력: call 메서드 호출됨, 15

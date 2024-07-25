@@ -283,7 +283,7 @@
     | items() | 모든 Key-Value 값 출력 (dict_items[List(Tuple)] 반환) | dict.items() |
     | dict[key] | 해당 Key 값에 대한 Value 값 추가 또는 변경 (에러 발생 O) | dict["a"] |
     | dict.get(key) | 해당 Key 값에 대한 Value 값 반환 (에러 발생 X) | dict.get["a"] |
-    | update(dict) | 다른 Dictionary의 값으로 해당  Dictionary의 값에 반영 | dict.update(dict2) |
+    | update(dict) | 값 추가 및 수정 / 다른 Dictionary의 값으로 해당 Dictionary의 값에 반영 | dict.update(dict2) |
     | clear()	| 모든 항목을 삭제. del a[:] 와 동등	| dict.clear() | 
     * Example
     ```python

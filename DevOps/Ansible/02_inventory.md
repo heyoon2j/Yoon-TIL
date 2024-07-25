@@ -97,7 +97,6 @@ inventories/
         vars:
             haproxy_backend_port: 80
             haproxy_max_connections: 3000
-          batservers:
       
       loadbalancers:  
         hosts:
@@ -224,21 +223,6 @@ Ansible에서는 크게 두가지의 호스팅 방법이 있다.
     chmod +x dynamic_inventory.py
     ./dynamic_inventory.py --list
     ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -128,10 +128,10 @@ metadata:
 spec:
     #...
 ```
-* apiVersion : API 버전
-* kind : Object 종류
-* metatdata : Object 메타 데이터 정의
-* spec : Object 기능 정의
+- apiVersion : 쿠버네티스 API Version
+- kind : Object 종류
+- metatdata : Object 메타 데이터 정의
+- spec : Object 기능 정의
 </br>
 </br>
 

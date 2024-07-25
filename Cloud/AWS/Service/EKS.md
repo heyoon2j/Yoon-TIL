@@ -9,11 +9,11 @@
     - 상태를 유지하기 위해 Kubernetes는 계속해서 상태를 관찰한다(Observing)
     > k8s는 상태를 선연하다보니 명령어도 run이 아닌 create를 사용한다
 * Object
-    - k8s는 상태를 관리하기 위해 대상을 Object로 정의한다.
-    - Pod Object : Pod 정보 - Container/CNI/CSI
-    - Service : 서비스 네트워크에 관련된 정보 - Load balancer
-    - ReplicaSet : Pod를 여러개 복제하여 관리하기 위한 정보 - 복제 개수/Selector label/Pod Template
-    - Volume Object : 볼륨 정보 - 호스트 디렉토리/EBS 볼륨 등
+    - k8s는 상태를 관리하기 위해 대상을 Object로 정의한다. 아래 외에 여러가지 Object들이 존재
+        - Pod Object : Pod 정보 - Container/CNI/CSI
+        - Service : 서비스 네트워크에 관련된 정보 - Load balancer
+        - ReplicaSet : Pod를 여러개 복제하여 관리하기 위한 정보 - 복제 개수/Selector label/Pod Template
+        - Volume Object : 볼륨 정보 - 호스트 디렉토리/EBS 볼륨 등
 * Node
     - 쿠버네티스 클러스터를 구성하는 최소 단위로, 최소 1개 이상의 컴퓨팅 노드가 필요
 * Pod

@@ -16,9 +16,9 @@
     become: true
     roles:
     - role: webserver
-        tags: webserver
+      tags: webserver
     - role: security
-        tags: security
+      tags: security
 
 - name: 데이터베이스 서버 설정
     hosts: dbservers
@@ -26,7 +26,7 @@
     roles:
     - dbserver
     - role: backup
-        tags: backup
+      tags: backup
 ```
 - hosts: Target hosts List
 - become: (sudo와 같이)상승된 권한 사용 여부. 값은 ```yes``` or ```no```
@@ -42,9 +42,11 @@
 ## 실행 방법
 * 기뵨 명령어: 
 ```bash
-$ ansible-playbook <playbook.yml> -i <inventory> --private-key <key>
+$ ansible-playbook <playbook.yml> -i <inventory_path> --private-key <key>
 
-$ ansible-playbook site.yaml --limit all --tags hello
+$ ansible-playbook site.yaml --limit webservers --tags webserver        # Hosts: webservers로 설정되어 있고 Role의 Tag: webserver 실행
+$ ansible-playbook site.yaml --limit webservers --skip-tags webserver        # Hosts: webservers로 설정되어 있고 Role의 Tag: sercurity 실행
+
 ```
 - -l, --limit : 특정 Host로 제한
 - --tags : 특정 태그로 제한
@@ -53,4 +55,4 @@ $ ansible-playbook site.yaml --limit all --tags hello
 - -v ~ -vvvv : 디버깅 정보 출력
 - --private-key : 특정 키 사용
 - --stats : Task의 특정 통계 정보보기
-- -i : Inventory 파일 지정
+- -i : Inventory 파일 or 폴더 지정

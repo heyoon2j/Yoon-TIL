@@ -29,6 +29,31 @@
 </br>
 </br>
 
+---
+## Container Runtime
+Docker vs ContainerD
+- 기존에는 Docker만 있었기 때문에 Docker를 지원했지만, K8S의 CRI를 따르는 형태가 아니었기 때문에 호환성에 많은 복잡성을 가졌다. 현재는 복잡성을 가진 Docker를 제거하고, CRI 표준을 따르는 ContainerD를 사용하고 있다.
+- 그렇다고 Docker가 이제 사용이 안되는 것은 아니다. Docker 자체 기능은 계속해서 쓰이고 있다.
+  
+### ContainerD
+* CLI
+    - ctr : ContainerD 디버깅용
+    - nerdctl : ContainerD 일반적인 목적
+    - crictl : K8S CRI - ContainerD에 대한 디버깅용
+        ```
+        crictl
+        crictl pull busybox
+        crictl images
+        crictl logs 
+        crictl posds
+        ```
+
+
+
+
+
+
+
 
 ---
 ## Architecture
@@ -44,10 +69,10 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
 </br>
 1) 관리자/사용자가 kubectl을 통해 API Server에 Pod 생성 요청 (API Server로 요청 전달)
 2) API Server는 etcd에 전달된 내용을 기록하여 Cluster의 상태 값을 최신으로 유지 (모든 상태 값은 etcd에 저장)
-3) Contoller Manager가 Pod 생성 요청을 인지하면, Node 할당 없이 Pod Object를 생성하고 상태 값 저장을 API Server에 전달 
-4) Scheduler가 Pod Object 생성을 인지하면, 어떤 Worker Node(Compute machines)에 적용할지 결정하고, 해당 Node에 Pod를 Run하도록 요청
-5) API Server는 이를 Worker Node's Kubelet에 전달하고, Node에 할당된 Pod 상태를 etcd에 저장
-6) kubelet에서 Container runtime을 통해 Pod 생성. Pod에 대하여 "사용 가능 상태"를 API Server에 전달하여 etcd에 저장
+3) Scheduler가 Pod Object 생성을 인지하면 어떤 Worker Node(Compute machines)에 적용할지 결정하고, 해당 Node에 Pod를 Run하도록 요청
+4) kubelet은 API Server를 통해 생성/변경할 Pod를 확인
+5) kubelet에서 Container runtime을 통해 Pod 생성. Pod에 대하여 "사용 가능 상태"를 API Server에 전달하여 etcd에 저장
+6) Contoller Manager는 다양한 컨트롤러를 통해 클러스터 상태를 지속적으로 모니터링하고, 사용자가 정의한 원하는 상태로 유지
 </br>
 </br>
 
@@ -112,17 +137,26 @@ Application Pod들이 동작하는 Node
 ---
 ### Pod
 하나 이상의 Container를 담고 있는 리소스
+
+하나의 서비스(Pod)는 여러 기능(Container)들이 모여 만들어진다. 그렇기 때문에 보통 하나의 Pod에 같은 종류의 Container를 2개 이상 만들지 않고 새로운 Pod를 생성한다!
+
 * Container
     - Application을 의미
     - 일부 기능일 수도 있고, 완전 기능일 수도 있다. 그렇기 때문에 하나 이상의 Container가 모여 완전한 기능을 나타내는 Pod를 이룬다!
 * Namespace & Label
     - 하나의 Cluster 안에 여러 개의 Application이 등록되기 때문에 Namespace를 사용하여 논리적으로 구분한다.
     - 더 세부적인 설정은 Label을 통해서 관리할 수 있다. 
+    > ex) 개발계, 운영계 구분 / 세션을 관리하는 기능이라도 로그인 서비스에 대한 세션일 수 있고, 장바구니에 대한 세션을 관리할 수 있기 때문에
 * Static Pod
     - API Server 상관없이 특정 디렉토리 안에 있는 YAML 정의서를 보고 직접 생성된 Pod를 의미
     - 예시 : kube-apiserver, etcd
     - Default 디렉토리 : ```/etc/kubernetes/manifest```
     > 일반적으로 Core 컴포넌트가 이에 해당!
+
+### Pod State
+- ContainerCreating : 컨테이너 생성중
+- Running : 실행 중
+
 </br>
 
 
@@ -153,3 +187,4 @@ Kubernetes를 잘 활용하기 위해 필요한 기술들은 다음과 같다.
 * Grafana
 </br>
 </br>
+

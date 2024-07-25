@@ -288,7 +288,7 @@ roles/
     dependencies:
       - nodejs
     ```
-    * defaults: Role의 기본 변수를 포함. 우선순위가 가장 낮다.
+    * defaults: Role의 기본 변수를 포함. 우선순위가 가장 낮다. ex> python_version: "3.9.0"
     * template: 해당 Role의 수정을 지원하는 file template을 포함한다.
     * vars: 해당 Role의 전역 변수 정의. defaults 디렉토리의 변수보다 우선순위가 높다.
     * files: 원격 호스트에 복사할 파일들이 저장되어 있다.

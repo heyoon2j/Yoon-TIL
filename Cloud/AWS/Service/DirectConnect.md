@@ -14,6 +14,9 @@ AWS와 On-premise 간의 전용 네트워크를 제공하는 서비스.
     - VLAN / BGP ASN 확인 필요
     1) Priavate VIF : VPC 측에 연결할 수 있는 VIF
     2) Public VIF : AWS Public 리소스에 연결할 수 있는 VIF
+        - Your router peer ip : 고객 게이트웨이 디바이스 
+        - Amazon router peer IP : DX Location Router IP
+        - Prefixes you want to advertise : On-premise 네트워크 CIDR
     3) Transit VIF : Transit Gateway에 연결할 수 있는 VIF
     > KINX 등 제공 업체에게 설정한 VLAN, BGP 전달
 * Direct Connect Gateway : VIF와 Gateway(VGW, TGW)를 연결하기 위한 게이트웨이

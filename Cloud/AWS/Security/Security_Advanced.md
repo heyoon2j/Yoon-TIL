@@ -26,3 +26,18 @@ RSA : 공개키 암호화 알고리즘 (Public Key / Private Key)
 5) 해당 대칭키를 이용해 서로 TLS/SSL 통신
 
 > Root 인증기관에서 인증을 보통 못받는 경우에는 자체 사인, Root 인증서에, Key를  
+
+
+
+## GuardDuty
+AWS Account를 보호하기 위한 지능형 Discovery 보안 솔루션으로 머신러닝 알고리즘을 통해 위협을 찾아낸다.
+- Input data
+    - CloudTrail Event Logs
+    - VPC Flow Logs
+    - DNS Logs
+    - 그 외 데이터 (EKS Audit Logs, RDS 로그인 등)
+- Alarm
+    - EventBridge, Lambda, SNS 통해 알람설정
+- Multi-Account Strategy
+    - 위임을 통해 다른 계정의 GuardDuty까지 관리가 가능하다
+

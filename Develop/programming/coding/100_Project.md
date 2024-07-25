@@ -77,7 +77,7 @@ $ tree .
 python_proj
 ├── README.md
 ├── LICENSE
-├── pyproject.toml or setup.py)
+├── pyproject.toml (or setup.py)
 ├── src
 │   └── y2proj
 │       ├── __init__.py
@@ -499,15 +499,16 @@ $ python3 -m twine upload dist/*
 
 ----
 ## Poetry 사용법
-1. Poetry로 가상 환경 생성
+1. Poetry로 프로젝트 생성
     ```
     cd <proj_dir>
     poetry new <proj_name>
     ```
-2. 가상환경 생성
+2. 프로젝트 초기화
     ```
-    poetry config virtualenvs.in-project true
+    poetry init
     ```
+    - 'pyproject.toml' 파일이 생성됨
 3. 의존성 설치
     1) 기존 pyproject.toml 사용하여 설치하는 경우
         ```
@@ -515,40 +516,102 @@ $ python3 -m twine upload dist/*
         ```
     2) 새로운 패키지를 설치하는 경우
         ```
-        poetry add <Package>
+        poetry add <package>
+        ```
+    3) 개발 환경용 패키지 추가 (빌드시, 해당 패키지는 포함되지 않음)
+        ```
+        poetry add --dev pytest
         ```
 4. 프로젝트 실행
+    1) 하나의 명령 실행이 필요한 경우 (가상환경)
+        ```
+        poetry run python main.py
+
+        poetry run ptyhon path/to/other_script.py
+        ```
+    2) 여러 개의 명령 실행이 필요한 경우 (가상환경)
+        ```
+        poetry shell
+
+        (project_name) $ 
+        ```
+5. 패키지 빌드 (Build)
     ```
-    poetry run python main.py
-
-    poetry run ptyhon path/to/other_script.py
+    poetry build
     ```
-5. 
-6. 
-7.  및 의존성 설치:
-프로젝트 디렉토리로 이동한 후에 다음 명령을 사용하여 Poetry를 사용하여 가상 환경을 생성하고 의존성을 설치합니다.
+    - 'dist' 디렉토리에 소스 배포판과 휠 파일을 생성
+6. 패키지 배포 (Deploy)
+    ```
+    poetry publish
+    ```
+    - PyPI에 업로드
+7. Poetry 환경 설정 변경
+    ```
+    poetry config --list
 
-bash
-Copy code
-poetry install
-이 명령은 프로젝트의 가상 환경을 생성하고, pyproject.toml 파일에 명시된 의존성 패키지를 모두 설치합니다.
+    poetry config <key>             # 설정 조회
 
-Poetry로 프로젝트 실행:
-의존성이 설치된 후에는 다음 명령을 사용하여 프로젝트를 실행할 수 있습니다.
+    poetyr config <key> <value>     # 설정 변경
 
-bash
-Copy code
-poetry run <명령>
-예를 들어, 프로젝트의 메인 스크립트를 실행하려면 다음과 같이 실행합니다.
+    poetry config virtualenvs.in-project true       # 가상환경을 프로젝트 폴더 내에 생성
 
-bash
-Copy code
-poetry run python main.py
-또는 프로젝트에 포함된 다른 스크립트를 실행하려면 해당 스크립트의 경로를 지정합니다.
+    poetry config cache-dir /custom/cache/dir       # 캐시 디렉토리 경로 설정
 
-bash
-Copy code
-poetry run python path/to/other_script.py
-만약 프로젝트가 패키지 형태로 설치되어 있다면, 해당 패키지를 사용하는 방법에 따라 다를 수 있습니다. 일반적으로는 import를 사용하여 모듈을 불러오거나 명령어를 실행합니다.
+    poetry config repositories.my-repo https://my.repo.url  # 사용자 정의 패키지 저장소 추가
 
-이러한 방법을 통해 Poetry를 사용하여 프로젝트를 실행할 수 있습니다. Poetry를 사용하면 프로젝트의 의존성을 효과적으로 관리하고 실행 환경을 일관되게 유지할 수 있습니다.
+    poetry config --global virtualenvs.create false # 가상환경 생성 비활성화
+
+    poetry config --global pypi-url https://pypi.org    # PyPI URL 설정
+    ```
+    - 전역적 설정 시 '--global' 플래그 설정
+8. 그 외
+    ```
+    $ poetry update         # dependencies를 업데이트하고, poetry.locak 파일을 최신화(삭제 하, 다시 install)
+    $ poetry update <pkg_name>  # 특정 dependency만 적용
+ : 
+
+    $ poetry search <pkg_name>  # 사용 가능한 패키지 검색
+    $ poetry env list       #
+    ```
+
+
+</br>
+</br>
+
+
+
+---
+# virtualenv
+1. 설치
+    ```sh
+    pip install virtualenv
+    ```
+2. 가상 환경 생성
+    ```sh
+    virtualenv myenv
+    ```
+    - 가상 환경을 저장하기 위한 디렉토리가 생성된다.
+3. 가상 환경 활성화
+    ```sh
+    source myenv/bin/activate
+    ```
+4. 패키지 설치
+    ```sh
+    pip install package_name
+    ```
+5. requirements.txt 파일 출력 or 설치
+    ```
+    pip freeze > requirements.txt
+    ```
+    ```
+    pip install -r requirements.txt
+    ```
+6. 가상 환경 비활성화
+    ```sh
+    deactivate
+    ```
+7. ㅂ
+8. ㅈ
+9.  ㅋ
+
+
