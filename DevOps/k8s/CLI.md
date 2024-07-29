@@ -2,6 +2,7 @@
 Basic Commands (Beginner):
   create          Create a resource from a file or from stdin
   expose          Take a replication controller, service, deployment or pod and
+
 expose it as a new Kubernetes service
   run             Run a particular image on the cluster
   set             Set specific features on objects
@@ -13,6 +14,8 @@ Basic Commands (Intermediate):
   delete          Delete resources by file names, stdin, resources and names, or
 by resources and label selector
 
+
+============================================================
 Deploy Commands:
   rollout         Manage the rollout of a resource
   scale           Set a new size for a deployment, replica set, or replication
@@ -165,6 +168,110 @@ kubectl config --kubeconfig=config-demo set-cluster test --server=https://5.6.7.
     ```
     - 
 
+```
+
+
+kubectl get <kind> -n [namespace]
+
+kubectl get all
+
+
+kubectl describe <kind> <pod_name> : 상세 현황 출력
+kubectl describe pod pod-abcde
+kubectl descirbe replicaset replicatset-abc
+
+
+
+kubectl delete <kind> <resource_name>
+
+
+
+
+## 잘 안쓰이는
+
+kubectl edit <kind> <resource_name>
+
+
+
+kubectl set image deplyment/myapp-deployment nginx-container=nginx:1.9.1
+
+
+
+
+
+```
+----
+## Update & Rollback
+* 업데이트 전체 주기
+```
+# Create
+kubectl create -f deployment-definition.yaml --record=true
+
+# Get
+kubectl get deployments
+
+# Update
+kubectl apply -f deployment-definition.yaml
+kubectl set imgae deployment/myapp-depolyment nginx=nginx:1.91.
+
+# Statud
+kubectl rollout status deployment/myapp-deployment
+kubectl rollout history deployment/myapp-deployment
+
+# Rollback
+kubectl rollout undo deployment/myapp-deployment
+```
+
+배포전략 2가지 (Deployment Strategy)
+1. Recreate
+   1. Pod를 모두 Down 시키고 다시 생성
+2. Rolling upgrade
+    - 순차적으로 변경분을 업데이트
+    - 이를 위하 ReplicaSet을 새로 만들고, 신규 ReplicaSet에 Pod 1개 생성 / 기존 ReplicaSet에서 Pod 1개 삭제를 반복적으로 진행되면서 하나씩 업데이트가 진행된다.
+
+
+
+
+```
+
+
+
+
+
+
+
+
+kubectl get nodes
+
+  kubectl delete -f ./pod.json
+  
+  # Delete resources from a directory containing kustomization.yaml - e.g. dir/kustomization.yaml
+  kubectl delete -k dir
+  
+  # Delete resources from all files that end with '.json'
+  kubectl delete -f '*.json'
+  
+  # Delete a pod based on the type and name in the JSON passed into stdin
+  cat pod.json | kubectl delete -f -
+  
+  # Delete pods and services with same names "baz" and "foo"
+  kubectl delete pod,service baz foo
+  
+  # Delete pods and services with label name=myLabel
+  kubectl delete pods,services -l name=myLabel
+  
+  # Delete a pod with minimal delay
+  kubectl delete pod foo --now
+  
+  # Force delete a pod on a dead node
+  kubectl delete pod foo --force
+  
+  # Delete all pods
+  kubectl delete pods --all
+
+```
+
+
 
 
 ```
@@ -180,10 +287,16 @@ kubectl run <Pod Nme> --image=nginx             # Run Pod
 kubectl delete pod <Pod Name>                   # Delete Pod
 
 
-
+kubectl apply -f <file_name>
 
 
 kubectl api-resource                            # Print resource list
+
+
+
+
+
+kubectl get replicasets
 
 
 

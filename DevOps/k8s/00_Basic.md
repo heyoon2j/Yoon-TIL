@@ -109,6 +109,10 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
         5) ReplicaSet Controller
             * ReplicaSet 감시하고, 정의된 Label Selector 조건 체크 
             * 체크한 내용에 따라 필요시 Scheduler 쪽에 Pod 생성 요청
+            - High Availability
+            - LoadBalancing & Scaling
+            - 
+        7) 
 5. kube-scheduler
     - Scheduler
     - CPU, Memory 등 리소스 상태를 감시하여 Pod를 적절한 컴퓨팅 Node를 예약

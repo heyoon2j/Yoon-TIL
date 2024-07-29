@@ -93,3 +93,17 @@ iptables mode
 ---
 ## 
 
+
+
+
+---
+All containers/Pods can communicate to one another without NAT
+All nodes can communicate with all containers and vice-versa without NAT
+- NAT 구성 없이도 쿠버네티스 내부의 리소스들은 통신이 되어야 한다
+
+이를 위해 많은 네트워크 플랫폼이 구축되어 있다.
+- Cisco
+- Cilium
+- Calico (가장 많이 쓰임)
+- flnnel
+- VMWare NSX

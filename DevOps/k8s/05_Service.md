@@ -1,5 +1,5 @@
 # Service
-외부에서 Kubernetes Cluser에 접속하는 방법을 서비스라고 한다.
+서비스는 외부와 Kubernetes Cluster 네트워크 연결을 위한 점점(서비스)이다.
 * Service Type은 다음과 같다.
     1) ClusterIP
     2) NodePort
