@@ -5,8 +5,8 @@
     2) Authorization
     3) Admission Control
 * 용어 정리
-    *  JWT : JSON Web Tokens, JSON 형태로 정보를 정의한 토큰
-
+    - JWT : JSON Web Tokens, JSON 형태로 정보를 정의한 토큰
+    - 
 
 
 ---
@@ -28,12 +28,18 @@
             2) credentials : User 정보 / 인증 정보
             3) context : clusters와 users 끼리 매핑
         > Kubernetes에는 user Account를 나타내는 Object가 없다. 그렇기 때문에 API 호출을 통해 일반 사용자를 추가할 수 없다. 그렇기 때문에 클러스터의 인증 기관(CA)에서 서명한 유효한 인증서를 하나의 User로 생각한다.
-    - Service Account : 사용자가 아닌 시스템, Pod에서 실행되는 Process에 대응하여 식별자(ID) 제공 (Namespace 별로 구분됨)
+    - Service Account : 사용자가 아닌 시스템, Pod에서 실행되는 Process에 대응하여 식별자(ID) 제공 (Namespace 별로 구분됨) / ex> 프로메테우스, 젠킨스
         * Service Account는 Namespace에 연결된다. 그리고 SA는 Secrets로써 저장되고 자격 증명 세트에 연결된다.
         * Secrets는 클러스터 내 프로세스가 Kubernetes API와 통신할 수 있도록 포드에 마운트시킴
+        - Namespace 생성 시, Namespace 용도인 기본 ServiceAccount가 생성된다.
+            1) Namespace 용도인 기본 ServiceAccount가 생성
+            2) 최소 권한을 가진 Token용 Secret 생성 (ServiceAcccountToken)
+            3) Pod 생성 시, Secret을 공유할 수 있는 볼륨이 자동 마운트 된다.
+            > 위치 : /var/run/secrets/kuberne
+        -  
 * 인증 모듈 종류
     1. Client Certificates (X.509 인증서, TLS)
-    2. Basic Auth : ```--basic-auth-file=/etc/kubernetes/pki/id_pw_auth```
+    2. Basic Auth (ID/PW) : ```--basic-auth-file=/etc/kubernetes/pki/id_pw_auth```
     3. Tokens
         - Plain Tokens
         - Bootstrap Tokens (Bearer Type) : ``` ```
@@ -56,11 +62,15 @@
 
 ---
 ## Client Certificates
-Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 있다(X.509 등).
-* 인증서 생성 (in Cluster)
-* 인증서 생성 (Manually)
-* 인증서 삭제
-* 인증서 갱신
+Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 있다(X.509 등). 
+* Server 인증서
+    - 
+* Client 인증서
+* 인증서 관리
+    1) 인증서 생성 (in Cluster)
+    2) 인증서 생성 (Manually)
+    3) 인증서 삭제
+    4) 인증서 갱신
 </br>
 
 ### 인증서 생성 (in Cluster) 
@@ -151,6 +161,8 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
     $ kubectl --kubeconfig=$HOME/.kube/config get pod -n aws
 
     $ kubectl get pod -n kube-system --client-certificate=client.crt --client-key=client.key
+
+    $ curl -v -k https://localhost:6443/api/v1/pods -u "user1:password123"
     ```
     - insecure-skip-tls-verify : 인증서에 대하여 공인기관에 검증하는 과정을 건너뛴다
     - certificate-authority-data : Cluster의 Certificate가 공인인증이 아닌 경우, Cluster 인증서를 인증해줄 인증서가 필요하다. 그래서 "insecure-skip-tls-verify: true"인 경우 해당 부분을 공백으로 설정. "false"인 경우, 접속하고자하는 k8s master node의 certificate-authority-data(Root Cert)를 넣어줘야 한다.
@@ -231,7 +243,6 @@ Kubernetes API 사용에 대하여 인증서를 통해 접근을 제어할 수 �
     ```
 </br>
 
-hello-world-token,user1,user1,system:masters
 
 
 ## Bootstrap Tokens (Bearer Type)
@@ -347,14 +358,14 @@ Kubernetes가 제공하는 것이 아닌 완전히 다른 외부 인증을 수�
 
 
 
-
+---
 ---
 # Authorization
 k8s에서는 여러 인증 모드를 제공한다.
 1. Node
-2. ABAC (Attribute-based access control)
-3. RBAC (Role-based access control)
-4. Webhook
+2. ABAC (Attribute-based access control) == AWS IAM User/Group에 Policy 추가하는 방식
+3. RBAC (Role-based access control) == AWS IAM Role
+4. Webhook : 정책 관리를 다른 외부에다가 요청하는 형태
 5. IAM
 * 해당 권한이 있는지 확인하는 명령어
     ```
@@ -391,7 +402,7 @@ k8s에서는 여러 인증 모드를 제공한다.
 ## ABAC (Attribute-based access control)
 속성 기반 액세스 제어는 속성을 결합하는 정책을 사용하여 사용자에게 권한을 부여
 * Policy 정책 파일 사용
- 
+
 
 ## Webhook
 WebHook은 HTTP 콜백으로 어떤 일이 발생할 때 발생하는 HTTP POST이다(간단한 이벤트 알림). WebHooks을 구현하는 웹 애플리케이션은 특정 상황이 발생하면 URL에 메시지를 게시한다.
@@ -420,3 +431,27 @@ WebHook은 HTTP 콜백으로 어떤 일이 발생할 때 발생하는 HTTP POST�
         $ kube-apiserver -h | grep enable-admission-plugins
         ```
 
+
+
+
+---
+---
+## Config File
+- User Account : Cluster에 접근하는 관리자 및 사용자 (전역적이므로 모든 Namespace에 걸처 고유해야 함)
+    * 인증 정보 위치 : ```$HOME/.kube/config``` 파일에 저장
+    * 저장 내용
+        1) clusters : 접근할 Cluster 주소 / 인증 정보
+        2) credentials : User 정보 / 인증 정보
+        3) context : clusters와 users 끼리 매핑
+    > Kubernetes에는 user Account를 나타내는 Object가 없다. 그렇기 때문에 API 호출을 통해 일반 사용자를 추가할 수 없다. 그렇기 때문에 클러스터의 인증 기관(CA)에서 서명한 유효한 인증서를 하나의 User로 생각한다.
+
+```yaml
+
+
+
+
+```
+
+```
+$ kubectl config use-context pord-user@production
+```

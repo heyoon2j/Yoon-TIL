@@ -57,3 +57,15 @@ minikube start --driver=docker
 ```
 - conntrack : 네트워크 연결 추적 및 관리 도구로, Kubernetes 클러스터에서 네트워크 연결을 관리하는 데 사용
 - crictl : CRI(Container Runtime Interface) 도구로, Kubernetes에서 컨테이너 런타임을 관리하는 데 사용
+
+
+
+
+
+
+---
+## Monitoring & Logging
+
+
+
+

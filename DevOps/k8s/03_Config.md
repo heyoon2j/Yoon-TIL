@@ -19,8 +19,6 @@
 
 
 
-
-
 ## ConfigMap
 * 용도
     - 구성 및 설정 정보를 YAML 파일 또는 환경 변수로 저장
@@ -28,9 +26,27 @@
 * 저장 데이터
     - data : UTF-8 문자열
     - binaryData : base64로 인코딩된 문자열
+* 사용
+    ```
+    # ConfigMap 전체 사용
+    volumes:
+    - name : app-config-volume
+      configMap:
+        name: app-config
+    
+    # 해당 Key:Value 값만 사용
+    envFrom:
+      - configMapRef:
+          name: app-config
 
-
-
+    # Value만 사용
+    env: 
+      - name: APP_COLOR
+        valueFrom:
+          configMapKeyRef:
+            name: app-config
+            key: APP_COLOOR
+    ```
 
 </br>
 </br>
@@ -51,6 +67,33 @@
 2. Authentication & Athorization
     - Secret 접근 자체를 인증을 통해서만 접근 가능하도록 하는 방식
     - Type은 기존 인증방식과 동일 (ref : https://kubernetes.io/docs/concepts/configuration/secret/)
+
+* 사용방법
+    ```
+    # ConfigMap 전체 사용
+    volumes:
+    - name : app-secret-volume
+      secret:
+        secretName : app-secret
+    
+    # 해당 Key:Value 값만 사용
+    envFrom:
+      - secretRef:
+          name: app-secret
+
+    # Value만 사용
+    env: 
+      - name: APP_COLOR
+        valueFrom:
+          secretKeyRef:
+            name: app-config
+            key: APP_COLOOR
+    ```
+* Kubernetes가 Secret을 처리하는 방법
+    - A secret is only sent to a node if a pod on that node requires it.
+    - Kubelet stores the secret into a tmpfs so that the secret is not written to disk storage.
+    - Once the Pod that depends on the secret is deleted, kubelet will delete its local copy of the secret data as well.
+    > 추가로 봐야됨 : https://www.youtube.com/watch?v=MTnQW9MxnRI
 </br>
 </br>
 
@@ -83,38 +126,38 @@
           memory: "64Mi"
           cpu: "250m"
         env:
-          - name: DEFAULT_ENV_TEST              # Default Environment
-            value: 123
-          - name: MY_NODE_NAME                  # Pod 정보 가지고오기
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: MY_POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: MY_POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: MY_POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          - name: MY_POD_SERVICE_ACCOUNT
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.serviceAccountName        
-          - name: MY_CPU_REQUEST                # 컨테이너 정보 가지고오기
-            valueFrom:
-              resourceFieldRef:
-                containerName: test-container
-                resource: requests.cpu
-          - name: MY_CPU_LIMIT
-            valueFrom:
-              resourceFieldRef:
-                containerName: test-container
-                resource: limits.cpu
+        - name: DEFAULT_ENV_TEST              # Default Environment
+          value: 123
+        - name: MY_NODE_NAME                  # Pod 정보 가지고오기
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MY_POD_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName        
+        - name: MY_CPU_REQUEST                # 컨테이너 정보 가지고오기
+          valueFrom:
+            resourceFieldRef:
+              containerName: test-container
+              resource: requests.cpu
+        - name: MY_CPU_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: test-container
+              resource: limits.cpu
     restartPolicy: Never
     ``` 
     - ```valueFrom``` : Pod & Container 정보를 가지고 올 수 있다.

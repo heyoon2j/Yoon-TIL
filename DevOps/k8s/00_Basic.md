@@ -30,11 +30,27 @@
 </br>
 
 ---
-## Container Runtime
-Docker vs ContainerD
-- 기존에는 Docker만 있었기 때문에 Docker를 지원했지만, K8S의 CRI를 따르는 형태가 아니었기 때문에 호환성에 많은 복잡성을 가졌다. 현재는 복잡성을 가진 Docker를 제거하고, CRI 표준을 따르는 ContainerD를 사용하고 있다.
-- 그렇다고 Docker가 이제 사용이 안되는 것은 아니다. Docker 자체 기능은 계속해서 쓰이고 있다.
-  
+## Container Runtime Engine (Container Runtime)
+* CRI(Container Runtime Interface): 컨테이너 런타임과 통신할 수 있는 표준 인터페이스
+    - Container Runtime Service: 컨테이너의 라이프사이클 관리. 생성, 삭제, 시작, 중지 등
+    - Image Service: 컨테이너 이미지를 관리.
+* Docker vs ContainerD
+    - 기존에는 컨테이너 런타임이 Docker만 있었기 때문에 Docker를 지원했지만, K8S의 CRI를 따르는 형태가 아니었기 때문에 호환성에 많은 복잡성을 가졌다. 현재는 복잡성을 가진 Docker를 제거하고, CRI 표준을 따르는 ContainerD를 사용하고 있다.
+    - 그렇다고 Docker가 이제 사용이 안되는 것은 아니다. Docker 자체 기능은 계속해서 쓰이고 있다.
+* Container Runtime (High-level)
+    - 컨테이너 런타임 엔진의 상위에서 동작하며, 컨테이너의 라이프 사이클 관리 등
+    1) containerd
+    2) CRI-O
+    3) Docker Engine
+    4) Podman
+* Container Runtime (Low-level)
+    - 컨테이너 런타임 엔진의 하위에서 동작하며, 실제로 컨테이너를 실행하는 역할
+    1) runc (기본적으로 채택되어 있는 런타임)
+    2) gVisor
+    3) Kata Containers
+</br>
+
+ 
 ### ContainerD
 * CLI
     - ctr : ContainerD 디버깅용
@@ -53,6 +69,56 @@ Docker vs ContainerD
 
 
 
+### Container 설정 시 필요한 것들
+- cgroup driver : Control Groups. 프로세스 및 시스템 격리
+- sandbox image : K8S의 기본 이미지
+
+- runc : 리눅스 컨테이너를 시작하고 관리하기 위한 기본 런타임
+- runtime type : runc의 버전을 설정
+- CNI : Container Network Interface. 네트워크 플러그인
+- snapshotter = "overlayfs"
+
+
+
+</br>
+</br>
+
+
+---
+## 컨테이너 구성에 사용되는 리눅스 기술
+Namespace는 프로세스, 시스템에 대한 격리 / Cgroups는 시스템 자원에 대한 제한 및 격리 / Union File System은 파일 시스템 계층에 대한 결합
+- Namespace
+- Control Group (Cgroups)
+- Union File System
+
+### Namespace
+리눅스 커널에서 프로세스를 격리하는 기능으로, 컨테이너마다 독립된 실행 환경을 제공하는 핵심 기능
+- Process ID Namespace : 프로세스 ID(PID) 격리 (호스트와 다른 컨테이너에서 실행 중인 프로세스와 독립적인 PID 공간을 가짐)
+- Network Namespace : 네트워크 스택 격리 (라우팅 테이블, 네트워크 인터페이스 등)
+- Mount Namespace : 파일 시스템 격리 (루트 파일 시스템)
+- UTS Namespace : 호스트 이름과 도메인 이름 격리
+- IPC Namespace : 컨테이너 간에 IPC(Inter-Process Communication) 리소스 격리
+- User Namespace : 사용자 및 그룹 ID 격리 (컨테이너 내에서 루트 권한을 갖더라도 호스트 시스템에 영향을 미치지 않음)
+</br>
+
+### Cgroups (Control Groups)
+프로세스들이 사용하는 시스템의 자원(CPU, Memory, Disk I/O, 네트워크 대역폭 등)의 사용 정보를 수집하고, 제한시키고, 격리시키는 리눅스 커널 기능
+- CPU 제한
+- Memory 제한
+- Block I/O 제한
+- Network Bandwidth 제한
+
+* Cgroup 드라이버
+    1) systemd (선호, 리눅스 배포판에서 systemd를 기본 init 시스템으로 채택하고 있기 대문에)
+    2) cgroupfs
+</br>
+
+### Union File System
+여러 파일 시스템 계층을 하나로 결합하여, 효율적인 파일 관리와 저장소 활용을 가능
+* 컨테이너 이미지 (Container Image)
+
+</br>
+</br>
 
 
 ---
@@ -68,8 +134,8 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
 ![KubernetesArchitecture_2](img/KubernetesArchitecture_2.png)
 </br>
 1) 관리자/사용자가 kubectl을 통해 API Server에 Pod 생성 요청 (API Server로 요청 전달)
-2) API Server는 etcd에 전달된 내용을 기록하여 Cluster의 상태 값을 최신으로 유지 (모든 상태 값은 etcd에 저장)
-3) Scheduler가 Pod Object 생성을 인지하면 어떤 Worker Node(Compute machines)에 적용할지 결정하고, 해당 Node에 Pod를 Run하도록 요청
+2) API Server가 전달한 내용을 etcd에 기록하며 Cluster의 상태 값을 최신으로 유지 (모든 상태 값은 etcd에 저장)
+3) Scheduler가 Pod Object 생성을 인지하면 어떤 Worker Node(Compute machines)에 적용할지 결정하고, 해당 Node에 Pod를 Run하도록 kubelet에 요청
 4) kubelet은 API Server를 통해 생성/변경할 Pod를 확인
 5) kubelet에서 Container runtime을 통해 Pod 생성. Pod에 대하여 "사용 가능 상태"를 API Server에 전달하여 etcd에 저장
 6) Contoller Manager는 다양한 컨트롤러를 통해 클러스터 상태를 지속적으로 모니터링하고, 사용자가 정의한 원하는 상태로 유지
@@ -89,6 +155,26 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
     - API Server. 외부 및 내부 요청(API)을 처리하는 통로
     - 인증, 권한 부여, 액세스 제어 등 제공
     - Etcd와 유일하게 통신
+    ```sh
+    ExecStart=/usr/local/bin/kube-apiserver \\
+    --advertise-address=${INTERNAL_IP} \\
+    --allow-privileged=true \\
+    --apiserver-count=3 \\
+    --authorization-mode=Node,RBAC \\
+    --bind-address=0.0.0.0 \\
+    --enable-admission-
+    plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,Reso
+    urceQuota \\
+    --enable-swagger-ui=true \\
+    --etcd-servers=https://127.0.0.1:2379 \\
+    --event-ttl=1h \\
+    --experimental-encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
+    --runtime-config=api/all \\
+    --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
+    --service-cluster-ip-range=10.32.0.0/24 \\
+    --service-node-port-range=30000-32767 \\
+    --v=2
+    ```
 3. etcd
     - SSOT (Single Source of Truth) 역할을 하는 CoreOS의 Opensource 분산 키-값 데이터베이스
     - gRPC 저장
@@ -96,6 +182,48 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
         - ReplicaSet Object
         - Pod Object
     - "/registry" Directory Key 아래에 모든 Key-Value 형
+    ```sh
+    # HA 구성 시
+    ExecStart=/usr/local/bin/etcd \\
+    --name ${ETCD_NAME} \\
+    --cert-file=/etc/etcd/kubernetes.pem \\
+    --key-file=/etc/etcd/kubernetes-key.pem \\
+    --peer-cert-file=/etc/etcd/kubernetes.pem \\
+    --peer-key-file=/etc/etcd/kubernetes-key.pem \\
+    --trusted-ca-file=/etc/etcd/ca.pem
+    --peer-trusted-ca-file=/etc/etcd/ca.pem \\
+    --client-cert-auth \\
+    --initial-advertise-peer-urls https://${INTERNAL_IP}:2380 \\
+    --listen-peer-urls https://${INTERNAL_IP}:2380 \\
+    --listen-client-urls https://${INTERNAL_IP}:2379,https://127.0.0.1:2379 \\
+    --advertise-client-urls https://${INTERNAL_IP}:2379 \\
+    --initial-cluster-token etcd-cluster-0 \\
+    --initial-cluster controller-0=https://${CONTROLLER0_IP}:2380,controller-1=https://${CONTROLLER1_IP}:2380 \\
+    --initial-cluster-state new \\
+    --data-dir=/var/lib/etcd
+
+    # --cert-file : etcd 서버가 사용하는 서버 인증서 파일의 경로. 클러스터와 클라이언트 간의 통신을 암호화
+    # --key-file : etcd 서버 인증서의 개인 키 파일 경로입니다. 인증서와 함께 사용하여 서버를 인증
+    # --trusted-ca-file : etcd 서버와 클라이언트 간의 통신에서 신뢰할 수 있는 인증 기관(CA) 인증서 파일 경로. 클라이언트가 서버의 인증서를 신뢰하도록 함
+    
+    # --peer-cert-file : 다른 etcd 노드와의 통신에 사용되는 인증서 파일 경로. 피어(동료) 노드 간의 통신을 암호화
+    # --peer-key-file : 피어 통신을 위한 인증서의 개인 키 파일 경로
+    # --peer-trusted-ca-file : 피어 노드 간의 통신에서 신뢰할 수 있는 인증 기관(CA) 인증서 파일 경로. 피어 인증서의 유효성을 검사
+    
+    # --client-cert-auth : 클라이언트 인증을 활성화. 이 옵션이 설정되면 클라이언트가 서버에 연결할 때 클라이언트 인증서를 제출해야 함
+    
+    # --initial-advertise-peer-urls : 이 etcd 노드가 클러스터 내에서 다른 노드에게 자신을 알리기 위해 사용하는 URL. 이 URL은 피어 통신을 위해 사용됨
+    # --listen-peer-urls : etcd 노드가 피어 노드와 통신하기 위해 수신 대기하는 URL
+
+    # --advertise-client-urls : 클라이언트가 이 etcd 노드에 접근할 때 사용할 수 있는 URL
+    # --listen-client-urls : etcd 노드가 클라이언트 요청을 수신 대기하는 URL. 외부와 로컬 클라이언트 요청을 수신
+    
+    # --initial-cluster-token : etcd 클러스터의 초기화 토큰으로, 클러스터의 식별자 역할
+    # --initial-cluster-state new : 클러스터의 초기 상태를 지정. new는 새 클러스터를 시작할 때 사용하고, 기존 클러스터를 복원하려면 existing을 사용
+    # --initial-cluster : 클러스터의 초기 노드 목록을 정의. 각 노드는 etcd 인스턴스의 URL을 지정
+    # --data-dir=/var/lib/etcd : etcd 데이터 파일이 저장될 디렉토리 경로
+    ```
+    
 4. kube-conroller-manager
     - Controller Manager, Cluster 기능을 수행
     - 거의 모든 Object의 상태를 관리
@@ -112,10 +240,11 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
             - High Availability
             - LoadBalancing & Scaling
             - 
-        7) 
+        6) 
 5. kube-scheduler
     - Scheduler
     - CPU, Memory 등 리소스 상태를 감시하여 Pod를 적절한 컴퓨팅 Node를 예약
+    - 그 외, 요구사항 등
 </br>
 </br>
 
@@ -127,6 +256,17 @@ Application Pod들이 동작하는 Node
     * Controller Plane과 통신을 하는 Agent로 모든 Worker Node에 존재
     - Controller Plane에서 요청하면 Kubelet에서 노드에 대한 작업을 수행
     - CSI(Storage Interface), CNI(Network Interface) 관리
+    ```sh
+    ExecStart=/usr/local/bin/kubelet \\
+    --config=/var/lib/kubelet/kubelet-config.yaml \\
+    --container-runtime=remote \\
+    --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
+    --image-pull-progress-deadline=2m \\
+    --kubeconfig=/var/lib/kubelet/kubeconfig \\
+    --network-plugin=cni \\
+    --register-node=true \\
+    --v=2
+    ```
 * kube-proxy                           
     - 쿠버네티스 네트워킹 서비스를 용이하게 하기 위한 네트워크 프록시
     - Pod의 외부 통신을 위한 프로시
@@ -191,4 +331,71 @@ Kubernetes를 잘 활용하기 위해 필요한 기술들은 다음과 같다.
 * Grafana
 </br>
 </br>
+
+
+
+
+
+
+```
+cat /etc/kubernetes/manifests/kube-apiserver.yaml
+
+cat /etc/systemd/
+```
+
+### 기타
+* 노드에 장에가 발생 시, 마스터 노드가 고장났다라고 인식하는데 기다리는 시간 (--pod-eviction-timeout)
+    - 해당 시간 안에 복구가 되면, 안에 있던 Pod를 재생성하지만, 그렇지 않은 경우 다시 생성하지 않는다.
+    - ```$ kubectl controller-manager --pod-eviction-timeout=5m0s ...```
+
+
+* OS Update 시
+* kubernetes Upgrade
+    - v1.23.4 (v.Major.Minor.Patch)
+    - 패치 : 버그 수리
+    - 마이너 : 소규모 릴리즈
+        - v1.10.0-alpha : 릴리즈에 대한 버그가 있을 수 있는 상태. 기능은 디폴티 비활성화
+        - v1.10.0-beta : 새 기능이 디폴트 활성화된 상태로 배포
+        - v1.10.0 : 릴리즈에 대한 안정화
+    - 메이저 : 안정화
+* Cluster Upgrade
+    - 기본적으로 중심이 되는 kube-apiserver는 다른 것들보다 버전이 높아야 한다 (호환성 문제)
+    1) kubeadm 부터 업그레이드 진행
+        - ```$ apt-get upgrade -y kubeadm=1.12.0-00```
+    2) Master Node Upgrade --> 이 기간동안 Pod는 정상적으로 동작한다! 단, 스케줄링 등이 동작하지 않는다.
+        - ```$ kubeadm upgrade plan```
+        - ```$ kubeadm upgrade apply v1.12.0```
+    3) kubelet 업그레이드
+        - ```$ apt-get upgrade -y kubelet=1.12.0-00```
+        - ```$ systemctl restart kubelet```
+    4) Worker Node 하나씩 처리
+        - Master Node에서 ```$ kubectl drain node-1```
+        - ```$ apt-get upgrade -y kubeadm=1.12.0-00```
+        - ```$ apt-get upgrade -y kubelet=1.12.0-00```
+        - ```$ kubeadm upgrade node config --kubelet-version v1.12.0
+        - ```$ systemctl restart kubelet```
+        - Master Node에서 ```$ kubectl uncordon node-1```
+    5) CNI provider upgrade
+        = 
+
+
+
+
+### Image
+- 형태: image: docker.io/library/nginx (image: <Registry>/<User/Account>/<Image/Repository>)
+- 
+
+
+
+
+## Docker Security
+
+
+
+
+## Security Context
+
+
+## Network Polic
+기본적으로 K8S Network Policy는 Stateless이기 때문에 모든 트래픽에 대해 명시적 선언이 필요하다. 하지만 네트워크 플러그인을 어떤거를 쓰냐에 따라 Stateful 방화벽과 같이 동작시킬 수 있다.
 

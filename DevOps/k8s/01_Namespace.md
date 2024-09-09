@@ -45,3 +45,17 @@ $ curl -v <service>:<port>
 ## Annotaion
 Kubernetes System에 필요한 정보를 표시
 * 문법 에러를 체크, 빌드나 배치시 코드를 자동으로 생성, 실행 시 특정 기능을 실행하도록 정보 제공
+
+
+## Namespace
+- Resource Quota (Limit)
+    ```
+    spec:
+      hard:
+        pods: "10"
+        requests.cpu: "4"
+        requests.memory: 5Gi
+        limits.cpu: "10"
+        limits.memory: 10Gi
+    ```
+- 

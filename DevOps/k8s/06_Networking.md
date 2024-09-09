@@ -107,3 +107,221 @@ All nodes can communicate with all containers and vice-versa without NAT
 - Calico (가장 많이 쓰임)
 - flnnel
 - VMWare NSX
+
+
+
+* Switching and Routing
+- Switching
+- Routing
+- Default Gateway
+
+* DNS
+- DNS COnfiguations on Linux
+- CoreDNS Introduction
+
+* Network Namespaces
+* Docker Networking
+
+
+1. DNS
+```
+# DNS 서버 수정
+cat /etc/resolv.conf
+
+# 리눅스 DNS 확인 순서
+cat /etc/nsswitch.conf
+...
+host:       files dns           # files: /etc/hosts 파일, dns: DNS 서버
+...
+
+```
+
+
+
+
+2. Routing - Switching
+```
+$ ip link
+
+$ ip addr
+
+$ ip addr add 192.168.1.10/24 dev eth0          # IP 할당
+
+
+$ route
+
+# Server 1 (Net CIDR: 192.168.1.0/24)
+$ ip route add 192.168.2.0/24 via 192.168.1.1
+
+
+# Server 2 (Net CIDR: 192.168.2.0/24)
+$ ip route add 192.168.1.0/24 via 192.168.2.1
+$ ip route add default via 192.168.2.1          # 기본 게이트웨이 설정. default == 0.0.0.0
+$ ip route add 192.168.2.0/24 via 0.0.0.0       # Local 대역이므로 0.0.0.0은 게이트웨이를 가지 않아도 된다는 의미이다.
+
+
+
+# 해당 서버가 네트워크 트래픽을 포워딩하는 역할을 하도록 설정
+cat /proc/sys/net/ipv4/ip_forward  (임시, 재부팅 시 다시 0으로 변경)
+1
+
+/etc/sysctl.conf    (영구)
+net.ipv4.ip_forward = 1
+
+```
+
+3. Linux Bridge 
+네임스페이스마다 Routing Table / ARP Table이 존재
+```
+# 가상 브릿지 생성
+# ip link add : 네트워크 인터페이스 생성
+ip link add v-net-0 type bridge
+
+# 가상 브릿지 UP
+ip link set dev v-net-0 up
+
+# veth를 생성하고 브릿지 연결용 veth 생성
+ip link add veth-red type veth peer name veth-red-br
+ip link add veth-blue type veth peer name veth-blue-br
+
+# Namespace에 연결 / 가상 브릿지에 연결
+## blue라는 네임스페이스에 독립적인 라우팅 테이블, ARP 테이블이 생성
+ip link set veth-red netns red
+ip link set veth-red-br master v-net-0
+
+ip link set veth-blue netns blue
+ip link set veth-blue-br master v-net-0
+
+# IP 설정 후 인터페이스 UP
+ip -n red addr add 192.168.15.1 dev veth-red
+ip -n blue addr add 192.168.15.2 dev veth-blue
+
+ip -n red link set veth-red up
+ip -n red link set veth-blue up
+
+
+# 브릿지에 IP 등록?
+ip addr add 192.168.15.5/24 dev v-net-0
+
+
+# Route 등록 (필요시)
+ip -n red route add 192.168.15.1
+ip -n blue route add 192.168.15.1
+
+
+
+
+
+iptables -t nat -A PREROUTING -j DNAT --dport 8080 --to-destinatino 80
+iptables -t nat -A DOCKER -j DNAT --dport 8080 --to-destinatino 172.17.0.3:80
+iptables -nvL -t nat
+
+```
+- Pod는 Kubernetes 클러스터 내의 네트워크 네임스페이스를 대표하는 단위이다.
+- Network Bridge는 CNI가 제공하는 가상 네트워크 디바이스이다.
+
+
+
+### Network Namespace 설정 및 관리
+1. Create Network Namespaces
+2. Create Bridge Network/Interface
+3. Create VETH Pairs (Pipe, Virtual Cable)
+4. Attach vEth to Namespace
+5. Attach Other vEth to Bridge
+6. Assign IP Addresses
+7. Bring the interfaces up
+8. Enable NAT - IP Masquerade
+
+### CNI
+컨테이너 Network Namespace 생성 및 관리를 책임지는 인터페이스. 네트워크 스크립트를 실행
+```
+/etc/cni/net.d/net-script.conflist
+/opt/cni/bin/net-script.sh
+./net-script.sh add <container> <namespace>
+
+/etc/cni/net.d/10-bridge.conf : CNI 설정
+/opt/cni/bin   : 네트워크 설정 스크립트
+
+```
+* CNI Plugin Responsibilities:
+    - Support arguments ADD/DEL/CHECK
+    - Support parameters container id, network ns etc...
+    - Manage IP Address assignment to PODs
+        - /etc/cni/net.d/10-bridge.conf 설정에서 대역등 을 설정할 수 있다.
+    - Return results in a specfic format
+
+
+
+* Bridge
+* VLAN
+* IPVLAN
+* MACVLAN
+* WINDOWS
+
+DHCP
+host-local
+
+
+> Docker는 지원하지 않음. Docker만의 CNM(Container network model)이 있음
+
+### Bridge Network
+$ bridge add <cid> <namespace>
+$ bridge add 2e34dcf34 /var/run/netns/2e34cdf34
+
+
+
+* CNI 설정방법
+```
+# kubelet
+--cni-conf-dir=/etc/cni/net.d
+--cni-bin-dir=/opt/cni/bin
+./net-script.sh add <container> <namespace>
+
+```
+
+
+
+각 노드에 CNI Pod가 실행되어 있어서 전반적인 라우팅을 관리하고 있다. 다른 노드와 통신일 필요한 경우, 캡슐화를 통해 전달한다.
+
+
+---
+# Service
+
+
+설정 위치
+```sh
+kube-api-server --service-cluster-ip-range=<ipNet>    # Default: 10.0.0.0/24
+
+iptables -L -t nat | grep -i kube
+
+cat /var/log/kube-proxy.log
+
+
+
+```
+
+
+
+# CoreDNS
+```
+curl -v http://wix.apps.
+http://[host].[namespace].svc.cluster.local
+curl -v http///web-servix.apps.svc
+curl -v http://10-2-2-5/apps.pod.cluster.local
+
+[host_name].[namespace].[type].[cluster_root_domain]
+```
+
+
+```
+$ cat /etc/coredns/Cofefile
+
+```
+
+
+# Ingress
+
+
+
+
+

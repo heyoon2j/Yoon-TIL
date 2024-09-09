@@ -149,6 +149,32 @@ kubectl config --kubeconfig=config-demo set-cluster test --server=https://5.6.7.
     ```
 
 
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+---
+```
+# Create
+
+kubectl run custom-nginx --image=nginx --port=8080 --dry-run=client -o yaml > pod-temp.yaml
+
+kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > deployment-temp.yaml
+
+kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml > clusterip-temp.yaml
+
+kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service --dry-run=client -o yaml
+
+
+
+# Update
+kubectl edit deployment nginx
+
+kubectl scale deployment nginx --replicas=5
+
+kubectl set image deployment nginx nginx=nginx:1.18
+
+
+
+```
+
 
 
 ---
@@ -169,6 +195,23 @@ kubectl config --kubeconfig=config-demo set-cluster test --server=https://5.6.7.
     - 
 
 ```
+# namespace
+kubectl config set-contxt $(kubectl config current-context) --namespace=dev
+
+kubectl get pods --all-namespaces
+
+
+
+
+kubectl create namespace dev
+# Template 생성
+
+
+
+kubectl run nginx --image=nginx --dry-run=client -o yaml
+kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml
+
+
 
 
 kubectl get <kind> -n [namespace]
@@ -187,7 +230,7 @@ kubectl delete <kind> <resource_name>
 
 
 
-## 잘 안쓰이는
+## 잘 안쓰이는 방법 : 직접 수정
 
 kubectl edit <kind> <resource_name>
 
@@ -195,6 +238,7 @@ kubectl edit <kind> <resource_name>
 
 kubectl set image deplyment/myapp-deployment nginx-container=nginx:1.9.1
 
+###############
 
 
 
@@ -214,12 +258,29 @@ kubectl get deployments
 kubectl apply -f deployment-definition.yaml
 kubectl set imgae deployment/myapp-depolyment nginx=nginx:1.91.
 
-# Statud
+# Status
 kubectl rollout status deployment/myapp-deployment
 kubectl rollout history deployment/myapp-deployment
 
 # Rollback
 kubectl rollout undo deployment/myapp-deployment
+
+
+
+
+
+---
+# ReplicaSet Replica 갯수 변경 시!
+kubectl edit replicaset test-replicaset
+
+kubectl apply -f replicaset-def.yaml
+
+kubectl replace -f replicaset-def.yaml : 파드를 모두 삭제하고 재 생성
+
+kubectl scale --replicas=6 -f replicaset-def.yaml
+
+kubectl scale --replicas=6 replicaset test-replicaset
+
 ```
 
 배포전략 2가지 (Deployment Strategy)
@@ -230,9 +291,17 @@ kubectl rollout undo deployment/myapp-deployment
     - 이를 위하 ReplicaSet을 새로 만들고, 신규 ReplicaSet에 Pod 1개 생성 / 기존 ReplicaSet에서 Pod 1개 삭제를 반복적으로 진행되면서 하나씩 업데이트가 진행된다.
 
 
+```
+
+
+## Service
+```
+kubectl get service
 
 
 ```
+
+
 
 
 

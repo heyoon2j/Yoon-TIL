@@ -94,3 +94,34 @@ Pod를 Node에 배치할 때, 선호도에 맞춰서 배치할 수 있다.
 
 ## Affinity vs Selector
 Pod를 생성하고 Node에 배치할 때, 어떤 Node에 배치할지 정해야 한다.
+
+
+
+## 배포 전략
+기본적으로 하나의 ReplicaSet을 추가로 생성 후, 해당 RS에 변경된 파드를 생성한다.
+1) Recreate: 전부 삭제 / 다시 전부 생성
+2) Rolling Update: 한개씩 변경
+3) Rollback: 배포 내용 취소
+
+* 기본 순서
+```
+# Create
+    $ kubectl create -f deployment-def.yaml
+
+# Get
+    $ kubectl get deployments
+
+# Update
+    $ kubectl apply -f deployment-def.yaml
+
+    $ kubectl set image deployment/app-test nginx=nginx:1.9.1
+
+# Status
+    $ kubectl rollout status deployment/app-test
+
+    $ kubectl rollout history deployment/app-test
+
+# Rollback
+    $ kubectl rollout undo deployment/app-test
+
+```
