@@ -383,6 +383,40 @@ cat /etc/systemd/
 
 
 
+## Backup
+- 백업이 필요한 데이터
+    1) Resource Configuration
+       - ```$ kubectl get all --all-namespaces -o yaml > all-deploy-services.yaml```
+       - VELERO. ARK by HeptIO 라는 오픈소스 사용
+    2) ETCD Cluster (상태 저장)
+        - 백업 :
+            ```
+            $ etcdctl --endpoints=https://127.0.0.1:2379 \
+            --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+            --cert=/etc/kubernetes/pki/etcd/server.crt \
+            --key=/etc/kubernetes/pki/etcd/server.key \
+            snapshot save /opt/snapshot-pre-boot.db
+            ```
+        - 복구 시, 먼저 kube-apiserver 중지 : ```service kube-apiserver stop```
+        - 복구 진행 : 
+            ```
+            $ etcdutl --data-dir <data-dir-location> snapshot restore snapshot.db
+            $ vi /etc/kubernetes/manifests/etcd.yaml
+            ...
+            hostPath : <data-dir-location>
+            ...
+            ```
+            1) 특정 Directory에 백업본 복구
+            2) 복구한 위치로 YAML 파일 수정
+        - 권한 수정 : chown -R etcd:etcd /var/lib/etcd-data-new
+        - 데몬 재시작 : ```systemctl restart daemon-reoload```
+        - etcd 서비스 재시작 : ```service etcd restart  /  systemctl restart etcd```
+        - kube-apiserver 시작 : ```service kube-apiserver start```
+    3) 
+
+
+
+
 
 ### Image
 - 형태: image: docker.io/library/nginx (image: <Registry>/<User/Account>/<Image/Repository>)
