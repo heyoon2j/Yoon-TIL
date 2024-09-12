@@ -1,14 +1,249 @@
 
 # 키워드 정리
 
+## 기본적인 명령어
+* 객체 생성
+    ```sh
+    # kubectl create -f <file_path>
+    $ kubectl create -f ./test-pod.yaml
+
+    $ kubectl run custom-nginx --image=nginx --port=8080 --namespace=default --dry-run=client -o yaml > pod-temp.yaml
+    $ kubectl run custom-nginx --image=nginx --port=8080 --expose           # ClusterIP도 같이 생성
+
+    $ kubectl create deployment nginx --replicas=4 --image=nginx --port=8080 --dry-run=client -o yaml > deployment-temp.yaml
+
+    $ kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml > clusterip-temp.yaml
+
+    $ kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service --dry-run=client -o yaml
+
+    ```
+
+* 정보 출력
+    ```sh
+    # kubectl get <obj_type>/<obj_name> -n <namespace> -o <output_type>
+    $ kubectl get all -A
+    $ kubectl get all --all-namespaces
+
+    $ kubectl get pods -o=custom-columns=NAME:.metadata.name,IP:.status.podIP,STATUS:.status.phase,NODE:.spec.nodeName
+
+    $ kubectl get pods/spk-vnc2k -n test-app -o yaml
+    $ kubectl get pods/spk-vnc2k -n test-app -o wide
+
+    ```
+
+* 변경
+    ```sh
+
+    ```
+
+* 객체 삭제
+    ```sh
+    $ kubectl delete -f ./pod.json
+    $ kubectl delete -f '*.json'                        # Delete resources from all files that end with '.json'
+    
+    
+    $ kubectl delete pod,service baz foo                # Delete pods and services with same names "baz" and "foo"  
+    $ kubectl delete pods,services -l name=myLabel      # Delete pods and services with label name=myLabel
 
 
+    $ kubectl delete pod foo --force                    # Force delete a pod on a dead node
+
+
+    $ kubectl delete pods --all                         # Delete all pods
+
+
+    # Delete resources from a directory containing kustomization.yaml - e.g. dir/kustomization.yaml
+    kubectl delete -k dir
+     
+    # Delete a pod based on the type and name in the JSON passed into stdin
+    cat pod.json | kubectl delete -f -
+    
+     
+    # Delete a pod with minimal delay
+    kubectl delete pod foo --now
+    
+
+    ```
+
+
+---
+## 스케줄링 
+* 스케줄링
+    ```sh
+    # tains & toleration
+    # NoSchedule / PreferNoSchedule / NoExecute
+    $ kubectl taint nodes <노드 이름> key1=value1:NoSchedule key2=value2:NoExecute
+
+    $ kubectl taint nodes node-name key=value:<taint-effect>      
+
+    $ kubectl get events -o wide
+
+    $ kubectl logs my-custom-scheduler --name-space=kube-system
+    ```
+
+* Maintenance
+    ```sh
+    # drain : 해당 노드에서 모든 파드를 지우고, 다른 노드로 이동
+    # cordon : 행당 노드에서 새로운 파드가 생성되지 않도록 설정
+    # uncordon : drain & cordon 설정 해제
+
+    $ kubectl drain node-1
+
+    $ kubectl cordon node-2
+
+    $ kubectl uncordon node-1
+
+    $ kubectl version
+    ```
+
+* Update
+    ```sh
+    # 강제로 삭제 후 재생성
+    $ kubectl replace -f elephant.yaml --force
+
+    $ kubectl edit deployment nginx
+
+    $ kubectl scale deployment nginx --replicas=5
+
+    $ kubectl set image deployment nginx nginx=nginx:1.18
+
+    $ kubectl get all --selector env=prod,bu=finance,tier=frontend
+
+    $ kubectl label node node01 color=blue
+    ```
+
+* Rolling
+    ```sh
+    # Create
+    $ kubectl create -f deployment-def.yaml
+
+    # Get
+    $ kubectl get deployments
+
+    # Update
+    $ kubectl apply -f deployment-def.yaml
+
+    $ kubectl set image deployment/app-test nginx=nginx:1.9.1
+
+    # Status
+    $ kubectl rollout status deployment/app-test
+
+    $ kubectl rollout history deployment/app-test
+
+    # Rollback
+    $ kubectl rollout undo deployment/app-test
+    ```
+
+
+
+---
+## 모니터링 & 로킹
+```
+$ kubectl top nodes
+$ kubectl top pods
+
+
+$ kubectl logs <pod_name>/<container_name> --all-containers=true
+$ kubectl logs -f : 실시간 로그 확인
+
+
+kubectl logs pod/webapp-1 --all-containers=true
+
+
+$ kubectl exec -it -n <namespace> <pod> -c <container_name> -- <script>
+
+
+kubectl exec -it my-pod -- /bin/bash
+kubectl exec -it -n default app -c nginx -- cat /log/app.log
+
+```
+
+======================================================
+
+
+
+
+-
+# Pod
+
+
+```
+# namespace
+kubectl config set-contxt $(kubectl config current-context) --namespace=dev
+
+kubectl get pods --all-namespaces
+
+
+
+
+kubectl create namespace dev
+# Template 생성
+
+
+
+kubectl run nginx --image=nginx --dry-run=client -o yaml
+kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml
+
+
+
+
+kubectl get <kind> -n [namespace]
+
+kubectl get all
+
+
+kubectl describe <kind> <pod_name> : 상세 현황 출력
+kubectl describe pod pod-abcde
+kubectl descirbe replicaset replicatset-abc
+
+
+
+kubectl delete <kind> <resource_name>
+
+
+
+
+## 잘 안쓰이는 방법 : 직접 수정
+
+kubectl edit <kind> <resource_name>
+
+
+
+kubectl set image deplyment/myapp-deployment nginx-container=nginx:1.9.1
+
+###############
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+=========================================================================================================
 
 Scheduling
     - Node Selection : 
         - nodeName : (manual) / nodeSelector / nodeAffinity
     - 유지 보수 및 장애조치 :  taints & tolerations
     - 리소스 제한 : 
+
+
+
+
+## Ingress
+```
+kubectl get ingress
+
+```
 
 
 ## Network
@@ -107,336 +342,6 @@ etcdctl version
         - etcd 서비스 재시작 : ```service etcd restart  /  systemctl restart etcd```
         - kube-apiserver 시작 : ```service kube-apiserver start```
     3) 
-
-
-
-
-
-## Maintenance
-```
-# drain : 해당 노드에서 모든 파드를 지우고, 다른 노드로 이동
-# cordon : 행당 노드에서 새로운 파드가 생성되지 않도록 설정
-# uncordon : drain & cordon 설정 해제
-
-$ kubectl drain node-1
-
-$ kubectl cordon node-2
-
-$ kubectl uncordon node-1
-
-$ kubectl version
-
-```
-
-
-
-## 스케줄링
-```
-# tains & toleration
-# NoSchedule / PreferNoSchedule / NoExecute
-$ kubectl taint nodes <노드 이름> key1=value1:NoSchedule key2=value2:NoExecute
-
-kubectl taint nodes node-name key=value:<taint-effect>      
-
-
-kubectl get events -o wide
-
-
-kubectl logs my-custom-scheduler --name-space=kube-system
-
-```
-
-
----
-## 모니터링 & 로킹
-```
-kubectl top nodes
-kubectl top pods
-
-
-
-$ kubectl logs <pod_name>/<container_name> --all-containers=true
-$ kubectl logs -f : 실시간 로그 확인
-
-
-kubectl logs pod/webapp-1 --all-containers=true
-
-
-$ kubectl exec -it -n <namespace> <pod> -c <container_name> -- <script>
-
-
-kubectl exec -it my-pod -- /bin/bash
-kubectl exec -it -n default app -c nginx -- cat /log/app.log
-
-```
-
-
----
-
-
-# 생성 및 업데이트 방법
-```
-# Create
-
-kubectl run custom-nginx --image=nginx --port=8080 --namespace=default --dry-run=client -o yaml > pod-temp.yaml
-
-kubectl create deployment nginx --replicas=4 --image=nginx --port=8080 --dry-run=client -o yaml > deployment-temp.yaml
-
-kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml > clusterip-temp.yaml
-
-kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service --dry-run=client -o yaml
-
-
-
-# Update
-kubectl edit deployment nginx
-
-kubectl scale deployment nginx --replicas=5
-
-kubectl set image deployment nginx nginx=nginx:1.18
-
-
-
-kubectl get all --selector env=prod,bu=finance,tier=frontend
-
-
-
-kubectl label node node01 color=blue
-
-
-# 강제로 삭제 후 재생성
-kubectl replace -f elephant.yaml --force
-
-```
-
-## Rolling
-```
-# Create
-    $ kubectl create -f deployment-def.yaml
-
-# Get
-    $ kubectl get deployments
-
-# Update
-    $ kubectl apply -f deployment-def.yaml
-
-    $ kubectl set image deployment/app-test nginx=nginx:1.9.1
-
-# Status
-    $ kubectl rollout status deployment/app-test
-
-    $ kubectl rollout history deployment/app-test
-
-# Rollback
-    $ kubectl rollout undo deployment/app-test
-
-```
-
-
-
-
-
----
-# Pod
-## Pod 생성
-## Static Pod 확인하는 방법
-ps -aux | grep -i kubelet # Config 확인
-vi /var/lib/kublet/config # staticPodPaths 확인
-
-
-Describe를 통해 OwnerReferences 확인 : Node인 경우 Static Pod
-
-
-
-
-## Pod 정보 출력
-* 명령어 : ```kubectl get pod [pod_name] [options]```
-    ```
-    kubectl get pod                                 # Print Pod information
-    kubectl get pod -o wide                         # Output Option : wide
-    kubectl get pods -o=custom-columns=NAME:.metadata.name,IP:.status.podIP,STATUS:.status.phase,NODE:.spec.nodeName
-    kubectl get pods speaker-vnc2k -n metallb-system -o yaml 
-    kubectl get pods --all-namespace                # Print all Pod information
-    ```
-    - 
-
-```
-# namespace
-kubectl config set-contxt $(kubectl config current-context) --namespace=dev
-
-kubectl get pods --all-namespaces
-
-
-
-
-kubectl create namespace dev
-# Template 생성
-
-
-
-kubectl run nginx --image=nginx --dry-run=client -o yaml
-kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml > nginx-deployment.yaml
-
-
-
-
-kubectl get <kind> -n [namespace]
-
-kubectl get all
-
-
-kubectl describe <kind> <pod_name> : 상세 현황 출력
-kubectl describe pod pod-abcde
-kubectl descirbe replicaset replicatset-abc
-
-
-
-kubectl delete <kind> <resource_name>
-
-
-
-
-## 잘 안쓰이는 방법 : 직접 수정
-
-kubectl edit <kind> <resource_name>
-
-
-
-kubectl set image deplyment/myapp-deployment nginx-container=nginx:1.9.1
-
-###############
-
-
-
-
-```
-----
-## Update & Rollback
-* 업데이트 전체 주기
-```
-# Create
-kubectl create -f deployment-definition.yaml --record=true
-
-# Get
-kubectl get deployments
-
-# Update
-kubectl apply -f deployment-definition.yaml
-kubectl set imgae deployment/myapp-depolyment nginx=nginx:1.91.
-
-# Status
-kubectl rollout status deployment/myapp-deployment
-kubectl rollout history deployment/myapp-deployment
-
-# Rollback
-kubectl rollout undo deployment/myapp-deployment
-
-
-
-
-
----
-# ReplicaSet Replica 갯수 변경 시!
-kubectl edit replicaset test-replicaset
-
-kubectl apply -f replicaset-def.yaml
-
-kubectl replace -f replicaset-def.yaml : 파드를 모두 삭제하고 재 생성
-
-kubectl scale --replicas=6 -f replicaset-def.yaml
-
-kubectl scale --replicas=6 replicaset test-replicaset
-
-```
-
-배포전략 2가지 (Deployment Strategy)
-1. Recreate
-   1. Pod를 모두 Down 시키고 다시 생성
-2. Rolling upgrade
-    - 순차적으로 변경분을 업데이트
-    - 이를 위하 ReplicaSet을 새로 만들고, 신규 ReplicaSet에 Pod 1개 생성 / 기존 ReplicaSet에서 Pod 1개 삭제를 반복적으로 진행되면서 하나씩 업데이트가 진행된다.
-
-
-```
-
-
-## Service
-```
-kubectl get service
-
-
-```
-
-
-
-
-
-
-
-
-
-
-kubectl get nodes
-
-  kubectl delete -f ./pod.json
-  
-  # Delete resources from a directory containing kustomization.yaml - e.g. dir/kustomization.yaml
-  kubectl delete -k dir
-  
-  # Delete resources from all files that end with '.json'
-  kubectl delete -f '*.json'
-  
-  # Delete a pod based on the type and name in the JSON passed into stdin
-  cat pod.json | kubectl delete -f -
-  
-  # Delete pods and services with same names "baz" and "foo"
-  kubectl delete pod,service baz foo
-  
-  # Delete pods and services with label name=myLabel
-  kubectl delete pods,services -l name=myLabel
-  
-  # Delete a pod with minimal delay
-  kubectl delete pod foo --now
-  
-  # Force delete a pod on a dead node
-  kubectl delete pod foo --force
-  
-  # Delete all pods
-  kubectl delete pods --all
-
-```
-
-
-
-
-```
-
-
-
-
-
-
-
-kubectl run <Pod Nme> --image=nginx             # Run Pod
-
-kubectl delete pod <Pod Name>                   # Delete Pod
-
-
-kubectl apply -f <file_name>
-
-
-kubectl api-resource                            # Print resource list
-
-
-
-
-
-kubectl get replicasets
-
-
-
-
-```
 
 
 

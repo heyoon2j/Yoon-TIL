@@ -5,24 +5,47 @@ Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태
 ---
 ## Object 종류
 
+## Pod
+하나 이상의 Container를 담고 있는 리소스, Kubernetes에서 실행되는 최소 단위
+  
+하나의 서비스(Pod)는 여러 기능(Container)들이 모여 만들어진다. 그렇기 때문에 보통 하나의 Pod에 같은 종류의 Container를 2개 이상 만들지 않고 새로운 Pod를 생성한다!
+* 특징
+    - 독립적인 공간과 사용 가능한 IP를 가짐
+* Container
+    - Application을 의미
+    - 일부 기능일 수도 있고, 완전 기능일 수도 있다. 그렇기 때문에 하나 이상의 Container가 모여 완전한 기능을 나타내는 Pod를 이룬다!
+* Namespace & Label
+    - 하나의 Cluster 안에 여러 개의 Application이 등록되기 때문에 Namespace를 사용하여 논리적으로 구분한다.
+    - 더 세부적인 설정은 Label을 통해서 관리할 수 있다. 
+    > ex) 개발계, 운영계 구분 / 세션을 관리하는 기능이라도 로그인 서비스에 대한 세션일 수 있고, 장바구니에 대한 세션을 관리할 수 있기 때문에
+* Pod State
+    - ContainerCreating : 컨테이너 생성중
+    - Running : 실행 중
 
-### Pod 관련
-* Pod
-    * Kubernetes에서 실행되는 최소 단위
-    * 독립적인 공간과 사용 가능한 IP를 가짐
-    * 1개 이상의 컨테이너를 가질 수 있지만, 일반적으로 1개의 Pod에는 1개의 컨테이너를 적용
+</br>
+
+### Static Pod
+API Server 상관없이 특정 디렉토리 안에 있는 YAML 정의서를 보고 직접 생성된 Pod를 의미 (kubelet이 자체적으로 관리) 
+- 예시 : kube-apiserver, etcd
+    > 일반적으로 Core 컴포넌트가 이에 해당!
+- Default 디렉토리 : ```/etc/kubernetes/manifest```
+</br>
+</br>
+
+
+### 그 외
 * ReplicaSet
-    * Pod 수를 보장하는 기능을 가짐
-    * 하지만 Pod 수만 보장하는 기능을 가지고 있기 때문에, 롤링 업데이트 등 다른 기능을 위해서는 Deployment를 사용
+    - Pod 수를 보장하는 기능을 가짐
+    - 하지만 Pod 수만 보장하는 기능을 가지고 있기 때문에, 롤링 업데이트 등 다른 기능을 위해서는 Deployment를 사용
 * Deployment
-    * 기본 Object만으로는 한계가 있어 이를 좀 더 효율적으로 작동하도록 조합하고 추가해 구현한 것이 Deployment이다. Pod Object + ReplicaSet Object + 추가 기능을 합쳐 놓은 형태이다.
+    - 기본 Object만으로는 한계가 있어 이를 좀 더 효율적으로 작동하도록 조합하고 추가해 구현한 것이 Deployment이다. Pod Object + ReplicaSet Object + 추가 기능을 합쳐 놓은 형태이다.
 * DaemonSet
-    * Deployment의 replicas가 Node 수만큼 정해져 있는 형태로, Node 하나당 Pod 한개를 생성하는 경우
-    * 보통 Node를 관리하는 Pod인 경우 사용 (kube-proxy, calico, metalLB 등)
+    - Deployment의 replicas가 Node 수만큼 정해져 있는 형태로, Node 하나당 Pod 한개를 생성하는 경우
+    - 보통 Node를 관리하는 Pod인 경우 사용 (kube-proxy, calico, metalLB 등)
 * StatefulSet
-    * 이전 상태를 기억하는 세트라는 의미. 생성되는 Pod가 고정된 이름, 볼륨, 설정등을 가지도록 할 수 있다 (순서 및 고유성 보장)
-    * 좋은 구조가 아니기 때문에 요구 사항에 맞게 사용 (ex> Master-Slave 구조 : Redis, Zookeeper, Cassandra, MongoDB 등)
-    * Headless Service로 노출가능 (IP가 할당되지 않으며, DNS 통해서만 접근가능)
+    - 이전 상태를 기억하는 세트라는 의미. 생성되는 Pod가 고정된 이름, 볼륨, 설정등을 가지도록 할 수 있다 (순서 및 고유성 보장)
+    - 좋은 구조가 아니기 때문에 요구 사항에 맞게 사용 (ex> Master-Slave 구조 : Redis, Zookeeper, Cassandra, MongoDB 등)
+    - Headless Service로 노출가능 (IP가 할당되지 않으며, DNS 통해서만 접근가능)
 
 
 ### Volume 관련

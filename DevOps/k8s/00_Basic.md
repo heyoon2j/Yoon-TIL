@@ -1,18 +1,18 @@
 # Basic
 * State Check
-    - Kubernetes는 원하는 상태(desired state)를 선언(declarative)하면 현재 상태(current state)와 비교하여 원하는 상태를 유지하려한다.
+    - Kubernetes는 '원하는 상태'(desired state)를 '선언'(declarative)하면 '현재 상태'(current state)와 비교하여 원하는 상태를 유지하려한다.
     - 상태를 유지하기 위해 Kubernetes는 계속해서 상태를 관찰한다(Observing)
     > k8s는 상태를 선연하다보니 명령어도 run이 아닌 create를 사용한다
 * Namespace
-    * Cluster에서 사용되는 리소스들을 구분해서 관리하는 그룹
-    * 환경을 분리할 수 있음
+    - Cluster에서 사용되는 리소스들을 구분해서 관리하는 그룹
+    - 환경을 분리할 수 있음
         1) 서비스 단위
         2) 환경 단위
         3) 팀 단위
         4) etc
-    * default (기본), kube-system (k8s system), metallb-system 이 기본으로 등록되어 있음
-    * 리소스 이름은 각 네임스페이스 내에서 고유해야 한다. 다른 네임스페이스에서는 사용 가능하다.
-    * 네임스페이스는 서로 중첩될 수 없으며 각 Kubernetes 리소스는 하나의 네임스페이스에만 있을 수 있습니다.
+    - default (기본), kube-system (k8s system), metallb-system 이 기본으로 등록되어 있음
+    - 리소스 이름은 각 네임스페이스 내에서 고유해야 한다. 다른 네임스페이스에서는 사용 가능하다.
+    - 네임스페이스는 서로 중첩될 수 없으며 각 Kubernetes 리소스는 하나의 네임스페이스에만 있을 수 있습니다.
 * Object
     - k8s는 상태를 관리하기 위해 대상을 Object로 정의한다.
     - Pod Object : Pod 정보 - Container/CNI/CSI
@@ -26,62 +26,10 @@
     - Application이 동작하는 컨테이너들의 모음
     - Pod는 Cluster에 의해 관리되어지며, 설정에 따라 해당하는 Node에 추가된다 
 > 원하는 상태에 대하여 명세서(yaml file)를 작성한다. 명세서에는 Object에 대한 정보들이 정의되어 있고 이를 Label로 관리
-</br>
-</br>
-
----
-## Container Runtime Engine (Container Runtime)
-* CRI(Container Runtime Interface): 컨테이너 런타임과 통신할 수 있는 표준 인터페이스
-    - Container Runtime Service: 컨테이너의 라이프사이클 관리. 생성, 삭제, 시작, 중지 등
-    - Image Service: 컨테이너 이미지를 관리.
-* Docker vs ContainerD
-    - 기존에는 컨테이너 런타임이 Docker만 있었기 때문에 Docker를 지원했지만, K8S의 CRI를 따르는 형태가 아니었기 때문에 호환성에 많은 복잡성을 가졌다. 현재는 복잡성을 가진 Docker를 제거하고, CRI 표준을 따르는 ContainerD를 사용하고 있다.
-    - 그렇다고 Docker가 이제 사용이 안되는 것은 아니다. Docker 자체 기능은 계속해서 쓰이고 있다.
-* Container Runtime (High-level)
-    - 컨테이너 런타임 엔진의 상위에서 동작하며, 컨테이너의 라이프 사이클 관리 등
-    1) containerd
-    2) CRI-O
-    3) Docker Engine
-    4) Podman
-* Container Runtime (Low-level)
-    - 컨테이너 런타임 엔진의 하위에서 동작하며, 실제로 컨테이너를 실행하는 역할
-    1) runc (기본적으로 채택되어 있는 런타임)
-    2) gVisor
-    3) Kata Containers
-</br>
-
- 
-### ContainerD
-* CLI
-    - ctr : ContainerD 디버깅용
-    - nerdctl : ContainerD 일반적인 목적
-    - crictl : K8S CRI - ContainerD에 대한 디버깅용
-        ```
-        crictl
-        crictl pull busybox
-        crictl images
-        crictl logs 
-        crictl posds
-        ```
-
-
-
-
-
-
-### Container 설정 시 필요한 것들
-- cgroup driver : Control Groups. 프로세스 및 시스템 격리
-- sandbox image : K8S의 기본 이미지
-
-- runc : 리눅스 컨테이너를 시작하고 관리하기 위한 기본 런타임
-- runtime type : runc의 버전을 설정
-- CNI : Container Network Interface. 네트워크 플러그인
-- snapshotter = "overlayfs"
-
-
 
 </br>
 </br>
+
 
 
 ---
@@ -121,6 +69,55 @@ Namespace는 프로세스, 시스템에 대한 격리 / Cgroups는 시스템 자
 </br>
 
 
+
+
+---
+## Container Runtime Engine (Container Runtime)
+* CRI(Container Runtime Interface): 컨테이너 런타임과 통신할 수 있는 표준 인터페이스
+    - Container Runtime Service: 컨테이너의 라이프사이클 관리. 생성, 삭제, 시작, 중지 등
+    - Image Service: 컨테이너 이미지를 관리
+* Docker vs ContainerD
+    - 기존에는 컨테이너 런타임이 Docker만 있었기 때문에 Docker를 지원했지만, K8S의 CRI를 따르는 형태가 아니었기 때문에 호환성에 많은 복잡성을 가졌다. 현재는 복잡성을 가진 Docker를 제거하고, CRI 표준을 따르는 ContainerD를 사용하고 있다.
+    - 그렇다고 Docker가 이제 사용이 안되는 것은 아니다. Docker 자체 기능은 계속해서 쓰이고 있다.
+* Container Runtime (High-level)
+    - 컨테이너 런타임 엔진의 상위에서 동작하며, 컨테이너의 라이프 사이클 관리 등
+    1) containerd
+    2) CRI-O
+    3) Docker Engine
+    4) Podman
+* Container Runtime (Low-level)
+    - 컨테이너 런타임 엔진의 하위에서 동작하며, 실제로 컨테이너를 실행하는 역할
+    1) runc (기본적으로 채택되어 있는 런타임)
+    2) gVisor
+    3) Kata Containers
+</br>
+
+### ContainerD
+* CLI
+    - ctr : ContainerD 디버깅용
+    - nerdctl : ContainerD 일반적인 목적
+    - crictl : K8S CRI - ContainerD에 대한 디버깅용
+        ```
+        crictl
+        crictl pull busybox
+        crictl images
+        crictl logs 
+        crictl posds
+        ```
+
+### Container 설정 시 필요한 것들
+- cgroup driver : Control Groups. 프로세스 및 시스템 격리
+- sandbox image : K8S의 기본 이미지
+- CNI : Container Network Interface. 네트워크 플러그인
+- Contaner runtime
+    - runc : 리눅스 컨테이너를 시작하고 관리하기 위한 기본 런타임
+    - runtime type : runc의 버전을 설정
+- snapshotter = "overlayfs"
+
+</br>
+</br>
+
+
 ---
 ## Architecture
 k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woker Node), Persistant storage, Container로 구성된다.
@@ -147,13 +144,30 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
 ### Control plane (Master Node)
 클러스터를 제어하는 쿠버네티스 구성 요소와 클러스터의 상태 및 구성에 관한 데이터를 가지고 있다.
 * etcd만이 Stateful Module이며 나머지는 Stateless Module이다 (Statefule은 이전 트랜잭션에 따라 현재 트랜잭션이 영향을 받는 Application을 의미한다.
-1. kubectl
+* kubeadm
+    - 쿠버네티스 클러스터 구축을 위한 프로그램
+* kubectl
     - 쿠버네티스 클러스터에 명령을 내리는 역할
     - Kubernetes에 명령을 내리기 위한 Binary
     - Command Line Interface (CLI)
+1. kubelet
+    * Control Plane과 통신을 하는 Agent로 모든 Node에 존재 
+    - Control Plane으로부터 요청을 받으면 Kubelet에서 파드에 대한 작업을 수행
+    - CSI(Storage Interface), CNI(Network Interface) 관리
+    ```sh
+    ExecStart=/usr/local/bin/kubelet \\
+    --config=/var/lib/kubelet/kubelet-config.yaml \\
+    --container-runtime=remote \\
+    --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
+    --image-pull-progress-deadline=2m \\
+    --kubeconfig=/var/lib/kubelet/kubeconfig \\
+    --network-plugin=cni \\
+    --register-node=true \\
+    --v=2
+    ```
 2. kube-apiserver
     - API Server. 외부 및 내부 요청(API)을 처리하는 통로
-    - 인증, 권한 부여, 액세스 제어 등 제공
+    - 인증, 권한 부여, 액세스 제어 등 제공 
     - Etcd와 유일하게 통신
     ```sh
     ExecStart=/usr/local/bin/kube-apiserver \\
@@ -162,9 +176,7 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
     --apiserver-count=3 \\
     --authorization-mode=Node,RBAC \\
     --bind-address=0.0.0.0 \\
-    --enable-admission-
-    plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,Reso
-    urceQuota \\
+    --enable-admission-plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
     --enable-swagger-ui=true \\
     --etcd-servers=https://127.0.0.1:2379 \\
     --event-ttl=1h \\
@@ -252,9 +264,15 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
 ---
 ## Compute machine (Worker Node)
 Application Pod들이 동작하는 Node 
-* kubelet
-    * Controller Plane과 통신을 하는 Agent로 모든 Worker Node에 존재
-    - Controller Plane에서 요청하면 Kubelet에서 노드에 대한 작업을 수행
+* kubeadm
+    - 쿠버네티스 클러스터 구축을 위한 프로그램
+* kubectl
+    - 쿠버네티스 클러스터에 명령을 내리는 역할
+    - Kubernetes에 명령을 내리기 위한 Binary
+    - Command Line Interface (CLI)
+1. kubelet
+    * Control Plane과 통신을 하는 Agent로 모든 Node에 존재 
+    - Control Plane으로부터 요청을 받으면 Kubelet에서 파드에 대한 작업을 수행
     - CSI(Storage Interface), CNI(Network Interface) 관리
     ```sh
     ExecStart=/usr/local/bin/kubelet \\
@@ -267,44 +285,29 @@ Application Pod들이 동작하는 Node
     --register-node=true \\
     --v=2
     ```
-* kube-proxy                           
+    - Static Pod 관리
+        ```sh
+        $ ps -aux | grep -i kubelet         # Config 확인
+        $ vi /var/lib/kublet/config         # staticPodPaths 값 확인
+        ```
+2. kube-proxy                           
     - 쿠버네티스 네트워킹 서비스를 용이하게 하기 위한 네트워크 프록시
     - Pod의 외부 통신을 위한 프로시
     - 운영 체제의 패킷 필터링 계층에 의존하거나 트래픽 자체를 전달하여 클러스터 내부 또는 외부의 네트워크 통신을 처리
     - iptables, IPVS를 이용하여 방화벽 처리
-* Container Runtime Engine
+3. Container Runtime Engine
     - 컨테이너 실행을 위해 각 Computing Node에는 런타임 엔진이 있다 (ex> Docker)
 </br>
 </br>
 
 
+
+
+
+=================================================================================
+
+
 ---
-### Pod
-하나 이상의 Container를 담고 있는 리소스
-
-하나의 서비스(Pod)는 여러 기능(Container)들이 모여 만들어진다. 그렇기 때문에 보통 하나의 Pod에 같은 종류의 Container를 2개 이상 만들지 않고 새로운 Pod를 생성한다!
-
-* Container
-    - Application을 의미
-    - 일부 기능일 수도 있고, 완전 기능일 수도 있다. 그렇기 때문에 하나 이상의 Container가 모여 완전한 기능을 나타내는 Pod를 이룬다!
-* Namespace & Label
-    - 하나의 Cluster 안에 여러 개의 Application이 등록되기 때문에 Namespace를 사용하여 논리적으로 구분한다.
-    - 더 세부적인 설정은 Label을 통해서 관리할 수 있다. 
-    > ex) 개발계, 운영계 구분 / 세션을 관리하는 기능이라도 로그인 서비스에 대한 세션일 수 있고, 장바구니에 대한 세션을 관리할 수 있기 때문에
-* Static Pod
-    - API Server 상관없이 특정 디렉토리 안에 있는 YAML 정의서를 보고 직접 생성된 Pod를 의미
-    - 예시 : kube-apiserver, etcd
-    - Default 디렉토리 : ```/etc/kubernetes/manifest```
-    > 일반적으로 Core 컴포넌트가 이에 해당!
-
-### Pod State
-- ContainerCreating : 컨테이너 생성중
-- Running : 실행 중
-
-</br>
-
-
-
 ### Network Plugin
 Kubernetes Cluster 통신을 위해서 Network Plugin을 선택하고 구성해야 한다. Network Plugin은 일반적으로 CNI(Container Network Interface)로 구성되는데, 주로 사용되는 CNI는 다음과 같다.
 * CNI List

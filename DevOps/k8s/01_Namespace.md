@@ -34,9 +34,9 @@ Cluster의 기본 Namespace로는 4가지가 있다.
 ### Namespace 접근 방식
 다른 Namespace의 서비스에 접근하기 위해서는 FQDN을 통해 접근한다.
 ```sh
-$ curl -v <service>.<namespace>.svc.cluster.local:<port>
-$ curl -v <service>.<namespace>.svc:<port>
-$ curl -v <service>:<port>
+$ curl -v <svc_name>.<namespace>.svc.cluster.local:<port>
+$ curl -v <svc_name>.<namespace>.svc:<port>
+$ curl -v <svc_name>:<port>
 ```
 * Ref : https://velog.io/@pinion7/Kubernetes-%EB%A6%AC%EC%86%8C%EC%8A%A4-Namespace%EC%97%90-%EB%8C%80%ED%95%B4-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B3%A0-%EC%8B%A4%EC%8A%B5%ED%95%B4%EB%B3%B4%EA%B8%B0
 
@@ -46,16 +46,3 @@ $ curl -v <service>:<port>
 Kubernetes System에 필요한 정보를 표시
 * 문법 에러를 체크, 빌드나 배치시 코드를 자동으로 생성, 실행 시 특정 기능을 실행하도록 정보 제공
 
-
-## Namespace
-- Resource Quota (Limit)
-    ```
-    spec:
-      hard:
-        pods: "10"
-        requests.cpu: "4"
-        requests.memory: 5Gi
-        limits.cpu: "10"
-        limits.memory: 10Gi
-    ```
-- 
