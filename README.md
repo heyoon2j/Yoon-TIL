@@ -3,22 +3,27 @@ Today I Learned
 
 ---
 ## Study List (AS-IS)
+* Cloud
+	- AWS
+	- Kubernetes
+	- OpenStack
+	- VMware
+
 * Language
-	* Java
-	* Python
+	- Java
+	- Python
+	- Shell Script
 * Computer Science
 * Algorithm
 * Design Pattern
 * Engineering
 	* Database
-	* DOcker, k8s
-* Cloud
-	* AWS
+
 * Framework
 	* Spring
 	* Django
 * Tools
-	* Git
+	* Gitmn
 	* Terraform
 	* Ansible
 	* Linux Shell
