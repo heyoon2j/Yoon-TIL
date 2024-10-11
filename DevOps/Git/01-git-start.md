@@ -7,7 +7,10 @@
 * branch: 같이 곳에서 작업을 하게 되면 충돌이 날 수 있는 가능성이 있기 때문에 하나의 줄기에 여러개의 나무가지가 생기는 형태를 가지도록 만들어준다.
     ![git_branch](img/git_branch.png)
     > 녹색의 줄기에 A는 빨간색으로 분리가되고, B는 노란색으로 분리가 될 수 있다.
-* merge : Branch에서 작업이 끝나고, 코드를 합칠 때 사용한다.
+* checkout : Workspace를 commit된 다른 작업트리(branch)로 변경한다
+    > commit을 완료하지 않으면 다른 branch로 변경 불가능하다!!!
+    
+* merge : 두개의 branch(commit된 상태)를 병합한다.
     1. Cherry-pick
 
         ![git_cherry_pick](img/git_cherry_pick.png)
@@ -17,11 +20,13 @@
 
         ![git_ff_merge](img/git_ff_merge.png)
         - 단순히 Branch를 이동시켜 적용시킨다.
+        > 두개의 branch 모두 동일한 HEAD를 가지게 된다.
     3. Merge Commit
 
         ![git_mc_merge](img/git_mc_merge.png)
         - 양 쪽의 Branch를 통합한다.
         - Fast-Forward Merge가 가능한 경우라도 Non Fast-Forward 병합 옵션을 지정하여 위의 그림 같이 실행할 수 있다. 이 경우, Branch가 그대로 남기 때문에 그 Branch로 실행한 작업을 확인할 수 있기 때문에 관리 면에서 더 유용할 수 있다.
+        > checkout되어 있는 branch가 새로운 COMMIT을 HEAD로 가리키게 된다.
 * pull request: 병합하기 전에 다른 개발자들에게 Confirm을 받기 위해 요청 메시지를 보낸다.
 * fork: 다른 원격 저장소에 있는 History를 그대로 나의 GitHub 원격 저장소에 복사한다.
     > 다른 사람이 만든 OpenSource에 기여하고 싶을 때는, Fork로 저장소 전체를 내 계정에 복제 -> Commit -> Push 후 원본 저장소로 Pull Request를 보낸다.
