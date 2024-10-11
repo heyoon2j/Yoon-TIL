@@ -1,10 +1,11 @@
 # System Log
 * systemd-journald :부팅이 시작되는 순간부터 로그 수집 데몬
-* rsyslogd : syslog를 사용하여 각 파일 별로 로그 수집 데몬
 * ```/var/log/dmesg``` : 부팅 시 시스템 로그 기록
 * ```/var/log/utmp``` : 현재 로그인한 사용자 상태 정보 기록
 * ```/var/log/wtmp``` : 사용자 Login, Logout, 시스템 재부팅 기록
 * ```/var/log/btmp``` : 실패한 로그인 정보 기록
+* ```/var/log/lastlog``` : 마지막으로 성공한 로그인 정보 기록
+* rsyslogd : syslog를 사용하여 각 파일 별로 로그 수집 데몬
 </br>
 </br>
 

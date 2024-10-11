@@ -1,4 +1,5 @@
-# JOIN * Sub Query
+# JOIN
+* Sub Query
 
 ## JOIN
 * 여러 개의 테이블에서 데이터를 모아서 보여줄 때 사용
@@ -95,3 +96,36 @@
         SELECT DISTINCT(countrycode) FROM city WHERE population > 8000000
     );
     ```
+
+
+## Row & Column Switching
+Row와 Column을 바꾸는 방법은 크게 2가지이다.
+1. Database Query로 변경
+    * CASE 문을 통해
+    * 엔진의 특정 지시문을 통해
+2. 비즈니스 로직에서 변경(Java, Python 등을 통해 변경)
+> Database Engine이 당연히 데이터 연산에 특화되어 있기 때문에(Memory),상황에 따라 다르겠지만 왠만하면 Database에서 바꾸는 것이 좋다.
+
+
+### Example (inner join & switching)
+```sql
+select h.name as host_name,
+    to_char(to_timestamp(t.clock), 'YYYY-MM-DD') as collect_date,
+    avg(case i.name when 'CPU Utilization' then t.value_avg end) as cpu_avg,
+    min(case i.name when 'CPU Utilization' then t.value_min end) as cpu_min,
+    avg(case i.name when 'Memory utilization' then t.value_avg end) as mem_avg,
+    min(case i.name when 'Memory utilization' then t.value_min end) as mem_min,
+from host h
+    inner join items i on i.hostid = h.hostid
+    inner join trends t on t.itemid = i.itemid
+where h.status = 0
+    and h.flags = 0
+    and i.name in ('CPU Utilization', 'Memory utilization')
+    and t.clock >= extract(epoch from to_timestamp('2023-04-01', 'YYYY-MM-DD'))::integer
+    and t.clock < extract(epoch from to_timestamp('2023-04-16', 'YYYY-MM-DD'))::integer
+group by h.name as host_name, to_char(to_timestamp(t.clock), 'YYYY-MM-DD')
+;
+```
+
+
+

@@ -4,12 +4,18 @@
     1) Target Group에 대한 Health Check
     2) Listener Rule에 따라 Traffic Routing
     3) Algorithm에 의해 Traffic 부하 분산
+* On-premise vs AWS
+    | On-premise | AWS |  |
+    |------------|-----|---|
+    | VIP | Secondary IP | Secondary IP는 VPC에서 VIP를 나타내기 위해 만든거 같다 | 
+    | HAProxy | Load Balancer |  |
+    | Pacemaker & Coresync | Target Group |  |
 </br>
-
-
+ 
 ## ELB 종류
 1. __ALB (Application Load Balancer)__
     * 7 Layer Application 계층에서 Routing 결정(HTTP/HTTPS)
+    * 최소 /27 서브넷 크기 및 8개의 IP가 필요 (최대 100개 IP 사용)
     * Host name, Path, Query 문자열 매개변수, HTTP Header, HTTP Method, Source IP 또는 Port Number를 기반으로 분석하여 Rouoting 결정
     * 사용 가능 Protocol: HTTP/1.1, HTTP/2, HTTPS, gRPC
     * Redirection 또는 고정 응답을 반환하도록 구성 가능
@@ -25,7 +31,7 @@
     * 지정한 TCP 프로토콜과 포트 번호를 사용하여 Routing
     * 동적 호스트 매핑 지원
     * Static IP 사용
-3. __GLB (Gateway Load Balancer)__
+3. __GWLB (Gateway Load Balancer)__
     * 3 Layer Network 계층에서 작동
     * 방화벽, 침임 탐지 및 방지 시스템, 심층 패킷 검사 시스템과 같은 가상 어플라이언스를 배포, 확장 및 관리할 수 있다.
 4. __CLB (Classic Load Balancer)__
@@ -42,13 +48,14 @@
 * Static IP를 사용하려면 NLB를 사용해야 하며, 교차 영역 활성화를 하지 않으면 Static IP가 해당하는 가용 영역의 서버에만 트래픽을 전달한다.
     * Reference : https://stackoverflow.com/questions/60934851/in-aws-why-is-that-an-nlb-can-provide-static-ip-addresses-whereas-an-alb-cannot#:~:text=As%20per%20AWS%2C%20Network%20Load%20Balancer%20routes%20traffic,Also%2C%20NLB%20supports%20static%20%2F%20Elastic%20IP%20addresses.
     * https://stackoverflow.com/questions/3821333/amazon-ec2-elastic-load-balancer-does-its-ip-ever-change
-    > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이다.
+    > NLB만 Static IP를 가지는 이유(추측)는 다음과 같다. NLB는 OSI 4 Layer에서 작동하며, 4 Layer에서만 작동하는 응용 프로그램에서도 사용이 가능해야 한다. 그리고 Layer 4에서는 DNS Protocol는 Layer 7로 사용할 수 없다. 이러한 이유들 때문에 NLB는 Layer 4 통신을 위해 ALB처럼 DNS를 활용하는 방법이 아닌 IP를 사용하는 방식을 기본으로 가진다. 하지만 NLB는 구축 시 Domain을 가진다. 이는 NLB를 이용하는 HTTP/HTTPS 등과 같이 Layer 7 응용 프로그램을 위해 그리고 AWS 제공하는 서비스 관점에서 제공해주기 때문이거나, 메인 서비스는 Layer 4 동작을 관리하지만 엔진 서비스는 Layer 7까지 처리할 수 있기 때문일거 같다.
+
 </br>
 </br>
 
 
 ## ELB 동작 과정
-1. __Load Balncer의 Listener가 Request(REQ)를 수신하고, REQ를 Listener Rules 의해 결정된 Taget Group에 전달__
+1. __Load Balancer의 Listener가 Request(REQ)를 수신하고, REQ를 Listener Rules 의해 결정된 Taget Group에 전달__
     1) LB Server 설정 
     2) Target Group Routing 기준 설정
 2. __Target Group은 REQ를 Instance, Container 또는 IP 주소, Lambda로 Routing__
@@ -68,27 +75,42 @@
 * "access_logs.s3.bucket" : 액세스 로그를 저장할 S3 버킷 이름
 * "access_logs.s3.prefix" : S3 버킷에 저장할 때, Prefix
 * "ipv6.deny_all_igw_traffic" : IGW의 액세스를 방지. internet-facing인 경우 false, internal인 경우 true로 설정
-
+</br>
 
 ### Only Application LB
-* "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
-    > 참고로 NLB는 TCP: / UDP: 120초
-* "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
-    * defensive
+* TLS 버전 및 암호 헤더
+    - Client <---> ALB 간의 TLS 통신을 사용하는 경우에만 사용 (TLS를 아는 방법이 없으니)
+    - "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true or false)
+* HTTP/2 활성화
+    - "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true, false)
+* WAF 실패 열림
+    - WAF를 사용하지 않으면 true로 할 필요가 없다.
+    - "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true, false)
+* 유휴 시간
+    - "idle_timeout.timeout_seconds" : 유휴 시간 (기본 값: 60 / 1~4000초)
+    > 참고로 NLB는 TCP: 350초 / UDP: 120초
+* HTTP Desync 모드
+    - "routing.http.desync_mitigation_mode" : HTTP Desync로 인한 문제로부터 애플리케이션을 처리하는 방법 설정 (기본 값: defensive / monitor,defensive,strictest)
+    - defensive
         1) RFC 7230 규칙을 준수하는지 여부와 무관하게 애플리케이션이 알려진 안전한 요청을 수신하도록 허용
         2) RFC 규칙을 준수하지 않는 요청과 알려진 보안 위협에 해당하는 요청을 차단
         3) 모호한 요청에 대해서는 HTTP 유지 한도와 무관하게 클라이언트 및 업스트림 연결을 모두 종료 (모호한 요청이란 RFC 7230 규칙을 준수하지 않고 프록시 또는 웹 서버마다 해석이 달라져서 Desync를 초래할 수 있는 요청)
-    * strictest : RFC 7230 규칙을 준수하는 요청만 확인
-    * monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
-* "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
-* "routing.http.x_amzn_tls_version_and_cipher_suite.enabled" : x-amzn-tls-version 및 x-amzn-tls-cipher-suite 헤더가 요청에 포함될지 여부 (기본 값: false / true,false)
-* "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
-    * X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
-* "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 추가할지 여부 (기본 값: false / true,false)
-* "routing.http2.enabled" : HTTP/2가 활성화되었는지 여부 (기본 값: true / true,false)
-* "waf.fail_open.enabled " : WAF로 요청을 전달할 수 없는 경우(막힌 경우)에도 LB를 통해 대상으로 라우팅할지 여부 (기본 값: false / true,false)
-    * WAF를 사용하지 않으면 true로 할 필요가 없다.
-
+    - strictest : RFC 7230 규칙을 준수하는 요청만 확인
+    - monitor : RFC 7230 규칙과 관계없이 수신되는 모든 요청을 그 뒤에 있는 애플리케이션에 전달
+* HTTP Header
+    - "routing.http.drop_invalid_header_fields.enabled" : 잘못된 HTTP 헤더가 포함된 경우 Drop할지의 여부 (기본 값: false / true,false)
+* X-Forwarded-For 헤더
+    - "routing.http.xff_header_processing.mode" : X-Forwarded-For 헤더를 수정, 보존 또는 제거 여부
+    - "routing.http.xff_client_port.enabled" : X-Forwarded-For 헤더에 Port 정보를 보존할지 여부 (기본 값: false / true,false)
+    - X-Forwarded-For: 타겟이 클라이언트의 정보를 알도록 기록하는 헤더
+    1) append : Request Header XFF에 클라이언트 IP를 추가
+    2) preserve : Request Header XFF 보존하고 다른 값을 추가하지 않음 (당연히 수정을 하지 못하니 클라이언트 IP를 ALB에서 추가하지 못한다)
+    3) remove : 모든 X-Forwarded-For Header 삭제
+* Host Header
+    - "routing.http.preserve_host_header.enabled" : HTTP 요청에 Host 헤더를 보존하고 변경 없이 대상에 전송해야 하는지 여부 (기본 값: false / true, false)
+    - HTTP 또는 HTTPS 상태 확인 요청의 경우 Host Header에는 Target의 IP Address와 상태 확인 Port가 아닌 로드 밸런서 노드의 IP Address와 Listener Port가 포함됩니다.
+        > Load Balancer Node의 IP와 Port가 Host Header로 전달된다. 그렇기 때문에 기존 On-premise 동작과 다르게 동작한다!! 하지만 On-premise이든 Cloud 이든 특별한 상황(Host Header를 그대로 사용하고 싶을 때)이 아닌 이상 기본적으로 사용하지 않는다("preserve = false"). 그렇지 않으면 잘못된 부분이나, Host Header의 포트를 변경하지 않고 보내게 된다.
+</br>
 
 ### Network LB and Gateway LB
 * "load_balancing.cross_zone.enabled" : 교차 영역 로드 밸런싱이 활성화되었는지 여부 (기본 값: false / true,false)
@@ -96,11 +118,12 @@
     * Application LB는 항상 적용됨
     * 밸런싱 비율 = 100 / 교차 영역에 대한 모든 인스턴스 수
     > NLB는 기본적으로 온프레미스도 포함되어 있기 때문에 false로 설정되어 있는거 같다.
+
 </br>
 </br>
 
 
-
+---
 ## Listener
 * REQ를 수신하고 Packet을 분석하여 Target Group으로 전달한다.
 * Packet 분석은 Listner Rule에 의해 결정된다.
@@ -237,6 +260,8 @@
 </br>
 
 
+
+---
 ## Target Group
 * Target에게 보내기 위해서 해당 Target이 정상적으로 동작하는지 Check하게 된다.
 </br>
@@ -252,6 +277,8 @@
 
 ### NLB Routing Algorithm
 * Roud Robin만 제공한다.
+* Flow Hash : Hash Algorithm에 의해 분산처리 (5-tuple)
+* 
 </br>
 
 
@@ -270,14 +297,20 @@
 
 ### Health Check
 * 요청을 주기적으로 전송하여 상태를 확인한다.
-* Protocol
+* Protocol / Port
     * ALB: HTTP, HTTPS
     * NLB: TCP, TLS, UDP, TCP_UDP
+* Healthy threshold : Healthy 상태를 위한 Check 연속 성공 개수
+* Unhealthy threshold : : Unhealthy 상태를 위한 Check 실패 개수
+* Timeout : Health Check 요청에 대한 Timeout
+* Interval : Health Check 요청 간격
 </br>
 
 
 ### Stickiness
 * LB, APP Cookie는 ALB에서만, Source IP는 NLB에서만 사용 가능하다.
+* Source IP를 기준으로 Target을 결정한다.
+    > 2022년 가을인가에 변경됨. 원래는 2 tuple (Source IP, NLB Node IP)로 체크하였다. 그래서 이상한 동작을 하였다. 현재는 Source IP 기준으로 갈린다. 단, Cross-zone이 활성화되어 있는 경우.
 * __사용하기 위해서는 Listener Rule에서 Stickness를 사용한다고 설정해놔야 한다.__
 * 고정 세션 해결 방법
     * https://kchanguk.tistory.com/146
@@ -288,7 +321,7 @@
     * 후속 요청에 AWSALB 쿠키를 포함해야 한다.
 2. __App Cookie__
     * Client 대상 고정에 대한 사용자 고유의 기준을 설정할 수 있는 유연성을 제공
-    * Session Cookie 정보를 Target이 Custom application cookie를  생성해 가지고 있고, ALB에는 Target이 생성한 Custom application cookie를 캡처해 Application Cookie 생성하여 가지고 있게 된다.
+    * Session Cookie 정보를 Target이 Custom application cookie를 생성해 가지고 있고, ALB에는 Target이 생성한 Custom application cookie를 캡처해 Application Cookie 생성하여 가지고 있게 된다.
     * Application Cookie는 Custom application cookie의 속성을 복사하지 않는다.
     * Target은 고정을 활성화하기 위해서 ALB에 구성된 쿠키와 일치하는 사용자 지정 애플리케이션 쿠키를 설정해야 한다.
 3. __Source IP__
@@ -307,24 +340,40 @@
 ### Preserve Source IP
 * HTTP/HTTPS는 XFF가 있기 때문에 따로 설정이 없고, TCP/UDP는 따로 존재하지 않기 때문에 설정이 존재한다.
 * NLB는 2가지 방법을 지원한다.
-    1) preserve_client_ip : 같은 VPC에서만 사용 가능, LB 자체에서 Client IP를 전달
+    1) preserve_client_ip : Target이 같은 VPC에 있는 서버에 대해서만 사용 가능, LB 자체에서 Client IP를 전달
+    > https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html
+    > 클라이언트 IP 보존 사용 시, Client가 NLB로 요청하는 경우 Source IP와 Target IP가 동일하게 되어 간현적인 연결 실패를 가져올 수 있다!!!!
     2) proxy_protocol_v2 : 다른 네트워크에서도 사용 가능, LB에서 Proxy Protocol을 사용해서 전달
     > "preserve_client_ip.enabled"를 true로 하면 무조건 다른 서버들에 대해 Client IP를 보내게 되므로 false로 지정하고 "proxy_protocol_v2.enabled"와 Server의 설정을 이용하도록 권장하는 것이 좋아 보인다(HAProxy Docs 읽어보면 비슷하게 설정하는 듯 보임)
+
+</br>
 </br>
 
 
+---
 ## Target Group Attribute
 ### All LB
-* "stickiness.enabled" : 고정 세션을 활성화할지 여부를 나타냅니다.
-* "stickiness.type" : 고정의 유형. 가능한 값은 source_ip, lb_cookie, app_cookie.
-* "deregistration_delay.timeout_seconds" : Elastic Load Balancing이 대상의 등록 취소 상태를 draining에서 unused로 변경하기 전에 대기하는 시간입니다. 범위는 0~3600초입니다. 기본 값은 300초입니다.
-* "deregistration_delay.connection_termination.enabled" : 등록 취소 시간 제한이 끝날 때 로드 밸런서가 연결을 종료하는지 여부를 나타냅니다. 값은 true 또는 false입니다. 기본값은 false입니다.
+* 고정 세션
+    - "stickiness.enabled" : 고정 세션을 활성화할지 여부를 나타냅니다.
+    - "stickiness.type" : 고정의 유형
+        1) source_ip
+        2) lb_cookie
+        3) app_cookie
+* Draining 설정
+    - "deregistration_delay.timeout_seconds" : Elastic Load Balancing이 대상의 등록 취소 상태를 draining에서 unused로 변경하기 전에 대기하는 시간입니다. 범위는 0~3600초입니다. 기본 값은 300초입니다 (해당 기간부터는 연결을 할 수 없다!)
+    - "deregistration_delay.connection_termination.enabled" : 등록 취소 시간 제한이 끝날 때 로드 밸런서가 연결을 종료하는지 여부를 나타냅니다. 값은 true 또는 false입니다. 기본값은 false입니다 (true 시, Draining 기간에 연결되어 있던 Client에 종료 시그널 전달)
+    > 타겟 그룹 제거 ---> 바로 제거하지 않고 일정 기간 유지한다(Draining). 이유는 기존에 통신하고 있는 Client가 있을 수 있기 때문에 기존 연결은 유지하고, 새로운 연결은 전달하지 않는다(대기 상태) ---> Draining 기간이 만료 (unused 상태)
+* 
+* 교차 영역 로드 밸런싱
+    - 
 </br>
 
 
 ### Application LB
-
-
+* Load Balancing Algorithm
+    - Round Robin: 순차적으로 균등하게 라우팅 (느린 시작 옵션과 함께 쓰일 수 있음, Only)
+    - 최소 미해결 : 진행 중인 요청 수가 가장 적은 대상으로 라우팅 
+    - 가중치 랜덤 : 무작위로 라우팅
 </br>
 
 
@@ -335,6 +384,8 @@
     * IP 유형 대상 그룹(TCP, TLS): 비활성화됨
 * "proxy_protocol_v2.enabled" : 프록시 프로토콜 버전 2의 활성화 여부를 나타냅니다. 기본적으로 프록시 프로토콜은 비활성화되어 있습니다.
     * 해당 속성은 IP 유형 대상 그룹(TCP, TLS)인 경우에만 생각하면 된다.
+* Target 비정상 시, 연결 종료
+    - 
 </br>
 </br>
 
@@ -366,7 +417,15 @@
 * https://iamondemand.com/blog/elb-vs-alb-vs-nlb-choosing-the-best-aws-load-balancer-for-your-needs/
 * https://browndwarf.tistory.com/38
 
+---
+## LB TCP 통신 과정
+### L4 3-way Handshaking
+* 기본 동작 과정 : Network/Switch.md 확인
 
-
-
+### Idle time 초과 동작
+* L4 : NLB는 자신만 세션을 종료시키며, 알지 못하는 Client는 동일한 Connection으로 트래픽을 보냈을 때 RST를 받게 된다.
+* L7 : Client와 Target에 FIN을 보내 세션 테이블을 종료 시킨다.
+* https://tech.kakao.com/2014/05/30/l4/
+* https://medium.com/tenable-techblog/lessons-from-aws-nlb-timeouts-5028a8f65dda
+* Network/Protocol/TCP.md
 

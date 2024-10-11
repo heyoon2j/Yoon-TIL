@@ -1,6 +1,6 @@
 # EBS
-* Amazon EC2 Instance를 위한 안정적이고 분리 가능한 블록 수준 스토리지.
-* EBS는 한 번에 한 인스턴스에만 열결할 수 있어야 하며, 동일한 가용영역에 있어야 한다.
+Amazon EC2 Instance를 위한 안정적이고 분리 가능한 블록 수준 스토리지.
+* EBS는 한 번에 하나의 인스턴스에만 열결할 수 있어야 하며, 동일한 가용영역에 있어야 한다.
 * 빠르게 액세스해야 하고 장기적인 지속성이 필요한 데이터에는 Amazon EBS를 권장한다.
 </br>
 
@@ -40,7 +40,8 @@
 
 
 ## __암호화__
-* 암호화 작업은 AWS KMS를 사용한다. 그리고 암호화는 EC2 Instance에서 EBS Storage로 전송 중인 데이터의 암호화를 제공한다.
+* 암호화 작업은 AWS KMS를 사용한다. 그리고 암호화는 EC2 Instance에서 EBS Storage로 전송 중인 데이터의 암호화를 제공한다(통신 구간 암호화)
+* 볼륨 내부에 있는 데이터를 암호화 한다.
 * 암호화된 볼륨의 스냅샷은 자동으로 암호화된다. 
 * 암호화된 스냅샷에서 생성한 볼륨은 자동으로 암호화된다.
 * EBS는 업계 표준 AES-256 알고리즘을 사용하여 데이터 키로 볼륨을 암호화한다. __데이터 키는 암호화된 데이터와 함께 디스크에 저장된다.__
@@ -56,7 +57,7 @@
 
 
 # EFS
-* 공유 네트워크 파일 스토리지 (NAS: Network Attach Storage)
+* 공유 네트워크 파일 스토리지 (NAS: Network Attached Storage)
 * Linux 워크로드, NFSv4.0 및 NFSv4.1 파일 시스템
 * 해당 파일 시스템 프로토콜을 제공하는 EC2 AMI를 선택해야 되거나, 일부 AMI의 경우 NFS Client를 설치해야 한다.
 </br>
@@ -65,7 +66,7 @@
 1. 표준 스토리지 클래스
     * 다중 AZ 복원력과 최고 수준의 내구성 및 가용성을 제공하는 EFS Standard 및 EFS Standard–Infrequent Access(Standard–IA).
     * AWS 리전 기준
-2. One ZOne 스토리지 클래스
+2. One Zone 스토리지 클래스
     * EFS One Zone 및 EFS One Zone–Infrequent Access(EFS One Zone–IA)는 고객이 단일 AZ에 데이터를 저장하도록 선택하여 추가 비용 절감을 선택할 수 있도록 한다.
     * Availability Zone 기준
 </br>
@@ -75,10 +76,11 @@
 ## EFS Performance
 1. Performance Mode
     * 변경 불가능
-    * 범용 모드(General Purpose): 범용 웹 서비스 환경, 콘텐츠 관리 시스템, 홈 디렉토리 및 일반 파일 서비스와 같이 지연 시간에 민감한 사용 사례
-    * 최대 I/O 성능 모드(Max I/O): 높은 수준의 집계 처리량 및 초당 작업에 사용. 빅 데이터 분석, 미디어 처리 및 게놈 분석과 같은 고도의 병렬화된 애플리케이션 및 워크로드
+    * 범용 모드(General Purpose): 최대 35,000 IOPS를 지원하고 작업당 지연 시간이 가장 짧으며 파일 시스템에 권장되는 성능 모드. 범용 웹 서비스 환경, 콘텐츠 관리 시스템, 홈 디렉토리 및 일반 파일 서비스와 같이 지연 시간에 민감한 사용 사례
+    * 최대 I/O 성능 모드(Max I/O): 높은 수준의 집계 처리량 및 초당 작업에 사용(고도로 병렬화된 워크로드). 빅 데이터 분석, 미디어 처리 및 게놈 분석과 같은 고도의 병렬화된 애플리케이션 및 워크로드
 2. Throughput Mode
     * 24시간 뒤에 변경 가능
+    * 탄력적 처리량(Elastic) : 처리량 성능을 자동으로 늘리거나 줄임
     * 버스트(Bursting): 파일 시스템 크기가 커짐에 따라 확장
     * 프로비저닝된(Provisioned): 즉시 프로비저닝된 처리량을 제공받는다(비용이 비쌈!!!!)
 * 계산: https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes
@@ -102,7 +104,7 @@
 ## EFS Security
 * Amazon EFS는 전송 데이터 암호화와 저장 데이터 암호화라는 두 가지 형식의 파일 시스템 암호화를 지원한다.
 * EFS 파일 시스템을 생성할 때 저장 데이터 암호화를 활성화할 수 있다.
-* 파일 시스템을 마운트할 때 전송 중인 데이터의 암호화를 활서화할 수 있다.
+* 파일 시스템을 마운트할 때 전송 중인 데이터의 암호화를 활성화할 수 있다.
 * 암호화 과정
     1) 파일 데이터는 파일 시스템을 생성할 때 지정한 CMK를 사용하여 저장 시 암호화된다.
     2) 파일 이름, 디렉터리 이름 및 디렉터리 콘텐츠인 메타데이터는 EFS에서 관리하는 키로 암호화된다.
@@ -129,7 +131,20 @@
 </br>
 </br>
 
+---
+## Performacne
+* IOPS
+    * 초당 디스크에 In/Out 작업을 수행할 수 있는 횟수
+* Throughput
+    * 같은 IOPS를 가지더라고 Block Size의 크기에 따라 초당 작업할 수 있는 크기는 달라진다. 그리고 해당 작업을 전달하는 과정에서 손실도 발생할 것이기 때문에 IOPS와 Throughput은 서로 다른다
+    * Throughput in MiB/s = IOPS performance × I/O size in KiB (내 추측 : - Latency )
+</br>
+</br>
 
+
+
+
+---
 ## Cost
 * 
 </br>

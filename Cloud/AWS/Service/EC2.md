@@ -4,16 +4,18 @@
 * 400Gbps Ethernet Networking
 </br>
 
+---
 ## Instance Types
 * 인스턴스 유형은 CPU, Memory, Storage, Networking 용량의 다양한 조합으로 구성된다.
 * 애플리케이션에 따라 적합한 리소스 조합을 선택할 수 있는 유연성을 제공한다.
+</br>
 
 ### __유형__
 1. __범용(기본)__ - __균형 있는__ 컴퓨팅, 메모리 및 네트워킹 리소스를 제공. 다양한 워크로드에 사용할 수 있다 (T-Series)
 2. __컴퓨팅 최적화__ - 고성능 프로세서를 황용하는 컴퓨팅 집약적인 애플리케이션에 적합. 배치 처리 워크로드, 미디어 트랜스코딩, 고성능 웹서버, HPC(고성능 컴퓨팅), 과학적 모델링, 전용 게임 서버 및 광고 서버 엔진, 기계 학습 추론 등 (C-Series)
 3. __가속화된 컴퓨팅__ - 하드웨어 액셀러레이터 또는 코프로세서를 사용하여 부동 소수점 수 계산이나 그래픽 처리, 데이터 패턴 일치 등의 고성능 GPU 기반 인스턴스 (P-Series)
 4. __스토리지 최적화__ - 메우 큰 데이터 세트에 대해 많은 순차적 읽기 및 쓰기 액세스를 요구하는 워크로드. 수만 단위의 IOPS를 지원
-
+</br>
 
 ### __Resource 선정 방법__
 * tpmC -> ECU로 변환
@@ -23,6 +25,39 @@
 </br>
 
 
+---
+## Network Interface
+Instance가 네트워크 통신을 할 수 있게 도와주는 디바이스이다. Network interface는 다음과 같은 특성을 가지고 있다.
+* 실행 중 상태(핫 연결), 중지 상태(웜 연결) 또는 시작 중 상태(콜드 연결)의 인터페이스에 네트워크 인터페이스를 연결할 수 있다.
+* 기본 네트워크 인터페이스는 분리할 수 없다.
+* 동일한 가용 영역과 VPC에 있지만 서로 다른 서브넷에 있는 경우 네트워크 인터페이스를 한 인스턴스에서 다른 인스턴스로 이동할 수 있다.
+* 동일한 서브넷에서 2개 이상의 네트워크 인터페이스를 인스턴스에 연결하면 비대칭 라우팅과 같은 네트워킹 문제가 발생할 수 있습니다. 가능한 한 기본 네트워크 인터페이스에서 보조 프라이빗 IPv4 주소를 대신 사용하는 것이 좋다!!
+> Amazon에서 제공하는 이미지가 아니면 OS 상의 설정이 자동으로 되지 않을 수 도 있어 수동 설정이 필요할 수 있다.
+</br>
+
+### Scenario
+* Secondary IP를 사용하는 경우
+    * 같은 Subnet의 Traffic에 대해 서로 다른 IP로 처리하려는 경우에 사용
+    * On-premise의 VIP라고 생각하면 될 거 같다. 그리고 HA 구성을 위해 VIP를 다른 IP가 가지도록 넘기려면 추가 설정이 필요하다(HAProxy, Pacemaker & Coresync)
+        | On-premise | AWS |  |
+        |------------|-----|---|
+        | VIP | Secondary IP | Secondary IP는 VPC에서 VIP를 나타내기 위해 만든거 같다 | 
+        | HAProxy | Load Balancer |  |
+        | Pacemaker & Coresync | Target Group |  |
+
+        - https://faun.pub/how-to-setup-highly-available-pacemaker-corosync-cluster-with-haproxy-load-balancer-d64873d8df62  
+    * https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/MultipleIP.html
+* Network interface를 2개 사용하는 경우
+    * 서로 다른 Subnet의 Traffic을 처리하려는 경우에 사용
+    * 내부적으로 Network Interface를 수동으로 설정하거나 프로그램에서 설정하지 않으면, Network Interface 변경 작업 등을 할 시 원하는 라우팅이 설정되지 않을 수 있다. 그렇기 때문에 보통 이를 지원하는 네트워크 및 보안 어플라이언스 구성시에만 주로 사용된다.
+    * 수동 설정 방법 : https://cloud.google.com/vpc/docs/create-use-multiple-interfaces?hl=ko#configuring_policy_routing
+> 같은 Subnet에서 2개의 Network interface를 사용하려면 
+</br>
+</br>
+
+
+
+---
 ## AMI
 * Amazon Machine Image
 * AMI에는 다음이 포함된다.
@@ -41,6 +76,7 @@
 </br>
 
 
+---
 ## User Data & Meta Data
 ## 1. User Data
 ![UserData](../img/UserData.png)
@@ -79,7 +115,6 @@
     * EC2는 각 그룹을 파티션이라고 하는 논리 세그먼트로 나눈다.
     * 각 파티션은 동일한 랙을 공유하지 않아서, 하드웨어 장애의 영향을 격리시킬 수 있다.
     * 가용 영역당 파티션을 최대 7개까지 가질 수 있다. 인스턴스 숫자는 계정 제한의 적용을 받는다.
-    * 
 3. __분산형 배치 그룹 (Spread Placement Group)__
     ![SpreadGroup](../img/SpreadGroup.png)
     * 의도적으로 다른 하드웨어에 배치되는 인스턴스 그룹
@@ -122,8 +157,6 @@
 2. __capacity-optimized__
     * 시작하는 인스턴스의 수에 대한 용량이 최적화된 Spot capacity pool에서 제공. 즉, 실시간 용량 데이터를 기준으로 가장 가용성이 높은 pool에서 제공
     * 중단 비용이 높은 워크로드를 실행하는 경우 사용. 즉, 중단이 최대한 없어야 할 워크로드
-
-
 </br>
 </br>
 
@@ -152,17 +185,19 @@
         1) 시작 및 종료 시간이 자유로운 애플리케이션
         2) __대량의 서버 용량 추가로 긴급히 컴퓨팅 파워가 필요한 경우__
         3) CI/CD, 테스트 및 개발 워크 등
-3. __예약 인스턴스(Reserved Instance) & Saving Plans__
-    * 1년 또는 3년 기간의 일정 사용량 약정(시간당 요금을 기준으로 측정)을 조건으로 EC2 및 Fargate 사용량에 대해 저렴한 요금을 제공
+3. __예약 인스턴스(Reserved Instance)__
+    * 1년 또는 3년 기간에 대해 약정을 걸고, 특정 인스턴스 패밀리, 테넌시 등 대해 할인된 요금을 받는다.
     * 옵션
         1) __스탠다드 RI__: EC2 Saving Plans, Region 내의 특정 인스턴스 패밀리에 적용되며 가장 큰 하린 혜택 제공(최대 72%)
         2) __컨버터블 RI__: Computing Saving Plans, RI의 인스턴스 패밀리, OS 등의 속성 변경이 가능 (최대 66%)
         3) __예정된 IR__: 예약한 시간 범위 내에서 인스턴스를 시작.
-4. __전용 인스턴스__
+4. __Saving Plans__ 
+    * 1년 또는 3년 기간의 일정 사용량 약정(시간당 요금을 기준으로 측정)을 조건으로 EC2 및 Fargate 사용량에 대해 저렴한 요금을 제공
+5. __전용 인스턴스__
     ![SingleInstance](../img/SingleInstance.png)
     * Single Tenant 하드웨어에서 실행.
     * 다른 사람들이랑 하드웨어를 같이 쓰지 않는다(물리적으로 격리)
-5. __전용 호스트__
+6. __전용 호스트__
     * 고객 전용의 특정 EC2 인스턴스 용량을 갖춘 특정 물리적 서버.
     * 사용하는 Software가 Hardware를 타는 경우
     
@@ -180,7 +215,7 @@
     * __EC2 Instance Discovery__ : 워크로드를 시작하기 전에 컴퓨팅 환경의 규모를 조정
     * __AWS Compute Optimizer__ : AWS 리소스의 구성 및 사용률 지표를 분석하는 서비스.
     * __AWS Cost Exploerer__ : 비용 탐색기를 이용하여 활용도가 낮은 리소스를 제거한다.
-
+</br>
 
 
 ### Reference

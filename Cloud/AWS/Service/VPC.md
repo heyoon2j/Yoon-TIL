@@ -29,7 +29,7 @@
 
 
 ## NAT Gateway
-* 5Gbps의 대역폭, 최대 45Gbps 까지 자동 확장한다 (Gbps = Gigabit per second, 초당 전송속도 )
+* 5Gbps의 대역폭, 최대 100Gbps 까지 자동 확장한다 (Gbps = Gigabit per second, 초당 전송속도 )
 * 하나의 EIP만 열결할 수 있고, 연결된 후에는 연결을 끊을 수 없다.
 * 네트워크 ACL(Access Control List) 만을 사용하여 트래픽 제어
 * 포트는 1024 - 65535
@@ -63,8 +63,8 @@
 ## Elastic Network Interface (ENI)
 * 가상 네트워크 인터페이스이다.
 * ENI의 Private IP Address, Public IP Address, MAC Address를 유지한다.
-* 사용하는 경우
-    1) 기본 네트워크 인터페이스(eth0)가 퍼블릭 트래픽을 처리하고, 보조 네트워크 인터페이스(eth1)는 백엔드 관리 트래픽을 처리. __이렇게 되면, 서비스 IP와 관리자 IP가 나뉘므로 Log 등을 관리하기 편해진다.__ 이때 Server에 라우팅 설정이 필요하다.
+* Secondary IP 사용하는 경우
+    1) 기본 네트워크 인터페이스(eth0)가 퍼블릭 트래픽을 처리하고, 보조 네트워크 인터페이스(eth1)는 백엔드 관리 트래픽을 처리. __이렇게 되면, 서비스 IP와 관리자 IP가 나뉘므로 Log 등을 관리하기 편해진다.__ 이때 Server에 라우팅 관련 설정이 필요하다.
     2) VPC에서 네트워크 및 보안 어플라이언스 사용. LB, NAT, Proxy Server와 같은 네트워크 및 보안 어플라이언스는 여러 네트워크 인터페이스로 구성하는 것이 좋다. __사용해야되는 영역을 분리해야 되니 필요하다__
 </br>
 
@@ -90,8 +90,18 @@
     * SG: Traffic을 허용하는지 모든 rule을 비교한다.
     * ACL: 기본적으로 선언한 순서대로 우선순위를 가지며, 그 후에는 Number Order에 의해 우선순위가 결정된다.
 5. When to use?
-    * ACL: VPC안의 모든 Subnet Routing 트래픽에 대해 동일한 규칙을 정할 때 사용
+    * ACL: VPC 안의 모든 Subnet Routing 트래픽에 대해 동일한 규칙을 정할 때 사용
     * SG: 해당 인스턴스에만 해당하는 규칙 및 보안 강화를 위해 사용
+6. Limit
+    * SG : (각 네트워크 인터페이스에 대한 보안 그룹)*(각 보안 그룹에 대한 규칙 수 값)은 최대 1000을 넘을 수 없다(=각 네트워크 인터페이스에 대한 총 규칙 수)
+        | 각 네트워크 인터페이스에 대한 보안 그룹 | 각 보안 그룹에 대한 규칙 수 | 각 네트워크 인터페이스에 대한 총 규칙 수 |
+        |---------|-----------|-----------|
+        | 5(기본값) | 60(기본값) | 300(기본값) |
+        | 10 | 100 | 1000(최대값) |
+        | 16(최대값) | 62 | 992 |
+    * ACL
+        * VPC 당 네트워크 ACL 수 : 200
+        * 네트워크 ACL 당 규칙 수 : 20
 </br>    
 
 
@@ -123,8 +133,14 @@
 > VPN + 다중 VPC를 사용할 경우에는 TGW를 사용하는 것이 더 효율적이며, VPN + 단일 VPC인 경우는 VGW를 사용하는 것이 좋다.
 </br>
 
+## Customer Gateway (CGW)
+* 고객 게이트웨이
+* On-premise(고객) 측 접선장치이다 (즉, 물리적 또는 소프트웨어 어플라이언스)
+</br>
+</br>
+
 ## AWS Direct Connect(DX)
-* 1 또는 10 Gbps의 전용 Private Network 연결을 제공. 최대 50Gbps
+* 1 ~ 100 Gbps의 전용 Private Network 연결을 제공.
 * VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
 * 서비스 이점
     1) 네트워크 전송 시 인터넷 대역폭을 두고 경쟁할 필요가 없다.
@@ -142,7 +158,7 @@
 * 내부 및 리전 간도 지원하며, 서로 다른 AWS 계정 간에 설정도 가능
 * VPC 당 최대 125개 가능
 * 대역폭의 제한은 없다.
-* VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연경을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
+* VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연결을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
 > 무료가 되었지만, VPC가 적은 경우에 쓰일거 같다. 1:1로만 Routing이 되기 때문이다. 예로 DMZ VPC <-> Service VPC 끼리 연결
 </br>
 
@@ -244,3 +260,22 @@
 * 무조건 VPC Peering이 저렴하다.
 * Reference: https://dev.classmethod.jp/articles/different-from-vpc-peering-and-transit-gateway/
 
+
+
+## VS On-Premise
+* VPC에서는 MAC이 아닌 IP로만 통신하기 때문에 ARP를 이용하지 않는다. 그래서 ARP Spoofing Attack이 거의 불가능하다.
+> 실질적으로 클라우드 서비스를 제공하는 Hypervisor에서는 MAC Address를 사용하겠지만, 클라우드 서비스 내에서는 Overlay Network로 IP로만 통신이 가능해 보인다.
+* 오직 Unicast만 허용되어 있다. Broadcast, Multicast 허용되어 있지 않다! 
+    - ARP도 Unicast를 통해서만 가능하다. 그렇기 때문에 ARP는 Broadcast를 날리는 것이 아닌 "Mapping Service"(ENI IP/MAC Address 정보를 가지고 있는 Proxy 역할)에게 APR를 보낸다 (네트워크 인터페이스 Nitro Card가 이렇게 동작하도록 구성되어 있는 것으로 보인다!!)
+* Ref 
+    - https://aws.amazon.com/ko/blogs/apn/amazon-vpc-for-on-premises-network-engineers-part-one/
+    - https://zigispace.net/m/1195
+
+
+---
+## Link-local address
+기존에는 장치가 연결해야할 서버를 찾지 못하거나 연결하지 못했을 때를 위해
+* 호스트에 연결되어 있는 Subnetwork(Broadcast Domain)를 통해서만 통신할 수 있는 주소
+* 예약된 CIDR 값 : 169.254.0.0/16
+* Lik-local address는 Stateless address autoconfiguration or Link-local address autoconfiguration 를 통해서 할당 받는다 (보통 DHCP 서버 통해서)
+* 라우터를 통해서 통신하게 된다.

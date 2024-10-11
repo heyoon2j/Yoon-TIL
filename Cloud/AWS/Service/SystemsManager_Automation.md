@@ -50,10 +50,10 @@
     * Parameter에 허용된 값의 배열. 허용되지 않은 값을 입력하면 실행되지 않는다.
     ```
     DirectoryType:
-    type: String
-    description: "(Required) The directory type to launch."
-    default: AwsMad
-    allowedValues:
+      type: String
+      description: "(Required) The directory type to launch."
+      default: AwsMad
+      allowedValues:
       - AdConnector
       - AwsMad
       - SimpleAd
@@ -86,6 +86,46 @@
 
 ### ```outputs``` (option)
 * 다른 Step에서 사용할 수 있는 데이터
+```yaml
+mainSteps:
+  - name: getImageId
+    action: aws:executeAwsApi
+    inputs:
+      Service: ec2
+      Api: DescribeImages
+      Filters:  
+      - Name: "name"
+        Values: 
+        - "{{ ImageName }}"
+    outputs:
+    - Name: ImageId
+      Selector: "$.Images[0].ImageId"
+      Type: "String"
+  - name: launchOneInstance
+    action: aws:executeAwsApi
+    inputs:
+      Service: ec2
+      Api: RunInstances
+      ImageId: "{{ getImageId.ImageId }}"
+      MaxCount: 1
+      MinCount: 1
+    outputs:
+    - Name: InstanceId
+      Selector: "$.Instances[0].InstanceId"
+      Type: "String"
+```
+* ```"{{ parameter }}"``` : 파라미터 값 사용
+* ```"{{ stepName.output }}"``` : 다른 Step의 Output 값 사용
+    * 기본적으로 Output Value
+* ```{{automation:EXECUTION_ID}}``` : 자동화 실행서에 대한 변
+* ```Selector : $.<>.<>.<>"``` : aws:executeAwsApi의 경우 사용 가능
+    * Python Boto3의 Response 값
+    * AWS는 기본적으로 Python boto3 으로 구성되어 있다.
+* ```PropertySelector``` : aws:assertAwsResourceProperty 및 aws:waitForAwsResourceProperty의 경우 사용 가능
+* `````` : 
+* `````` : 
+</br>
+
 </br>
 
 ### ```files``` (option)
@@ -271,7 +311,7 @@ mainSteps:
       DesiredValues:
       - running
   outputs:
-  - "launchOneInstance.InstanceId"
+  - "{{ launchOneInstance.InstanceId }}"
 ...
 ```
 * ```"{{ parameter }}"``` : 파라미터 값 사용
@@ -289,6 +329,7 @@ mainSteps:
 
 
 ## aws:branch
+기본적으로 IF-ELIF-ELSE 문처럼 작동
 </br>
 
 ## 연산자 사용
@@ -475,3 +516,85 @@ inputs:
 nextStep: TestPackage
 ...
 ```
+
+
+
+##
+
+AWS Systems Manager Run Command 
+* 신청해야 할 IAM Policy
+  * EventBridge ---> SSM
+  * SSM ---> EC2
+    1) EC2 관리
+       * AmazonSSMManagedEC2InstanceDefaultPolicy
+    2) EC2에 Run Command 수행
+        ```
+        {
+            "Version":"2012-10-17",
+            "Statement":[
+                {
+                "Effect":"Allow",
+                "Action":[
+                    "ssm:SendCommand"
+                ],
+                "Resource":[
+                    "arn:aws:ssm:*:*:document/*"
+                ]
+                },
+                {
+                "Effect":"Allow",
+                "Action":[
+                    "ssm:SendCommand"
+                ],
+                "Resource":[
+                    "arn:aws:ec2:*:*:instance/*"
+                ],
+                "Condition":{
+                    "StringLike":{
+                        "ssm:resourceTag/Finance":[
+                            "WebServers"
+                        ]
+                    }
+                }
+                }
+            ]
+        }
+        ```
+    3) SSM ---> CloudWhatch 
+        ```
+        {
+            "Effect": "Allow",
+            "Action": "logs:DescribeLogGroups",
+            "Resource": "*"
+        },
+        {
+            "Effect":"Allow",
+            "Action":[
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents"
+            ],
+            "Resource":"arn:aws:logs:*:*:log-group:/aws/ssm/*"
+        }
+        ```
+
+
+
+  * 필요 VPC Endpoint
+    * ssm
+    * ssmmessages
+    * ec2messages
+    * logs
+    * s3
+
+
+---
+## 여러 리전 및 계정에서 실행 (Running utomations - Multiple accounts/Regions)
+![SystemManager_Architecture_MultiAccount](../img/SystemManager_Architecture_MultiAccount.png)
+
+1) User/Role(Manage Role)이 StartAutomationDocumnet 실행
+2) User/Role(Manage Role)이 iam:PassRole를  AssumeRole(Manage Role)을 Document에 부여
+3) (Cross-region 실행이므로) AssumeRole(Manage Role)이 sts:AssumeRole로 Execution Role(Target Role)을 위임받아 Document를 다른 계정에서 실행
+4) Execution Role(Target Role)은 iam:PassRole로 AutomationAssumeRole(Target Role)을 Document에 부여
+5) AutomationAssumeRole(Target Role)이 Document 동작 수행

@@ -56,8 +56,6 @@
 
 
 ## CloudWatch 개념
-* 요약 : 
-</br>
 
 ### __Namespace__
 * 네임스페이스
@@ -88,6 +86,8 @@
     Dimensions: Server=Prod, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:32:00Z, Value: 95
     Dimensions: Server=Beta, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:33:00Z, Value: 97
     ```
+* append_dimensions : 측정 시 항목에 추가할 Dimessions (== DB Colume)
+* aggregation_dimensions : 집계시 사용할 Dimessions (== DB where A and B)
 </br>
 
 
@@ -194,6 +194,25 @@
 * 참조: https://techblog.woowahan.com/2669/
 </br>
 
+## Metric 확인 방법
+1. Console 확인
+2. Query 사용
+    ```
+    SELECT FUNCTION(metricName)
+    FROM namespace | SCHEMA(...)
+    [ WHERE labelKey OPERATOR labelValue [AND ... ] ]
+    [ GROUP BY labelKey [ , ... ] ]
+    [ ORDER BY FUNCTION() [ DESC | ASC ] ]
+    [ LIMIT number ]
+
+    SELECT AVG(CPUUtilization)
+        FROM 'AWS/RDS'
+        WHERE DBInstanceIdentifier=''
+        ORDER BY AVG() DESC
+    ```
+    * 
+    * https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage.html
+
 ## Custom Metric 사용
 1. 필요한 Resource에 대한 Custom Metric 생성
     * CLI, SDK 등 이용
@@ -236,7 +255,128 @@
 </br>
 </br>
 
+---
+## CloudWatch Logs Agent
+### SSM을 통하여 CloudWath Agent 활성화
+1. 필요 IAM 구성
+    * Server : ```CloudWatchAgentServerPolicy```, ```AmazonSSMManagedInstanceCore``` (SSM)
+    * User : SSM 사용을 위한 IAM 권한  #```CloudWatchAgentAdminPolicy```, 
+2. CloudWatch Agent 설치
+    * SSM Document : AWS-ConfigureAWSPackage (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/download-CloudWatch-Agent-on-EC2-Instance-SSM-first.html)
+3. Config JSON 파일 구성
+4. CloudWatch Agent를 실행할 User 생성
+5. 자격 증명 설정
+6. 
 
+
+
+## 구성 파일
+```json
+
+{
+    "agent": {
+        "region": "ap-northeast-2",
+        "run_as_user": "root"
+    },
+    "logs": {
+        "logs_collected": {
+            "files": {
+                "collect_list": [
+                    {
+                        "file_path": "/var/log/messages",
+                        "log_group_name": "/cloudwatch/logs/linux/var/log/messages",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731,
+                        "timezone": "local",
+                    },
+                    {
+                        "file_path": "/var/log/boot.log",
+                        "log_group_name": "/cloudwatch/logs/linux/var/log/boot",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731
+                    },
+                    {
+                        "file_path": "/var/log/secure",
+                        "log_group_name": "/cloudwatch/logs/linux/var/log/secure",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731
+                    },
+                    {
+                        "file_path": "/var/log/maillog",
+                        "log_group_name": "/cloudwatch/logs/linux/var/log/mail",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731
+                    },
+                    {
+                        "file_path": "/var/log/cron",
+                        "log_group_name": "/cloudwatch/logs/linux/var/log/cron",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731
+                    }
+                ]
+            },
+            "windows_events": {
+                "collect_list": [
+                    {
+                        "event_format": "xml",
+                        "event_name": "System",
+                        "event_levels": [
+                            "INFORMATION",
+                            "WARNING",
+                            "ERROR",
+                            "CRITICAL"
+                        ],
+                        "log_group_name": "/cloudwatch/logs/windows/eventLog/system",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731
+                    },
+                    {
+                        "event_format": "xml",
+                        "event_name": "Application",
+                        "event_levels": [
+                            "INFORMATION",
+                            "ERROR"
+                        ],
+                        "log_group_name": "/cloudwatch/logs/windows/eventLog/application",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": 731
+                    }
+                    //,
+                    // {
+                    //     "event_name": "CustomizedName",
+                    //     "event_levels": [
+                    //         "INFORMATION",
+                    //         "ERROR"
+                    //     ],
+                    //     "log_group_name": "CustomizedLogGroup",
+                    //     "log_stream_name": "CustomizedLogStream"
+                    // }
+                ]
+            }
+        }
+    }
+    //,
+	// "metrics": {
+    //  "namespace" : 
+	// 	"metrics_collected": {
+	// 		"collectd": {
+	// 			"metrics_aggregation_interval": 60
+	// 		},
+	// 		"statsd": {
+	// 			"metrics_aggregation_interval": 60,
+	// 			"metrics_collection_interval": 60,
+	// 			"service_address": ":8125"
+	// 		}
+	// 	}
+	// }
+}
+```
+
+
+
+
+
+---
 ## Cost (비용)
 
 </br>
@@ -244,12 +384,23 @@
 
 
 # VPC Flow Log
-
+AWS VPC 흐름 로그 기록
 </br>
 </br>
 
 
 # CloudTrail
+AWS API 호출 로그 기록
+</br>
+</br>
 
-</br>
-</br>
+
+
+---
+
+
+
+Application을 위한 모니터링 
+- Collectd : 
+- StatsD : 
+    * https://aws.amazon.com/ko/blogs/devops/new-how-to-better-monitor-your-custom-application-metrics-using-amazon-cloudwatch-agent/

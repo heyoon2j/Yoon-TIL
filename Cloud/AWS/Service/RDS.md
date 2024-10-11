@@ -90,6 +90,7 @@
 * CloudWatch에서 로그를 확인하려면 __"로그 내보내기"__ 에서 게시할 로그 유형을 선택하고, 파라미터 그룹에서 값을 설정해야 한다.
     * https://gonigoni.kr/posts/logging-rds/
 > 파라미터 그룹에서 설정하지 않으면, 내보내기를 하더라도 로그는 보이지 않는다.
+
 </br>
 </br>
 
@@ -107,7 +108,7 @@
 ### RDS DB
 ![RDSCluster](../img/RDSCluster.jpg)
 * RDS DB들은 EBS에 Data Write/Read를 한다. 그렇기 때문에 Read DB(Replication)는 Binlog에 대한 Write 동작을 추가적으로 해야되기 때문에 Only Read 이지만 실질적으로 Write 동작을 하게된다.
-* Data 이중화를 위해 EBS는 Mirroring Storage(EBS)에 Data르 복제하게 된다.
+* Data 이중화를 위해 EBS는 Mirroring Storage(EBS)에 Data를 복제하게 된다.
 </br>
 
 ### Aurora DB

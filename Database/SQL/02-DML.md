@@ -24,6 +24,7 @@
     SELECT * 
         FROM world.country;
     ```
+
   
 ### ALIAS
 * Column의 이름을 변경할 수 있다.
@@ -167,7 +168,7 @@ SELECT continent, SUM(population) as population
 
 ## INSERT
 * Table에 데이터 추가
-    ```
+    ```sql
     INSERT INTO table_name(col1, col2, ...)
         VALUES (val1, val2, ...)
 
@@ -179,12 +180,25 @@ SELECT continent, SUM(population) as population
     ```
 
 * SELECT 문 결과를 INSERT
-    ```
+    ```sql
     INSERT INTO city2
     	SELECT Name, CountryCode, Population
     	FROM city
         WHERE Population >= 8000000;
     ```
+
+
+* 데이터 없을 때 추가, 있을 때는 업데이트
+    * INSERT INTO ~ ON CONFLICT [colume_name/ON CONSTRAINT constraint_name/WHERE predicate] [DO NOTHING/DO UPDATE SET column = value]
+    * DO NOTHING : 충돌날 경우, 아무것도 안하겠다는 의미
+    * DO UPDATE SET : 충돌날 경우, 해당 데이터로 업데이트
+    ```sql
+    insert into custom_perf (host_name, collect_date, cpu_avg, cpu_max, mem_avg, mem_max)
+        on conflict (host_name, collect_date)
+        do nothing
+    ```
+
+
 
 
 ## DELETE
@@ -201,14 +215,30 @@ DELETE FROM user2
 
 ## UPDATE
 * 데이터 수정
-```
-UPDATE [table_name]
-    SET col1 = val1, col2 = val2 ...
-    WHERE condition;
+    ```
+    UPDATE [table_name]
+        SET col1 = val1, col2 = val2 ...
+        FROM [ref_table]
+        WHERE condition;
 
-# Example
-UPDATE user2
-	SET email = "jin@gamil.com", age = 22
-    WHERE name = "jin"
-    LIMIT 1;
-```
+    # Example
+    UPDATE user2
+        SET email = "jin@gamil.com", age = 22
+        WHERE name = "jin"
+        LIMIT 1;
+    ```
+* Update join query
+    ```
+    # update custom_pef mcp
+    update msp custom perf mcp
+    set cpu_max = tmp.cpu_max, mem_max = tmp.mem_max, cpu_avg = tmp.cpu_avg, mem_avg = tmp.mem_avg
+    from (
+        select h. name as name,
+            ...
+        group by h.name, date_trunc(' day", to timestamp(t.clock))
+    ) tmp
+    where mcp.name = tmp.name
+    and mcp.collect_date = tmp.collect_date
+    ;
+    ```
+
