@@ -1,4 +1,30 @@
-# Git
+ull: 개발한 코드를 받아온다
+* add: 변경 사항을 Index에 저장
+* commit: Index에 있는 사항들을 Local Repository에 저장
+* push: Commit을 원격 저장소에 Upload 한다.
+* branch: 같이 곳에서 작업을 하게 되면 충돌이 날 수 있는 가능성이 있기 때문에 하나의 줄기에 여러개의 나무가지가 생기는 형태를 가지도록 만들어준다.
+    ![git_branch](img/git_branch.png)
+    > 녹색의 줄기에 A는 빨간색으로 분리가되고, B는 노란색으로 분리가 될 수 있다.
+* merge : Branch에서 작업이 끝나고, 코드를 합칠 때 사용한다.
+    1. Cherry-pick
+
+        ![git_cherry_pick](img/git_cherry_pick.png)
+        - cherry-pick은 다른 branch는 그대로 두고, 변경한 내용만을 현재 branch에 적용하고 싶을때 사용한다!!
+        > 즉, Branch 자체에 대해서는 병합이 되지 않는다.
+    2. Fast-Forward Merge
+
+        ![git_ff_merge](img/git_ff_merge.png)
+        - 단순히 Branch를 이동시켜 적용시킨다.
+    3. Merge Commit
+
+        ![git_mc_merge](img/git_mc_merge.png)
+        - 양 쪽의 Branch를 통합한다.
+        - Fast-Forward Merge가 가능한 경우라도 Non Fast-Forward 병합 옵션을 지정하여 위의 그림 같이 실행할 수 있다. 이 경우, Branch가 그대로 남기 때문에 그 Branch로 실행한 작업을 확인할 수 있기 때문에 관리 면에서 더 유용할 수 있다.
+* pull request: 병합하기 전에 다른 개발자들에게 Confirm을 받기 위해 요청 메시지를 보낸다.
+* fork: 다른 원격 저장소에 있는 History를 그대로 나의 GitHub 원격 저장소에 복사한다.
+    > 다른 사람이 만든 OpenSource에 기여하고 싶을 때는, Fork로 저장소 전체를 내 계정에 복제 -> Commit -> Push 후 원본 저장소로 Pull Request를 보낸다.
+* collaborators: GitHub 프로젝트를 생성하여 진행할 때
+
 
 ## Git Structure
 ### .git 구조
@@ -113,13 +139,6 @@ description
 
 ---
 ## Start Git
-* 기본 명령어
-    - clone: 저장소 복제하기
-    - pull: 개발한 코드를 받아온다
-    - add: 변경 사항을 Index에 저장
-    - commit: Index에 있는 사항들을 Local Repository에 저장
-    - push: Commit을 원격 저장소에 Upload 한다.
-    - branch: 같이 곳에서 작업을 하게 되면 충돌이 날 수 있는 가능성이 있기 때문에 Branch를 사용해야 된다.
 * Commit Message 작성 : Commit할 때는 동작하는 최소 단위로 (ex> 메소드 단위)
     - __feat:__ - features, 기능 구현시, 기능 설명
     - __docs:__ - documentations, README.md 등 문서화 작업
