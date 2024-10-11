@@ -3,7 +3,6 @@
 
 
 ## Primary Security
-
 - Who can access? : 누가 접근할 수 있게 할건지
 - What can they do? : 그 대상이 어떤 걸 할 수 있게 할건지
 
@@ -12,14 +11,6 @@
 
 
 ## 
-
-
-
-
-
-
-
-
 Pod Security Policy
 
 
@@ -42,6 +33,7 @@ Pod Security Policy
     2. Authentication & Athorization
         - Secret 접근 자체를 인증을 통해서만 접근 가능하도록 하는 방식 (접근 제어가 필요하다!!!!!!)
         - Type은 기존 인증방식과 동일 (ref : https://kubernetes.io/docs/concepts/configuration/secret/)
+
 
 
 ## EncryptionConfiguration 암호하하기

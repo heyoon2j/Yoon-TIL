@@ -10,7 +10,7 @@
 * Secret
     - Password, OAuth Token, SSH KEY와 같은 민감한 정보를 저장하는 용도
     - 크기는 1 MiB로 제한
-    - kubelet 메모리에 저장됨. 그렇기 때문에 매우 큰 Secret 생성은은 메모리를 고갈시키거나 Overflow시킬 수 있다. 그러나, 작은 크기의 Secret을 많이 만드는 것도 메모리를 고갈시킬 수 있다
+    - kubelet 메모리에 저장됨. 그렇기 때문에 매우 큰 Secret 생성은은 메모리를 고갈시키거나 Overflow시킬 수 있다. 그러나, 작은 크기의 Secret을 많이 만드는 것도 메모리를 고갈시킬 수 있다.
         > 리소스 쿼터를 사용하여 한 네임스페이스의 시크릿 (또는 다른 리소스) 수를 제한할 수 있다.
     - 인코딩하여 저장하는 것이지 암호화를 하는것은 아니다!!
 </br>
@@ -55,6 +55,7 @@
 ## Secret
 암호화가 필요한 내용을 저장할 때 사용하는 Object
 * Secret이지만 실제로는 인코딩만되고 암호화되지 않는다 (https://cwal.tistory.com/47)
+* Data 안에는 인코딩된 값만 입력할 수 있으며, 일반 평문을 넣으려면 stringData를 사용하면 된다.
 * 암호화 방법 : https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
     1) EncryptionConfiguration 구성 : etcd 저장 시에 암호화하도록 적용시킨다.
     2) Authentication & Athorization을 통해 Secret에 접근을 제한한다.

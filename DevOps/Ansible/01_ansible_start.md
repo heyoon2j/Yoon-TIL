@@ -118,17 +118,69 @@ roles/
     # $ ansible-config init --disabled > ansible.cfg
     # $ ansible-config init --disabled -t all > ansible.cfg
     # /etc/ansible/ansible.cfg
+
     [defaults]
+    inventory = inventories
+    host_key_checking = False
+    retry_files_enabled = False
     remote_user = ec2-user
+    private_key_file = ~/.ssh/id_rsa
+    timeout = 30
+    forks = 10
+    log_path = /var/log/ansible.log
     become = True
     become_method = sudo
     become_user = root
+
+    [privilege_escalation]
+    become = True
+    become_method = sudo
+    become_user = root
+    become_ask_pass = False
+
+    [ssh_connection]
+    ssh_args = -o ControlMaster=auto -o ControlPersist=60s
+    control_path = %(directory)s/%%h-%%r
+    pipelining = True
+
+    [paramiko_connection]
+    record_host_keys = False
+
+    [persistent_connection]
+    connect_timeout = 30
+    connect_retries = 10
+    connect_interval = 1
+
+    [accelerate]
+    accelerate_port = 5099
+    accelerate_timeout = 30
+    accelerate_connect_timeout = 5
+
+    [selinux]
+    warn = False
+
+    [colors]
+    highlight = white
+    verbose = blue
+    warn = bright purple
+    error = red
+    debug = dark gray
+    deprecate = purple
+
 
     # ./ansible.cfg
     [defaults]
     roles_path = ./roles
 
     ```
+- [defaults] : Ansible의 기본 설정을 정의합니다.
+- [privilege_escalation] : 특권 상승 관련 설정을 정의합니다.
+- [ssh_connection] : SSH 연결 관련 설정을 정의합니다. 예를 들어, ControlMaster와 ControlPersist 옵션을 사용하여 연결을 유지할 수 있습니다.
+- [paramiko_connection] : Paramiko 연결 관련 설정을 정의합니다. Paramiko는 Python에서 SSH2를 사용하기 위한 모듈입니다.
+- [persistent_connection] : Ansible의 지속적인 연결 설정을 정의합니다. Ansible의 연결이 끊어지지 않도록 유지하는 설정을 포함합니다.
+- [accelerate] : Ansible의 가속화 모드 설정을 정의합니다. 가속화 모드는 작업 속도를 높이기 위해 사용됩니다.
+- [selinux] : SELinux 관련 경고 및 설정을 정의합니다.
+- [colors] : 터미널 컬러 출력을 정의합니다. Ansible 출력의 색상을 사용자 정의할 수 있습니다.
 > 가장 많이 사용되는 Config 파일 위치는 현재 디렉토리에 있는 Config이다.
 
 </br>

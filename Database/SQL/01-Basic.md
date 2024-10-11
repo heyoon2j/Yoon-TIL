@@ -185,3 +185,15 @@ SELECT *
         WHERE population >= 80000000
         ORDER BY population DESC;
     ```
+
+
+
+## TYPE
+* INT 
+* VARCHAR
+* 
+* LOB (Large Object)
+    - CLOB (Character LOBs)
+    - BLOB (Binary LOBs)
+    - NCLOB (National Character LOBs)
+    - BFILE (Binary File)

@@ -172,3 +172,13 @@ https://overcome-the-limits.tistory.com/664?category=1006727
 https://velog.io/@pk3669/Mysql-Redo-Undo-Log
 https://peterica.tistory.com/389
 
+
+
+
+
+
+### Postgresql
+- https://en.wikibooks.org/wiki/PostgreSQL/Architecture
+- https://www.geeksforgeeks.org/postgresql-system-architecture/
+- https://www.youtube.com/watch?v=cWyVfATZ7H4
+

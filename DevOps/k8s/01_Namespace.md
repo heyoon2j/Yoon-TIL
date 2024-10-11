@@ -1,5 +1,8 @@
 # Namespace
 Resource를 논리적으로 나눈 공간
+
+Namespace가 달라도 통신은 특별한 설정이 있지 않은 이상 기본적으로 통신이 가능하다.
+
 * Namespace 목록 화인
     ```sh
     # 네임스페이스에 속하는 리소스
@@ -11,7 +14,7 @@ Resource를 논리적으로 나눈 공간
 
 
 ## Scope
-![Namespace_Scope](Namespace_Scope)
+![Namespace_Scope](img/Namespace_Scope)
 </br>
 
 

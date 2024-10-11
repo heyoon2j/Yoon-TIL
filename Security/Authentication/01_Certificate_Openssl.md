@@ -21,16 +21,16 @@
 </br>
 
 
-
----
 ## Self Signed Certificate 생성
 ![Openssl_flow](../img/openssl_flow.jpg)
 * Self Signed Certificate : 모든 인증서는 발급기관(CA)의 개인키를 통해 요청자 데이터와 공개키를 암호화한(전자서명한) 데이터이다. 하지만 최상위에 있는 인증기관(Root ca)는 서명해줄 상위 인증기관이 없으므로 Root ca의 개인키로 스스로의 인증서에 서명하여 최상위 인증기관 인증서를 만든다. 이렇게 만든 인증서를 SSC라고 한다.
 * 인증서 생성 순서는 다음과 같다.
     0) SSL 설치
-    1) Private/Public Key 생성
-    2) 인증 요청서 생성
-    3) 인증서 생성
+    1) Site의 Private/Public Key 생성 (== Key file)
+    2) 인증 요청서 생성 (== CSR file)
+        - (Site의 Public Key + Site 정보)를 합쳐서 만듬
+    3) 인증서 생성 (== CRT File)
+        - Site의 인증 요청서(CSR)를 Private Key로 암호화
 </br>
 
 ### 0. Private/Public Key 생성
@@ -46,7 +46,7 @@ $  yum install –y openssl mod_ssl
     ```
     #openssl genrsa -[messageDigest_value] -out [outputFile_name] 2048
 
-    $ openssl genrsa -out ca.key 1024
+    $ openssl genrsa -out ca.key 2048
     ```
 * 공개키 생성
     ```

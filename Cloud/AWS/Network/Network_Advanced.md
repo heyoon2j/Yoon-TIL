@@ -327,9 +327,9 @@
         ![DX_Connection](img/DX_Connection.png)
         - 보안 : IPSec VPN 지원 가능. MACsec도 지원하나 생성 시에 설정 가능
             1) MACsec 보안(IEEE 802.1AE) : Layer 2 보안 (On-prem 장비 switch or router가 지원해야함 / ref : https://aws.amazon.com/ko/blogs/networking-and-content-delivery/adding-macsec-security-to-aws-direct-connect-connections/)
-            1) IPsec VPN : Layer 3 보안 (VPN 통신 연결 시, Public VIF, Transit VIF 지원)
+            1) IPsec VPN : Layer 3 보안 (Site-to-Site VPN 통신 연결 시, Public VIF, Transit VIF 지원)
             - MACSec은 DX Location <---> On-prem 간의 암호화
-            - IPSec은 AWS <---> Public VIF / DX Location 간의 암호화
+            - IPSec은 AWS <---> Public VIF / DX Location, AWS <---> On-prem 간의 암호화
         - Connection Type
             1) Hosted : Connection을 여러 고객이 공유하는 방식으로 VLAN을 통해 트래픽을 분리
                 - Connection : VIF == 1 : 1 관계 (이미 제공업체에서 Connection을 VLAN으로 분리를 했기 때문에)

@@ -1,12 +1,12 @@
 # Basic
 * State Check
     - Kubernetes는 '원하는 상태'(desired state)를 '선언'(declarative)하면 '현재 상태'(current state)와 비교하여 원하는 상태를 유지하려한다.
-    - 상태를 유지하기 위해 Kubernetes는 계속해서 상태를 관찰한다(Observing)
+    - 상태를 유지하기 위해 Kubernetes는 계속해서 Object 상태를 관찰한다(Observing)
     > k8s는 상태를 선연하다보니 명령어도 run이 아닌 create를 사용한다
 * Namespace
     - Cluster에서 사용되는 리소스들을 구분해서 관리하는 그룹
     - 환경을 분리할 수 있음
-        1) 서비스 단위
+        1) 서비스 단위 
         2) 환경 단위
         3) 팀 단위
         4) etc
@@ -73,9 +73,10 @@ Namespace는 프로세스, 시스템에 대한 격리 / Cgroups는 시스템 자
 
 ---
 ## Container Runtime Engine (Container Runtime)
-* CRI(Container Runtime Interface): 컨테이너 런타임과 통신할 수 있는 표준 인터페이스
-    - Container Runtime Service: 컨테이너의 라이프사이클 관리. 생성, 삭제, 시작, 중지 등
-    - Image Service: 컨테이너 이미지를 관리
+CRI(Container Runtime Interface): 컨테이너 런타임과 통신할 수 있는 표준 인터페이스
+* 구성
+    1) Container Runtime Service: 컨테이너의 라이프사이클 관리. 생성, 삭제, 시작, 중지 등
+    2) Image Service: 컨테이너 이미지를 관리
 * Docker vs ContainerD
     - 기존에는 컨테이너 런타임이 Docker만 있었기 때문에 Docker를 지원했지만, K8S의 CRI를 따르는 형태가 아니었기 때문에 호환성에 많은 복잡성을 가졌다. 현재는 복잡성을 가진 Docker를 제거하고, CRI 표준을 따르는 ContainerD를 사용하고 있다.
     - 그렇다고 Docker가 이제 사용이 안되는 것은 아니다. Docker 자체 기능은 계속해서 쓰이고 있다.
@@ -90,9 +91,12 @@ Namespace는 프로세스, 시스템에 대한 격리 / Cgroups는 시스템 자
     1) runc (기본적으로 채택되어 있는 런타임)
     2) gVisor
     3) Kata Containers
+* Container Network
+    - 컨테이너의 네트워크 설정을 위해 CNI Plugin을 실행한다.
 </br>
 
 ### ContainerD
+Kubectl을 사용하지 못할때, crictl 명령어를 사용한다.
 * CLI
     - ctr : ContainerD 디버깅용
     - nerdctl : ContainerD 일반적인 목적
@@ -151,20 +155,19 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
     - Kubernetes에 명령을 내리기 위한 Binary
     - Command Line Interface (CLI)
 1. kubelet
-    * Control Plane과 통신을 하는 Agent로 모든 Node에 존재 
+    * 컨테이너를 실제로 실행하는 하는 Agent로 모든 Node(Master, Worker)에 존재
     - Control Plane으로부터 요청을 받으면 Kubelet에서 파드에 대한 작업을 수행
-    - CSI(Storage Interface), CNI(Network Interface) 관리
-    ```sh
-    ExecStart=/usr/local/bin/kubelet \\
-    --config=/var/lib/kubelet/kubelet-config.yaml \\
-    --container-runtime=remote \\
-    --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
-    --image-pull-progress-deadline=2m \\
-    --kubeconfig=/var/lib/kubelet/kubeconfig \\
-    --network-plugin=cni \\
-    --register-node=true \\
-    --v=2
-    ```
+        ```sh
+        ExecStart=/usr/local/bin/kubelet \\
+        --config=/var/lib/kubelet/kubelet-config.yaml \\
+        --container-runtime=remote \\
+        --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
+        --image-pull-progress-deadline=2m \\
+        --kubeconfig=/var/lib/kubelet/kubeconfig \\
+        --network-plugin=cni \\
+        --register-node=true \\
+        --v=2
+        ```
 2. kube-apiserver
     - API Server. 외부 및 내부 요청(API)을 처리하는 통로
     - 인증, 권한 부여, 액세스 제어 등 제공 
@@ -235,11 +238,20 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
     # --initial-cluster : 클러스터의 초기 노드 목록을 정의. 각 노드는 etcd 인스턴스의 URL을 지정
     # --data-dir=/var/lib/etcd : etcd 데이터 파일이 저장될 디렉토리 경로
     ```
-    
-4. kube-conroller-manager
-    - Controller Manager, Cluster 기능을 수행
-    - 거의 모든 Object의 상태를 관리
-    - Pod들을 관리하고, 스케줄러를 참고하여 Auto Scaling, Rolling Update 등을 수행하기 위해 kubelet에 전달
+
+4. kube-scheduler
+    - 새로 생성하는 Pod를 요구사항과 노드 상태를 고려하여 최적의 노드 선택 (Filtering, Scoring)
+        - CPU, Memory 등 리소스 상태
+        - Taint
+        - etc
+    - Only Pod 생성 스케줄에만 관여
+    > Scheduler가 없는 경우, 노드 선택을 못하기 때문에 Pod가 생성되지 않는다. 하지만 nodeName 같은 경우, 노드를 직접 선택하기 때문에 요구사항을 확인할 필요가 없기 때문에 Scheduler의 유무와 상관없이 동작한다.
+
+5. kube-conroller-manager
+    - 여러 클러스터를 통해 클러스터의 전반적인 상태를 관리
+        - Pod들을 관리하고, 참고하여 Auto Scaling, Rolling Update 등을 수행하기 위해 kubelet에 전달
+        - 클러스터의 현재 상태를 모니터링하고 원하는 상태로 조정
+        - 리소스들의 생명 주기 관리 등
     - 여러 개의 컨트롤러 기능이 하나로 통합되어 있다
         1) ServiceAccount Controller : 새 NameSpace에 대하여 기본 ServiceAccount를 생성
         2) EndpointSlice Controller : EndpointSlice 개채 생성 (서비스와 포트 간의 링크 제공)
@@ -251,12 +263,8 @@ k8s는 구성 요소는 크게 Control plane(Master Node), Compute machines(Woke
             * 체크한 내용에 따라 필요시 Scheduler 쪽에 Pod 생성 요청
             - High Availability
             - LoadBalancing & Scaling
-            - 
-        6) 
-5. kube-scheduler
-    - Scheduler
-    - CPU, Memory 등 리소스 상태를 감시하여 Pod를 적절한 컴퓨팅 Node를 예약
-    - 그 외, 요구사항 등
+        6) Job Contoller
+
 </br>
 </br>
 
@@ -273,7 +281,7 @@ Application Pod들이 동작하는 Node
 1. kubelet
     * Control Plane과 통신을 하는 Agent로 모든 Node에 존재 
     - Control Plane으로부터 요청을 받으면 Kubelet에서 파드에 대한 작업을 수행
-    - CSI(Storage Interface), CNI(Network Interface) 관리
+    - CSI(Storage Interface), CNI(Network Interface) 설정
     ```sh
     ExecStart=/usr/local/bin/kubelet \\
     --config=/var/lib/kubelet/kubelet-config.yaml \\
@@ -301,6 +309,29 @@ Application Pod들이 동작하는 Node
 </br>
 
 
+---
+## 그 외
+
+### Image
+- 형태: image: docker.io/library/nginx (image: <Registry>/<User/Account>/<Image/Repository>)
+- imagePullSecrets 설정
+    - Private 이미지를 기반으로 컨테이너를 실행하는 데 권장되는 접근 방식 (컨테이너 이미지 레지스트리 키 사용하여 접근)
+    - 방식 : 컨테이너 이미지 레지스트리 키 Secret 생성 ---> Pod yaml 파일에 해당 키 추가
+    - Ref : https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+    - https://www.ibm.com/docs/ko/cloud-private/3.2.x?topic=images-creating-imagepullsecrets-specific-namespace
+
+
+
+
+### Security Context
+Pod 실행 시, 실행 권한 등을 설정할 수 있다.
+
+
+## Network Policy
+네트워크 보안(방화벽)을 정의하는 객체이다. 특징은 다음과 같다.
+- Stateful policy
+- 
+
 
 
 
@@ -308,19 +339,6 @@ Application Pod들이 동작하는 Node
 
 
 ---
-### Network Plugin
-Kubernetes Cluster 통신을 위해서 Network Plugin을 선택하고 구성해야 한다. Network Plugin은 일반적으로 CNI(Container Network Interface)로 구성되는데, 주로 사용되는 CNI는 다음과 같다.
-* CNI List
-    * Calico (가장 많이 쓰임, L3 네트워크, BGP, VXLAN, ACL 등 지원)
-    * Flannel (가볍게 사용하는 경우 사용, L2 네트워크)
-    * Cilium
-    * Kub-router
-    * Romana
-    * WeaveNet
-    * Canal
-    * Amazon VPC CNI plugin for Kubernetes (AWS용)
-</br>
-
 
 ### CoreDNS
 DNS Server로 Kubernetes Cluster에서 Domain을 이용해 통신하는데 사용한다.
@@ -334,105 +352,4 @@ Kubernetes를 잘 활용하기 위해 필요한 기술들은 다음과 같다.
 * Grafana
 </br>
 </br>
-
-
-
-
-
-
-```
-cat /etc/kubernetes/manifests/kube-apiserver.yaml
-
-cat /etc/systemd/
-```
-
-### 기타
-* 노드에 장에가 발생 시, 마스터 노드가 고장났다라고 인식하는데 기다리는 시간 (--pod-eviction-timeout)
-    - 해당 시간 안에 복구가 되면, 안에 있던 Pod를 재생성하지만, 그렇지 않은 경우 다시 생성하지 않는다.
-    - ```$ kubectl controller-manager --pod-eviction-timeout=5m0s ...```
-
-
-* OS Update 시
-* kubernetes Upgrade
-    - v1.23.4 (v.Major.Minor.Patch)
-    - 패치 : 버그 수리
-    - 마이너 : 소규모 릴리즈
-        - v1.10.0-alpha : 릴리즈에 대한 버그가 있을 수 있는 상태. 기능은 디폴티 비활성화
-        - v1.10.0-beta : 새 기능이 디폴트 활성화된 상태로 배포
-        - v1.10.0 : 릴리즈에 대한 안정화
-    - 메이저 : 안정화
-* Cluster Upgrade
-    - 기본적으로 중심이 되는 kube-apiserver는 다른 것들보다 버전이 높아야 한다 (호환성 문제)
-    1) kubeadm 부터 업그레이드 진행
-        - ```$ apt-get upgrade -y kubeadm=1.12.0-00```
-    2) Master Node Upgrade --> 이 기간동안 Pod는 정상적으로 동작한다! 단, 스케줄링 등이 동작하지 않는다.
-        - ```$ kubeadm upgrade plan```
-        - ```$ kubeadm upgrade apply v1.12.0```
-    3) kubelet 업그레이드
-        - ```$ apt-get upgrade -y kubelet=1.12.0-00```
-        - ```$ systemctl restart kubelet```
-    4) Worker Node 하나씩 처리
-        - Master Node에서 ```$ kubectl drain node-1```
-        - ```$ apt-get upgrade -y kubeadm=1.12.0-00```
-        - ```$ apt-get upgrade -y kubelet=1.12.0-00```
-        - ```$ kubeadm upgrade node config --kubelet-version v1.12.0
-        - ```$ systemctl restart kubelet```
-        - Master Node에서 ```$ kubectl uncordon node-1```
-    5) CNI provider upgrade
-        = 
-
-
-
-## Backup
-- 백업이 필요한 데이터
-    1) Resource Configuration
-       - ```$ kubectl get all --all-namespaces -o yaml > all-deploy-services.yaml```
-       - VELERO. ARK by HeptIO 라는 오픈소스 사용
-    2) ETCD Cluster (상태 저장)
-        - 백업 :
-            ```
-            $ etcdctl --endpoints=https://127.0.0.1:2379 \
-            --cacert=/etc/kubernetes/pki/etcd/ca.crt \
-            --cert=/etc/kubernetes/pki/etcd/server.crt \
-            --key=/etc/kubernetes/pki/etcd/server.key \
-            snapshot save /opt/snapshot-pre-boot.db
-            ```
-        - 복구 시, 먼저 kube-apiserver 중지 : ```service kube-apiserver stop```
-        - 복구 진행 : 
-            ```
-            $ etcdutl --data-dir <data-dir-location> snapshot restore snapshot.db
-            $ vi /etc/kubernetes/manifests/etcd.yaml
-            ...
-            hostPath : <data-dir-location>
-            ...
-            ```
-            1) 특정 Directory에 백업본 복구
-            2) 복구한 위치로 YAML 파일 수정
-        - 권한 수정 : chown -R etcd:etcd /var/lib/etcd-data-new
-        - 데몬 재시작 : ```systemctl restart daemon-reoload```
-        - etcd 서비스 재시작 : ```service etcd restart  /  systemctl restart etcd```
-        - kube-apiserver 시작 : ```service kube-apiserver start```
-    3) 
-
-
-
-
-
-### Image
-- 형태: image: docker.io/library/nginx (image: <Registry>/<User/Account>/<Image/Repository>)
-- 
-
-
-
-
-## Docker Security
-
-
-
-
-## Security Context
-
-
-## Network Polic
-기본적으로 K8S Network Policy는 Stateless이기 때문에 모든 트래픽에 대해 명시적 선언이 필요하다. 하지만 네트워크 플러그인을 어떤거를 쓰냐에 따라 Stateful 방화벽과 같이 동작시킬 수 있다.
 

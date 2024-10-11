@@ -1,17 +1,83 @@
 # Networking
+* endpoint : Service가 패킷을 전달하고자하는 Pod 집합의 진입점을 Endpoint라고 한다. 해당 Endpoint에는 단일 DNS가 부여된다.
+EKS는 AWS에서 제공하는 CNI(Container Network Interface) Plugin을 사용한다!!
+* Amazon EKS는 Pod에게 예약된 Worker Node와 동일한 서브넷에서 IP를 할당해준다.
+    > 필요시, 
+* Basic
+    - Architecture
+    - Traffic Flow
 
-* endpoint : Service가 패킷을 전달하고자 하는 Pod 집합의 진입점을 Endpoint라고 한다. 해당 Endpoint에는 단일 DNS가 부여된다.
 
+---
+## Architecture
+쿠버네티스 네트워크의 구성 핵심 요소는 다음과 같다. 
+1) kube-proxy
+2) CNI
+    - All containers/Pods can communicate to one another without NAT.
+    - All nodes can communicate with all containers and vice-versa without NAT. 
+    - NAT 구성 없이도 쿠버네티스 내부의 리소스들은 통신이 되어야 한다. 이를 위해 많은 네트워크 플랫폼이 구축되어 있다.
 
-## 
-
-* CNI Plugin(Container Network Interface) : Overlay Network 관리 - Network routing
-* kube-proxy : Firewall 관리 - Net filter, NAT
+### kube-proxy
+주로 서비스 추상화를 구성하고 클러스터 내부 로드 밸런싱 기능을 담당
+- L4에서 동작
+- Service 레벨의 네트워크 역할 수행
+    - Cluster 내부 및 외부에서 서비스로의 네트워크 프록시 역할 수행
+    - 서비스에 대한 로드 밸런싱 제공
+    - Endpoint 제공!!!
+* Mode Type
     - iptables Mode : Chain Rule을 찾아 트래픽 전달 / 시간 복잡도 : O(n)
     - IPVS Mode : Hashing 기반으로 Rule을 찾아 트래픽 전달 / 시간 복잡도 : O(1)
     > https://blog.naver.com/alice_k106/221606077410 / https://techblog.lotteon.com/%EB%A1%AF%EB%8D%B0on-eks-%EC%9A%B4%EC%98%81-tips-8a1cade6a0d5
 
-## 통신 과정
+### CNI (Container Network Interface)
+컨테이너 오케스트레이션 플랫폼에서 네트워킹을 관리하기 위한 표준 인터페이스로 L2/L3에서 작동
+
+일부는 솔루션은 L4까지 확장되어 동작
+
+* 구성
+    1) CNI Plugin: Container Runtime에서 컨테이너 생성 시 IP 할당, 네트워크 네임스페이스 설정 등을 위해 실행하는 바이너리 실행 파일
+    2) CNI Solution: Pod, Node 통신에 대한 네트워크 정책을 관리하는 솔루션 (ex> CNI DaemonSets)
+    > 서로 보완하며 쿠버네티스 네트워크를 관리하지만, 서로 통신하지는 않는다!
+* CNI List
+    - Calico (가장 많이 쓰임, L3 네트워크, BGP, VXLAN, ACL 등 지원)
+    - Flannel (가볍게 사용하는 경우 사용, L2 네트워크)
+    - Cilium
+    - Kub-router
+    - Romana
+    - WeaveNet
+    - Canal
+    - Amazon VPC CNI plugin for Kubernetes (AWS용)
+* CNI Plugin
+    - Container Level 네트워크 설정 (Virtual Interface, Virtual Brdige 등)
+    - CNI Plugin Responsibilities:
+        - Support arguments ADD/DEL/CHECK
+        - Support parameters container id, network ns etc...
+        - Manage IP Address assignment to PODs
+            - /etc/cni/net.d/10-bridge.conf 설정에서 대역등 을 설정할 수 있다.
+        - Return results in a specfic format
+    - 설정 방법
+        ``` sh
+        # /etc/cni/net.d/net-script.conflist
+        # /opt/cni/bin/net-script.sh
+        ./net-script.sh add <container> <namespace>
+
+        # /etc/cni/net.d/10-bridge.conf : CNI 설정
+        # /opt/cni/bin   : 네트워크 설정 스크립트
+        ```
+* CNI Solution
+    - Pod, Node Level 네트워크 역할 수행 (Overlay Network 설정 및 관리 - Network routing)
+        - Pod 간의 통신
+        - Node 간의 Pod 통신을 위한 라우팅 구성
+        - 네트워크 정책 구현
+    - route, iptables, VXLAN Interface, CNI Plugin 데몬 프로세스 등을 통해 구성
+</br>
+</br>
+
+
+
+
+---
+## 통신 과정 (Traffic Flow)
 ![K8s_Network_Architecture](img/K8s_Network_Architecture.png)
 통신은 크게 4가지로 분류된다 (즉, 네트워크 Layer가 크게 4개로 분류된다고 생각하면 된다)
 1. Container 간의 통신
@@ -37,93 +103,41 @@
     - https://sookocheff.com/post/kubernetes/understanding-kubernetes-networking-model/
     - https://malwareanalysis.tistory.com/265
 
----
-## Basic
-EKS는 AWS에서 제공하는 CNI(Container Network Interface) Plugin을 사용한다!!
-* Amazon EKS는 Pod에게 예약된 Worker Node와 동일한 서브넷에서 IP를 할당해준다.
-    > 필요시, 
-
-
-
-* Pod 네트워크
-    - 
-    - 
-    - 서비스는 이를 통해 통신한다.
-
-
+</br>
+</br>
 
 
 ---
-## Firewall
-kube-proxy Mode
+# CoreDNS
+- 설정파일 위치: ```/etc/coredns/Cofefile```
+```
+curl -v http://wix.apps.
+http://[host].[namespace].svc.cluster.local
+curl -v http///web-servix.apps.svc
+curl -v http://10-2-2-5/apps.pod.cluster.local
 
-https://velog.io/@squarebird/Kubernetes-Networking-2.-Service
-
-iptables mode
-
-
+[host_name].[namespace].[type].[cluster_root_domain]
+```
+</br>
+</br>
 
 
 
 
 ---
-## 
-
-
-
-
-
-
-
----
-## 
-
-
-
-
-
-
----
-## 
-
-
-
-
-
----
-## 
-
-
-
-
----
-All containers/Pods can communicate to one another without NAT
-All nodes can communicate with all containers and vice-versa without NAT
-- NAT 구성 없이도 쿠버네티스 내부의 리소스들은 통신이 되어야 한다
-
-이를 위해 많은 네트워크 플랫폼이 구축되어 있다.
-- Cisco
-- Cilium
-- Calico (가장 많이 쓰임)
-- flnnel
-- VMWare NSX
-
-
-
+# Overlay Network (On linux)
 * Switching and Routing
-- Switching
-- Routing
-- Default Gateway
-
+    - Switching
+    - Routing
+    - Default Gateway
 * DNS
-- DNS COnfiguations on Linux
-- CoreDNS Introduction
-
-* Network Namespaces
+    - DNS COnfiguations on Linux
+    - CoreDNS Introduction
+* Network Namespaces (Linux Bridge)
 * Docker Networking
 
 
-1. DNS
+### DNS
 ```
 # DNS 서버 수정
 cat /etc/resolv.conf
@@ -135,18 +149,15 @@ host:       files dns           # files: /etc/hosts 파일, dns: DNS 서버
 ...
 
 ```
+</br>
 
-
-
-
-2. Routing - Switching
+### Routing - Switching
 ```
 $ ip link
 
-$ ip addr
+$ ip addr   
 
 $ ip addr add 192.168.1.10/24 dev eth0          # IP 할당
-
 
 $ route
 
@@ -170,8 +181,29 @@ net.ipv4.ip_forward = 1
 
 ```
 
-3. Linux Bridge 
-네임스페이스마다 Routing Table / ARP Table이 존재
+```sh
+$ ip route
+# 라우팅 규칙이 일치하지 않은 모든 트래픽에 대해 / IP 172.25.0.1로 / eth1 인터페이스를 통해
+default via 172.25.0.1 dev eth1
+# Dst: 10.244.0.0/16 트래픽에 대해 / weave 인터페이스를 통해 / weave IP == 10.244.192.0
+10.244.0.0/16 dev weave proto kernel scope link src 10.244.192.0
+172.25.0.0/24 dev eth1 proto kernel scope link src 172.25.0.5
+192.1.171.0/24 dev eth0 proto kernel scope link src 192.1.171.3
+```
+- dev: 네트워크 인터페이스장치
+- proto kernel: 해당 라우팅 엔트리가 커널에 의해 자동으로 생성됨을 의미
+- scope: 라우팅 범위
+    - link: 같은 내크워크 세그먼트 내에서만 유효
+    - host: 호스트 내부에서만 유효
+    - global: 전역적으로 유효
+- src: 소스 IP 주소
+- metric: 라우팅 메트릭 값
+</br>
+
+ 
+### Linux Bridge 
+네트워크 네임스페이스마다 Routing Table / ARP Table이 존재
+
 ```
 # 가상 브릿지 생성
 # ip link add : 네트워크 인터페이스 생성
@@ -199,17 +231,12 @@ ip -n blue addr add 192.168.15.2 dev veth-blue
 ip -n red link set veth-red up
 ip -n red link set veth-blue up
 
-
-# 브릿지에 IP 등록?
+# 브릿지의 IP를 라우팅에 등록
 ip addr add 192.168.15.5/24 dev v-net-0
-
 
 # Route 등록 (필요시)
 ip -n red route add 192.168.15.1
 ip -n blue route add 192.168.15.1
-
-
-
 
 
 iptables -t nat -A PREROUTING -j DNAT --dport 8080 --to-destinatino 80
@@ -219,7 +246,6 @@ iptables -nvL -t nat
 ```
 - Pod는 Kubernetes 클러스터 내의 네트워크 네임스페이스를 대표하는 단위이다.
 - Network Bridge는 CNI가 제공하는 가상 네트워크 디바이스이다.
-
 
 
 ### Network Namespace 설정 및 관리
@@ -232,96 +258,8 @@ iptables -nvL -t nat
 7. Bring the interfaces up
 8. Enable NAT - IP Masquerade
 
-### CNI
-컨테이너 Network Namespace 생성 및 관리를 책임지는 인터페이스. 네트워크 스크립트를 실행
-```
-/etc/cni/net.d/net-script.conflist
-/opt/cni/bin/net-script.sh
-./net-script.sh add <container> <namespace>
-
-/etc/cni/net.d/10-bridge.conf : CNI 설정
-/opt/cni/bin   : 네트워크 설정 스크립트
-
-```
-* CNI Plugin Responsibilities:
-    - Support arguments ADD/DEL/CHECK
-    - Support parameters container id, network ns etc...
-    - Manage IP Address assignment to PODs
-        - /etc/cni/net.d/10-bridge.conf 설정에서 대역등 을 설정할 수 있다.
-    - Return results in a specfic format
-
-
-
-* Bridge
-* VLAN
-* IPVLAN
-* MACVLAN
-* WINDOWS
-
-DHCP
-host-local
-
-
-> Docker는 지원하지 않음. Docker만의 CNM(Container network model)이 있음
 
 ### Bridge Network
 $ bridge add <cid> <namespace>
 $ bridge add 2e34dcf34 /var/run/netns/2e34cdf34
-
-
-
-* CNI 설정방법
-```
-# kubelet
---cni-conf-dir=/etc/cni/net.d
---cni-bin-dir=/opt/cni/bin
-./net-script.sh add <container> <namespace>
-
-```
-
-
-
-각 노드에 CNI Pod가 실행되어 있어서 전반적인 라우팅을 관리하고 있다. 다른 노드와 통신일 필요한 경우, 캡슐화를 통해 전달한다.
-
-
----
-# Service
-
-
-설정 위치
-```sh
-kube-api-server --service-cluster-ip-range=<ipNet>    # Default: 10.0.0.0/24
-
-iptables -L -t nat | grep -i kube
-
-cat /var/log/kube-proxy.log
-
-
-
-```
-
-
-
-# CoreDNS
-```
-curl -v http://wix.apps.
-http://[host].[namespace].svc.cluster.local
-curl -v http///web-servix.apps.svc
-curl -v http://10-2-2-5/apps.pod.cluster.local
-
-[host_name].[namespace].[type].[cluster_root_domain]
-```
-
-
-```
-$ cat /etc/coredns/Cofefile
-
-```
-
-
-# Ingress
-
-
-
-
 

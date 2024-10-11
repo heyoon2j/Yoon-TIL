@@ -1,5 +1,27 @@
 # Object
 Kubernetes에서 Cluster의 상태를 나타내는 단위로, Resource의 상태를 Object로 정의해 관리한다. 그리고 이를 명세해 놓은 것을 Object spec이라고 한다.
+
+* Object 기본 구성
+```yaml
+apiVersion: app/v1
+kind: Deployment
+metadata:
+    name: dpy-test
+    labels:
+        app: nginx
+spec:
+    #...
+```
+- apiVersion : 쿠버네티스 API Version
+- kind : Object 종류
+- metatdata : Object 메타 데이터 정의
+    - namespace
+    - labels
+    - annotation
+- spec : Object 기능 정의
+</br>
+</br>
+
 </br>
 
 ---
@@ -136,26 +158,4 @@ API Server 상관없이 특정 디렉토리 안에 있는 YAML 정의서를 보�
     - 암호화할 Object 지정 가능
 </br>
 </br>
-
-
-
----
-## Object spec 구조
-```yaml
-apiVersion: app/v1
-kind: Deployment
-metadata:
-    name: dpy-test
-    labels:
-        app: nginx
-spec:
-    #...
-```
-- apiVersion : 쿠버네티스 API Version
-- kind : Object 종류
-- metatdata : Object 메타 데이터 정의
-- spec : Object 기능 정의
-</br>
-</br>
-
 
