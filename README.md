@@ -5,9 +5,12 @@ Today I Learned
 ## Study List (AS-IS)
 * Cloud
 	- AWS
+
 	- Kubernetes
 	- OpenStack
 	- VMware
+
+
 
 * Language
 	- Java
