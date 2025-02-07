@@ -30,8 +30,8 @@
             - Cluster: VM 그룹핑 (Cloud.AWS.PojectA)
             - Cluster Group: Cluster에 대한 그룹핑 (Cloud, On-prem)
             - Cluster Type: Cluster Type (AWS, VMWare)
-* Custom
-    - Custom Fields: 미제공 필드 정정 (Instance Type)
+* Customization
+    - Custom Fields: 미제공 필드 정의 (Instance Type)
     - Custem Field Choices: 미제공 필드에 대한 값들 지정 (t2.large, m5.xlarge 등)
 
 
@@ -55,10 +55,13 @@
         - Device
             - Device Roles: Server.VM
             - Platforms: Linux/Unix, AmazonLinux2
-        - Vitaulization
+        - Virtaulization
             - Cluster: Cloud.AWS.PojectA
             - Cluster Group: Cloud
             - Cluster Type: AWS
+    * Customization
+        - Custom Fields: Instance Type
+        - Custom Field Choices: t2.medium
 - 예시2 (On-prm)
     * 인적 정보
         - Tenants: System_Team
@@ -76,5 +79,5 @@
         - Location: A-01-cc
         - Device
             - Device Roles: Sever.Chassis
-            - Platforms: Appliance
+            - Platforms: Applianc의
             - Device Type
