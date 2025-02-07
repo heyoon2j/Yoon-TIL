@@ -27,42 +27,51 @@
             - Virtual Machines: 가상 머신
             - Interfaces: 인터페이스
             - Virtual Disks: 가상 디스크
-* 예시
-    - 예시1 (AWS)
-        * 인적 정보
-            - Tenants: System_Team
+* Custom
+    - Custom Fields: 미제공 필드 정정 (Instance Type)
+    - Custem Field Choices: 미제공 필드에 대한 값들 지정 (t2.large, m5.xlarge 등)
+
+
+
+### 예시
+- 예시1 (AWS)
+    * 인적 정보
+        - Tenants: System_Team
+        - Contacts
+            - Contacts Groups: Cloud_Part
             - Contacts
-                - Contacts Groups: Cloud_Part
-                - Contacts
-                    - suzin
-                    - yuzin
-                - Contacts Roles: CloudEngineer
-        * 장비 정보
-            - Region: AWS
-            - Site:
-                - AWS-Seoul
-                - AWS-Tokyo
-            - Location: x
-            - Device
-                - Device Roles: Server.VM
-                - Platforms: Linux/Unix, AmazonLinux2
-            - Vitaulization
-    - 예시2 (On-prm)
-        * 인적 정보
-            - Tenants: System_Team
+                - suzin
+                - yuzin
+            - Contacts Roles: CloudEngineer
+    * 장비 정보
+        - Region: AWS
+        - Site:
+            - AWS-Seoul
+            - AWS-Tokyo
+        - Location: x
+        - Device
+            - Device Roles: Server.VM
+            - Platforms: Linux/Unix, AmazonLinux2
+        - Vitaulization
+- 예시2 (On-prm)
+    * 인적 정보
+        - Tenants: System_Team
+        - Contacts
+            - Contacts Groups: SE_Team
             - Contacts
-                - Contacts Groups: SE_Team
-                - Contacts
-                    - sangzin
-                    - mizin
-                - Contacts Roles: SystemEngineer 
-        * 장비 정보
-            - Region: 가산 IDC.LG U+
-            - Site:
-                - A-01
-                - B-03
-            - Location: A-01-cc
-            - Device
-                - Device Roles: Sever.Chassis
-                - Platforms: Appliance
-                - Device Type
+                - sangzin
+                - mizin
+            - Contacts Roles: SystemEngineer 
+    * 장비 정보
+        - Region: 가산 IDC.LG U+
+        - Site:
+            - A-01
+            - B-03
+        - Location: A-01-cc
+        - Device
+            - Device Roles: Sever.Chassis
+            - Platforms: Appliance
+            - Device Type
+
+
+
