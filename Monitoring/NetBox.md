@@ -27,6 +27,8 @@
             - Virtual Machines: 가상 머신
             - Interfaces: 인터페이스
             - Virtual Disks: 가상 디스크
+            - Cluster Type: 가상 머신 - 종류 (AWS, VMWare)
+            - Cluster: Type에 대한 세부 분류 (프로젝트별, 영역별 등 분리)
 * Custom
     - Custom Fields: 미제공 필드 정정 (Instance Type)
     - Custem Field Choices: 미제공 필드에 대한 값들 지정 (t2.large, m5.xlarge 등)
