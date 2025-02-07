@@ -55,6 +55,8 @@
             - Device Roles: Server.VM
             - Platforms: Linux/Unix, AmazonLinux2
         - Vitaulization
+            - Cluster Type: AWS
+            - Cluster: AWS.ProjectA
 - 예시2 (On-prm)
     * 인적 정보
         - Tenants: System_Team
@@ -74,6 +76,3 @@
             - Device Roles: Sever.Chassis
             - Platforms: Appliance
             - Device Type
-
-
-
