@@ -27,8 +27,9 @@
             - Virtual Machines: 가상 머신
             - Interfaces: 인터페이스
             - Virtual Disks: 가상 디스크
-            - Cluster Type: 가상 머신 - 종류 (AWS, VMWare)
-            - Cluster: Type에 대한 세부 분류 (프로젝트별, 영역별 등 분리)
+            - Cluster: VM 그룹핑 (Cloud.AWS.PojectA)
+            - Cluster Group: Cluster에 대한 그룹핑 (Cloud, On-prem)
+            - Cluster Type: Cluster Type (AWS, VMWare)
 * Custom
     - Custom Fields: 미제공 필드 정정 (Instance Type)
     - Custem Field Choices: 미제공 필드에 대한 값들 지정 (t2.large, m5.xlarge 등)
@@ -55,8 +56,9 @@
             - Device Roles: Server.VM
             - Platforms: Linux/Unix, AmazonLinux2
         - Vitaulization
+            - Cluster: Cloud.AWS.PojectA
+            - Cluster Group: Cloud
             - Cluster Type: AWS
-            - Cluster: AWS.ProjectA
 - 예시2 (On-prm)
     * 인적 정보
         - Tenants: System_Team
