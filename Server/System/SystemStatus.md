@@ -64,3 +64,17 @@ Disks: 24977108/503G read, 21328563/321G written.
 * total = 실제 메모리 사용량 + free + buff/cache
 * 실제 free = free + buff/cache (slab 영역은 리눅스 커널에서 사용하고 있으므로 완전하게 free라고 보기는 어렵다!!)
 * 실제 메모리 사용량 = total - (free + buff/cache)
+
+
+---
+## 명령어 정리
+```
+# CPU 확인
+$ grep 'physical id' /proc/cpuinfo | sort -u | wc -l    # 물리 CPU 갯수
+$ grep 'cpu cores' /proc/cpuinfo | uniq     # CPU 코어 수
+$ grep processor /proc/cpuinfo | wc -l      # vCPU 수
+
+# 메모리 확인
+$ free -h -g
+$ cat /proc/meminfo
+```
