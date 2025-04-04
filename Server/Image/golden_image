@@ -1,0 +1,23 @@
+
+Golden Image 생성
+
+- (기본 이미지 기준) 접속을 위한 스크립트 - Userdata
+- Repository 설정
+- Package 업데이트
+- Package 설치
+    - Python 설치
+    - Puppet 설치
+- (기본 이미지 기준) Userdata 설정 내용 지우기
+
+Golden Image 사용 (Update)
+- Hostname 설정
+- DNS 서버에 Domain 등록
+- 
+
+
+OS Patch
+- 
+
+
+
+
