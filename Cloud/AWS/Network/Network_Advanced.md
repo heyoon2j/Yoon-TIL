@@ -5,13 +5,44 @@
 ---
 ## Network Performance and Optimization
 ![Network_Throughput](img/Network_Throughput.jpg)
+```
++---------------------+                +----------------------+
+|     Bandwidth       |                |      Throughput      |
+| (이론적 최대 속도)     |                |  (실제 전송 속도)     |
+|  예: 1Gbps 링크      |                |  예: 800Mbps          |
++----------+----------+                +----------+-----------+
+           |                                      ^
+           |                                      |
+           | 영향 요인                              |
+           |--------------------------------------|
+           | - 패킷 손실 (Packet Loss)              |
+           | - 지연 (Latency)                      |
+           | - 재전송 (Retransmission)             |
+           | - 장비 성능 (CPU, NIC 등)              |
+           | - 네트워크 혼잡 (Congestion)           |
+           v                                      |
+   실제 전송 가능한 속도 ↓                           |
++----------+----------+                           |
+|      Throughput      | <------------------------+
++----------------------+
+
++-------------------------+
+|      PPS (Packets/s)    |
+|  - 패킷 처리량 기준        |
+|  - Frame 단위 처리 기준   |
++-------------------------+
+
+* PPS와 Throughput은 서로 영향을 주며, 패킷이 작을수록 PPS 성능이 Throughput에 더 큰 영향을 미침
+```
 * Bandwidth : 초당 전송 가능한 비트
 * Latency : 첫 패킷이 두 지점간의 통신하는데 걸리는 시간
 * Jitter : Variation in inter-packet delays. 패킷 간의 지연 시간
-* Throughput(bps) : 초당 전송한 비트. 전송한 패킷량, Latency, Packet loss 등이 있기 때문에 Bandwidth와 동일하게 나오지 않는다!
+* Throughput(bps) : 초당 전송된 데이터의 양(Bit 단위). Latency, Packet loss 등의 영향으로 측정 값은 Bandwidth와 동일하게 나오지 않는다!
+    > 전송 성능 / 전반적인 네트워크 흐름 확인 --> Throughtput
 * PPS : Packet Per Second, 네트워크 장비의 초당 패킷 처리량. 컴퓨팅 리소스 파워, Throughput도 영향을 준다(여기서 Packet은 Frame 단위를 의미하여 최소 84 byte 크기를 처리할 수 있다)
-    - PPS가 있는 이유는 네트워크 장비는 실질적으로 비트가 아닌 패킷 단위로 처리하며, 패킷당 처리할 수 있는 비트 기준으로만으로 Throughput(처리량)을 판단하면 매 순간 보내는 패킷의 실제 비트 수에 따라 처리 성능이 다르게 보일 수 있기 때문이다.
-    - PPS 계산법 (84 bit 기준으로 계산 시)
+    - Packet은 L3로, 실제 하드웨어 수준에서는 L2 Frame 단위로 처리되며 최소 크기는 84 byte이다.
+    - PPS가 있는 이유는 네트워크 장비는 실질적으로 비트가 아닌 패킷 단위로 처리하며, 비트 단위 기준으로만 성능을 판단하면 매 순간 보내는 패킷을 실제 비트 수에 따라 성능이 다르게 보일 수 있기 때문이다.
+    - PPS 계산법 (84 bit 기준으로 계산 시 => 정확하지 않음)
         ```
         1 Packet == 최소 84 byte == 최소 672 bit 
         1 packet/sec == 672 bit/sec
@@ -24,6 +55,7 @@
         2) Second 나누기
         3) 1 bps 에 대한 pps 값을 구한다!
         4) PPS = 1 / Packet_Size * 처리 능력(속도 등)
+    > 장비 처리 성능 / 패킷의 흐름 확인 --> PPS
 * MTU : Maximum Transmission Unit. 보낼 수 있는 가장 큰 패킷
     - 일반적으로 인터넷은 MTU : 1500 bytes 이다.
     - Jumbo Frames : 1500 bytes 보다 큰 프레임
