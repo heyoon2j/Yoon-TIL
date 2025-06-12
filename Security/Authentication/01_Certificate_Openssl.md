@@ -93,3 +93,22 @@ $ openssl x509 -req -days 3650 -in ca.csr -signkey ca.key -out public.crt
 $ openssl ciphers -v
 ```
 암호화 알고리즘 확인
+
+
+
+---
+## SSL 통신 방식
+* SSL Bridging
+    - Client <---> LB 간에만 SSL 통신 O
+    - LB <---> Server 간에는 SSL 통신 O
+    - Client <---> LB 암호화에 대해서 복호화하고 다시 LB <---> Server간의 SSL 인증서를 통해 암호화를 진행해서 전달
+* SSL Passthrough
+    - Client <---> LB 간에만 SSL 통신 O
+    - LB <---> Server 간에는 SSL 통신 O
+    - Client <---> LB 연결을 종료하지 않고 암호화된 트래픽을 그대로 전달
+    > 이 경우, LB <---> Server 간의 SSL 설정은 의미가 없어진다.
+* SSL 오프로딩 (SSL Offloading) / SSL 터미네이션 (SSL Termination)
+    - Client <---> LB 간에만 SSL 통신 O
+    - LB <---> Server 간에는 SSL 통신 X
+    - 속도는 빠르나, 보안이 취약해짐
+
