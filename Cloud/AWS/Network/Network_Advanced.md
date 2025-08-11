@@ -1124,3 +1124,16 @@
 - old -> new 프로토콜로 마이그레이션 중, 가동중지 시간 없이 프로토콜을 사용하는지 확인하는 방법은?
     - VPC Flow Logs + Athena 조합
     - AWS Inspector + Network Reachability
+
+
+
+
+---
+* ENI Metric
+    - bw_out_allowance_exceeded : Outbound 대역폭 초과
+    - pps_allowance_exceeded : Outbound 패킷 전송량 초과
+
+
+* Route53 Query PPS Limit (in VPC) : 1024 Packet
+
+
