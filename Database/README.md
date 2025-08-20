@@ -2,30 +2,25 @@
 * 목적에 맞는 데이터를 유기적으로 결합하여 저장한 데이터의 집합
 </br>
 
-## 기본 용어
-* OLTP : Online Transaction Processing. 발생한 트랜잭션을 DB가 처리하고 결과를 요청한 Client에게 결과값을 되돌려주는 과정
-* OLAP : Online Analytical Processing. DB에 저장되어 있는 데이터를 분석하고, 데이터 분석을 통해 사용자에게 유의미한 정보를 제공해주는 처리 방법
-* Transaction : 한꺼번에 수행되어야 하는 일련의 연산들. 원자성, 독립성, 지속성, 일관성
-* Character Set : 문자 인코딩 방식
-* Collation : 문자 정렬 기준 
-* Commit : 하나의 트랜잭션이 성공적으로 끝나 일관성 있는 상태임을 의미
-* Rollback : 하나의 트랜잭션 처리가 비정상적으로 종료 되었을 때의 상태임을 의미
-</br>
+* 기본 용어
+    - OLTP : Online Transaction Processing. 발생한 트랜잭션을 DB가 처리하고 결과를 요청한 Client에게 결과값을 되돌려주는 과정
+    - OLAP : Online Analytical Processing. DB에 저장되어 있는 데이터를 분석하고, 데이터 분석을 통해 사용자에게 유의미한 정보를 제공해주는 처리 방법
+    - Transaction : 한꺼번에 수행되어야 하는 일련의 연산들. 원자성, 독립성, 지속성, 일관성
+    - Character Set : 문자 인코딩 방식
+    - Collation : 문자 정렬 기준 
+    - Commit : 하나의 트랜잭션이 성공적으로 끝나 일관성 있는 상태임을 의미
+    - Rollback : 하나의 트랜잭션 처리가 비정상적으로 종료 되었을 때의 상태임을 의미
 
-
-## Database 종류
-크게 저장 방식에 따라 2가지로 분류할 수 있다.
-1. Database : Row 기반, 하나의 테이블이 가지고 있는 모든 값에 관심 (일반적인 경우에 사용)
-2. Data Warehouse : Column 기반, 특정 항목의 값들에 대해 관신 (Big Data, 분석 분야에 사용)
+* Database 종류
+    - 크게 저장 방식에 따라 2가지로 분류할 수 있다.
+    1. Database : Row 기반, 하나의 테이블이 가지고 있는 모든 값에 관심 (일반적인 경우에 사용)
+    2. Data Warehouse : Column 기반, 특정 항목의 값들에 대해 관신 (Big Data, 분석 분야에 사용)
 
 ---
 ## Database
-### DBMS
-* Database Management System
-* 데이터 베이스를 관리하는 미들웨어 시스템, 데이터 베이스 관리 시스템
+DBMS (Database Management System). 데이터 베이스를 관리하는 미들웨어 시스템, 데이터 베이스 관리 시스템
 
-### RDBMS
-* Relational Database Management System
+### RDBMS (Relational Database Management System)
 * Oracle, Mysql, PostgreSQL, SQLite
 * 데이터를 Table, Row, Column 형태로 저장하며, 각 테이블이 서로 관계를 가지고 있는 데이터 베이스를 관리
 * Insert가 느리지만, 검색 속도가 빠르다. 
@@ -37,6 +32,7 @@
 * 데이터 사이의 관계가 없으므로 복잡성이 작고 많은 데이터의 저장이 가능
 * Insert가 빠르지만, 검색 속도가 느리다.
     * Log Data
+
 
 ---
 ## Schema
@@ -75,5 +71,5 @@
 
 
 ---
-## Data Warehouse
+## Datawarehouse
 

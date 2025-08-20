@@ -27,8 +27,13 @@
         3) Node에 대한 IP를 Route 53 DNS에 업데이트(추가/삭제)
 2. __NLB (Network Load Balancer)__
     * 4 Layer Transport 계층에서 Routing 결정(TCP/UDP/SSL)
-    * 초당 수백만 개의 요청을 처리할 수 있다.
     * 지정한 TCP 프로토콜과 포트 번호를 사용하여 Routing
+    * Stateless 디자인
+        - TCP 세션 테이블을 저장하지 않음
+        - 간단한 추적 정보(Simple Tracking Information) 가지고 Idle Time을 판별 (비용절감)
+            > 이유는 라우팅만 하지만 일단 연결 라인은 살아있다. 즉, 이 말은 다른 말로 리소스를 사용하고 있다는 의미이다. 그리고 불필요한 리소스는 정리가 필요하기 때문에 Idle time을 통해 정리한다. 하지만 TCP 세션 정보를 저장하지 않기 때문에 RST를 보내지 않는다!
+        - 높은 확장성과 처리량. 초당 수백만 개의 요청을 처리할 수 있다.
+        - 부하 분산의 효율성.
     * 동적 호스트 매핑 지원
     * Static IP 사용
 3. __GWLB (Gateway Load Balancer)__

@@ -1,43 +1,58 @@
 # MBR & GPT 구조
-![MBR_GPT](../img/MBR_GPT.png)
+![MBR_GPT](../../img/MBR_GPT.png)
 </br>
 
 ## 알아둘 내용
-### __Partition 종류__
-1. Primary Partition
-    * 주 파티션
-    * 운영체제 설치가 가능하며, MBR이 기록된 주 파티션을 활성 주파티션(Activate Primary)이라고 한다.
-2. Extended Partition
-    * 확장 파티션
-    * 데이터 저장이 불가능하며, 부족한 파티션을 확장시키는 용도로 사용된다.
-    * 논리 파티션을 담는 역할을 한다.
-3. Logical Partition
-    * 논리 파티션
-    * Extended Partition 범위 안에서 생성되는 파티션으로 데이터 저장이 가능하나, 부트섹터가 없으므로 운영체제 설치는 불가능하다.
-    * 생성 제한이 없다.
+* Volume Storage 특징
+    - Sector : 저장 장치는 데이터를 찾아가기 위해 Sector란 구조로 주소화되어 있으며, 섹터의 크기는 보통 512 Byte로 구성되어 있다.
+        > 현재 최신 저장 장치 Sector는 물리적으로 4096 byte를 요청하고, 내장된 컨트롤러가 논리적으로는 512 byte로 처리한다!! (호환성을 위해)
+    - 디스크를 실제로 읽는 것은 Memory 
+* __Partition 타입__
+    - MBR : 2TiB 미만의 하드 드라이브 지원
+    - GPT : 2TiB 보다 큰 하드 드라이브 지원
+* __Partition 종류__
+    1. Primary Partition
+        - 주 파티션
+        - 운영체제 설치가 가능하며, MBR이 기록된 주 파티션을 활성 주파티션(Activate Primary)이라고 한다.
+    2. Extended Partition
+        - 확장 파티션
+        - 데이터 저장이 불가능하며, 부족한 파티션을 확장시키는 용도로 사용된다.
+        - 논리 파티션을 담는 역할을 한다.
+    3. Logical Partition
+        - 논리 파티션
+        - Extended Partition 범위 안에서 생성되는 파티션으로 데이터 저장이 가능하나, 부트섹터가 없으므로 운영체제 설치는 불가능하다.
+        - 생성 제한이 없다.
 </br>
 </br>
 
 
 ## MBR (Master Boot Record)
-* MBR은 저장 장치의 부팅 정보, 파티션 정보 등을 저장한다.
+MBR은 저장 장치의 부팅 정보, 파티션 정보 등을 저장한다.
+
 * 저장 장치의 첫 번째 Sector(0 Sector)는 MBR이다.
-    * Sector : 저장 장치는 데이터를 찾아가기 위해 Sector란 구조로 주소화되어 있으며, 크기는 512 Byte로 구성되어 있다.
-    > 현재 최신 저장 장치 Sector는 물리적으로 4096 byte를 요청하고, 내장된 컨트롤러가 논리적으로는 512 byte로 처리한다.
-* BIOS를 사용하여 부팅하며, BIOS가 부팅 장치를 감지하면 해당 장치의 첫 번째 디스크 블록을 메모리로 읽어들인다.
+    - BIOS를 사용하여 부팅하며, BIOS가 부팅 장치를 감지하면 해당 장치의 첫 번째 디스크 블록을 메모리로 읽어들인다.
 * 파티션은 주 파티션 최대 4개 또는 주 파티션 최대 3개 + 확장 파티션 최대 1개로 총 4개의 파티션으로 분리할 수 있다.
+* 32 bit로 Sector 주소를 나타냄 (Sector 주소)
+    - 표현 가능한 최대 Sector 개수 = 2^32 - 1
+    - MBR이 인식할 수 있는 __전체 디스크 크기는 최대 2TB로 제한__
+        ```
+        # Sector Size = 512 byte 인 경우
+
+        => 2^32 - 1 = 4,294,967,295 Sector
+        => 4,294,967,295 × 512 byte = 2^41 = 2 TiB 
+        ```
 </br>
 
 ### MBR 구조
-![MBR](../img/MBR.png)
+![MBR](../../img/MBR.png)
 1. __Boot Strap Code__ : 446 Byte로 구성. OS를 부팅하기위해 부팅 파티션을 찾는 부분
 2. __Partition Table__
     * 64 Byte로 구성
     * Partition Entry Size : 각 Entry는 16 Byte로 되어 있으며, 파티션의 정보가 저장되어 있다(각 파티션 정보는 16Byte로 구성). 16 Byte * 4 = 64 Byte 이므로 총 4개의 파티션을 구성할 수 있다.
     * Starting LBA Address : 4 Byte (=32 Bit). LBA의 시작주소로 실제 파티션의 시작 위치.
 3. __Signature__ : 해당 Sector의 오류 유무를 확인하기 위한 값(기본 값: 0xAA55)
-* 파티션의 주소는 32 Bit를 사용하므로, MBR이 인식할 수 있는 __각 파티션의 크기는 최대 2TB로 제한된다(2^32-1)__
-* O Sector는 MBR이므로 __1 Sector 부터 파티션 시작점으로 잡아야 한다.__
+* Sector를 32 Bit로 표현
+* 0 Sector는 MBR이므로 __1 Sector 부터 파티션 시작점으로 잡아야 한다.__
 </br>
 
 
@@ -51,16 +66,26 @@
 </br>
 
 
+---
 ## GPT (GUID Parition Table)
-* GPT는 MBR과 마찬가지로 저장 장치의 부팅 정보, 파티션 정보 등을 저장한다.
+GPT는 MBR과 마찬가지로 저장 장치의 부팅 정보, 파티션 정보 등을 저장한다.
+
 * 저장 장치의 첫 번째 Sector(0 Sector)는 Protective MBR이 있다. 
-* EFI 펌웨어를 사용하여 부팅한다.
+    - EFI 펌웨어를 사용하여 부팅한다.
 * GPT는 주 파티션만 생성할 수 있고, 128개의 파티션을 가질 수 있다.
+* 64 bit로 Sector 주소를 나타냄 (Sector 주소)
+    - 표현 가능한 최대 Sector 개수 = 2^64 - 1
+    - GPT가 인식할 수 있는 __전체 디스크 크기는 최대 9.4ZB로 제한__
+        ```
+        # Sector Size = 512 byte 인 경우
+
+        => (2^64 - 1) × 512 byte = 9.44ZB
+        ```
 </br>
 
 
 ### GPT 구조
-![GPT](../img/GPT.png)
+![GPT](../../img/GPT.png)
 1. __Protective MBR__ : MBR과 구조는 같으며, MBR과 호환을 위해 구성되어 있다. 512 Byte로 0 Sector에 저장되어 있다.
 2. __GPT Header__ : Signature, Header Size, Partition Table 최대 수, 각 Entry Size 정보 등을 가지고 있다. 1 Sector에 저장.
 3. __GPT Partition Entry__ : 각 Entry는 128 Byte로 되어 있으며, Partition 위치 정보 등 각 Partition 정보 저장. 2~33 Sector에 저장 (16,384 Byte). 16,384 Byte = 128 Byte * 128 이므로 최대 128개의 파티션을 구성할 수 있다.

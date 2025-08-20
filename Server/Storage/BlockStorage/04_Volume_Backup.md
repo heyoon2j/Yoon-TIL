@@ -1,8 +1,14 @@
 ## Volume Backup
-
+- Backup을 위한 Check List
+    - Partition Table Type
+    - Partition Type
+    - File System Type
+    - Disk UUID
+    - Backup & Restore 방식
 
 ## XFS 볼륨 백업
 XFS File System은 기본적으로 축소가 불가능하다(확장만을 생각하고 나온 시스템)
+
 * /dev/nvme3n1(30GiB) ---> /dev/nvme1n1(10GiB) 변경 진행
 1. Block 단위 백업 진행
     ```
@@ -100,6 +106,5 @@ XFS File System은 기본적으로 축소가 불가능하다(확장만을 생각
 
 
 ### Reference
-* 
 * https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/xfsbackuprestore
 * https://hiseon.me/linux/linux-disk-clone/

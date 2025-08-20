@@ -5,6 +5,7 @@
 </br>
 
 
+---
 ## Monitoring List
 ### 지표 (Metric)
 * 시스템 성능에 대한 데이터, 많은 AWS 서비스에 대해 무료 지표를 기본적으로 제공한다.
@@ -34,6 +35,7 @@
 </br>
 
 
+---
 ## Alarm & Event
 ![CloudWatchEvent](../img/CloudWatchEvent.png)
 * 지표랑 로그에 정보들이 저장 -> 특정 상태 변화, 유지 시 경보 발생 -> 규칙을 통해 이벤트를 대상으로 라우팅 -> 대상은 해당 이벤트를 실행
@@ -55,6 +57,7 @@
 </br>
 
 
+---
 ## CloudWatch 개념
 
 ### __Namespace__
@@ -86,6 +89,7 @@
     Dimensions: Server=Prod, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:32:00Z, Value: 95
     Dimensions: Server=Beta, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:33:00Z, Value: 97
     ```
+    > 동일한 Namespace 안에 있는 모든 Metric에 대해 같은 Dimensions Key를 가져야 한다!
 * append_dimensions : 측정 시 항목에 추가할 Dimessions (== DB Colume)
 * aggregation_dimensions : 집계시 사용할 Dimessions (== DB where A and B)
 </br>

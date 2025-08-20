@@ -66,6 +66,9 @@
 * Secondary IP 사용하는 경우
     1) 기본 네트워크 인터페이스(eth0)가 퍼블릭 트래픽을 처리하고, 보조 네트워크 인터페이스(eth1)는 백엔드 관리 트래픽을 처리. __이렇게 되면, 서비스 IP와 관리자 IP가 나뉘므로 Log 등을 관리하기 편해진다.__ 이때 Server에 라우팅 관련 설정이 필요하다.
     2) VPC에서 네트워크 및 보안 어플라이언스 사용. LB, NAT, Proxy Server와 같은 네트워크 및 보안 어플라이언스는 여러 네트워크 인터페이스로 구성하는 것이 좋다. __사용해야되는 영역을 분리해야 되니 필요하다__
+* EC2 Instance에 추가 ENI를 붙이는 경우
+    1) 서로 다른 Sunbet의 ENI를 붙일 수 있다.
+    2) 재부팅 시, eth0, eth1이 바뀌는 경우가 있기 때문에 이에 대한 추가 설정이 필요하다!
 </br>
 
 
@@ -105,73 +108,23 @@
 </br>    
 
 
-## VPC Flow Log
-* VPC Flow Log는 VPC, Subnet, Network Interface 등을 통해 VPC 내 Flow를 Log로 남긴다.
-1. CloudWatch Logs에 게시
-    * 
-
-2. S3에 게시
-    * 
-
-> 결론적으로 비용은 S3가 더 싸며, insight는 CloudWatch가 더 효율적이다.
-</br>
+## DHCP Option Set
+* Dynamic Host Configuration Protocol
+* TCP/IP 네트워크 상의 호스트로 구성 정보를 전달하기 위한 표준을 제공.
 </br>
 
 
-## Gateway
-![VPCGateway.png](../img/VPCGateway.png)
-* Layer 2 기능 : 경로 전파/전달/결정
-* Layer 1 기능 : 경로 결정
-</br>
+## VPC Peering
+VPC 간의 연결할 때 사용.
 
-## Virtual Gateway (VGW)
-* 가상 프라이빗 게이트웨이
-* VPC와 다른 네트워크 사이에 Private 연결 설정을 위한 방법
-* VGW는 VPN 연결의 Amazon 측 집선장치이다.
-* VPN 터널당 최대 대역폭은 1.25Gbps
-* VGW를 생성할 때 Private ASN(자율 시스템 번호)을 지정할 수 있다. 지정하지 않은 경우, VGW는 기본 ASN(64512)으로 생성된다. 생성한 후에는 ASN은 변경할 수 없다.
-> VPN + 다중 VPC를 사용할 경우에는 TGW를 사용하는 것이 더 효율적이며, VPN + 단일 VPC인 경우는 VGW를 사용하는 것이 좋다.
-</br>
-
-## Customer Gateway (CGW)
-* 고객 게이트웨이
-* On-premise(고객) 측 접선장치이다 (즉, 물리적 또는 소프트웨어 어플라이언스)
-</br>
-</br>
-
-## AWS Direct Connect(DX)
-* 1 ~ 100 Gbps의 전용 Private Network 연결을 제공.
-* VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
-* 서비스 이점
-    1) 네트워크 전송 시 인터넷 대역폭을 두고 경쟁할 필요가 없다.
-    2) 애플리케이션이 사용하는 인터넷 대역폭을 제한함으로써 네트워크 전송 비용 절감
-    3) 대역폭을 두고 경쟁할 필요가 없으므로 오디오 또는 동영상 스트림과 같은 실시간 데이터 피드에서 운영되는 애플리케이션의 성능 향상에 도움
-    4) 해당 Private Network 회로로만 액세스 함으로써 일반적인 보안 및 규정을 준수
-    5) 하이브리드 클라우드 아키텍처 가능
-</br>
-
-
-## VPC Connection
-### VPC Peering
-* VPC 간의 연결할 때 사용.
-* 하지만 VPC 피어링은 두 VPC 간의 일대일 관계이기 때문에, 전이적 관계를 지원하지 않는다.
+* VPC 피어링은 두 VPC 간의 1:1 관계이기 때문에, 전이적 관계를 지원하지 않는다.
 * 내부 및 리전 간도 지원하며, 서로 다른 AWS 계정 간에 설정도 가능
 * VPC 당 최대 125개 가능
 * 대역폭의 제한은 없다.
 * VPC 피어링 연결을 통한 모든 데이터 전송은 무료이며, AZ를 가로지르는 VPC 피어링 연결을 통한 모든 데이터 전송은 계속 리전 내 표준 데이터 전송 요금이 청구된다.
+
 > 무료가 되었지만, VPC가 적은 경우에 쓰일거 같다. 1:1로만 Routing이 되기 때문이다. 예로 DMZ VPC <-> Service VPC 끼리 연결
 </br>
-
-### VPC Transit Gateway
-* 많은 VPC 간의 통신을 위해 VPC 피어링을 하게되면 복잡해진다.
-* TGW 당 VPC 연결 5000개
-* VPC 당 최대 대역폭은 50 Gpbs
-* VGW 대신 사용할 수 있으며, TGW 끼리도 Peering이 가능하다.
-* __Association__ 은 Routing Table과 Attachement를 연결하기 위해 사용 (Attachment는 하나의 Routing Table에만 연결 가능)
-* __Propagation__ 은 Routing 정보를 전파하기 위해 사용 (Attachment는 다수의 Tating Table 연결 가능)
-
-> 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
-<br>
 
 
 ## VPC Endpoint
@@ -193,16 +146,64 @@
 * 네트워크 트래픽 캡처 및 검사 기능
 * ENI를 통해서 캡처를 하는 것이기 때문에, ENI 사용이 필요하며
 </br>
+
+## VPC Flow Log
+* VPC Flow Log는 VPC, Subnet, Network Interface 등을 통해 VPC 내 Flow를 Log로 남긴다.
+1. CloudWatch Logs에 게시
+2. S3에 게시
+
+> 결론적으로 비용은 S3가 더 싸며, insight는 CloudWatch가 더 효율적이다.
+
 </br>
 
 
-## DHCP Option Set
-* Dynamic Host Configuration Protocol
-* TCP/IP 네트워크 상의 호스트로 구성 정보를 전달하기 위한 표준을 제공.
+---
+## Gateway
+![VPCGateway.png](../img/VPCGateway.png)
+* Layer 2 기능 : 경로 전파/전달/결정
+* Layer 1 기능 : 경로 결정
+</br>
+
+### Virtual Gateway (VGW)
+* 가상 프라이빗 게이트웨이
+* VPC와 다른 네트워크 사이에 Private 연결 설정을 위한 방법
+* VGW는 VPN 연결의 Amazon 측 집선장치이다.
+* VPN 터널당 최대 대역폭은 1.25Gbps
+* VGW를 생성할 때 Private ASN(자율 시스템 번호)을 지정할 수 있다. 지정하지 않은 경우, VGW는 기본 ASN(64512)으로 생성된다. 생성한 후에는 ASN은 변경할 수 없다.
+> VPN + 다중 VPC를 사용할 경우에는 TGW를 사용하는 것이 더 효율적이며, VPN + 단일 VPC인 경우는 VGW를 사용하는 것이 좋다.
+</br>
+
+### Customer Gateway (CGW)
+* 고객 게이트웨이
+* On-premise(고객)측 접선장치이다 (즉, 물리적 또는 소프트웨어 어플라이언스)
+</br>
+
+### Transit Gateway
+많은 VPC 간의 통신을 위해 VPC 피어링을 하게되면 복잡해진다(스파게티 구조...). 이때 사용되어 진다.
+
+* TGW 당 VPC 연결 5000개
+* VPC 당 최대 대역폭은 50 Gpbs
+* VGW 대신 사용할 수 있으며, TGW 끼리도 Peering이 가능하다.
+* __Association__ 은 Routing Table과 Attachement를 연결하기 위해 사용 (Attachment는 하나의 Routing Table에만 연결 가능)
+* __Propagation__ 은 Routing 정보를 전파하기 위해 사용 (Attachment는 다수의 Tating Table 연결 가능)
+
+> 기본적으로 작은 단위의 구성인 경우, VPC Peering이 더 비용적으로 효율적이다.
+
+</br>
+
+### AWS Direct Connect(DX)
+* 1 ~ 100 Gbps의 전용 Private Network 연결을 제공.
+* VPN의 경우, 결국에는 Public 네트워크 망을 사용하는 것이기 때문에 지속적인 대용량 데이터를 전송하거나, 보안 및 규정상 사용하기 힘든 경우가 있다.
+* 서비스 이점
+    1) 네트워크 전송 시 인터넷 대역폭을 두고 경쟁할 필요가 없다.
+    2) 애플리케이션이 사용하는 인터넷 대역폭을 제한함으로써 네트워크 전송 비용 절감
+    3) 대역폭을 두고 경쟁할 필요가 없으므로 오디오 또는 동영상 스트림과 같은 실시간 데이터 피드에서 운영되는 애플리케이션의 성능 향상에 도움
+    4) 해당 Private Network 회로로만 액세스 함으로써 일반적인 보안 및 규정을 준수
+    5) 하이브리드 클라우드 아키텍처 가능
 </br>
 </br>
 
-
+---
 ## Virtual Environment
 * Overlay Network를 구성하는 것과 Virtual IP를 사용하는 것은 엄연히 다르다.
 * 보통 Overlay Network를 구성하는 이유는 전반적인 네트워크 통신을 제공하기 위해 사용하고, Virtal IP를 사용하는 이유는 특정 서비스를 제공하기 위해 사용되는 네트워크라고 생각하면 될거 같다.
@@ -224,7 +225,7 @@
 </br>
 
 
-
+---
 ## Cost
 * __VPC Reachability Analyzer__
     * 분석당 요금: 0.10 USD
@@ -260,8 +261,11 @@
 * 무조건 VPC Peering이 저렴하다.
 * Reference: https://dev.classmethod.jp/articles/different-from-vpc-peering-and-transit-gateway/
 
+</br>
+</br>
 
 
+---
 ## VS On-Premise
 * VPC에서는 MAC이 아닌 IP로만 통신하기 때문에 ARP를 이용하지 않는다. 그래서 ARP Spoofing Attack이 거의 불가능하다.
 > 실질적으로 클라우드 서비스를 제공하는 Hypervisor에서는 MAC Address를 사용하겠지만, 클라우드 서비스 내에서는 Overlay Network로 IP로만 통신이 가능해 보인다.
@@ -271,8 +275,9 @@
     - https://aws.amazon.com/ko/blogs/apn/amazon-vpc-for-on-premises-network-engineers-part-one/
     - https://zigispace.net/m/1195
 
+</br>
 
----
+
 ## Link-local address
 기존에는 장치가 연결해야할 서버를 찾지 못하거나 연결하지 못했을 때를 위해
 * 호스트에 연결되어 있는 Subnetwork(Broadcast Domain)를 통해서만 통신할 수 있는 주소

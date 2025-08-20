@@ -1,7 +1,15 @@
 # DML
 * Data Manipulation Language
 * 데이터 조작어
+    - SELECT
+    - INSERT
+    - DELETE
+    - UPDATE
+* 조건문
+    - CASE
 
+
+---
 ## SELECT
 * 데이터를 검색할 때 사용되는 문법
 * 기본 포멧
@@ -165,7 +173,7 @@ SELECT continent, SUM(population) as population
         LIMIT 5, 2;
     ```
 
-
+---
 ## INSERT
 * Table에 데이터 추가
     ```sql
@@ -200,7 +208,7 @@ SELECT continent, SUM(population) as population
 
 
 
-
+---
 ## DELETE
 * 데이터 삭제
 ```
@@ -213,6 +221,8 @@ DELETE FROM user2
     LIMIT 1;
 ```
 
+
+---
 ## UPDATE
 * 데이터 수정
     ```
@@ -242,3 +252,29 @@ DELETE FROM user2
     ;
     ```
 
+---
+## CASE THEN
+* Basic
+    ```
+    CASE column_name WHEN 'Value1' THEN 'Result1'
+    ```
+    - column_name == 'Value1'인 경우, Result1 반환
+* Example
+    ```sql
+    select h.name as host_name,
+        to_char(to_timestamp(t.clock), 'YYYY-MM-DD') as collect_date,
+        avg(case i.name when 'CPU Utilization' then t.value_avg end) as cpu_avg,
+        min(case i.name when 'CPU Utilization' then t.value_max end) as cpu_max,
+        avg(case i.name when 'Memory utilization' then t.value_avg end) as mem_avg,
+        min(case i.name when 'Memory utilization' then t.value_max end) as mem_max,
+    from host h
+        inner join items i on i.hostid = h.hostid
+        inner join trends t on t.itemid = i.itemid
+    where h.status = 0
+        and h.flags = 0
+        and i.name in ('CPU Utilization', 'Memory utilization')
+        and t.clock >= extract(epoch from to_timestamp('2023-04-01', 'YYYY-MM-DD'))::integer
+        and t.clock < extract(epoch from to_timestamp('2023-04-16', 'YYYY-MM-DD'))::integer
+    group by h.name as host_name, to_char(to_timestamp(t.clock), 'YYYY-MM-DD')
+    ;
+    ```

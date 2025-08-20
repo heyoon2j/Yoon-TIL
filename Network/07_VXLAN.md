@@ -1,8 +1,12 @@
 # VXLAN (Virtual Extensible LAN)
-* Physical Network 위에 Virtual Network를 사용하기 위한 Overlay Network를 구현하는데 사용되는 Protocol 중 하나.
-* VXLAN은 Tunneling 기반으로 하는 기법이다. Virtual Network 안에서 발생한 Packet은 Encapsulation 되어 Physical Network을 통과하고 다시 Decapsulation되어 Virtual Network로 전달 된다.
-* Multicast 기반으로 통신한다.
-* Layer2에서 동작
+Physical Network 위에 Virtual Network를 사용하기 위한 Overlay Network를 구현하는데 사용되는 Protocol 중 하나.
+
+VXLAN은 Tunneling 기반으로 하는 기법이다. Virtual Network 안에서 발생한 Packet은 Encapsulation 되어 Physical Network을 통과하고 다시 Decapsulation되어 Virtual Network로 전달 된다.
+
+* Layer 3에서 동작
+* Layer 2에서 동작하는 VLAN의 확장
+* Multicast 기반으로 통신
+
 </br>
 
 
@@ -24,8 +28,8 @@
 
 ---
 ## Tunneling
-Source와 Destination에서만 사용하고 중간 네트워크에서 사용하지 않는 프로토콜을 사용하여 데이터를 전송하는 과정
-* 전송할 때 패킷을 캡슐화하여 전송한다(캡슐화는 패킷을 다른 패킷 내부에 래핑하는 것을 의미)
+다른 프로토콜로 캘슙화하여 데이터를 전송하는 기술
+* 캡슐화는 패킷을 다른 패킷 내부에 래핑하는 것을 의미
 * 기존 패킷을 Payload에 두고, Tunneling 정보를 Header로 추가하여 캡슐화한다.
 </br>
 </br>
@@ -39,11 +43,16 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
 </br>
 
 * Trunk: 복수 개의 VLAN 프레임을 전송할 수 있는 링크 (Encapsulation 방식)
-* Broadcast Domain : LAN 상에서 어떤 단말이 Broadcast Packet을 송출할 때, '해당 Packet을 수신할 수 있는 단말들의 집합'을 의미
-* Collision Domain : Collision Domain : LAN 상에서 전송 매체를 공유하고 있는 경우, 여러 단말들이 동시에 Packet을 송출하면 충돌이 나는데 이 충돌에 영향을 받게 되는 영역을 의미. 하나의 단말이 통신을 하고 있는 경우, 다른 단말은 통신할 수 없다.
+* Broadcast Domain
+    - LAN 상에서 어떤 단말이 Broadcast Packet을 송출할 때, '해당 Packet을 수신할 수 있는 단말들의 집합'을 의미
+    - VLAN, CIDR 등에 결정됨
+* Collision Domain
+    - LAN 상에서 전송 매체를 공유하고 있는 경우, 여러 단말들이 동시에 Packet을 송출하면 충돌이 나는데 이 충돌에 영향을 받게 되는 영역을 의미. 하나의 단말이 통신을 하고 있는 경우, 다른 단말은 통신할 수 없다 (장비 성능에 영향을 많이 받음)
     > 허브는 CSMA/CD를 통해 충돌을 처리하고, 스위치는 충돌을 미연에 발생하지 않게 하기 위해 MAC 주소 필터링과 버퍼링 방법을 사용.
+
     > 리피터와 허브는 충돌을 전파하지만, Switch, Router는 forwarding을 통해 충돌 영향이 없다. Collision Domain을 Switch와 Router는 분할할 수 있다.
-> ref : https://ja-gamma.tistory.com/entry/VLAN-%EA%B0%9C%EB%85%90-%EB%8F%99%EC%9E%91%EC%9B%90%EB%A6%AC-%EC%82%AC%EC%9A%A9%EC%9D%B4%EC%9C%A0
+
+    > ref : https://ja-gamma.tistory.com/entry/VLAN-%EA%B0%9C%EB%85%90-%EB%8F%99%EC%9E%91%EC%9B%90%EB%A6%AC-%EC%82%AC%EC%9A%A9%EC%9D%B4%EC%9C%A0
 
 </br>
 </br>
@@ -51,12 +60,14 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
 ---
 ## VXLAN 네트워크 구조
 ![VXLANNetworkArchitecture](img/VXLANNetworkArchitecture.png)
-* VTEP(VXLAN Tunnel End Point)
-    * VXLAN Tunnel 간의 Encapsulation/Decapsulation 작업이 발생하는 지점
-    * VTEP는 소프트웨어 장치일 수도 있고, 하드웨어 장치일 수 있다.
+* VTEP(VXLAN Tunnel Endpoint)
+    - VXLAN Tunnel 간의 Encapsulation/Decapsulation 작업이 발생하는 지점
+    - VTEP는 소프트웨어 장치일 수도 있고, 하드웨어 장치일 수 있다.
 * VNI(Virtual Network Idenfitier / Tag)
-    * 해당 VNI를 통해 어느 Vritual Network 인지 구분되고, 격리된다.
-    * Encapsulation 된 Packet은 VXLAN Header에 저장된다.
+    - VXLAN ID
+    - 해당 VNI를 통해 어느 Vritual Network 인지 구분되고, 격리된다.
+        > 즉, VXLAN VNI가 Broadcast Domain을 나누는 기준이 된다.
+    - Encapsulation 된 Packet은 VXLAN Header에 저장된다.
 * vSwitch
     * VM끼리 통신을 위한 Virtual Switch
     * ARP Table이 저장됨
@@ -78,7 +89,8 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
 
     > VXLAN VNI는 Network를 통한 Hypervisor 끼리의 통신 (어느 Hypervisor를 선택해야 되는지 Routing 관리)
 3. A VTEP -> Network(Multicast) -> B VTEP
-    * Encapsulation 된 Packet은 다른 VTEP들에게 전달된다(같은 Multicast Group으로 묶여있는 VTEP와 통신)
+    * Encapsulation 된 Packet은 다른 VTEP들에게 전달된다.
+    * 이때 같은 Multicast Group에 속한 VTEP들이 트래픽을 수신하고, 그 중에서 같은 VNI에 속한 VTEP만이 해당 트래픽을 처리한다.
     * 해당 Packet들의 정보로 Table이 생성된다.
 4. B VTEP
     * Encapsulation 된 Packet을 Decapsulation 하여, 다시 ARP Packet으로 변환한다.
@@ -91,13 +103,25 @@ Source와 Destination에서만 사용하고 중간 네트워크에서 사용하�
 
 ---
 ## Networking Mapping
+![vxlan_traffic](img/vxlan_traffic.jpg)
 VXLAN을 관리하기 위해서는 Networking Mapping 방식에 대해서 자세하게 볼 필요가 있다.
-1. Why mapping VXLAN VNI to Multicasting Group
-    * VTEP 끼리 통신할 때 Multicasting 방식으로 통신한다.
-    * 하지만 Multicast Group의 갯수는 한정적이다(약 1000개). 그리고 같은 Group에 속해 있을지라도 내부적으로 VLAN이 여러개로 구성되어 있을 수 있다. 그렇기 때문에 VXLAN VNI:Multicasting Group은 N:1 관계를 가진다.
-2. Why mapping VXLAN VNI to VLAN ID
-    * 기본적으로 Broadcast Domain은 VNI로 구분되어진다. 그렇기 때문에 같은 VLAN ID에 여러 개의 VNI가 매핑될 수 있다.
-    * 하지만 단순 L2 통신은 Switch를 통해서만 통신하기 때문에 VLAN ID는 필요하다.
+
+1. Why mapping VXLAN VNI to VLAN ID
+    - 기본적으로 Broadcast Domain은 VNI로 구분되어진다.
+        > 즉, VLAN ID와 상관없이 VNI로 구분되어진다!!
+    - 같은 VLAN ID에 여러 개의 VNI가 매핑될 수 있다. 이는 서로 다른 Broadcast Domain을 가진다.
+    - 왜 VLAN ID가 필요할까?
+        - VXLAN은 L3로 L2의 VLAN 확장이다. 그리고 Layer2는 VLAN을 통해서 통신이 이루어진다.
+            > 여기서 헷갈리기 쉬운것은 L3이기 때문에 기본적으로 L3 Switch 등의 L3 장비가 해당 트래픽을 처리한다는 것이다. 그렇기 때문에 InterVLAN 같은 동작은 VXLAN 통신 안에 자동으로 들어가 있다!!! 
+
+            > 헷갈린 지점 : VNI에 의해 Broadcast Domain이 정해진다고 한다. 10000:100과 10000:200은 같은 네트워크 대역이라는 것이다. 여기서 VLAN은 실질적으로 태깅역할을 한다!!
+        - 레거시 네트워크 호환성. 기존에 사용하던 VLAN과 통합하기 위해 사용
+        - 서로 다른 L2 세그먼트 구분. 데이터센터의 한 VTEP에서는 VLAN 100이 VNI 10000에 매핑되고, 다른 VTEP에서는 VLAN 200이 VNI 10000에 매핑될 수 있음
+        - 실질적으로 단순 L2 통신은 Switch를 통해서만 통신하기 때문에 VLAN ID가 필요하다!!
+2. Why mapping VXLAN VNI to Multicasting Group
+    - VTEP 끼리 통신할 때 Multicasting 방식으로 통신한다.
+    - 하지만 Multicast Group의 갯수는 한정적이다(약 1000개). 그리고 같은 Group에 속해 있을지라도 내부적으로 VLAN이 여러개로 구성되어 있을 수 있다. 그렇기 때문에 VXLAN VNI:Multicasting Group은 N:1 관계를 가진다.
+
 * Ref: https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/357001-358000/357506.jpg
 > VXLAN VNI는 Ethernet(eth) 어떤 서버로 보내야 될지 결정하는 ID이고 VLAN은 네트워크에 해당하는 영역이다.
 </br>

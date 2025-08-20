@@ -4,19 +4,14 @@
 </br>
 
 
-## DB Instance Class
-* EC2
-</br>
-
-
 ## DB Instance Storage
-* EBS
+- EBS
 </br>
 
 
 ## Processor
 * 워크로드에 맞게 CPU와 Thread 수를 제어할 수 있다.
-* 단 Oracle DB의 인스턴스만 제어할 수 있다.
+* 단, Oracle DB의 인스턴스만 제어할 수 있다.
 * https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html
 </br>
 
@@ -32,7 +27,7 @@
 3. 다중 AZ 배포
 4. 읽기 전용 복제본
     * 단일 AZ인 경우, DB 스냅샷 생성시 잠시 I/O가 중단된다
-    * 
+
 </br>
 </br>
 
@@ -55,24 +50,8 @@
 * DB 엔진의 기본 제공 복제 기능을 사용하여 원본 DB 인스턴스에서 읽기 전용 복제본이라는 특수한 유형의 DB 인스턴스를 생성.
 * 원본 DB와 읽기 전용 복제본 간에 __미리 쓰기 로그(WAL)__ 데이터를 전송하는 특수 연결이 생성되며, DB 인스턴스에 대한 업데이트는 읽기 전용 복제본에 비동기식으로 복사된다.
     * PostgreSQL은 복제 처리를 위해 단일 프로세스를 사용
+    > Write Ahead Logging(WAL): 데이터베이스에 변경 사항을 실제로 디스크에 기록하기 전에, 해당 변경 사항에 대한 로그를 먼저 디스크에 기록하는 것
 * 재해 복구 솔루션으로 읽기 전용 복제본을 독립 실행형 인스턴스로 승격할 수 있다.
-</br>
-</br>
-
-
-## Backup
-* DB 인스턴스 백업 기간 동안 DB 인스턴스의 자동 백업을 생성하고 저장한다.
-* RDS는 DB 인스턴스의 스토리지 볼륨 스냅샷을 생성한다.
-* __장기간 백업하려면 스냅샷을 Amazon S3으로 내보내는 것이 좋다!__
-    * 해당 작업을 수행하기 위해서는 아래와 같은 정책 허용이 필요
-    ```
-    s3:PutObject*
-    s3:GetObject*
-    s3:ListBucket
-    s3:DeleteObject*
-    s3:GetBucketLocation
-    ```
-* 
 </br>
 </br>
 
@@ -95,8 +74,24 @@
 </br>
 
 
+## Backup
+* DB 인스턴스 백업 기간 동안 DB 인스턴스의 자동 백업을 생성하고 저장한다.
+* RDS는 DB 인스턴스의 스토리지 볼륨 스냅샷을 생성한다.
+* __장기간 백업하려면 스냅샷을 Amazon S3으로 내보내는 것이 좋다!__
+    * 해당 작업을 수행하기 위해서는 아래와 같은 정책 허용이 필요
+    ```
+    s3:PutObject*
+    s3:GetObject*
+    s3:ListBucket
+    s3:DeleteObject*
+    s3:GetBucketLocation
+    ```
+</br>
+</br>
 
-## Aurora DB Cluster
+
+---
+# Aurora DB Cluster
 ![DBCluster](../img/DBCluster.png)
 * Amazon Aurora DB Cluster는 하나 이상의 DB Instance와 해당 DB Instance의 데이터를 관리하는 Cluster Volumn으로 구성된다.
 * https://aws.amazon.com/ko/blogs/database/introduction-to-aurora-postgresql-cluster-cache-management/

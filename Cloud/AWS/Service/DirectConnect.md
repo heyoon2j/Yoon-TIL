@@ -8,7 +8,7 @@ AWS와 On-premise 간의 전용 네트워크를 제공하는 서비스.
 ![Gateway_Connect](../img/Gateway_Connect.png)
 * Connect : AWS와 기업 사이에 전용선
     - 물리적인 전용선에 대한 Object (물리적인 단일 광섬유라고 생각하면 된다)
-    > 제공 업체와 협의를 통해 진행    
+        > 제공 업체와 협의를 통해 진행    
 * Virtual Interface : Connect를 AWS 자원에 연결하기 위한 네트워크 인터페이스
     - AWS 측의 연결 정보 설정이라고 생각하면 된다.
     - VLAN / BGP ASN 확인 필요

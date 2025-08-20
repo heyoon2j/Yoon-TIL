@@ -25,12 +25,14 @@ CDN(Content Delivery Network) 서비스로 콘텐츠를 사용자에게 더 빨�
 ## CDN Caching 방식
 * reference : https://www.mohitkhare.com/blog/guide-to-cdn/
 1. __CDN based on Push (Static Caching)__
+
     ![cnd_based_push](../img/cnd_based_push.png)
     * Origin Server에서 CDN으로 캐싱할 데이터를 자동/수동으로 미리 전송해 두고(Push) 링크한다. 이렇게 되면 특별한 경우가 아닌 이상 항상 콘텐츠가 Caching되어 있다(Cache Hit)
     1) Origin Server에서 캐싱할 데이터를 CDN 캐시에 미리 적재한다.
     2) Client가 CDN에 요청을 보낸다.
     3) CDN은 캐시에서 데이터에서 확인한다.
 2. __CDN based on Pull (Dynamic Caching)__
+
     ![cnd_based_pull](../img/cnd_based_pull.png)
     * Origin Server에 콘텐츠들이 있고, 먼저 CDN이 캐싱 데이터를 확인 후 없다면(Cache Miss) Origin Server로부터 다운로드 받아(Cache Fill) 데이터를 캐싱해둔다.
     1) Client가 CDN에 요청을 보낸다.
@@ -44,7 +46,8 @@ CDN(Content Delivery Network) 서비스로 콘텐츠를 사용자에게 더 빨�
 ## CDN Architecture
 Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: https://blog.leedoing.com/35)
 * 기본 동작 : URL 기반으로 콘텐츠를 Origin 서버로부터 캐싱한다 (ex> /hello/index.html)
-> 1번은 요즘 추세는 아닌거 같다.
+    > 1번은 요즘 추세는 아닌거 같다.
+
 1. Endpoint를 "Origin Server와 CDN" 2개로 가주가는 방법
     ![cdn_architecture_old](../img/cdn_architecture_old.png)
     * 기본적으로 모든 접근은 Origin Server로 접근하고, 특정 콘텐츠 안에 CDN URL을 집어넣어 해당 데이터를 받아오기 위해 CDN으로 접근하는 방식
@@ -91,8 +94,9 @@ Endpoint에 따라 아키텍처는 크게 2가지 방안이 있다. (참고: htt
 1. Endpoint를 "Origin Server와 CDN" 2개로 가주가는 방법
     * 동적 데이터는 Origin Server에서 바로 가주가므로 CDN Caching에 대해 신경쓸 필요가 없다.
 2. CDN으로 통합
-    1) 동적 데이터는 "Caching TTL = 0" 으로 설정
-    2) 
+    1) 동적 데이터는 "Caching Minimum TTL = 0" 으로 설정
+    2) 경로 기반 라우팅 설정
+    3) 서버에서 Header 설정을 Cache-Control: no-cache 또는 Cache-Control: no-store
 </br>
 </br>
 
@@ -155,12 +159,12 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
         - 콘텐츠에 대한 액세스 제어 (Application에서 제어하는 것은 최대한 X, 트래픽으로 제어)
     * Origin Shield 사용 여부 : CloudFront와 Origin 간에 캐싱 사용 여부
     * 연결 시도 / 연결 제한 시간 / 응답 제한 시간 / 연결 유지 제한 시간 : CloudFront --> Origin 간의 통신 제어
-    * 프로토콜 (HTTP / HTTPS) : CloudFront --> Origin 간의 통신 프로토콜
+    * 프로토콜 (HTTP / HTTPS / Viewer와 일치) : CloudFront --> Origin 간의 통신 프로토콜
 2. Caching 정책 설정
     * Cache 정책 : 캐시 적중에 대한 정책
         - TTL 설정
         - Header / Cookie / Query 문자열 설정
-        > Caching TTL 설정 시, Application에서 Cache-Control: max-age, Expires 등을 설정해 뒀다면 CloudFront TTL 설정이 지워질 수 있고, Browser에서는 Application 설정을 따라간다. 그렇기 때문에 Application 헤더 설정 확인이 필요하다.
+            > Caching TTL 설정 시, Application에서 Cache-Control: max-age, Expires 등을 설정해 뒀다면 CloudFront TTL 설정이 지워질 수 있고, Browser에서는 Application 설정을 따라간다. 그렇기 때문에 Application 헤더 설정 확인이 필요하다.
     * Origin Request 정책 : 캐시 누락이 있을 때, CloudFront에서 Origin으로 보낼 정보에 대한 제어 정책
         - Header / Cookie / Query 문자열 설정
     * Response Header 정책 : 최종 사용자에게 응답 보낼 정보에 대한 제어 정책
@@ -202,11 +206,11 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
     * 기본 루트 객체 지정 : HTTP 서버의 기본 index.html과 동일한 의미
     * 로깅
 6. Origin 그룹 : Target(Origin) 이중화가 가능한 경우
-7. 동작 : URL마다 캐싱 정책을 다르게 가져가야 되는 경우
+7. 동작 : URL마다 원본, 캐싱 정책을 다르게 가져가야 되는 경우
 8. 사용자 지정 오류 페이지
     * Origin에서 제공하는 오류 페이지가 아닌, CloudFront에서 전달할 오류 페이지를 지정할 수 있다.
     > 어느 지점에서 오류가 발생했는지 헷갈리게 하지 않을까?
-9.  지리적 제한 : 국가에 대한 액세스 제한
+9. 지리적 제한 : 국가에 대한 액세스 제한
     - Allow list : 국가 허용 리스트
     - Block list : 국가 제한 리스트
 10. 무효화 : 제거할 캐싱 URL 입력
@@ -218,11 +222,11 @@ CloudFront에서 객체에 대한 각 요청의 정보를 로깅하고 이 로�
 ## Deploy
 배포는 크게 두가지가 있다. CDN 설정 변경에 따른 배포와 기존 콘텐츠 변경에 따른 배포가 있다.
 * CDN 설정 변경
-    * 변경 내용이 즉시 전파되지 않고 차근차근 전파된다. 그렇기 때문에 변경 구성이 완료될 때까지는 특정 엣지 로케이션에서 기존 설정과 새로운 설정 중 어느 설정을 따라 배포하는지 판단할 수 없다.
+    - 변경 내용이 즉시 전파되지 않고 차근차근 전파된다. 그렇기 때문에 변경 구성이 완료될 때까지는 특정 엣지 로케이션에서 기존 설정과 새로운 설정 중 어느 설정을 따라 배포하는지 판단할 수 없다.
 * 콘텐츠 변경
-    * 기존 파일의 이름과 다르게 변경하여 업데이트 : 변경된 내용으로 코드에서 링크를 수정해야 한다!
-    * 기존 파일과 동일한 이름을 사용하여 업데이트 : 설정해두었던 TTL 설정이 만료될 때까지 기다린다(Default: 24h)
-    * 콘첸츠 무효화 : 엣지 캐시에서 파일이 만료되기 전에 파일을 제거할 수 있다. 이 경우는 아예 삭제하고 새로 가져오는 개념이므로 상관있는 파일에 대해서만 적용해야 한다!
+    - 기존 파일의 이름과 다르게 변경하여 업데이트 : 변경된 내용으로 코드에서 링크를 수정해야 한다!
+    - 기존 파일과 동일한 이름을 사용하여 업데이트 : 설정해두었던 TTL 설정이 만료될 때까지 기다린다(Default: 24h)
+    - 콘첸츠 무효화 : 엣지 캐시에서 파일이 만료되기 전에 파일을 제거할 수 있다. 이 경우는 아예 삭제하고 새로 가져오는 개념이므로 상관있는 파일에 대해서만 적용해야 한다!
 </br>
 </br>
 
@@ -250,3 +254,8 @@ https://blog.leedoing.com/35
 
 ---
 AWS Shield, AWS WAF, AWS Route 53
+
+
+- CloudFront 원본에 여러개 뒀을때 특정 값이 들어왔을때, 특정 오리진을 선택해서 트래픽을 보내는 방법
+    1) 오리진이 다른 여러 개의 동작을 설정
+    2) Lambda@Edge를 사용한 오리진 선택

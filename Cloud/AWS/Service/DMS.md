@@ -193,15 +193,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 ### Example : From PostgreSQL To PostgreSQL
 Size : 17 TiB
 

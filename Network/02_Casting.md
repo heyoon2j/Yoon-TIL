@@ -1,8 +1,14 @@
 # Casting
-* Unicast
-* Multicast
-* Broadcast
-* Anycast
+* NIC 통신 과정
+    1) Casting 종류에 따라 NIC에서 먼저 트래픽을 확인
+    2) 이후에 NIC는 CPU에 인터럽트(interrupt) 발생
+* Casting 종류
+    - Unicast
+    - Multicast
+    - Broadcast
+    - Anycast
+
+</br>
 
 ## Unicast
 ![Unicast](img/Unicast.png)

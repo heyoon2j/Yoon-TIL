@@ -5,6 +5,7 @@
 * commit: Index에 있는 사항들을 Local Repository에 저장
 * push: Commit을 원격 저장소에 Upload 한다.
 * branch: 같이 곳에서 작업을 하게 되면 충돌이 날 수 있는 가능성이 있기 때문에 하나의 줄기에 여러개의 나무가지가 생기는 형태를 가지도록 만들어준다.
+
     ![git_branch](img/git_branch.png)
     > 녹색의 줄기에 A는 빨간색으로 분리가되고, B는 노란색으로 분리가 될 수 있다.
 * checkout : Workspace를 commit된 다른 작업트리(branch)로 변경한다

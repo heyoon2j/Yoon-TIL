@@ -1,10 +1,13 @@
 # TCP (Transmission Control Protocol)
 * 연결 지향형 프로토콜
 * 특징
-    * 논리적 경로 생성을 통해 패킷 순서를 보장한다.
-    * ACK 신호 등을 통해 데이터 전송에 대한 확인 작업을 걸침으로 패킷 손실 등을 체크한다. 그렇기 때문에 데이터 전송에 대한 신뢰성이 보장된다.
-    * 데이터 흐름 제어(버퍼 오버플로우 방지) 및 혼잡 제어(과도한 패킷 수 증가 방지) 한다.
-    * UDP 보다 전송속도가 느리다.
+    - 논리적 경로 생성을 통해 패킷 순서를 보장한다.
+    - ACK 신호 등을 통해 데이터 전송에 대한 확인 작업을 걸침으로 패킷 손실 등을 체크한다. 그렇기 때문에 데이터 전송에 대한 신뢰성이 보장된다.
+    - 데이터 흐름 제어(버퍼 오버플로우 방지) 및 혼잡 제어(과도한 패킷 수 증가 방지) 한다.
+    - UDP 보다 전송속도가 느리다.
+
+> 마지막으로 "TCP Connection(Session)"과 "Session 저장"은 서로 다른 말이다. "Session을 저장"한다는 의미는 로그인 세션 정보, 장바구니 등 Application Level에 대한 정보를 저장하는 행위이고, "TCP Connection(Session)"에서 Session을 맺는다는 의미는 Transport Level에서 SYN, ACK 등을 저장하는 행위이다!!!!!!
+
 </br>
 
 ## TCP 관련 정보
@@ -12,6 +15,7 @@
     | Status | 설명 |
     |--------|-----|
     | LISTEN | 연결 요청 대기 중 |
+    | SYN_SENT | SYN 요청을 보내고, 응답을 기다리는 중 |
     | SYN_RCV | SYN 요청을 받고, 응답을 기다리는 중 |
     | ESTABLISHED | 연결 상태 |
     | CLOSED | 닫힌 상태 |
@@ -47,10 +51,13 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
 
 ![4_way_handshaking_test](img/4way_handshaking_test.png)
 1. Client는 연결 종료를 위한 FIN 패킷를 보낸다. 그리고 FIN WAIT 1 상태가 된다.
+    > 3 Way Handshake 제외하고, 정상적인 트래픽에는 ACK가 기본적으로 들어가 있다!
 2. Server는 FIN 패킷을 받게 되면 응답으로 ACK 신호를 보내고, 해당 Server의 Application에서 연결이 CLOSE 할 때까지 CLOSE WAIT 상태가 된다.
 3. ACK 패킷을 받은 Client는 FIN WAIT 2 상태가 되고, FIN 신호를 기다린다.
 4. Server 쪽에서 Application 연결이 종료되면 FIN 패킷을 보내고 LAST ACK 상태가 된다.
+    > Client가 보내는 FIN 신호는 Client의 일방적인 선언일뿐이다. TCP는 양방향 통신이기 때문에 Server에서도 FIN 신호를 보냄으로 양방향 종료를 명확하게 해야한다.
 5. FIN 패킷을 받은 Client는 TIME WAIT 상태가 되고 ACK 패킷을 Server에게 보낸다. ACK 패킷을 받은 Server는 CLOSED로 완전히 종료 상태가 된다.
+
 > Client에서 세션을 종료시킨 후, 뒤늦게 도착하는 패킷이 있다면 이 패킷은 Drop 되고 데이터는 유실된다. 이러한 현상에 대비하여 Client는 Server로부터 FIN을 수신하더라도 일정시간(디폴트 240초) 동안 세션을 남겨놓고 패킷을 기다리는 과정을 거치게 되는데 이 과정을 "TIME_WAIT"라고 합니다.
 
 </br>
@@ -58,9 +65,9 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
 
 ---
 ## Timeout
-* Connection Timeout : Client - Server 간의 연결이 생성되는데 까지 걸리는 시간 (3-way-handshaking) 제한
-* Socket Timeout : 데이터 전송 시 여러 개의 패킷을 보내는데, 각 패킷에 대한 시간 제한
-* Idle Timeout : 연결 후, 서로 패킷을 주고 받지 않고 연결을 유지할 수 있는 시간
+* Connection Timeout : Client - Server 간의 연결이 설정되는 시간에 대한 제한 (3-way-handshaking 제한)
+* Idle Timeout : 연결 후, 서로 패킷을 주고 받지 않고 연결을 유지할 수 있는 시간에 대한 제한
+* Socket Timeout : 데이터 전송 시 여러 개의 패킷을 보내는데, 각 패킷에 대한 시간을 제한
 </br>
 
 ### Idle Timeout Test
@@ -79,10 +86,13 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
     * Client가 NLB와 다시 통신을 할 때 기존 세션이 살아있다 생각하고 해당 세션으로 통신 시도
     * NLB는 이때서야 RST 반환
     > 추측) 이러면 HTTP 기준으로 503이 반환될 것이다.
+
+    > NLB는 RST를 보내지 않는 이유는 TCP Table을 통해 세션 정보를 가지고 있지 않다!!
 4. NLB - Idle : 350s / Server - Timeout : 300s / Server의 응답 시간이 400s인 경우 
     * Server에서 Client 측에 504 error 전달
     * Client - LB는 Idle timeout에 의해 연결이 유지되고 있다. 이후에 LB의 Timeout이 끝날 때까지 기존 연결에 연결 시킬 수 없다.
 > 그리고 연속적인 통신이 필요하다고하면, Timeout을 건드리는 것이 아니라 Connection Pool이나 Connection 재사용 속성을 생각해보는 것도 하나의 방법인거 같다.
+
 </br>
 
 #### Reference
@@ -90,6 +100,7 @@ TCP 통신 연결을 정상적으로 세션을 종료하기 위한 수단
 * Proxy 3-way handshaking: https://aws-hyoh.tistory.com/m/90
 </br>
 </br>
+
 
 
 ---
