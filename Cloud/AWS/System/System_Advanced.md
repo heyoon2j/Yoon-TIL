@@ -103,3 +103,36 @@
     - 블록들이 랜덤이면 → Random I/O → IOPS가 중요
     - 블록들이 연속이면 → Sequential I/O → Throughput이 중요
     ```
+
+
+---
+## 📌 PCR(Platform Configuration Register)
+- **PCR**은 TPM(Trusted Platform Module) 내부의 레지스터
+- 부팅 과정에서 펌웨어, 부트로더, 커널, OS 구성요소 등을 **해시(측정값)**으로 기록하고, 이전 값과 함께 `extend` 연산(누적 해시)으로 갱신한다
+- 이전 값과 현재 값을 비교함으로써 무결성을 검사할 수 있다 (시스템이 신뢰할 수 있는 상태인지 확인 가능)
+
+## PCR 번호별 역할 (TPM 2.0 기준)
+
+| PCR 번호 | 주요 측정 대상 | 설명 |
+|----------|----------------|------|
+| **PCR 0** | Core Root of Trust for Measurement (CRTM) | 펌웨어 초기 실행 코드, BIOS/UEFI 초기화. |
+| **PCR 1** | Platform Configuration | CPU 마이크로코드, 펌웨어 설정 등. |
+| **PCR 2** | Option ROMs | 확장 카드(네트워크/스토리지 등)의 Option ROM 실행 코드. |
+| **PCR 3** | Platform-specific Configuration | 추가 펌웨어/하드웨어 설정 값. |
+| **PCR 4** | **Boot Manager / UEFI Application** | OS 로더(shim, grub, bootmgfw.efi 등). 부트로더가 바뀌면 PCR4가 변함. |
+| **PCR 5** | OS Loader Config | OS 로더 설정값 (예: grub.cfg, 커널 파라미터). |
+| **PCR 6** | State Transitions | ACPI, SMM 전환, 기타 보드 레벨 상태 변화. |
+| **PCR 7** | **Secure Boot Policy** | UEFI Secure Boot 변수(PK/KEK/db/dbx), Secure Boot on/off 여부. Secure Boot 키가 갱신되면 PCR7 값이 바뀜. |
+| **PCR 8–9** | OS Kernel 및 Drivers | 커널, initrd/initramfs, 초기 드라이버. |
+| **PCR 10** | OS-specific | OS 로더 이후 추가 측정(일부 Linux에서는 드라이버 모듈, AppArmor/IMA 정책). |
+| **PCR 11–13** | Runtime Config | 런타임 환경, 추가 소프트웨어/정책(IMA/EVM 등). |
+| **PCR 14** | Debug | 디버그 관련 상태. |
+| **PCR 15** | DRTM (Dynamic Root of Trust for Measurement) | TXT/TPM DRTM 이벤트(Late launch). |
+
+> 💡 주의: 실제 매핑은 **플랫폼·펌웨어·OS 구현**에 따라 다소 차이가 있다.  
+> 하지만 **PCR4 = 부트로더, PCR7 = Secure Boot 정책**이라는 점은 거의 공통.
+
+
+### 🔎 활용 예시
+- **TPM Event Log** (`/sys/kernel/security/tpm0/binary_bios_measurements`)를 확인하면 어떤 바이너리/변수가 PCR에 extend 되었는지 볼 수 있음.
+- **무결성 검증**
