@@ -6,6 +6,7 @@
 ## Linux Booting Sequence
 * BIOS : Basic Input/Output System. 컴퓨터의 입출력을 처리하는 펌웨어 
 * ROM : Read Only Memory
+* grup : 부팅 프로세스
 1. Power On
     * 메인보드에 전원 공급
     * 메인보드의 ROM을 통해 특정 번지에 있는 BIOS를 실행하도록 한다.
